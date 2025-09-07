@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+//this mjs file does not work.
 export default {
   content: [
     "./index.html",

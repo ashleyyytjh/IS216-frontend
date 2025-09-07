@@ -63,12 +63,12 @@ const navbar = () => {
                         </div>
                         <span className="font-bold text-xl">Logo</span>
                     </a>
-                    <div className="hidden md:flex items-center space-x-8">
+                    <div className="hidden md:flex items-center space-x-8 text-[#00AFF0]">
                         {navigationItems.map((item) => (
                             <a
                                 key={item.name}
                                 href={item.href}
-                                className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium"
+                                className="hover:text-foreground transition-colors duration-200 font-medium text-[#00AFF0]/80"
                             >
                                 {item.name}
                             </a>

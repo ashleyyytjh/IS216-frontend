@@ -117,7 +117,7 @@ function Home() {
                 <div className="bg-[#ededed] relative ">
                     <div className="container w-full pt-10 mx-auto bg-whitetest pb-20" data-aos="zoom-in">
 
-                        <h1 className="text-black text-center text-6xl font-serif mb-2 pl-1 pr-1">Discover Student's Notes </h1>
+                        <h1 className="text-black text-center text-6xl font-serif mb-2 pl-1 pr-1 pt-2">Discover Student's Notes </h1>
                         <h1 className="text-black text-center text-6xl mb-10 font-serif">Notes Effortlessly</h1>
                         <p className="text-black text-center">Welcome to Onlynotes, your go-to platform for exploring student's's contributions for notes.</p>
                         <p className="text-black text-center mb-10">Search for forewords, prefaces and endoresements with ease.</p>
@@ -279,7 +279,7 @@ function Home() {
 
                         <div className="max-w-7xl rounded overflow-hidden shadow-md ml-auto mr-auto mt-3">
                             <h2 className="text-black text-center mb-10 font-serif mt-5">To get you started, let us introduce some notes to you.</h2>
-                            {/* Cards here can be used for mobile view */}
+                            {/* Cards here can be used for mobile view. Something is wrong here */}
                             <ThreeDCarousel items={items}
                                 startIndex={0}
                                 perspective={1}
@@ -330,6 +330,7 @@ const DraggableCard = ({ id, url, setCards, cards }) => {
 
     return (
         <>
+
 
             {/* replace note content here */}
             <motion.div

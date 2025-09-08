@@ -234,7 +234,7 @@ export default function ProductList() {
   return (
     <div className="px-4 md:px-25 lg:px-40 py-25 sm:py-6">
       <div className="flex flex-col gap-6 lg:flex-row">
-        {/* Desktop Filters Sidebar */}
+        {/* Desktop Filters Sidcebar */}
         <aside className="hidden w-64 lg:block">
           <FilterSection />
         </aside>
@@ -329,7 +329,7 @@ export default function ProductList() {
               }`}>
               {filteredProducts.map((product: any) => (
                 <Card key={product.id} className="group transition-shadow hover:shadow-lg">
-                  <CardContent className="p-3 sm:p-4">
+                  <CardContent className="p-3 sm:p-4 h-full flex flex-col justify-between">
                     <div className="relative mb-3 sm:mb-4">
                       <img
                         src={product.image || "/placeholder.svg"}
@@ -349,7 +349,7 @@ export default function ProductList() {
                       </Button>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 h-full flex flex-col justify-between">
                       <h3 className="line-clamp-2 text-sm leading-tight font-medium">
                         {product.title}
                       </h3>

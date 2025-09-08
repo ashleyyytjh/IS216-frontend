@@ -53,7 +53,7 @@ function Home() {
         </Card>
         ,
 
-        <Card className='rounded'>
+        <Card className='rounded shadow-xl'>
             <CardHeader>
                 <CardTitle>CS102 - Programming Fundamentals</CardTitle>
             </CardHeader>
@@ -64,7 +64,7 @@ function Home() {
         </Card>
         ,
 
-        <Card className='rounded'>
+        <Card className='rounded shadow-xl'>
             <CardHeader>
                 <CardTitle>CS102 - Programming Fundamentals</CardTitle>
             </CardHeader>
@@ -74,18 +74,7 @@ function Home() {
             </CardContent>
         </Card>
         ,
-        <Card className='rounded'>
-            <CardHeader>
-                <CardTitle>CS102 - Programming Fundamentals</CardTitle>
-            </CardHeader>
-            <CardContent>
-                {/* replace note content here */}
-                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
-            </CardContent>
-        </Card>
-        ,
-
-        <Card className='rounded'>
+        <Card className='rounded shadow-xl'>
             <CardHeader>
                 <CardTitle>CS102 - Programming Fundamentals</CardTitle>
             </CardHeader>
@@ -96,7 +85,18 @@ function Home() {
         </Card>
         ,
 
-        <Card className='rounded'>
+        <Card className='rounded shadow-xl'>
+            <CardHeader>
+                <CardTitle>CS102 - Programming Fundamentals</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {/* replace note content here */}
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
+            </CardContent>
+        </Card>
+        ,
+
+        <Card className='rounded shadow-xl'>
             <CardHeader>
                 <CardTitle>CS102 - Programming Fundamentals</CardTitle>
             </CardHeader>
@@ -129,13 +129,13 @@ function Home() {
                             <div className="relative">
                                 <div className="container flex items-center space-x-2 mt-20 ml-auto mr-auto px-4 pl-2 pr-2">
                                     <Input
-                                        className="h-[3rem] flex-1 p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
+                                        className="h-[3rem] flex-1 p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 shadow-lg"
                                         placeholder="Search Notes.."
                                     />
                                     <Button
                                         type="submit"
                                         variant="outline"
-                                        className="shrink-0 px-6 py-4 h-[3rem]"
+                                        className="shrink-0 px-6 py-4 h-[3rem] shadow-lg"
                                     >
                                         Search
                                     </Button>
@@ -226,7 +226,7 @@ function Home() {
                                 </CardContent>
                             </Card>
 
-                            <Card className='bg-[#fafafa] w-[30%]'>
+                            <Card className='bg-[#fafafa] w-[30%] shadow-2xl'>
                                 <CardHeader>
                                     <CardTitle className="text-5xl font-medium font-sans text-black text-center">5</CardTitle>
                                     <CardDescription className="text-textDef font-semibold">Faculties</CardDescription>
@@ -239,7 +239,7 @@ function Home() {
                             </Card>
 
 
-                            <Card className='bg-[#fafafa] w-[30%]'>
+                            <Card className='bg-[#fafafa] w-[30%] shadow-2xl'>
                                 <CardHeader>
                                     <CardTitle className="text-5xl font-medium font-sans text-black text-center">60M</CardTitle>
                                     <CardDescription className="text-textDef font-semibold">Users</CardDescription>

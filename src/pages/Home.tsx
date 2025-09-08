@@ -116,8 +116,8 @@ function Home() {
                 transition={{ duration: 1.0, ease: 'easeOut' }}
                 viewport={{ once: true, amount: 0.2 }}
             >
-                <div className="relative ">
-                    <div className="container w-full pt-10 mx-auto bg-whitetest pb-20" data-aos="zoom-in">
+                <div className="relative bg-[#f1f5f9]">
+                    <div className="container w-full pt-10 mx-auto bg-whitetest pb-20 bg-[#f1f5f9]" data-aos="zoom-in">
 
                         <h1 className="text-black text-center text-6xl font-serif mb-2 pl-1 pr-1 pt-2">Discover Student's Notes </h1>
                         <h1 className="text-black text-center text-6xl mb-10 font-serif pl-1 pr-1">Effortlessly</h1>

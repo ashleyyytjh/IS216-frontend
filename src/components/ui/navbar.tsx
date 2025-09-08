@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 const navigationItems = [
     { name: "Home", href: "/" },
-    { name: "Notes Repository", href: "/notes" },
+    { name: "Notes Repository", href: "/explore" },
     { name: "Upload Notes", href: "/upload" }
 ]
 

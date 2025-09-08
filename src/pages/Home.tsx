@@ -114,7 +114,7 @@ function Home() {
                 transition={{ duration: 1.0, ease: 'easeOut' }}
                 viewport={{ once: true, amount: 0.2 }}
             >
-                <div className="bg-[#ededed] relative ">
+                <div className="relative ">
                     <div className="container w-full pt-10 mx-auto bg-whitetest pb-20" data-aos="zoom-in">
 
                         <h1 className="text-black text-center text-6xl font-serif mb-2 pl-1 pr-1 pt-2">Discover Student's Notes </h1>
@@ -217,7 +217,7 @@ function Home() {
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-textDef text-base">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
+                                        In our website, we have a plenty of notes for you to purchase. Say goodbye to the days of finding notes in cluttered places!
                                     </p>
                                 </CardContent>
                             </Card>
@@ -289,7 +289,6 @@ function Home() {
                                 infiniteLoop={true}
                                 focusOnSelect={true}
                                 pauseOnHover={true}
-                                autoFocus={true}
                                 swipeable={true}
                                 swipeDirection='horizontal'
                                 showArrows={false}

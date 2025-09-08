@@ -402,12 +402,12 @@ export default function ProductList() {
                       </div>
 
                       <div className="flex gap-2 pt-2">
-                        <Button className="flex-1" size="sm">
+                        <Button className="flex-1 hover:cursor-pointer" size="sm">
                           <ShoppingCart className="mr-1 h-4 w-4 sm:mr-2" />
                           <span className="xs:inline hidden">Add to cart</span>
                           <span className="xs:hidden">Add</span>
                         </Button>
-                        <Button variant="outline" size="sm" className="bg-transparent px-2 sm:px-3">
+                        <Button variant="outline" size="sm" className="bg-transparent px-2 sm:px-3 hover:cursor-pointer">
                           <Heart className="h-4 w-4" />
                         </Button>
                       </div>

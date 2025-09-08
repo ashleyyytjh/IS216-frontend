@@ -3,7 +3,8 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Menu } from "lucide-react"
+import {  Menu } from "lucide-react"
+import { Link } from 'react-router-dom';
 
 const navigationItems = [
     { name: "Home", href: "/" },
@@ -33,7 +34,6 @@ const navbar = () => {
                                 
 
                             </Button>
-
 
                         </SheetTrigger>
 
@@ -86,8 +86,8 @@ const navbar = () => {
                     </div>
 
                     <div className="hidden md:flex gap-2">
-                        <Button>Login</Button>
-                        <Button>Sign up</Button>
+                        <Button> <Link to="/login">Login</Link></Button>
+                        <Button><Link to="/signup">Sign up</Link></Button>
                     </div>
 
 

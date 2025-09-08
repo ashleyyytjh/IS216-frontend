@@ -52,6 +52,7 @@ const colors = [
   { id: "gray", label: "Gray", color: "bg-gray-600" }
 ];
 
+
 // Filter component for reuse in both desktop and mobile
 function FilterSection() {
   const {
@@ -225,6 +226,8 @@ export default function ProductList() {
   } = useProductStore();
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [favourited, setFavourite] = useState(false);
+  const [currentItemHovered, setCurrentItemHovered] = useState(null);
 
   // Apply initial filters on mount
   useEffect(() => {
@@ -402,13 +405,18 @@ export default function ProductList() {
                       </div>
 
                       <div className="flex gap-2 pt-2">
-                        <Button className="flex-1 hover:cursor-pointer" size="sm">
-                          <ShoppingCart className="mr-1 h-4 w-4 sm:mr-2" />
+                        <Button className="flex-1 hover:cursor-pointer hover:scale-105" size="sm">
+                          <ShoppingCart className="mr-1 h-4 w-4 sm:mr-2 " />
                           <span className="xs:inline hidden">Add to cart</span>
                           <span className="xs:hidden">Add</span>
                         </Button>
-                        <Button variant="outline" size="sm" className="bg-transparent px-2 sm:px-3 hover:cursor-pointer">
-                          <Heart className="h-4 w-4" />
+                        <Button variant="outline" size="sm" className="bg-transparent px-2 sm:px-3 hover:cursor-pointer" onMouseEnter={()=>setCurrentItemHovered(product.id)} onMouseLeave={()=>setCurrentItemHovered(null)}>
+                         { currentItemHovered == product.id ? <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="red"  className="icon icon-tabler icons-tabler-filled icon-tabler-heart"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" /></svg>
+                         : <svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth={2}  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-heart"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" /></svg>
+
+                         }
+                        
+                         
                         </Button>
                       </div>
                     </div>

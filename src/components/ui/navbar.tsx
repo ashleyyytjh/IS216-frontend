@@ -8,8 +8,7 @@ import { Menu } from "lucide-react"
 const navigationItems = [
     { name: "Home", href: "/" },
     { name: "Notes Repository", href: "/notes" },
-    { name: "Upload Notes", href: "/upload" },
-    { name: "Contact", href: "/contact" },
+    { name: "Upload Notes", href: "/upload" }
 ]
 
 const navbar = () => {
@@ -23,18 +22,28 @@ const navbar = () => {
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
 
                         <SheetTrigger asChild className="md:hidden">
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" className="pl-18">
                                 <Menu className="h-6 w-6" />
-                                <span className="sr-only">Toggle menu</span>
+                                 <div className="flex items-center space-x-2">
+                                    <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+                                        <span className="text-primary-foreground font-bold text-sm">L</span>
+                                    </div>
+                                    <span className="font-bold text-xl">Onlynotes</span>
+                                </div>
+                                
+
                             </Button>
+
+
                         </SheetTrigger>
-                        <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+
+                        <SheetContent side="left" className="w-[300px] sm:w-[400px] pl-3">
                             <SheetTitle className="pt-5 pl-3">
                                 <a href="/" className="flex items-center space-x-2">
                                     <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
                                         <span className="text-primary-foreground font-bold text-sm">L</span>
                                     </div>
-                                    <span className="font-bold text-xl">Logo</span>
+                                    <span className="font-bold text-xl">Onlynotes</span>
                                 </a>
 
                             </SheetTitle>
@@ -49,34 +58,36 @@ const navbar = () => {
                                         {item.name}
                                     </a>
                                 ))}
-                                <div className="pt-4 border-t">
-                                    <Button className="w-full" onClick={() => setIsOpen(false)}>
-                                        Get Started
-                                    </Button>
+                                <div className="pt-4 border-t flex-col space-y-4 pr-2">
+                                    <Button className="w-full">Login</Button>
+                                    <Button className="w-full">Sign up</Button>
                                 </div>
                             </div>
                         </SheetContent>
                     </Sheet>
-                    <a href="/" className="flex items-center space-x-2">
-                        <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                            <span className="text-primary-foreground font-bold text-sm">L</span>
-                        </div>
-                        <span className="font-bold text-xl">Logo</span>
-                    </a>
-                    <div className="hidden md:flex items-center space-x-8 text-[#00AFF0]">
+
+                    {/* The code here is for the main nav bar. text align might go here. */}
+                    <div className="hidden md:flex flex-1 items-center space-x-8 text-[#0f172b] text-center mr-auto ml-auto">
+                        <a href="/" className="flex items-center space-x-2">
+                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+                                <span className="text-primary-foreground font-bold text-sm">L</span>
+                            </div>
+                            <span className="font-bold text-xl">OnlyNotes</span>
+                        </a>
                         {navigationItems.map((item) => (
                             <a
                                 key={item.name}
                                 href={item.href}
-                                className="hover:text-foreground transition-colors duration-200 font-medium text-[#00AFF0]/80"
+                                className="hover:text-foreground transition-colors duration-200 font-medium text=[#0f172b]"
                             >
                                 {item.name}
                             </a>
                         ))}
                     </div>
 
-                    <div className="hidden md:flex">
+                    <div className="hidden md:flex gap-2">
                         <Button>Login</Button>
+                        <Button>Sign up</Button>
                     </div>
 
 

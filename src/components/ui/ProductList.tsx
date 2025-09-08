@@ -232,7 +232,7 @@ export default function ProductList() {
   }, [applyFilters]);
 
   return (
-    <div className="px-40 py-25 sm:py-6">
+    <div className="px-4 md:px-25 lg:px-40 py-25 sm:py-6">
       <div className="flex flex-col gap-6 lg:flex-row">
         {/* Desktop Filters Sidebar */}
         <aside className="hidden w-64 lg:block">

@@ -18,7 +18,9 @@ import {
 import {
     Carousel,
     CarouselContent,
-    CarouselItem
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious
 } from "@/components/ui/carousel"
 
 import { Carousel as ThreeDCarousel } from 'react-responsive-3d-carousel';
@@ -40,70 +42,70 @@ function Home() {
     //
     const items = [
 
-            <Card className='rounded shadow-xl'>
-                <CardHeader>
-                    <CardTitle>CS102 - Programming Fundamentals</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {/* replace note content here */}
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
-                </CardContent>
-            </Card>
+        <Card className='rounded shadow-xl'>
+            <CardHeader>
+                <CardTitle>CS102 - Programming Fundamentals</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {/* replace note content here */}
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
+            </CardContent>
+        </Card>
         ,
-        
-            <Card className='rounded'>
-                <CardHeader>
-                    <CardTitle>CS102 - Programming Fundamentals</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {/* replace note content here */}
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
-                </CardContent>
-            </Card>
+
+        <Card className='rounded'>
+            <CardHeader>
+                <CardTitle>CS102 - Programming Fundamentals</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {/* replace note content here */}
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
+            </CardContent>
+        </Card>
         ,
-        
-            <Card className='rounded'>
-                <CardHeader>
-                    <CardTitle>CS102 - Programming Fundamentals</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {/* replace note content here */}
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
-                </CardContent>
-            </Card>
+
+        <Card className='rounded'>
+            <CardHeader>
+                <CardTitle>CS102 - Programming Fundamentals</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {/* replace note content here */}
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
+            </CardContent>
+        </Card>
         ,
-            <Card className='rounded'>
-                <CardHeader>
-                    <CardTitle>CS102 - Programming Fundamentals</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {/* replace note content here */}
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
-                </CardContent>
-            </Card>
+        <Card className='rounded'>
+            <CardHeader>
+                <CardTitle>CS102 - Programming Fundamentals</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {/* replace note content here */}
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
+            </CardContent>
+        </Card>
         ,
-    
-            <Card className='rounded'>
-                <CardHeader>
-                    <CardTitle>CS102 - Programming Fundamentals</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {/* replace note content here */}
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
-                </CardContent>
-            </Card>
+
+        <Card className='rounded'>
+            <CardHeader>
+                <CardTitle>CS102 - Programming Fundamentals</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {/* replace note content here */}
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
+            </CardContent>
+        </Card>
         ,
-        
-            <Card className='rounded'>
-                <CardHeader>
-                    <CardTitle>CS102 - Programming Fundamentals</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {/* replace note content here */}
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
-                </CardContent>
-            </Card>
-        
+
+        <Card className='rounded'>
+            <CardHeader>
+                <CardTitle>CS102 - Programming Fundamentals</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {/* replace note content here */}
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Image 1" />
+            </CardContent>
+        </Card>
+
     ];
     return (
         <AnimatePresence>
@@ -118,14 +120,14 @@ function Home() {
                     <div className="container w-full pt-10 mx-auto bg-whitetest pb-20" data-aos="zoom-in">
 
                         <h1 className="text-black text-center text-6xl font-serif mb-2 pl-1 pr-1 pt-2">Discover Student's Notes </h1>
-                        <h1 className="text-black text-center text-6xl mb-10 font-serif">Notes Effortlessly</h1>
-                        <p className="text-black text-center">Welcome to Onlynotes, your go-to platform for exploring student's's contributions for notes.</p>
-                        <p className="text-black text-center mb-10">Search for forewords, prefaces and endoresements with ease.</p>
+                        <h1 className="text-black text-center text-6xl mb-10 font-serif pl-1 pr-1">Effortlessly</h1>
+                        <p className="text-black text-center pl-2 pr-2">Welcome to Onlynotes, your go-to platform for exploring student's's contributions for notes.</p>
+                        <p className="text-black text-center mb-10 pl-2 pr-2">Search for forewords, prefaces and endoresements with ease.</p>
 
                         <form className="max-w-md mx-auto mb-4">
                             <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                             <div className="relative">
-                                <div className="container flex items-center space-x-2 mt-20 ml-auto mr-auto px-4">
+                                <div className="container flex items-center space-x-2 mt-20 ml-auto mr-auto px-4 pl-2 pr-2">
                                     <Input
                                         className="h-[3rem] flex-1 p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
                                         placeholder="Search Notes.."
@@ -150,14 +152,14 @@ function Home() {
         ">
                     <div className="absolute inset-0 bg-[#484b6a]/40"></div>
                     <div className="container ml-auto mr-auto max-w-7xl relative z-10" >
-                        <h1 className="text-black text-4xl font-serif mb-5 text-center pt-[5rem] pl-2 pr-2">Over 1 billion students helped, and counting.</h1>
+                        <h1 className="text-black text-4xl font-serif mb-5 text-center pt-[5rem] pl-[2.5rem] pr-[2.5rem]">Over 1 billion students helped, and counting.</h1>
                         <p className="text-black text-center mb-8 pl-2 pr-2">50K new study notes added every day, from the world’s most active student communities.</p>
 
-                        <div className='block md:hidden mx-auto max-w-md pl-[1.5rem] pr-[1.5rem] overflow-hidden'>
+                        <div className='block md:hidden mx-auto max-w-md pl-[3rem] pr-[3rem] overflow-hidden'>
                             <Carousel>
                                 <CarouselContent>
                                     <CarouselItem>
-                                        <Card>
+                                        <Card className='bg-[#fafafa]'>
                                             <CardHeader>
                                                 <CardTitle className="text-5xl font-medium font-sans text-black text-center">50M</CardTitle>
                                                 <CardDescription className="text-textDef font-semibold text-center">Study Resources</CardDescription>
@@ -170,7 +172,7 @@ function Home() {
                                         </Card>
                                     </CarouselItem>
                                     <CarouselItem>
-                                        <Card>
+                                        <Card className='bg-[#fafafa]'>
                                             <CardHeader>
                                                 <CardTitle className="text-5xl font-medium font-sans text-black text-center">50M</CardTitle>
                                                 <CardDescription className="text-textDef font-semibold text-center">Study Resources</CardDescription>
@@ -184,7 +186,7 @@ function Home() {
                                     </CarouselItem>
 
                                     <CarouselItem>
-                                        <Card>
+                                        <Card className='bg-[#fafafa]'>
                                             <CardHeader>
                                                 <CardTitle className="text-5xl font-medium font-sans text-black text-center">60M</CardTitle>
                                                 <CardDescription className="text-textDef font-semibold text-center">Study Resources</CardDescription>
@@ -197,6 +199,8 @@ function Home() {
                                         </Card>
                                     </CarouselItem>
                                 </CarouselContent>
+                                <CarouselPrevious />
+                                <CarouselNext />
                             </Carousel>
                         </div>
                         <div className="hidden md:flex md:flex-row items-center justify-between text-center m-auto space-x-4">
@@ -210,7 +214,7 @@ function Home() {
                                 </div>
                             </div> */}
 
-                            <Card className='shadow-2xl'>
+                            <Card className='shadow-2xl bg-[#fafafa] w-[30%]'>
                                 <CardHeader>
                                     <CardTitle className="text-5xl font-medium font-sans text-black text-center">50M</CardTitle>
                                     <CardDescription className="text-textDef font-semibold">Study Resources</CardDescription>
@@ -222,27 +226,27 @@ function Home() {
                                 </CardContent>
                             </Card>
 
-                            <Card>
+                            <Card className='bg-[#fafafa] w-[30%]'>
                                 <CardHeader>
-                                    <CardTitle className="text-5xl font-medium font-sans text-black text-center">50M</CardTitle>
-                                    <CardDescription className="text-textDef font-semibold">Study Resources</CardDescription>
+                                    <CardTitle className="text-5xl font-medium font-sans text-black text-center">5</CardTitle>
+                                    <CardDescription className="text-textDef font-semibold">Faculties</CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-textDef text-base">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
+                                        With Faculties spanning across our local campus, rest assured that you'll be able to find the most obsecure notes!
                                     </p>
                                 </CardContent>
                             </Card>
 
 
-                            <Card>
+                            <Card className='bg-[#fafafa] w-[30%]'>
                                 <CardHeader>
                                     <CardTitle className="text-5xl font-medium font-sans text-black text-center">60M</CardTitle>
                                     <CardDescription className="text-textDef font-semibold">Users</CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-textDef text-base">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
+                                        With a large user base, you can be rest assured that you'll be able to purchase your special notes here!
                                     </p>
                                 </CardContent>
                             </Card>
@@ -261,7 +265,7 @@ function Home() {
                         <div className="max-w-2xl rounded overflow-hidden shadow-lg ml-auto mr-auto mt-3">
                             <h2 className="text-black text-center mb-10 font-serif mt-5">Swiping right will add notes to your cart.</h2>
                             {/* Cards here can be used for mobile view */}
-                            <div className="grid place-items-center pb-[5rem]">
+                            <div className="grid place-items-center pb-[5rem] pl-8 pr-8">
 
                                 {cards.map((card) => {
                                     return (
@@ -333,7 +337,7 @@ const DraggableCard = ({ id, url, setCards, cards }) => {
 
             {/* replace note content here */}
             <motion.div
-                className="h-96 w-72 origin-bottom rounded-lg bg-white object-cover hover:cursor-grab active:cursor-grabbing"
+                className="h-96 w-72 origin-bottom rounded-lg bg-white object-cover hover:cursor-grab active:cursor-grabbing overflow-hidden"
                 style={{
                     gridRow: 1,
                     gridColumn: 1,
@@ -362,7 +366,7 @@ const DraggableCard = ({ id, url, setCards, cards }) => {
                     <CardContent>
                         <p>Public Static Void Week 2 Content</p>
                         {/* replace note content here */}
-                        <img src={url} alt="Image 1" />
+                        <img src={url} alt="Image 1" className='w-50 h-60'/>
                     </CardContent>
                 </Card>
 

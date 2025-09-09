@@ -84,10 +84,6 @@ const navbar = () => {
                                         {item.name}
                                     </a>
                                 ))}
-                                <div className="pt-4 border-t flex-col space-y-4 pr-4">
-                                    <Button className="w-full"> <Link to="/login">Login</Link></Button>
-                        <Button className="w-full"><Link to="/signup">Sign up</Link></Button>
-                                </div>
                             </div>
                         </SheetContent>
                     </Sheet>

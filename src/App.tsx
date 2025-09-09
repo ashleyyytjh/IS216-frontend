@@ -19,6 +19,8 @@ Amplify.configure({
     },
   },
 });
+import OrderDispute from './pages/OrderDispute'
+import OrderTrack from './pages/OrderTrack'
 
 function App() {
     return (
@@ -30,13 +32,16 @@ function App() {
               <Route path ="/login" element={<AmplifyLogin/>}/>  
               <Route path="/signup" element={<Signup/>}/>
               <Route path="/ordermanage" element={<OrderManage/>}/>
-
+              <Route path="/orderdispute" element={<OrderDispute/>}/>
+              <Route path="/ordertrack" element={<OrderTrack/>}/>
+              
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>
                     <Route path="/test" element={<LoginPage />} />
               </Route>
             
                 
+            
             </Route>
         </Routes>
       </>

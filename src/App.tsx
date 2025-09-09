@@ -1,26 +1,42 @@
-// import { useState } from 'react'
-
 import './App.css'
 
 import Home from './pages/Home'
 import Layout from './pages/Layout'
 import LoginPage from './pages/Login'
 import Explore from './components/ui/ProductList'
-import {Routes, Route,Link} from 'react-router-dom'
+import {Routes, Route} from 'react-router-dom'
 import Signup from './pages/Signup'
 import OrderManage from './pages/OrderManage'
+import AmplifyLogin from './pages/AmplifyLogin'
+import { Amplify } from 'aws-amplify';
+import ProtectedRoute from './components/protectedRoute'
+
+Amplify.configure({
+  Auth: {
+    Cognito: {
+      userPoolId: import.meta.env.VITE_COGNITO_USER_POOL_ID,
+      userPoolClientId: import.meta.env.VITE_COGNITO_USER_POOL_CLIENT_ID,
+    },
+  },
+});
 
 function App() {
-  // const [count, setCount] = useState(0)
     return (
       <>
         <Routes>
-               <Route path = '/'  element={<Layout/>}> 
+          <Route path = '/'  element={<Layout/>}> 
               <Route path="/" element={<Home/>}/>
-              <Route path="/login" element={<LoginPage/>}/>
               <Route path="/explore" element={<Explore/>}/>
+              <Route path ="/login" element={<AmplifyLogin/>}/>  
               <Route path="/signup" element={<Signup/>}/>
               <Route path="/ordermanage" element={<OrderManage/>}/>
+
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute/>}>
+                    <Route path="/test" element={<LoginPage />} />
+              </Route>
+            
+                
             </Route>
         </Routes>
       </>

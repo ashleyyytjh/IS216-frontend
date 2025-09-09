@@ -15,3 +15,7 @@ export type Order = {
     price: number;
 }
 
+export type User = {
+    userId: string;
+    username: string;
+}

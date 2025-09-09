@@ -1,11 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import {  Menu } from "lucide-react"
 import { Link } from 'react-router-dom';
-
+import { getCurrentUser, signOut } from 'aws-amplify/auth';
+import type { User } from "@/types/types"
+import { useNavigate } from "react-router-dom"
 const navigationItems = [
     { name: "Home", href: "/" },
     { name: "Notes Repository", href: "/explore" },
@@ -14,7 +16,31 @@ const navigationItems = [
 
 const navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const [user, setUser] = useState<User | null>(null); // Initialize user state as null
+    const navigate = useNavigate();
+    useEffect(() => {
+        const checkUser = async () => {
+            try {
+                const userData = await getCurrentUser(); 
+                console.log("Authenticated User:", userData);
+                setUser(userData); 
+            } catch (error) {
+                console.log("No current user");
+                setUser(null); 
+            }
+        };
+        checkUser();
+    }, [user]);
 
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+            setUser(null); // Clear the user state locally
+            navigate('/'); // Redirect to the homepage after sign out
+        } catch (error) {
+            console.log('error signing out: ', error);
+        }
+    };
     return (
         <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4">
@@ -84,11 +110,21 @@ const navbar = () => {
                             </a>
                         ))}
                     </div>
-
-                    <div className="hidden md:flex gap-2">
-                        <Button> <Link to="/login">Login</Link></Button>
-                        <Button><Link to="/signup">Sign up</Link></Button>
+                    <div>
+                        { !user ? (
+                            <Button>
+                            <Link to="/login">Login</Link>
+                            </Button>
+                        ) : (
+                            <div className="flex items-center space-x-4">
+                                <Button>
+                                <Link to="/profile">Profile</Link>
+                                </Button>
+                                <Button onClick={handleSignOut}>Sign out</Button>
+                            </div>
+                        )}
                     </div>
+                   
 
 
                 </div>

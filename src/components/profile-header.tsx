@@ -5,10 +5,13 @@ import { Card } from "./ui/card";
 function ProfileHeader() {
     const [isView, setIsView] = useState(true)
     return (
-        <Card className="flex flex-col justify-content-center md:flex-row mt-4 ml-8 mr-8 pl-8 pr-8 relative">
-            <Avatar className="w-30 h-30 text-center inline-block md:ml-0 mr-0">
-                <AvatarImage src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" />
-            </Avatar>
+        <Card className="flex flex-col md:flex-row mt-4 ml-8 mr-8 pl-8 pr-8 relative">
+            <div className="text-center md:text-left">
+                <Avatar className="w-30 h-30 inline-block md:ml-0 mr-0">
+                    <AvatarImage src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" />
+                </Avatar>
+            </div>
+
 
             <div className="text-center mt-6 md:text-left align-items-left">
                 {
@@ -16,21 +19,21 @@ function ProfileHeader() {
                         (
                             <>
                                 <h1 className="text-3xl font-extrabold mb-2">John Doe</h1>
-                                    <p className="text-md">john.doe@gmail.com</p>
+                                <p className="text-md">john.doe@gmail.com</p>
                             </>
 
                         ) :
                         (
                             <>
                                 <h1 className="text-3xl font-extrabold mb-2">John Test</h1>
-                                    <p className="text-md">john.doe@gmail.com</p>
+                                <p className="text-md">john.doe@gmail.com</p>
                             </>
                         )
-  
+
                 }
 
             </div>
-            <div className="absolute right-5">
+            <div className="absolute top-40 flex justify-center md:top-4 ml-0 mr-0 right-5">
                 <Button onClick={() => { setIsView(!isView) }}>
                     {isView ? "Edit Details" : "Cancel"}
                 </Button>

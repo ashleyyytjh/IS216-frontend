@@ -174,7 +174,7 @@ const Upload = () => {
                 <Button
                   size="sm"
                   onClick={nextStep}
-                  disabled={!files}
+                  disabled={!files || files.length<1}
                 >
                   {currentStep === totalSteps ? "Complete" : "Next"}
                   {currentStep !== totalSteps && (

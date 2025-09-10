@@ -6,7 +6,7 @@ function ProfileHeader() {
     const [isView, setIsView] = useState(true)
     return (
         <Card className="flex flex-col justify-content-center md:flex-row mt-4 ml-8 mr-8 pl-8 pr-8 relative">
-            <Avatar className="w-30 h-30 justify-self-center md:ml-0 mr-0">
+            <Avatar className="w-30 h-30 text-center inline-block md:ml-0 mr-0">
                 <AvatarImage src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" />
             </Avatar>
 

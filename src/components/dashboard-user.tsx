@@ -12,7 +12,7 @@ function DashboardUser() {
     return (
         <div className="flex flex-row mt-4 pl-8 pr-8 w-full">
             <Tabs defaultValue="buyer" className="w-full">
-                <TabsList className="w-full md:w-[50%] ml-auto mr-auto pt-6 pb-6">
+                <TabsList className="w-full flex flex-row md:w-[50%] ml-auto mr-auto pt-6 pb-6">
                     <TabsTrigger value="buyer" className="pt-6 pb-6">Buyer Dashboard</TabsTrigger>
                     <TabsTrigger value="seller" className="pt-6 pb-6">Seller Dashboard</TabsTrigger>
                 </TabsList>
@@ -21,7 +21,7 @@ function DashboardUser() {
                 </TabsContent>
 
 
-                <TabsContent value="seller" className="w-full flex flex-row gap-x-5 mt-4">
+                <TabsContent value="seller" className="w-full flex flex-col gap-y-5 md:flex-row gap-x-5 mt-4">
                     <DashboardSeller />
                 </TabsContent>
             </Tabs>

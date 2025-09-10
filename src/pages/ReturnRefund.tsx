@@ -270,7 +270,7 @@ export default function ReturnRefund() {
                   <RadioGroup
                     value={resolution}
                     onValueChange={(v: "refund" | "replacement" | "store_credit") => setResolution(v)}
-                    className="grid gap-2 md:grid-cols-3"
+                    className="flex flex-wrap gap-2"
                   >
                     <label className="flex items-center gap-2 rounded-md border p-2">
                       <RadioGroupItem value="refund" id="res-refund" />
@@ -279,10 +279,6 @@ export default function ReturnRefund() {
                     <label className="flex items-center gap-2 rounded-md border p-2">
                       <RadioGroupItem value="replacement" id="res-replace" />
                       <span>Replacement</span>
-                    </label>
-                    <label className="flex items-center gap-2 rounded-md border p-2">
-                      <RadioGroupItem value="store_credit" id="res-credit" />
-                      <span>Store credit</span>
                     </label>
                   </RadioGroup>
                 </div>

@@ -3,7 +3,7 @@ import './App.css'
 import Home from './pages/Home'
 import Layout from './pages/Layout'
 import LoginPage from './pages/Login'
-import Explore from './components/ui/ProductList'
+import Explore from './components/ProductList'
 import {Routes, Route} from 'react-router-dom'
 import Signup from './pages/Signup'
 import OrderManage from './pages/OrderManage'
@@ -23,6 +23,7 @@ import OrderDispute from './pages/OrderDispute'
 import OrderTrack from './pages/OrderTrack'
 import ReturnRefund from './pages/ReturnRefund'
 import OrderDetails from './pages/OrderDetails'
+import Upload from './pages/Upload';
 
 function App() {
     return (
@@ -38,7 +39,7 @@ function App() {
               <Route path="/ordertrack" element={<OrderTrack/>}/>
               <Route path="/returnrefund" element={<ReturnRefund/>}/>
               <Route path="/orderdetails" element={<OrderDetails/>}/>
-
+            <Route path="/upload" element={<Upload/>}/>
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>
                     <Route path="/test" element={<LoginPage />} />

@@ -14,22 +14,21 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useProductStore } from "./store";
+import { useProductStore } from "./ui/store";
 
 const categories = [
   { id: "all", label: "All", icon: "🏪" },
-  { id: "phones", label: "Phones", icon: "📱" },
-  { id: "headsets", label: "Headsets", icon: "🎧" },
-  { id: "laptops", label: "Laptops", icon: "💻" },
-  { id: "tv", label: "TV sets", icon: "📺" },
-  { id: "sound", label: "Sound", icon: "🔊" },
-  { id: "watches", label: "Watches", icon: "⌚" },
-  { id: "others", label: "Others", icon: "💡" },
-  { id: "internet", label: "Internet", icon: "🌐" }
+  { id: "scis", label: "Phones", icon: "📱" },
+  { id: "soe", label: "Headsets", icon: "🎧" },
+  { id: "sol", label: "Laptops", icon: "💻" },
+  { id: "soss", label: "TV sets", icon: "📺" },
+  { id: "sob", label: "Sound", icon: "🔊" },
+  { id: "soa", label: "Watches", icon: "⌚" },
+  { id: "cis", label: "Others", icon: "💡" }
 ];
 
 const brands = [
-  { id: "apple", label: "Apple" },
+  { id: "appl   e", label: "Apple" },
   { id: "samsung", label: "Samsung" },
   { id: "huawei", label: "Huawei" },
   { id: "microsoft", label: "Microsoft" },
@@ -357,7 +356,7 @@ export default function ProductList() {
                         {product.title}
                       </h3>
 
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex fl`ex-wrap items-center gap-2">
                         <span className="text-base font-bold text-blue-600 sm:text-lg">
                           ${product.price.toFixed(2)}
                         </span>

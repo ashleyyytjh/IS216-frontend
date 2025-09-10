@@ -1,4 +1,4 @@
-import ProductList from "../components/ui/ProductList";
+import ProductList from "../components/ProductList";
 
 const Explore = () => {
   return (

@@ -1,10 +1,20 @@
 'use client';
 import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@/components/ui/shadcn-io/dropzone';
+import { Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle, } from "@/components/ui/card";
 import { useState, useEffect } from 'react';
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import * as React from "react"
+import { Separator } from "@/components/ui/separator"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 const Upload = () => {
   const [files, setFiles] = useState<File[] | undefined>();
@@ -60,7 +70,7 @@ const Upload = () => {
         <section id = "upload" className='flex flex-col gap-10'>
           <div className='text-center text-4xl'>UPLOAD YOUR FILESSSS</div>
           <Dropzone
-            maxFiles={3}
+            maxFiles={10}
             onDrop={handleDrop}
             onError={console.error}
             src={files}
@@ -109,24 +119,40 @@ const Upload = () => {
             : ""}
 
           </section>
-
-
-
-
-
-
-
-
-
-
-
           : ""}
 
-        
+          {/* DETAILSS */}
+         {steps[currentStep - 1] == "Details" ? 
+          <section id="details" className='flex flex-col  '>
+            <form className='space-y-10'>
+            {files?.map((file,index)=>(
+              <Card className='px-5' key={file.name}>
+                <CardHeader className='flex flex-row items-center pl-0'>
+                   <div><svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="blue"  className="icon icon-tabler icons-tabler-filled icon-tabler-file"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2l.117 .007a1 1 0 0 1 .876 .876l.007 .117v4l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h4l.117 .007a1 1 0 0 1 .876 .876l.007 .117v9a3 3 0 0 1 -2.824 2.995l-.176 .005h-10a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-14a3 3 0 0 1 2.824 -2.995l.176 -.005h5z" /><path d="M19 7h-4l-.001 -4.001z" /></svg></div>
+                   <CardTitle>{file.name}</CardTitle>
+                </CardHeader>
+                <Separator/>
+            
+                <div className="grid gap-3">
+              <Label htmlFor={`school-${index}`} className='font-semibold'>School/University</Label>
+              <Input
+                id={`school-${index}`}
+                placeholder="Singapore Management University"
+                required
+              />
+            </div>
+              </Card>
+            ))}
 
 
 
+            </form>
+          </section>
+          : "" }
 
+
+
+            {/* PAGINATION */}
           <div
             className="flex justify-center self-start pt-6 w-full"
             style={{

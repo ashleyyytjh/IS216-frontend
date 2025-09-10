@@ -40,7 +40,6 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -119,7 +118,6 @@
   }
 }
 
-
 [data-amplify-authenticator] {
 
    /* Add this line to round the corners of the authenticator box */
@@ -132,7 +130,7 @@
   /* Buttons */
   --amplify-components-button-primary-background-color: var(--amplify-colors-neutral-100);
   --amplify-components-button-border-radius: 0.5rem; /* ≈ rounded-lg */
-  
+
   /* Fields */
   --amplify-components-fieldcontrol-focus-box-shadow: 0 0 0 2px var(--amplify-colors-purple-60);
   --amplify-components-fieldcontrol-border-radius: 0.5rem; /* round input boxes */

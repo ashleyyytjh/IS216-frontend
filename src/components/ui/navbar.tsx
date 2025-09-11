@@ -30,12 +30,13 @@ const navbar = () => {
             }
         };
         checkUser();
-    }, [user]);
+    }, []);
 
     const handleSignOut = async () => {
         try {
             await signOut();
             setUser(null); // Clear the user state locally
+            localStorage.clear();
             navigate('/'); // Redirect to the homepage after sign out
         } catch (error) {
             console.log('error signing out: ', error);
@@ -47,7 +48,6 @@ const navbar = () => {
                 <div className="flex h-16 items-center justify-between">
 
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-
                         <SheetTrigger asChild className="md:hidden">
                             <Button variant="ghost" size="icon" className="pl-18">
                                 <Menu className="h-6 w-6" />

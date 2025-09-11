@@ -26,6 +26,7 @@ import OrderDetails from './pages/OrderDetails'
 import Upload from './pages/Upload';
 import Profile from './pages/Profile'
 import Error from './pages/ErrorPage'
+import AccountCreation from './pages/AccountCreation'
 
 function App() {
     return (
@@ -41,6 +42,7 @@ function App() {
               <Route path="/ordertrack" element={<OrderTrack/>}/>
               <Route path="/returnrefund" element={<ReturnRefund/>}/>
               <Route path="/orderdetails" element={<OrderDetails/>}/>
+              <Route path ="/accountCreation" element={<AccountCreation/>}/>
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/error" element={<Error/>}/>

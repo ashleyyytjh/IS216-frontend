@@ -8,65 +8,6 @@ import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getUser } from '@/services/UserService';
 import { motion } from 'framer-motion';
 
-
-
-
-const RedirectOnLogin = ({ user }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [showRedirecting, setShowRedirecting] = useState<boolean>(false);
-
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        // const currentUser = await getUser();
-        // const isUserValid = !!currentUser;
-
-        // if (!isUserValid) {
-        //   navigate('/createAccount', { replace: true });
-        //   return;
-        // }
-
-        if (user) {
-          console.log('User logged in:', user);
-          setShowRedirecting(true);
-
-          const timer = setTimeout(() => {
-            navigate(location.state?.from || '/', { replace: true });
-          }, 2000);
-          return () => clearTimeout(timer);
-        }
-
-      } catch (err) {
-        console.error('Error validating user:', err);
-        navigate('/login', { replace: true });
-      }
-    };
-    checkUser();
-  }, [user, navigate, location]);
-
-   return (
-    <>
-      {showRedirecting && (
-        <motion.div
-          initial={{ scale: 0.5, opacity: 0 }}
-          animate={{
-            scale: [0.8, 1.2], // small -> big -> small
-            opacity: 1,
-          }}
-          transition={{
-            duration: 0.8,      
-            ease: 'easeInOut',
-          }}
-          className="flex items-center justify-center"
-        >
-          <Heading level={1}>Welcome {user?.username}</Heading>
-        </motion.div>
-      )}
-    </>
-  );
-};
-
 const components = {
   Header() {
     return (
@@ -135,14 +76,6 @@ const AmplifyLogin = () => {
   return (
     <div className="bg-muted flex min-h-svh  flex-col items-center justify-center p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6  justify-center">
-        {/* <a href="#" className=" flex items-center gap-2 self-center font-medium">
-          <div className="bg-primary text-xl text-primary-foreground flex size-6 items-center justify-center rounded-md">
-            <GalleryVerticalEnd className="size-4" />
-          </div>
-          <p className='text-2xl'>
-            OnlyNotes
-          </p>
-        </a> */}
         <div className=' flex justify-center mb-30 w-300px'>
           <Authenticator className='rounded-lg' formFields={formFields}  components={components} >
               {({user }) => (
@@ -158,27 +91,61 @@ const AmplifyLogin = () => {
   );
 }
 
-
-
-function AfterLogin({ user }) {
+export const RedirectOnLogin = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [showRedirecting, setShowRedirecting] = useState(false);
+  const [showRedirecting, setShowRedirecting] = useState<boolean>(false);
 
   useEffect(() => {
-    if (user) {
-      console.log('User logged in:', user);
-      setShowRedirecting(true);
+    const checkUser = async () => {
+      try {
+        // const currentUser = await getUser();
+        // const isUserValid = !!currentUser;
 
-      const timer = setTimeout(() => {
-        navigate(location.state?.from || '/', { replace: true });
-      }, 2000); // 2 seconds
+        // if (!isUserValid) {
+        //   navigate('/createAccount', { replace: true });
+        //   return;
+        // }
 
-      return () => clearTimeout(timer);
-    }
+        if (user) {
+          console.log('User logged in:', user);
+          setShowRedirecting(true);
+
+          const timer = setTimeout(() => {
+            navigate(location.state?.from || '/', { replace: true });
+          }, 2000);
+          return () => clearTimeout(timer);
+        }
+
+      } catch (err) {
+        console.error('Error validating user:', err);
+        navigate('/login', { replace: true });
+      }
+    };
+    checkUser();
   }, [user, navigate, location]);
 
-  
-}
+   return (
+    <>
+      {showRedirecting && (
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{
+            scale: [0.8, 1.2], // small -> big -> small
+            opacity: 1,
+          }}
+          transition={{
+            duration: 0.8,      
+            ease: 'easeInOut',
+          }}
+          className="flex items-center justify-center"
+        >
+          <Heading level={1}>Welcome {user?.username}</Heading>
+        </motion.div>
+      )}
+    </>
+  );
+};
+
 
 export default AmplifyLogin

@@ -13,7 +13,8 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from '@/components/ui/chart'
-import { LabelList, Pie, PieChart } from "recharts"
+// import { LabelList, Pie, PieChart } from "recharts"
+import type { CustomTooltipProps } from '@/components/ui/chart'
 
 
 export const description = "A bar chart with a label"
@@ -227,7 +228,9 @@ function DashboardBuyer(props) {
                                             />
                                             <ChartTooltip
                                                 cursor={false}
-                                                content={<ChartTooltipContent hideLabel />}
+                                                content={(props: CustomTooltipProps) => (
+                                                    <ChartTooltipContent {...props} hideIndicator hideLabel />
+                                                )}
                                             />
                                             <Line
                                                 dataKey="desktop"

@@ -31,7 +31,7 @@ export type Order = {
 //     ]
 // }
 export type User = {
-    userId: string;
+    userId?: string;
     username: string;
     email?: string;
     yearOfStudy?: number;

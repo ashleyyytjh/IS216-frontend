@@ -34,9 +34,9 @@ const RedirectOnLogin = ({ user }) => {
           const timer = setTimeout(() => {
             navigate(location.state?.from || '/', { replace: true });
           }, 2000);
-
           return () => clearTimeout(timer);
         }
+
       } catch (err) {
         console.error('Error validating user:', err);
         navigate('/login', { replace: true });
@@ -55,7 +55,7 @@ const RedirectOnLogin = ({ user }) => {
             opacity: 1,
           }}
           transition={{
-            duration: 1,      
+            duration: 0.8,      
             ease: 'easeInOut',
           }}
           className="flex items-center justify-center"
@@ -68,6 +68,16 @@ const RedirectOnLogin = ({ user }) => {
 };
 
 const components = {
+  Header() {
+    return (
+        <a href="#" className="flex justify-center pb-5 items-center gap-2 self-center font-medium">
+          <div className="bg-primary text-xl text-primary-foreground flex size-6 items-center justify-center rounded-md">
+            <GalleryVerticalEnd className="size-4" />
+          </div>
+          <p className="text-2xl">OnlyNotes</p>
+        </a>
+    );
+  },
   SignIn: {
     Header() {
       return (
@@ -119,18 +129,20 @@ const formFields = {
   },
 };
 
+
+
 const AmplifyLogin = () => {
   return (
     <div className="bg-muted flex min-h-svh  flex-col items-center justify-center p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6  justify-center">
-        <a href="#" className=" flex items-center gap-2 self-center font-medium">
+        {/* <a href="#" className=" flex items-center gap-2 self-center font-medium">
           <div className="bg-primary text-xl text-primary-foreground flex size-6 items-center justify-center rounded-md">
             <GalleryVerticalEnd className="size-4" />
           </div>
           <p className='text-2xl'>
             OnlyNotes
           </p>
-        </a>
+        </a> */}
         <div className=' flex justify-center mb-30 w-300px'>
           <Authenticator className='rounded-lg' formFields={formFields}  components={components} >
               {({user }) => (

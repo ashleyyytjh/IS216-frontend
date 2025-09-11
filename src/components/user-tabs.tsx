@@ -17,9 +17,10 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-
+import  BadgeClosableDemo  from "./removable-badge"
 const UserTabs = (currentUser) => {
     currentUser = currentUser['current']['current']['current']
+    let curMods = currentUser['modules']
     console.log(currentUser)
     return (
         <div className="flex w-full flex-col gap-6 mt-5">
@@ -41,24 +42,32 @@ const UserTabs = (currentUser) => {
                         </CardHeader>
                         <CardContent className="flex flex-col md:flex-row">
                             <div className="grid grid-cols-1 md:w-[50%] ">
-                                    <div className="grid gap-3">
-                                        <Label htmlFor="tabs-demo-name">Username</Label>
-                                        <Input id="tabs-demo-name" placeholder={currentUser.username} className="border border-[#f1f5f9] hover:border-gray-300 transition-all duration-500"/>
+                                <div className="grid gap-3">
+                                    <Label htmlFor="tabs-demo-name">Username</Label>
+                                    <Input id="tabs-demo-name" placeholder={currentUser.username} className="border border-[#f1f5f9] hover:border-gray-300 transition-all duration-500" />
                                     <div className="grid gap-3">
                                         <Label htmlFor="tabs-demo-username">Major</Label>
-                                        <Input id="tabs-demo-username" placeholder={currentUser.major} className="border border-[#f1f5f9] hover:border-gray-300 transition-all duration-500"/>
+                                        <Input id="tabs-demo-username" placeholder={currentUser.major} className="border border-[#f1f5f9] hover:border-gray-300 transition-all duration-500" />
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="grid grid-cols-1 w-[100%] gap-y-5 md:w-[50%] ">
-                                    <div className="grid gap-3">
-                                        <Label htmlFor="tabs-demo-name">Email</Label>
-                                        <Input id="tabs-demo-name" placeholder={currentUser.email} className="border border-[#f1f5f9] hover:border-gray-300 transition-all duration-500"/>
+                                <div className="grid gap-3">
+                                    <Label htmlFor="tabs-demo-name">Email</Label>
+                                    <Input id="tabs-demo-name" placeholder={currentUser.email} className="border border-[#f1f5f9] hover:border-gray-300 transition-all duration-500" />
 
                                     <div className="grid gap-3">
                                         <Label htmlFor="tabs-demo-username">Modules Taken</Label>
-                                        <Input id="tabs-demo-username" placeholder="@peduarte" className="border border-[#f1f5f9] hover:border-gray-300 transition-all duration-500"/>
+                                        <div className="flex flex-row gap-x-2">
+                                            {
+                                        
+                                            curMods.map((mods)=>{
+                                                return <BadgeClosableDemo currentModCode={mods}/>
+                                            })
+                                        }
+                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>

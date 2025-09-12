@@ -63,7 +63,8 @@ export type NoteListing = {
     userId: string;
     userFullName: string;
     userImageUrl: string;
-    userStatus: string;
+    yearOfStudy: number;
+    major: string;
     description: string;
     originalName: string;
     tags: string[];

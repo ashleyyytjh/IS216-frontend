@@ -11,18 +11,22 @@ import { Heart } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { courseGradient } from "@/utils/colors";
+import { formatRelativeMonthYear } from "@/utils/dates";
+import { Separator } from "@/components/ui/separator";
+import { formatPriceSGD } from "@/utils/currency";
 
 const Explore = () => {
   const listings = mockData;
   return (
-    <main>
+    <main className="px-5 xl:px-0">
       <Hero />
       <FilterBar />
 
       <section className="w-full text-sm font-light my-10">
-        <div className="max-w-6xl mx-auto grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="max-w-6xl mx-auto grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {listings.map((listing) => (
-            <Card className="p-4">
+            <Card className="p-4 rounded-md">
               <CardHeader className="flex items-stretch gap-4 p-0">
                 <Avatar className="h-12 w-12 rounded-md overflow-hidden">
                   <AvatarImage
@@ -32,10 +36,15 @@ const Explore = () => {
                   <AvatarFallback>??</AvatarFallback>
                 </Avatar>
 
-                <div className="flex flex-col justify-center gap-1">
-                  <p className="font-medium">{listing.userFullName}</p>
+                <div className="flex-1 flex flex-col justify-center gap-1">
+                  <div className="flex">
+                    <p className="flex-1 font-medium">{listing.userFullName}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatRelativeMonthYear(listing.createdAt)}
+                    </p>
+                  </div>
                   <p className="text-xs text-muted-foreground">
-                    {listing.userStatus}
+                    Year {listing.yearOfStudy} {listing.major}
                   </p>
                 </div>
               </CardHeader>
@@ -48,7 +57,7 @@ const Explore = () => {
                     <div key={tag} className="flex items-center">
                       <Badge
                         variant="secondary"
-                        className="bg-transparent border-0 p-0 rounded-none text-muted-foreground hover:bg-transparent cursor-default"
+                        className="bg-transparent border-0 p-0 rounded-none font-normal text-muted-foreground hover:bg-transparent cursor-default"
                       >
                         {tag}
                       </Badge>
@@ -61,9 +70,16 @@ const Explore = () => {
               </CardContent>
 
               <CardFooter className="flex items-center justify-between p-0">
-                <Badge className="text-sm rounded-full border-none bg-linear-to-r from-sky-500 to-indigo-600 text-white">
-                  {listing.module}
-                </Badge>
+                <div className="flex h-6 gap-2">
+                  <Badge
+                    className="text-sm font-normal rounded-full border-none bg-linear-to-r text-white uppercase"
+                    style={{ background: courseGradient(listing.module) }}
+                  >
+                    {listing.module}
+                  </Badge>
+                  <Separator orientation="vertical" color="blue" />
+                  <span className="font-mono flex items-center">{formatPriceSGD(listing.price)}</span>
+                </div>
                 <Button className="h-8 w-8 px-2 py-2" variant="outline">
                   <Heart className="text-muted-foreground" />
                 </Button>
@@ -83,12 +99,13 @@ const mockData: NoteListing[] = [
     userFullName: "Ashley Toh",
     userImageUrl:
       "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
-    userStatus: "Y4 CS @ SMU",
+    major: "Computer Science",
+    yearOfStudy: 4,
     description:
       "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
     originalName: "Vector Semantics & Word Embeddings",
     tags: ["NLP", "Machine Learning", "cs425"],
-    price: 5000,
+    price: 5,
     type: "notes",
     module: "cs425",
     createdAt: "2025-09-04T13:10:03.602Z",
@@ -99,12 +116,13 @@ const mockData: NoteListing[] = [
     userFullName: "Ashley Toh",
     userImageUrl:
       "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
-    userStatus: "Y4 CS @ SMU",
+    major: "Computer Science",
+    yearOfStudy: 4,
     description:
       "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
     originalName: "Vector Semantics & Word Embeddings",
     tags: ["NLP", "Machine Learning", "cs425"],
-    price: 5000,
+    price: 5,
     type: "notes",
     module: "cs425",
     createdAt: "2025-09-04T13:10:03.602Z",
@@ -115,12 +133,13 @@ const mockData: NoteListing[] = [
     userFullName: "Ashley Toh",
     userImageUrl:
       "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
-    userStatus: "Y4 CS @ SMU",
+    major: "Computer Science",
+    yearOfStudy: 4,
     description:
       "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
     originalName: "Vector Semantics & Word Embeddings",
     tags: ["NLP", "Machine Learning", "cs425"],
-    price: 5000,
+    price: 5,
     type: "notes",
     module: "cs425",
     createdAt: "2025-09-04T13:10:03.602Z",
@@ -131,12 +150,13 @@ const mockData: NoteListing[] = [
     userFullName: "Ashley Toh",
     userImageUrl:
       "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
-    userStatus: "Y4 CS @ SMU",
+    major: "Computer Science",
+    yearOfStudy: 4,
     description:
       "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
     originalName: "Vector Semantics & Word Embeddings",
     tags: ["NLP", "Machine Learning", "cs425"],
-    price: 5000,
+    price: 5,
     type: "notes",
     module: "cs425",
     createdAt: "2025-09-04T13:10:03.602Z",
@@ -147,12 +167,13 @@ const mockData: NoteListing[] = [
     userFullName: "Ashley Toh",
     userImageUrl:
       "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
-    userStatus: "Y4 CS @ SMU",
+    major: "Computer Science",
+    yearOfStudy: 4,
     description:
       "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
     originalName: "Vector Semantics & Word Embeddings",
     tags: ["NLP", "Machine Learning", "cs425"],
-    price: 5000,
+    price: 5,
     type: "notes",
     module: "cs425",
     createdAt: "2025-09-04T13:10:03.602Z",
@@ -163,14 +184,66 @@ const mockData: NoteListing[] = [
     userFullName: "Ashley Toh",
     userImageUrl:
       "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
-    userStatus: "Y4 CS @ SMU",
+    major: "Computer Science",
+    yearOfStudy: 4,
     description:
       "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
     originalName: "Vector Semantics & Word Embeddings",
     tags: ["NLP", "Machine Learning", "cs425"],
-    price: 5000,
+    price: 5,
     type: "notes",
     module: "cs425",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "qf102",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "qf102",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "qf102",
     createdAt: "2025-09-04T13:10:03.602Z",
   },
 ];

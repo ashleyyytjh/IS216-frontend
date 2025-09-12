@@ -8,7 +8,7 @@ const Layout = () => {
         <>
             <Navbar/>
             <Outlet/>
-            <Toaster/>
+            <Toaster position="top-center" richColors />
         </>
     )
 }

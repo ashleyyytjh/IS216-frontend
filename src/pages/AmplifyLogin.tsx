@@ -7,6 +7,7 @@ import { GalleryVerticalEnd } from "lucide-react"
 import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getUser } from '@/services/UserService';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 const components = {
   Header() {
@@ -141,6 +142,7 @@ export const RedirectOnLogin = ({ user }) => {
           className="flex items-center justify-center"
         >
           <Heading level={1}>Welcome {user?.username}</Heading>
+          
         </motion.div>
       )}
     </>

@@ -27,13 +27,16 @@ import Upload from './pages/Upload';
 import Profile from './pages/Profile'
 import Error from './pages/ErrorPage'
 import AccountCreation from './pages/AccountCreation'
+import Welcome from './pages/Welcome'
 
 function App() {
     return (
       <>
         <Routes>
+          <Route path="/" element={<Welcome/>}/>
+
           <Route path = '/'  element={<Layout/>}> 
-              <Route path="/" element={<Home/>}/>
+              <Route path="/home" element={<Home/>}/>
               <Route path="/explore" element={<Explore/>}/>
               <Route path ="/login" element={<AmplifyLogin/>}/>  
               <Route path="/signup" element={<Signup/>}/>
@@ -62,15 +65,3 @@ function App() {
 export default App
 
 
-        //I commented this out to put my components (we can comment back if we wanna change)
-    //   <div className="flex items-center justify-center h-dvh bg-background">
-    //     <div className="text-center space-y-6">
-    //       <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Welcome to XXXX</h1>
-    //       <p className="text-lg text-muted-foreground max-w-[600px] mx-auto">
-    //         Get started by logging in to your account and explore our market place.
-    //       </p>
-    //       <Button color={'primary'}  >
-    //           Login
-    //       </Button>
-    //     </div>
-    // </div>

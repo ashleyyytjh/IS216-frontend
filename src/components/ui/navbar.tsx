@@ -9,7 +9,7 @@ import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import type { User } from "@/types/types"
 import { useNavigate } from "react-router-dom"
 const navigationItems = [
-    { name: "Home", href: "/" },
+    { name: "Home", href: "/home" },
     { name: "Notes Repository", href: "/explore" },
     { name: "Upload Notes", href: "/upload" }
 ]
@@ -37,7 +37,7 @@ const navbar = () => {
             await signOut();
             setUser(null); // Clear the user state locally
             localStorage.clear();
-            navigate('/'); // Redirect to the homepage after sign out
+            navigate('/home'); // Redirect to the homepage after sign out
         } catch (error) {
             console.log('error signing out: ', error);
         }
@@ -65,7 +65,7 @@ const navbar = () => {
 
                         <SheetContent side="left" className="w-[300px] sm:w-[400px] pl-3">
                             <SheetTitle className="pt-5 pl-3">
-                                <a href="/" className="flex items-center space-x-2">
+                                <a href="/home" className="flex items-center space-x-2">
                                     <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
                                         <span className="text-primary-foreground font-bold text-sm">L</span>
                                     </div>
@@ -90,7 +90,7 @@ const navbar = () => {
 
                     {/* The code here is for the main nav bar. text align might go here. */}
                     <div className="hidden md:flex flex-1 items-center space-x-8 text-[#0f172b] text-center mr-auto ml-auto">
-                        <a href="/" className="flex items-center space-x-2">
+                        <a href="/home" className="flex items-center space-x-2">
                             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
                                 <span className="text-primary-foreground font-bold text-sm">L</span>
                             </div>

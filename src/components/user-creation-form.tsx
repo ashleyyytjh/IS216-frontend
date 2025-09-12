@@ -119,7 +119,7 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
     e.preventDefault()
 
     if (!validateForm()) {
-      toast("Error", {
+      toast.error("Error", {
         description: "Please fix the errors in the form",
       })
       return
@@ -129,7 +129,7 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
 
     try {
       console.log("User created:", formData)
-      toast("Success!", {
+      toast.success("Success!", {
         description: "User account created successfully",
       })  
       setFormData({
@@ -143,7 +143,7 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
       await changeSuccessfulState!()
 
     } catch (error) {
-      toast("Error", {
+      toast.error("Error", {
         description: "There was an error creating the user account",
       })
       console.error("Error creating user:", error)

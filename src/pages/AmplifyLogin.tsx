@@ -7,6 +7,7 @@ import { GalleryVerticalEnd } from "lucide-react"
 import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getUser } from '@/services/UserService';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 const components = {
   Header() {
@@ -112,8 +113,8 @@ export const RedirectOnLogin = ({ user }) => {
           setShowRedirecting(true);
 
           const timer = setTimeout(() => {
-            navigate(location.state?.from || '/', { replace: true });
-          }, 2000);
+            navigate(location.state?.from || '/home', { replace: true });
+          }, 1500);
           return () => clearTimeout(timer);
         }
 
@@ -131,7 +132,7 @@ export const RedirectOnLogin = ({ user }) => {
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{
-            scale: [0.8, 1.2], // small -> big -> small
+            scale: [0.5, 1], // small -> big -> small
             opacity: 1,
           }}
           transition={{
@@ -141,6 +142,7 @@ export const RedirectOnLogin = ({ user }) => {
           className="flex items-center justify-center"
         >
           <Heading level={1}>Welcome {user?.username}</Heading>
+          
         </motion.div>
       )}
     </>

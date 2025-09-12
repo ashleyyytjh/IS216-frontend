@@ -58,6 +58,22 @@ export type User = {
 //     "createdAt": "2025-09-04T13:10:03.602Z"
 // }
 
+export type NoteListing = {
+    id: string;
+    userId: string;
+    userFullName: string;
+    userImageUrl: string;
+    yearOfStudy: number;
+    major: string;
+    description: string;
+    originalName: string;
+    tags: string[];
+    price: number;
+    type: string;
+    module: string;
+    createdAt: string; 
+}
+
 export type Note = {
     id: string;
     userId: string;

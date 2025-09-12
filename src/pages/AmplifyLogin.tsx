@@ -112,7 +112,7 @@ export const RedirectOnLogin = ({ user }) => {
           setShowRedirecting(true);
 
           const timer = setTimeout(() => {
-            navigate(location.state?.from || '/', { replace: true });
+            navigate(location.state?.from || '/home', { replace: true });
           }, 2000);
           return () => clearTimeout(timer);
         }

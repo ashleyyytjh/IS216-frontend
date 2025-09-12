@@ -1,4 +1,4 @@
-// src/features/upload/schema.ts
+// schema.ts
 import { z } from "zod";
 
 export const fileItemSchema = z.object({
@@ -11,6 +11,7 @@ export const fileItemSchema = z.object({
   priceCents: z.coerce.number().int().min(0, "Price must be ≥ 0"),
   visibility: z.enum(["public", "unlisted"]).default("public"),
   tags: z.array(z.string()).max(8).default([]),
+
 });
 
 export const formSchema = z.object({

@@ -117,6 +117,7 @@ export default function Upload() {
                 type="button"
                 onClick={prev}
                 disabled={step === 1}
+                className="hover:cursor-pointer"
               >
                 <ChevronLeft className="mr-1 h-4 w-4" /> Previous
               </Button>
@@ -126,13 +127,14 @@ export default function Upload() {
                   type="button"
                   onClick={next}
                   disabled={step === 1 && files.length < 1}
+                  className="hover:cursor-pointer"
                 >
                   Next <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
               )}
 
               {step === totalSteps && (
-                <Button type="submit">Submit & Publish</Button>
+                <Button type="submit" className="hover:cursor-pointer">Submit & Publish</Button>
               )}
             </div>
           </form>

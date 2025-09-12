@@ -2,8 +2,13 @@ import { Search, Settings2 } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { useState } from "react";
 
 export default function FilterBar() {
+  const [timeFilter, setTimeFilter] = useState("")
+  const [showPaid, setShowPaid] = useState(true)
+
   const options = mockData;
   return (
     <section className="mx-auto max-w-6xl flex gap-4 text-sm">
@@ -20,6 +25,13 @@ export default function FilterBar() {
         defaultValue={options[0].value}
         className="flex flex-wrap gap-4"
       >
+          <RadioGroupPrimitive.Item
+            key="all"
+            value="all"
+            className="ring-[1px] ring-border rounded-md py-1 px-3 data-[state=checked]:bg-muted shadow-xs"
+          >
+            <span className="tracking-tight whitespace-nowrap">{`All(${options.reduce((acc, opt) => acc + opt.count, 0)})`}</span>
+          </RadioGroupPrimitive.Item>
         {options.map((option) => (
           <RadioGroupPrimitive.Item
             key={option.value}
@@ -30,9 +42,30 @@ export default function FilterBar() {
           </RadioGroupPrimitive.Item>
         ))}
       </RadioGroupPrimitive.Root>
-      <Button size="icon">
-        <Settings2 />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon">
+            <Settings2 />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="bottom" align="end">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Options</DropdownMenuLabel>
+            <DropdownMenuCheckboxItem checked={showPaid} onCheckedChange={setShowPaid}>Show Paid Items</DropdownMenuCheckboxItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Published Since</DropdownMenuLabel>
+            <DropdownMenuRadioGroup value={timeFilter} onValueChange={setTimeFilter}>
+              <DropdownMenuRadioItem value="">{"All Time"}</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="5year">{"< 5 Years"}</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="year">{"< 1 Year"}</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="month">{"< 1 Month"}</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="week">{"< 1 Week"}</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </section>
   );
 }

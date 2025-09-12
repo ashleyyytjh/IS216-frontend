@@ -25,7 +25,7 @@ export default function StepUpload({ files, onDrop, onDelete }: StepUploadProps)
         onDrop={onDrop}
         onError={console.error}
         src={files}
-        className="bg-muted/40 hover:bg-muted rounded-xl p-4"
+        className="bg-muted/40 hover:bg-muted rounded-xl p-4 hover:cursor-pointer"
       >
         <DropzoneEmptyState />
         <DropzoneContent />

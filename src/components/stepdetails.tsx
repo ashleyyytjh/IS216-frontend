@@ -34,6 +34,105 @@ export default function StepDetails() {
     name: "items",
   });
 
+  function TagInput({
+  value,
+  onChange,
+  maxTags = 8
+}: {
+  value: string[];
+  onChange: (tags: string[]) => void;
+  placeholder?: string;
+  maxTags?: number;
+}) {
+  const [input, setInput] = React.useState("");
+
+  const addTokens = (raw: string) => {
+    // split on commas or whitespace (space, tabs, newlines)
+    const tokens = raw
+      .split(/[,\s]+/)
+      .map((t) => t.trim())
+      .filter(Boolean);
+
+    if (tokens.length === 0) return;
+
+    const next = [...value];
+    for (const t of tokens) {
+      if (next.length >= maxTags) break; 
+      if (!next.includes(t)) next.push(t); 
+    }
+    onChange(next);
+  };
+
+  const addFromInput = () => {
+    addTokens(input);
+    setInput("");
+  };
+
+  const removeTag = (t: string) => onChange(value.filter((x) => x !== t));
+
+  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    const key = e.key;
+
+    // Treat Enter, comma, Tab, and Space as "commit tag" keys
+    if (key === "Enter" || key === "," || key === "Tab" || key === " ") {
+      e.preventDefault(); // prevent form submit / literal space insertion
+      addFromInput();
+      return;
+    }
+
+    // Remove last tag on Backspace when input is empty
+    if (key === "Backspace" && input === "" && value.length) {
+      e.preventDefault();
+      removeTag(value[value.length - 1]);
+    }
+  };
+
+  const onPaste: React.ClipboardEventHandler<HTMLInputElement> = (e) => {
+    const text = e.clipboardData.getData("text");
+    if (!text) return;
+    e.preventDefault();
+    addTokens(text);
+    setInput("");
+  };
+
+  const onBlur = () => {
+    
+    if (input.trim() !== "") addFromInput();
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 rounded-md border px-2 py-1 focus-within:ring-2 focus-within:ring-ring">
+      {value.map((t) => (
+        <Badge key={t} variant="secondary" className="flex items-center gap-1">
+          {t}
+          <button
+            type="button"
+            onClick={() => removeTag(t)}
+            aria-label={`Remove ${t}`}
+            className="leading-none opacity-60 hover:opacity-100"
+          >
+            ×
+          </button>
+        </Badge>
+      ))}
+
+      <input
+        className="min-w-[8ch] flex-1 bg-transparent py-1 text-sm outline-none"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={onKeyDown}
+        onPaste={onPaste}
+        onBlur={onBlur}
+      />
+    </div>
+  );
+}
+
+
+
+
+
+
   return (
     <section className="space-y-6">
       {fields.map((field, idx) => (
@@ -43,7 +142,7 @@ export default function StepDetails() {
           </CardHeader>
           <Separator />
 
-          {/* items-start prevents alignment wobble across rows */}
+         
           <CardContent className="grid gap-6 p-6 sm:grid-cols-2 items-start">
             {/* Title */}
             <FormField
@@ -183,36 +282,22 @@ export default function StepDetails() {
 
             {/* Tags */}
             <FormField
-              control={methods.control}
-              name={`items.${idx}.tags`}
-              render={({ field }) => (
-                <FormItem className="sm:col-span-2">
-                  <FormLabel>Tags</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="comma,separated,tags"
-                      value={field.value.join(",")}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value
-                            .split(",")
-                            .map((t) => t.trim())
-                            .filter(Boolean)
-                        )
-                      }
-                    />
-                  </FormControl>
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {field.value.map((t, i) => (
-                      <Badge key={`${t}-${i}`} variant="secondary">
-                        {t}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="h-5">
-                    <FormMessage className="text-xs leading-tight break-words" />
-                  </div>
-                </FormItem>
+  control={methods.control}
+  name={`items.${idx}.tags`}
+  render={({ field }) => (
+    <FormItem className="sm:col-span-2">
+      <FormLabel>Tags</FormLabel>
+      <FormControl>
+        <TagInput
+          value={field.value ?? []}              
+          onChange={field.onChange}              
+          maxTags={8}
+        />
+      </FormControl>
+      <div className="h-5">
+        <FormMessage className="text-xs leading-tight break-words" />
+      </div>
+    </FormItem>
               )}
             />
           </CardContent>

@@ -48,7 +48,6 @@ function App() {
               <Route path ="/accountCreation" element={<AccountCreation/>}/>
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/profile" element={<Profile/>}/>
-              <Route path="/error" element={<Error/>}/>
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>
                     <Route path="/test" element={<LoginPage />} />
@@ -57,6 +56,8 @@ function App() {
                 
             
             </Route>
+            <Route path="*" element={<Error/>}/>
+
         </Routes>
       </>
     )

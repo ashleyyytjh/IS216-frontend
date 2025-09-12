@@ -131,7 +131,7 @@ export const RedirectOnLogin = ({ user }) => {
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{
-            scale: [0.8, 1.2], // small -> big -> small
+            scale: [0.5, 1], // small -> big -> small
             opacity: 1,
           }}
           transition={{

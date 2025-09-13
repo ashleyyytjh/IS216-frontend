@@ -72,3 +72,135 @@ export type Note = {
     module: string;
     createdAt: string;
 } 
+
+
+//temp data to display.
+export const myNotes: Note[] = 
+        [
+        {
+            "id": "68b98faba389fd1819c78c17",
+            "userId": "594a352c-2081-706e-b679-00b936e6b8f9",
+            "description": "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+            "key": "594a352c-2081-706e-b679-00b936e6b8f9/2025-09-04-c4331de7-7658-4f30-a72f-8f10cb8c965f-cs425-week2-vector-semantics-and-word-embeddings.pdf",
+            "originalName": "CS425 Week2 Vector Semantics and Word Embeddings.pdf",
+            "mimeType": "application/pdf",
+            "size": 1485324,
+            "tags": [
+                "Natural Language Processing",
+                "Machine Learning",
+                "cs425"
+            ],
+            "price": 5000,
+            "type": "notes",
+            "module": "cs425",
+            "createdAt": "2025-09-04T13:10:03.602Z"
+        },
+        {
+            "id": "68b98faba389fd1819c78c17",
+            "userId": "594a352c-2081-706e-b679-00b936e6b8f9",
+            "description": "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+            "key": "594a352c-2081-706e-b679-00b936e6b8f9/2025-09-04-c4331de7-7658-4f30-a72f-8f10cb8c965f-cs425-week2-vector-semantics-and-word-embeddings.pdf",
+            "originalName": "CS425 Week2 Vector Semantics and Word Embeddings.pdf",
+            "mimeType": "application/pdf",
+            "size": 1485324,
+            "tags": [
+                "Natural Language Processing",
+                "Machine Learning",
+                "cs425"
+            ],
+            "price": 5000,
+            "type": "notes",
+            "module": "cs425",
+            "createdAt": "2025-09-04T13:10:03.602Z"
+        },
+        {
+            "id": "68b98faba389fd1819c78c17",
+            "userId": "594a352c-2081-706e-b679-00b936e6b8f9",
+            "description": "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+            "key": "594a352c-2081-706e-b679-00b936e6b8f9/2025-09-04-c4331de7-7658-4f30-a72f-8f10cb8c965f-cs425-week2-vector-semantics-and-word-embeddings.pdf",
+            "originalName": "CS425 Week2 Vector Semantics and Word Embeddings.pdf",
+            "mimeType": "application/pdf",
+            "size": 1485324,
+            "tags": [
+                "Natural Language Processing",
+                "Machine Learning",
+                "cs425"
+            ],
+            "price": 5000,
+            "type": "notes",
+            "module": "cs425",
+            "createdAt": "2025-09-04T13:10:03.602Z"
+        },
+        {
+            "id": "68b98faba389fd1819c78c17",
+            "userId": "594a352c-2081-706e-b679-00b936e6b8f9",
+            "description": "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+            "key": "594a352c-2081-706e-b679-00b936e6b8f9/2025-09-04-c4331de7-7658-4f30-a72f-8f10cb8c965f-cs425-week2-vector-semantics-and-word-embeddings.pdf",
+            "originalName": "CS425 Week2 Vector Semantics and Word Embeddings.pdf",
+            "mimeType": "application/pdf",
+            "size": 1485324,
+            "tags": [
+                "Natural Language ProcessingTestP",
+                "Machine Learning",
+                "cs425"
+            ],
+            "price": 5000,
+            "type": "notes",
+            "module": "cs425",
+            "createdAt": "2025-09-04T13:10:03.602Z"
+        },
+                {
+            "id": "68b98faba389fd1819c78c17",
+            "userId": "594a352c-2081-706e-b679-00b936e6b8f9",
+            "description": "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+            "key": "594a352c-2081-706e-b679-00b936e6b8f9/2025-09-04-c4331de7-7658-4f30-a72f-8f10cb8c965f-cs425-week2-vector-semantics-and-word-embeddings.pdf",
+            "originalName": "CS425 Week2 Vector Semantics and Word Embeddings.pdf",
+            "mimeType": "application/pdf",
+            "size": 1485324,
+            "tags": [
+                "Natural Language ProcessingTestP",
+                "Machine Learning",
+                "cs425"
+            ],
+            "price": 5000,
+            "type": "notes",
+            "module": "cs425",
+            "createdAt": "2025-09-04T13:10:03.602Z"
+        },
+                {
+            "id": "68b98faba389fd1819c78c17",
+            "userId": "594a352c-2081-706e-b679-00b936e6b8f9",
+            "description": "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+            "key": "594a352c-2081-706e-b679-00b936e6b8f9/2025-09-04-c4331de7-7658-4f30-a72f-8f10cb8c965f-cs425-week2-vector-semantics-and-word-embeddings.pdf",
+            "originalName": "CS425 Week2 Vector Semantics and Word Embeddings.pdf",
+            "mimeType": "application/pdf",
+            "size": 1485324,
+            "tags": [
+                "Natural Language ProcessingTestP",
+                "Machine Learning",
+                "cs425"
+            ],
+            "price": 5000,
+            "type": "notes",
+            "module": "cs425",
+            "createdAt": "2025-09-04T13:10:03.602Z"
+        },
+                {
+            "id": "68b98faba389fd1819c78c17",
+            "userId": "594a352c-2081-706e-b679-00b936e6b8f9",
+            "description": "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+            "key": "594a352c-2081-706e-b679-00b936e6b8f9/2025-09-04-c4331de7-7658-4f30-a72f-8f10cb8c965f-cs425-week2-vector-semantics-and-word-embeddings.pdf",
+            "originalName": "CS425 Week2 Vector Semantics and Word Embeddings.pdf",
+            "mimeType": "application/pdf",
+            "size": 1485324,
+            "tags": [
+                "Natural Language ProcessingTestP",
+                "Machine Learning",
+                "cs425"
+            ],
+            "price": 5000,
+            "type": "notes",
+            "module": "cs425",
+            "createdAt": "2025-09-04T13:10:03.602Z"
+        }
+    ]

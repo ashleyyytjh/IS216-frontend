@@ -24,7 +24,7 @@ function DashboardBuyer(currentUser) {
 
                 <Card className="w-[100%] md:w-[70%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row justify-between">
-                        <h1 className="font-medium">Total Revenue</h1>
+                        <h1 className="font-medium">Total Spent</h1>
                         <DollarSign />
                     </CardHeader>
                     <CardContent>

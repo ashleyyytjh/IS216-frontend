@@ -19,7 +19,7 @@ import { User } from "@/types/types";
     }
 const Profile = () => {
     return (
-        <div className="container mw-50 mr-auto ml-auto pl-2 pr-2 w-[80%]">
+        <div className="container mw-50 mr-auto ml-auto pl-2 pr-2 w-[100%] md:w-[75%]">
             <div className="row-span-full md: bg-white w-full ml-auto mr-auto">
                 <ProfileHeader current={currentUser}/>
             </div>

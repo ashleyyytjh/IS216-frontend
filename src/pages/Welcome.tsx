@@ -123,14 +123,16 @@ const Welcome = () => {
         return () => clearTimeout(timer);
     }, []); 
     return (
-        <div>
+        <div >
 
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5}}
         > 
-        <BackgroundNebula/>
+        {/* <div className="hidden md:block"> */}
+            <BackgroundNebula/>
+        {/* </div> */}
 
         { !isTypingComplete ? 
             <SmartTerminalIntro typingSpeed={40} pauseDuration={1200} textLines={textLines} />

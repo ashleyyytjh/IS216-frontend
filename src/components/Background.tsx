@@ -13,11 +13,11 @@ const BackgroundNebula = () => (
           left: `${Math.random() * 80}%`,
           backgroundColor: ['#3b82f6', '#8b5cf6', '#ec4899'][i % 3],
         }}
-        animate={{
-          y: [0, Math.random() * 40 - 20, 0],
-          x: [0, Math.random() * 40 - 20, 0],
-          scale: [1, 1.1, 1],
-        }}
+        // animate={{
+        //   y: [0, Math.random() * 40 - 20, 0],
+        //   x: [0, Math.random() * 40 - 20, 0],
+        //   scale: [1, 1.1, 1],
+        // }}
         transition={{
           repeat: Infinity,
           repeatType: 'mirror',

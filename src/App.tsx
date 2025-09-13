@@ -34,7 +34,6 @@ function App() {
       <>
         <Routes>
           <Route path="/" element={<Welcome/>}/>
-
           <Route path = '/'  element={<Layout/>}> 
               <Route path="/home" element={<Home/>}/>
               <Route path="/explore" element={<Explore/>}/>
@@ -48,9 +47,11 @@ function App() {
               <Route path ="/accountCreation" element={<AccountCreation/>}/>
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/profile" element={<Profile/>}/>
+              
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>
                     <Route path="/test" element={<LoginPage />} />
+                    {/* <Route path="/profile" element={<Profile/>}/> */}
               </Route>
             
                 

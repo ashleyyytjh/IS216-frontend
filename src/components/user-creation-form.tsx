@@ -13,8 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { X, Plus } from "lucide-react"
 import { toast } from "sonner"
 import { User } from "@/types/types"
-import { RedirectOnLogin } from "@/pages/AmplifyLogin"
-import { is } from "date-fns/locale"
+import { createUser } from "@/services/UserService"
 
 const UserSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -67,8 +66,8 @@ interface UserCreationFormProps {
   changeSuccessfulState?: () => Promise<void>; 
 }
 export function UserCreationForm( {user, changeSuccessfulState } : UserCreationFormProps) {
-  const [formData, setFormData] = useState<Partial<UserFormData>>({
-    username: user!.username || "",
+  const [formData, setFormData] = useState<UserFormData>({
+    username: user!.username,
     email: user!.email || "",
     yearOfStudy: 1,
     major: "",
@@ -132,14 +131,9 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
       toast.success("Success!", {
         description: "User account created successfully",
       })  
-      setFormData({
-        username: "",
-        email: "",
-        yearOfStudy: 1,
-        major: "",
-        modules: [],
-      })
+      await createUser(formData);
 
+      console.log(formData)
       await changeSuccessfulState!()
 
     } catch (error) {

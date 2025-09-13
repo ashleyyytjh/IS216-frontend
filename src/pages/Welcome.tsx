@@ -33,24 +33,21 @@ const WelcomeComponent = () => {
                 variants={{
                     visible: {
                         transition: {
-                            staggerChildren: 0.5, 
+                            staggerChildren: 0.7, 
                         },
                     },
                 }}
             >
-                <motion.h1  variants={FADE_IN_UP_VARIANT} />
                 <motion.h1 variants={FADE_IN_UP_VARIANT} >
                     <ShimmeringText
                         text=" Welcome to OnlyNotes"
-                        duration={1}
-                        // color="hsl(var(--foreground))"
+                        duration={1.3}
                         shimmeringColor="hsl(var(--primary))"   
                         // wave={!isMobile} 
                          className="text-3xl font-semibold tracking-tighter sm:text-7xl"
                         />
                 </motion.h1>
 
-                <motion.h1  variants={FADE_IN_UP_VARIANT} />
                 <motion.p
                     className="text-sm sm:text-2xl text-muted-foreground mx-10"
                     variants={FADE_IN_UP_VARIANT}

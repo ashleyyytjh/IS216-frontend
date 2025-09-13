@@ -45,7 +45,7 @@ const WelcomeComponent = () => {
                         duration={1}
                         // color="hsl(var(--foreground))"
                         shimmeringColor="hsl(var(--primary))"   
-                        wave={!isMobile} 
+                        // wave={!isMobile} 
                          className="text-3xl font-semibold tracking-tighter sm:text-7xl"
                         />
                 </motion.h1>

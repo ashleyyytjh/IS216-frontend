@@ -5,6 +5,7 @@ import { ShimmeringText } from "@/components/ui/shadcn-io/shimmering-text";
 import { useEffect } from "react";
 import { useState } from "react";
 import TypingText from "@/components/ui/shadcn-io/typing-text";
+import BackgroundNebula from "@/components/Background";
 
 const FADE_IN_UP_VARIANT: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -85,6 +86,7 @@ function SmartTerminalIntro(props: TerminalIntroProps) {
         showCursor={true}
         className="text-xl font-semibold tracking-tighter sm:text-5xl md:text-7xl"
         cursorClassName="h-10"
+        deletingSpeed={0}
         textColors={['#000000']}
         // variableSpeed={{ min: 100, max: 120 }}
       />
@@ -96,11 +98,11 @@ const Welcome = () => {
     const [isTypingComplete, setIsTypingComplete] = useState(false);
 
     const typingSpeed = 40;
-    const pauseDuration = 1200;
+    const pauseDuration = 1000;
     const textLines = [
         "The best notes, from the best students.",
         "Your key to academic success.",
-        "Welcome to OnlyNotes."
+        // "Welcome to OnlyNotes."
     ];
     useEffect(() => {
         // --- Calculate the total animation duration ---
@@ -112,7 +114,7 @@ const Welcome = () => {
         const totalPauseTime = numberOfPauses * pauseDuration;
         
         // Add a small buffer (e.g., 500ms) to be safe
-        const estimatedTotalTime = totalTypingTime + totalPauseTime + 3000;
+        const estimatedTotalTime = totalTypingTime + totalPauseTime + 1000;
 
         const timer = setTimeout(() => {
         setIsTypingComplete(true);
@@ -121,18 +123,23 @@ const Welcome = () => {
         return () => clearTimeout(timer);
     }, []); 
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.5}}
-      > 
-      {
-        !isTypingComplete ? 
-        <SmartTerminalIntro typingSpeed={40} pauseDuration={1000} textLines={textLines} />
-        : <WelcomeComponent />
-      }
-        {/* <WelcomeComponent /> */}
-      </motion.div>
+        <div>
+
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5}}
+        > 
+        <BackgroundNebula/>
+
+        { !isTypingComplete ? 
+            <SmartTerminalIntro typingSpeed={40} pauseDuration={1200} textLines={textLines} />
+            : <WelcomeComponent />
+        }
+            {/* <WelcomeComponent /> */}
+        </motion.div>
+        </div>
+ 
     );
 };
 

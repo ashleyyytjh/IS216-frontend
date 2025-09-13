@@ -28,6 +28,7 @@ import Profile from './pages/Profile'
 import Error from './pages/ErrorPage'
 import AccountCreation from './pages/AccountCreation'
 import Welcome from './pages/Welcome'
+import NewHome from './pages/NewHome'
 
 function App() {
     return (
@@ -35,7 +36,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome/>}/>
           <Route path = '/'  element={<Layout/>}> 
-              <Route path="/home" element={<Home/>}/>
+              {/* <Route path="/home" element={<Home/>}/> */}
+              <Route path="/home" element={<NewHome/>}/>
+
               <Route path="/explore" element={<Explore/>}/>
               <Route path ="/login" element={<AmplifyLogin/>}/>  
               <Route path="/signup" element={<Signup/>}/>

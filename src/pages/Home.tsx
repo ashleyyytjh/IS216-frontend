@@ -57,7 +57,6 @@ function Home() {
     //dummy data here first before we intgerate with API.
     //
     const items = [
-
         <Card className='rounded shadow-xl'>
             <CardHeader>
                 <CardTitle>CS102 - Programming Fundamentals</CardTitle>
@@ -349,8 +348,6 @@ const DraggableCard = ({ id, url, setCards, cards }) => {
 
     return (
         <>
-
-
             {/* replace note content here */}
             <motion.div
                 className="h-96 w-72 origin-bottom rounded-lg bg-white object-cover hover:cursor-grab active:cursor-grabbing overflow-hidden"

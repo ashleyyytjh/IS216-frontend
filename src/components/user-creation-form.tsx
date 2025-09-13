@@ -14,6 +14,7 @@ import { X, Plus } from "lucide-react"
 import { toast } from "sonner"
 import { User } from "@/types/types"
 import { createUser } from "@/services/UserService"
+import { mockCourses } from "@/assets/data"
 
 const UserSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -26,19 +27,6 @@ const UserSchema = z.object({
 
 type UserFormData = z.infer<typeof UserSchema>
 
-const majors = [
-  "Computer Science",
-  "Information Systems",
-  "Accountancy",
-  "Engineering",
-  "Business Management",
-  "Computing and Law",
-  "Law",
-  "Software Engineering",
-  "Social Science",
-  "Integrative Studies",
-
-]
 
 const commonModules = [
   "Data Structures & Algorithms",
@@ -212,9 +200,9 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
                 <SelectValue placeholder="Select major" />
               </SelectTrigger>
               <SelectContent>
-                {majors.map((major) => (
-                  <SelectItem key={major} value={major}>
-                    {major}
+                {mockCourses.map((major) => (
+                  <SelectItem key={major.id} value={major.name}>
+                    {major.name}
                   </SelectItem>
                 ))}
               </SelectContent>

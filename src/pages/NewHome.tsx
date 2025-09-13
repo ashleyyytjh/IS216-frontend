@@ -42,11 +42,11 @@ export default function ImprovedHomepage() {
     });
 
   // --- Animation Transformations ---
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.15], [1, 0.8]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0,  0.1], [1, 0.8]);
   
   // Animate the content section to slide up as the hero fades out
-  const contentY = useTransform(scrollYProgress, [0, 0.15], ["10vh", "0vh"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["10vh", "0vh"]);
   const navigate = useNavigate();
 
   return (
@@ -55,7 +55,6 @@ export default function ImprovedHomepage() {
 
       {/* The Sticky Hero Section */}
       <div className="h-screen w-full sticky top-0 flex flex-col items-center justify-center">
-        
         <motion.div
           style={{ opacity: heroOpacity, scale: heroScale }}
           initial={{ scale: 0.2, opacity: 0 }}

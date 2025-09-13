@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge'
 const BadgeClosableDemo = (props) => {
   let currentModCode = props.currentModCode
   let onRemove = props.onRemove
-  console.log(onRemove)
   const [isActive, setIsActive] = useState(true)
   if (!isActive) return null
 

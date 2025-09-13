@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Award, Wallet, Search, Sparkles, Star, User, GraduationCap, ArrowRight, UploadCloud, CheckCircle, DollarSign } from "lucide-react";
+import { BookOpen, Award, Wallet, Search, Sparkles, Star, GraduationCap, ArrowRight, UploadCloud, CheckCircle, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button"; // Assuming you have a Button component from shadcn/ui
 import BackgroundNebula from '@/components/Background';
 import TestimonialCard from '@/components/home/TestimonialCard';
@@ -24,14 +24,30 @@ const featuredNotes = [
 ];
 
 
-
+import { useState } from 'react';
+import { getCurrentUser } from 'aws-amplify/auth';
+import { User } from '@/types/types';
 
 export default function ImprovedHomepage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [user, setUser] = useState<User | null>(null);
   const isMobile = useIsMobile();
     useEffect(() => {
         window.history.scrollRestoration = 'manual'; 
         window.scrollTo(0, 0);
     }, []);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const amplifyUser = await getCurrentUser();
+        if (amplifyUser) {
+          setIsLoggedIn(true);
+          setUser(amplifyUser);
+        }
+      }
+      fetchData();
+    }, []);
+
     const targetRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: targetRef,
@@ -48,7 +64,7 @@ export default function ImprovedHomepage() {
 
   return (
     <div ref={targetRef} className="relative w-full">
-        <BackgroundNebula />
+      <BackgroundNebula />
 
       {/* The Sticky Hero Section */}
       <div className="h-screen w-full sticky top-0 flex flex-col items-center justify-center">
@@ -58,9 +74,11 @@ export default function ImprovedHomepage() {
           animate={{ scale: [0.2, 1], opacity: 1 }}
           transition={{ duration: 0.6, ease: 'easeInOut' }}
           className="text-center px-4"
-        >
+        > {
+          isLoggedIn ? 
+          <>
           <h1 className="text-5xl md:text-6xl 2xl:text-8xl font-bold tracking-tighter">
-            OnlyNotes
+            Welcome {user?.username}
           </h1>
           <p className="mt-4 max-w-xl mx-auto text-md md:text-xl text-slate-600 ">
             The pinnacle of student-curated knowledge. Ace your exams with notes from the best.
@@ -73,6 +91,26 @@ export default function ImprovedHomepage() {
                 Sell Notes
             </Button>
           </div>
+          </> 
+          : 
+          <>
+            <h1 className="text-5xl md:text-6xl 2xl:text-8xl font-bold tracking-tighter">
+              OnlyNotes
+            </h1>
+            <p className="mt-4 max-w-xl mx-auto text-md md:text-xl text-slate-600 ">
+              The pinnacle of student-curated knowledge. Ace your exams with notes from the best.
+            </p>
+            <div className="mt-8 flex justify-center gap-4">
+              <Button size={isMobile ? 'sm' : 'lg'} onClick={() => navigate('/explore')}>
+                  Browse <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Button  size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => navigate('/upload')}>
+                  Sell Notes
+              </Button>
+            </div>
+          </>
+        }
+          
         </motion.div>
       </div>
 

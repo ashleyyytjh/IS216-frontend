@@ -13,6 +13,7 @@ import HowItWorksStep from '@/components/home/Steps';
 import StepsComponent from '@/components/home/Steps';
 import KeyPoints from '@/components/home/KeyPoints';
 import ExploreSubject from '@/components/home/ExploreSubject';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 
 const featuredNotes = [
@@ -29,6 +30,7 @@ const testimonials = [
 
 
 export default function ImprovedHomepage() {
+  const isMobile = useIsMobile();
     useEffect(() => {
         window.history.scrollRestoration = 'manual'; 
         window.scrollTo(0, 0);
@@ -56,23 +58,23 @@ export default function ImprovedHomepage() {
         
         <motion.div
           style={{ opacity: heroOpacity, scale: heroScale }}
-         initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: [0.5, 1], opacity: 1 }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
+          initial={{ scale: 0.2, opacity: 0 }}
+          animate={{ scale: [0.2, 1], opacity: 1 }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
           className="text-center px-4"
         >
           <h1 className="text-5xl md:text-9xl font-bold tracking-tighter">
             OnlyNotes
           </h1>
-          <p className="mt-10 max-w-xl mx-auto text-lg md:text-xl text-slate-600 ">
+          <p className="mt-4 max-w-xl mx-auto text-md md:text-xl text-slate-600 ">
             The pinnacle of student-curated knowledge. Ace your exams with notes from the best.
           </p>
           <div className="mt-8 flex justify-center gap-4">
-            <Button size="lg" className=" text-white" onClick={() => navigate('/explore')}>
-                Browse Notes <ArrowRight className="ml-2 h-4 w-4" />
+            <Button size={isMobile ? 'sm' : 'lg'} onClick={() => navigate('/explore')}>
+                Browse <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate('/upload')}>
-                Become a Seller
+            <Button  size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => navigate('/upload')}>
+                Sell Notes
             </Button>
           </div>
         </motion.div>

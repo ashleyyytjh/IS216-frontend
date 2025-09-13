@@ -8,7 +8,7 @@ import TypingText from "@/components/ui/shadcn-io/typing-text";
 import BackgroundNebula from "@/components/Background";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const FADE_IN_UP_VARIANT: Variants = {
+export const FADE_IN_UP_VARIANT: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { 
     opacity: 1, 
@@ -20,13 +20,14 @@ const FADE_IN_UP_VARIANT: Variants = {
     } 
   },
 };
+
 const WelcomeComponent = () => {
     const isMobile = useIsMobile();
     const navigate = useNavigate();
     return (
         <div className="flex flex-col items-center justify-center bg-background h-screen">
             <motion.div
-                className="text-center space-y-6"
+                className="text-center space-y-2 md:space-y-6"
                 initial="hidden"
                 animate="visible"
                 variants={{
@@ -45,17 +46,17 @@ const WelcomeComponent = () => {
                         // color="hsl(var(--foreground))"
                         shimmeringColor="hsl(var(--primary))"   
                         wave={!isMobile} 
-                         className="text-2xl font-semibold tracking-tighter sm:text-5xl md:text-7xl"
+                         className="text-3xl font-semibold tracking-tighter sm:text-7xl"
                         />
                 </motion.h1>
-                
+
+                <motion.h1  variants={FADE_IN_UP_VARIANT} />
                 <motion.p
-                    className="text-md sm:text-2xl text-muted-foreground max-w-[500px] mx-auto"
+                    className="text-sm sm:text-2xl text-muted-foreground mx-10"
                     variants={FADE_IN_UP_VARIANT}
                 >
                     Get started and explore our market place curated specially for SMU Students!
                 </motion.p>
-                <motion.h1  variants={FADE_IN_UP_VARIANT} />
 
                 <motion.div
                     variants={FADE_IN_UP_VARIANT}

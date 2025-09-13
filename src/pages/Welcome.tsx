@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import TypingText from "@/components/ui/shadcn-io/typing-text";
 import BackgroundNebula from "@/components/Background";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const FADE_IN_UP_VARIANT: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -20,8 +21,8 @@ const FADE_IN_UP_VARIANT: Variants = {
   },
 };
 const WelcomeComponent = () => {
+    const isMobile = useIsMobile();
     const navigate = useNavigate();
-
     return (
         <div className="flex flex-col items-center justify-center bg-background h-screen">
             <motion.div
@@ -43,7 +44,7 @@ const WelcomeComponent = () => {
                         duration={1}
                         // color="hsl(var(--foreground))"
                         shimmeringColor="hsl(var(--primary))"   
-                        wave={true}
+                        wave={!isMobile} 
                          className="text-2xl font-semibold tracking-tighter sm:text-5xl md:text-7xl"
                         />
                 </motion.h1>
@@ -124,22 +125,21 @@ const Welcome = () => {
     }, []); 
     return (
         <div >
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5}}
+            > 
+            {/* <div className="hidden md:block"> */}
+                <BackgroundNebula/>
+            {/* </div> */}
 
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5}}
-        > 
-        {/* <div className="hidden md:block"> */}
-            <BackgroundNebula/>
-        {/* </div> */}
-
-        { !isTypingComplete ? 
-            <SmartTerminalIntro typingSpeed={40} pauseDuration={1200} textLines={textLines} />
-            : <WelcomeComponent />
-        }
-            {/* <WelcomeComponent /> */}
-        </motion.div>
+            { !isTypingComplete ? 
+                <SmartTerminalIntro typingSpeed={40} pauseDuration={1200} textLines={textLines} />
+                : <WelcomeComponent />
+            }
+                {/* <WelcomeComponent /> */}
+            </motion.div>
         </div>
  
     );

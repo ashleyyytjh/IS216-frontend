@@ -20,14 +20,13 @@ const howItWorksSteps2 = [
 
 const StepsComponent = () => { 
     return (
-                  <section className='flex flex-col md:flex-row space-between gap-20'>
-            <div className="max-w-3xl mx-auto">
+        <section className='flex flex-col md:flex-row space-between gap-20'>
+            <div className=" mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-4">Become a Seller in 3 Easy Steps</h2>
                 <p className="text-lg text-slate-600 dark:text-slate-400 text-center mb-16">
                     Turn your hard work into a passive income stream.
                 </p>
                 <div className="relative">
-                    {/* The vertical line */}
                     <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-1 bg-slate-200 dark:bg-gray-700 rounded-full" />
                     <div className="space-y-16">
                         {howItWorksSteps.map((step, i) => (
@@ -36,13 +35,12 @@ const StepsComponent = () => {
                     </div>
                 </div>
             </div>
-              <div className="max-w-3xl mx-auto">
+            <div className=" mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-4">Become a Buyer in 3 Easy Steps</h2>
                 <p className="text-lg text-slate-600 dark:text-slate-400 text-center mb-16">
                     Become the best student you can be with notes from top peers.
                 </p>
                 <div className="relative">
-                    {/* The vertical line */}
                     <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-1 bg-slate-200 dark:bg-gray-700 rounded-full" />
                     <div className="space-y-16">
                         {howItWorksSteps2.map((step, i) => (
@@ -51,9 +49,10 @@ const StepsComponent = () => {
                     </div>
                 </div>
             </div>
-          </section>
+        </section>
     );
 }
+
 const HowItWorksStep = ({ icon: Icon, title, description, index }) => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.8 });

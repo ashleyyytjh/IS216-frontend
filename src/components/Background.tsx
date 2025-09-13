@@ -1,7 +1,7 @@
 import { motion, } from 'framer-motion';
 
 const BackgroundNebula = () => (
-  <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+  <div className="absolute top-0 left-0  h-full pointer-events-none">
     {[...Array(5)].map((_, i) => (
       <motion.div
         key={i}

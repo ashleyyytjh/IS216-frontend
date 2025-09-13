@@ -14,7 +14,8 @@ import StepsComponent from '@/components/home/Steps';
 import KeyPoints from '@/components/home/KeyPoints';
 import ExploreSubject from '@/components/home/ExploreSubject';
 import { useIsMobile } from '@/hooks/use-mobile';
-
+import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
+import { testimonials } from '@/assets/data';
 
 const featuredNotes = [
     { id: 1, title: "Advanced Algorithms Cheatsheet", author: "Jane Doe", university: "Stanford University", rating: 5, price: "$9.99" },
@@ -22,11 +23,7 @@ const featuredNotes = [
     { id: 3, title: "Marketing 101 Full Semester Notes", author: "Emily White", university: "Wharton School", rating: 5, price: "$19.00" },
 ];
 
-const testimonials = [
-    { quote: "OnlyNotes was a lifesaver for my finals. The quality of the notes is incredible!", author: "Alex Johnson, CS Student" },
-    { quote: "I started selling my notes and made enough to cover my textbooks for the semester. So easy!", author: "Maria Garcia, Law Student" },
-    { quote: "The platform is super intuitive. Found exactly what I needed in under a minute.", author: "Chen Wei, Business Student" },
-]
+
 
 
 export default function ImprovedHomepage() {
@@ -50,7 +47,7 @@ export default function ImprovedHomepage() {
   const navigate = useNavigate();
 
   return (
-    <div ref={targetRef} className="relative w-full bg-slate-50 dark:bg-gray-900 text-slate-800 dark:text-slate-200">
+    <div ref={targetRef} className="relative w-full">
         <BackgroundNebula />
 
       {/* The Sticky Hero Section */}
@@ -83,23 +80,13 @@ export default function ImprovedHomepage() {
       {/* Scrollable Content */}
       <motion.div style={{ y: contentY }} className="relative z-10 w-full bg-slate-50 dark:bg-gray-900 rounded-t-3xl l">
         <div className="max-w-7xl mx-auto px-6 md:px-8 py-20 md:py-32 space-y-28 md:space-y-40">
-            {/* Section: Why Choose Us? */}
             <KeyPoints />
-            
-            {/* Steps */}
             <StepsComponent />
-
-            {/*  Explore by Subject */}
             <ExploreSubject/>
-            
-            {/* Testimonials */}
             <section>
                 <h2 className="text-4xl font-bold text-center mb-16">Loved by Students Everywhere</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {testimonials.map((testimonial, i) => <TestimonialCard key={i} {...testimonial} />)}
-                </div>
+                            <AnimatedTestimonials testimonials={testimonials} />
             </section>
-
         </div>
       </motion.div>
     </div>

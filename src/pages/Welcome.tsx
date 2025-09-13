@@ -27,29 +27,33 @@ const WelcomeComponent = () => {
                 variants={{
                     visible: {
                         transition: {
-                            staggerChildren: 0.4, 
+                            staggerChildren: 0.5, 
                         },
                     },
                 }}
             >
+                <motion.h1  variants={FADE_IN_UP_VARIANT} />
                 <motion.h1
-                    className="text-2xl font-bold tracking-tighter sm:text-5xl md:text-6xl"
+                    className="text-2xl font-bold tracking-tighter sm:text-5xl md:text-7xl"
                     variants={FADE_IN_UP_VARIANT}
                 >
                     Welcome to OnlyNotes
                 </motion.h1>
+                
                 <motion.p
-                    className="text-sm sm:text-lg text-muted-foreground max-w-[600px] mx-auto"
+                    className="text-md sm:text-2xl text-muted-foreground max-w-[500px] mx-auto"
                     variants={FADE_IN_UP_VARIANT}
                 >
                     Get started and explore our market place curated specially for SMU Students!
                 </motion.p>
+                <motion.h1  variants={FADE_IN_UP_VARIANT} />
+
                 <motion.div
                     variants={FADE_IN_UP_VARIANT}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                 >
-                    <Button onClick={() => navigate('/home')} color={'primary'}>
+                    <Button size={'lg'} onClick={() => navigate('/home')} color={'primary'}>
                         Enter
                     </Button>
                 </motion.div>

@@ -25,6 +25,8 @@ import {
 
 import { Carousel as ThreeDCarousel } from 'react-responsive-3d-carousel';
 import 'react-responsive-3d-carousel/dist/styles.css';
+import { getUser, getUserPurchases } from '@/services/UserService';
+import { getNotesById } from '@/services/NotesService';
 
 
 
@@ -36,12 +38,25 @@ function Home() {
             duration: 1000,
             once: true,
         });
+        //Do not remove this, using it to test some stuff
+        // const fetchUserData = async () => {
+        //     try {
+        //         const userData = await getUser();
+        //         console.log('User data:', userData);
+        //         const notesData = await getUserPurchases(userData.sub);
+        //         console.log('Notes data:', notesData);
+        //     }
+        //     catch (error) {
+        //         console.error('Error fetching user data:', error);
+        //     }
+        // }
+
+        // fetchUserData()
     }, []);
 
     //dummy data here first before we intgerate with API.
     //
     const items = [
-
         <Card className='rounded shadow-xl'>
             <CardHeader>
                 <CardTitle>CS102 - Programming Fundamentals</CardTitle>
@@ -333,8 +348,6 @@ const DraggableCard = ({ id, url, setCards, cards }) => {
 
     return (
         <>
-
-
             {/* replace note content here */}
             <motion.div
                 className="h-96 w-72 origin-bottom rounded-lg bg-white object-cover hover:cursor-grab active:cursor-grabbing overflow-hidden"

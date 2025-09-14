@@ -1,223 +1,145 @@
-'use client';
-import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@/components/ui/shadcn-io/dropzone';
-import { Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle, } from "@/components/ui/card";
-import { useState, useEffect } from 'react';
-import { Progress } from "@/components/ui/progress"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import * as React from "react"
-import { Separator } from "@/components/ui/separator"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-const Upload = () => {
-  const [files, setFiles] = useState<File[] | undefined>();
-  const [percent, setPercent] = React.useState(0)
-  const [isImporting, setIsImporting] = React.useState(false)
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Form } from "@/components/ui/form";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { formSchema, UploadFormValues } from "../components/schema";
+import { mkId } from "../components/utils";
 
+import StepUpload from "../components/stepupload";
+import StepDetails from "../components/stepdetails";
+import StepReview from "../components/stepreview";
+import StepFinish from "../components/stepfinish";
 
-  const handleDrop = (files: File[]) => {
-    console.log(files);
-    setFiles(files);
+export default function Upload() {
+  const [step, setStep] = useState(1);
+  const [files, setFiles] = useState<File[]>([]);
+  const totalSteps = 4; // 1 Upload, 2 Details, 3 Review, 4 Finish
+
+  const methods = useForm<UploadFormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { items: [] },
+    mode: "onChange",
+  });
+
+  const { control, handleSubmit, trigger } = methods;
+  const { replace, remove } = useFieldArray({ control, name: "items" });
+
+  // Sync file list → form items (metadata)
+  useEffect(() => {
+    const wanted = files.map((f) => ({
+      fileId: mkId(f),
+      fileName: f.name,
+      title: f.name.replace(/\.[^.]+$/, ""),
+      description: "",
+      faculty: "",
+      courseCode: "",
+      priceCents: 0,
+      visibility: "public" as const,
+      tags: [],
+    }));
+    replace(wanted);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files.map(mkId).join("|")]);
+
+  const progress = (step / totalSteps) * 100;
+
+  const onDrop = (fs: File[]) => setFiles(fs);
+  const onDeleteFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    remove(index);
   };
 
-  const [currentStep, setCurrentStep] = React.useState(1)
-
-
-  const filesProgress = 100;
-
-
-
-  const steps = [
-    "Upload files",
-    "Details",
-    "Finish"
-  ]
-  const totalSteps = steps.length
-  const progress = (currentStep / totalSteps) * 100
-
-
-
-
-  const nextStep = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1)
+  const next = async () => {
+    if (step === 1) {
+      if (files.length < 1) return;
+      setStep(2);
+      return;
     }
-  }
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+    if (step === 2) {
+      const ok = await trigger("items");
+      if (!ok) return;
+      setStep(3);
+      return;
     }
-  }
-  const deleteFile = (fileName: string) => {
-    if (!files) return
-    setFiles(files.filter((f) => f.name !== fileName))
-  }
+    if (step === 3) {
+      setStep(4);
+    }
+  };
 
+  const prev = () => setStep((s) => Math.max(1, s - 1));
+
+  async function onSubmit(values: UploadFormValues) {
+    const payload = {
+      items: values.items.map(({ fileId, fileName, ...rest }) => ({
+        fileId,
+        fileName,
+        ...rest,
+      })),
+    };
+    console.log("SUBMIT payload", payload);
+    console.log("FILES", files);
+    // TODO integrate with your backend
+  }
 
   return (
-    <>
-      <div className="px-4 md:px-25 lg:px-40 py-25">
-        <div className='flex flex-col  gap-10 '>
-        {steps[currentStep - 1] == "Upload files" ? 
-        <section id = "upload" className='flex flex-col gap-10'>
-          <div className='text-center text-4xl'>UPLOAD YOUR FILESSSS</div>
-          <Dropzone
-            maxFiles={10}
-            onDrop={handleDrop}
-            onError={console.error}
-            src={files}
-            className='bg-gray-100 hover:cursor-pointer hover:bg-gray-200'
-          >
-            <DropzoneEmptyState />
-            <DropzoneContent />
-          </Dropzone>
-
-          {/* progress bar for files */}
-          {files ? files.map(file => (
-            <div
-              className="  w-full flex flex-row"
-              style={{
-                all: 'revert',
-                display: 'flex',
-                justifyContent: 'center',
-                alignSelf: 'flex-start',
-                width: '100%',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                letterSpacing: 'normal',
-                alignItems: 'center'
-              }}
-            >
-              <div className='row-span-1'>
-                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="green" className="icon icon-tabler icons-tabler-filled icon-tabler-file-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 2l.117 .007a1 1 0 0 1 .876 .876l.007 .117v4l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h4l.117 .007a1 1 0 0 1 .876 .876l.007 .117v9a3 3 0 0 1 -2.824 2.995l-.176 .005h-10a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-14a3 3 0 0 1 2.824 -2.995l.176 -.005zm3.707 10.293a1 1 0 0 0 -1.414 0l-3.293 3.292l-1.293 -1.292a1 1 0 1 0 -1.414 1.414l2 2a1 1 0 0 0 1.414 0l4 -4a1 1 0 0 0 0 -1.414m-.707 -9.294l4 4.001h-4z" /></svg>
-              </div>
-              <div className='w-full flex flex-col'>
-                <span className='mx-7'>{file.name}</span>
-                <div className='flex flex-row align-middle gap-2'>
-                  <Progress value={filesProgress} className='bg-gray-200 [&>div]:bg-green-500 [&>div]:rounded-full h-1.5 ml-7 self-center' />
-                  <span>{filesProgress}%</span>
-                </div>
-
-              </div>
-              <div className='hover:cursor-pointer' onClick={() => deleteFile(file.name)}>
-                <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-              </div>
-
-            </div>
-
-          ))
-
-
-            : ""}
-
-          </section>
-          : ""}
-
-          {/* DETAILSS */}
-         {steps[currentStep - 1] == "Details" ? 
-          <section id="details" className='flex flex-col  '>
-            <form className='space-y-10'>
-            {files?.map((file,index)=>(
-              <Card className='px-5' key={file.name}>
-                <CardHeader className='flex flex-row items-center pl-0'>
-                   <div><svg  xmlns="http://www.w3.org/2000/svg"  width={24}  height={24}  viewBox="0 0 24 24"  fill="blue"  className="icon icon-tabler icons-tabler-filled icon-tabler-file"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2l.117 .007a1 1 0 0 1 .876 .876l.007 .117v4l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h4l.117 .007a1 1 0 0 1 .876 .876l.007 .117v9a3 3 0 0 1 -2.824 2.995l-.176 .005h-10a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-14a3 3 0 0 1 2.824 -2.995l.176 -.005h5z" /><path d="M19 7h-4l-.001 -4.001z" /></svg></div>
-                   <CardTitle>{file.name}</CardTitle>
-                </CardHeader>
-                <Separator/>
-            
-                <div className="grid gap-3">
-              <Label htmlFor={`school-${index}`} className='font-semibold'>School/University</Label>
-              <Input
-                id={`school-${index}`}
-                placeholder="Singapore Management University"
-                required
-              />
-            </div>
-              </Card>
-            ))}
-
-
-
-            </form>
-          </section>
-          : "" }
-
-
-
-            {/* PAGINATION */}
-          <div
-            className="flex justify-center self-start pt-6 w-full"
-            style={{
-              all: 'revert',
-              display: 'flex',
-              justifyContent: 'center',
-              alignSelf: 'flex-start',
-              paddingTop: '1.5rem',
-              width: '100%',
-              fontSize: '14px',
-              lineHeight: '1.5',
-              letterSpacing: 'normal'
-            }}
-          >
-
-            <div className="w-full max-w-md space-y-6">
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium">
-                    Step {currentStep} of {totalSteps}
-                  </span>
-                  <span className="text-muted-foreground">
-                    {steps[currentStep - 1]}
-                  </span>
-                </div>
-                <Progress value={progress} className="w-full" />
-              </div>
-
-
-
-
-
-
-
-              <div className="flex justify-between">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={prevStep}
-                  disabled={currentStep === 1}
-                >
-                  <ChevronLeft className="mr-1 h-4 w-4" />
-                  Previous
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={nextStep}
-                  disabled={!files || files.length<1}
-                >
-                  {currentStep === totalSteps ? "Complete" : "Next"}
-                  {currentStep !== totalSteps && (
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-          </div>
-
+    <div className="mx-auto w-full max-w-4xl p-6">
+      <div className="mb-6">
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-medium">
+            Step {step} of {totalSteps}
+          </span>
+          <span className="text-muted-foreground">
+            {["Upload files", "Details", "Review", "Finish"][step - 1]}
+          </span>
         </div>
+        <Progress value={progress} className="mt-2" />
       </div>
-    </>
 
-  )
+      <FormProvider {...methods}>
+        <Form {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {step === 1 && (
+              <StepUpload files={files} onDrop={onDrop} onDelete={onDeleteFile} />
+            )}
+            {step === 2 && <StepDetails />}
+            {step === 3 && <StepReview files={files} />}
+            {step === 4 && <StepFinish />}
 
+            <div className="flex items-center justify-between pt-2">
+              <Button
+                variant="outline"
+                type="button"
+                onClick={prev}
+                disabled={step === 1}
+                className="hover:cursor-pointer"
+              >
+                <ChevronLeft className="mr-1 h-4 w-4" /> Previous
+              </Button>
+
+              {step < totalSteps && (
+                <Button
+                  type="button"
+                  onClick={next}
+                  disabled={step === 1 && files.length < 1}
+                  className="hover:cursor-pointer"
+                >
+                  Next <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              )}
+
+              {step === totalSteps && (
+                <Button type="submit" className="hover:cursor-pointer">Submit & Publish</Button>
+              )}
+            </div>
+          </form>
+        </Form>
+      </FormProvider>
+    </div>
+  );
 }
-
-
-export default Upload;

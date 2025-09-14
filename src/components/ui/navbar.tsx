@@ -8,6 +8,10 @@ import { Link } from 'react-router-dom';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import type { User } from "@/types/types"
 import { useNavigate } from "react-router-dom"
+import { getUser } from "@/services/UserService"
+import { toast } from "sonner";
+import { set } from "date-fns"
+
 const navigationItems = [
     { name: "Home", href: "/home" },
     { name: "Notes Repository", href: "/explore" },
@@ -17,16 +21,26 @@ const navigationItems = [
 const navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [user, setUser] = useState<User | null>(null); // Initialize user state as null
+    const [amplifyUser, setAmplifyUser] = useState<User|null>(null);
     const navigate = useNavigate();
     useEffect(() => {
         const checkUser = async () => {
+        let isAmplifyUser : any;
             try {
-                const userData = await getCurrentUser(); 
-                console.log("Authenticated User:", userData);
-                setUser(userData); 
+                isAmplifyUser = await getCurrentUser(); // 2. Assign the value
+                setAmplifyUser(isAmplifyUser);
+                // const userDB = await getUser(); 
+                // console.log("DB user exists");
+                // setUser(userDB);
+                // console.log(userDB)
+                
             } catch (error) {
-                console.log("No current user");
-                setUser(null); 
+                // if (isAmplifyUser) {
+                //     toast.warning("Please complete account details to continue");
+                //     console.log("Amplify user exists but not in DB, redirecting to account creation");
+                //     navigate('/accountCreation');
+                //     return;
+                // } 
             }
         };
         checkUser();
@@ -35,9 +49,17 @@ const navbar = () => {
     const handleSignOut = async () => {
         try {
             await signOut();
-            setUser(null); // Clear the user state locally
+            // setUser(null);
+            setAmplifyUser(null);
             localStorage.clear();
-            navigate('/home'); // Redirect to the homepage after sign out
+            toast.success('Successfully signed out');
+
+            const timer = setTimeout(() => {
+                window.location.href = '/home';
+            },1000)
+
+            return () => clearTimeout(timer);   
+
         } catch (error) {
             console.log('error signing out: ', error);
         }
@@ -107,7 +129,7 @@ const navbar = () => {
                         ))}
                     </div>
                     <div>
-                        { !user ? (
+                        { !amplifyUser ? (
                             <Button>
                             <Link to="/login">Login</Link>
                             </Button>

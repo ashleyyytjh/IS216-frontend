@@ -23,30 +23,30 @@ export default function AccountCreation() {
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
-            const timer = setTimeout(() => {
-                setProgress(40);
-            }, 500)
-            const amplifyUser = await getCurrentUser();
-            const userAttributes = await fetchUserAttributes();
-            console.log(userAttributes)
-            const email = userAttributes.email;
+                const timer = setTimeout(() => {
+                    setProgress(40);
+                }, 500)
+                const amplifyUser = await getCurrentUser();
+                const userAttributes = await fetchUserAttributes();
+                console.log(userAttributes)
+                const email = userAttributes.email;
 
-            const newUser : User = {
-                username: amplifyUser.username,
-                email: email,
-            }
-            const timer3 = setTimeout(() => {
-                setProgress(100);
-            }, 800)
-            const timer2 = setTimeout(() => {
-                setUser(newUser);
-            }, 1200)
+                const newUser : User = {
+                    username: amplifyUser.username,
+                    email: email,
+                }
+                const timer3 = setTimeout(() => {
+                    setProgress(100);
+                }, 800)
+                const timer2 = setTimeout(() => {
+                    setUser(newUser);
+                }, 1200)
 
-            return () => {
-            clearTimeout(timer);
-            clearTimeout(timer2);
-            clearTimeout(timer3);
-            };
+                return () => {
+                clearTimeout(timer);
+                clearTimeout(timer2);
+                clearTimeout(timer3);
+                };
 
             } catch { navigate('/login'); }
         };

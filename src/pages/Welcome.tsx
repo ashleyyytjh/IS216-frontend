@@ -38,16 +38,18 @@ const WelcomeComponent = () => {
                     },
                 }}
             >
+
                 <motion.h1 variants={FADE_IN_UP_VARIANT} >
-                    <ShimmeringText
+                    <FlipWordsDemo />
+                    {/* <ShimmeringText
                         text=" Welcome to OnlyNotes"
                         duration={1.3}
                         shimmeringColor="hsl(var(--primary))"   
                         // wave={!isMobile} 
                          className="text-3xl font-semibold tracking-tighter sm:text-7xl"
-                        />
+                        /> */}
                 </motion.h1>
-
+                <motion.p variants={FADE_IN_UP_VARIANT}></motion.p>
                 <motion.p
                     className="text-sm sm:text-2xl text-muted-foreground mx-10"
                     variants={FADE_IN_UP_VARIANT}
@@ -75,7 +77,6 @@ interface TerminalIntroProps {
     textLines: string[];
 }
 function SmartTerminalIntro(props: TerminalIntroProps) {
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-background ">
       <TypingText
@@ -92,6 +93,21 @@ function SmartTerminalIntro(props: TerminalIntroProps) {
     </div>
   );
 }
+
+import { FlipWords } from "@/components/ui/flip-words";
+
+export function FlipWordsDemo() {
+  const words = ["Welcome to OnlyNotes"];
+
+  return (
+    <div className=" flex justify-center items-center px-4">
+      <div className="text-4xl mx-auto font-semibold text-3xl font-semibold tracking-tighter sm:text-7xl">
+        <FlipWords words={words} /> <br />
+      </div>
+    </div>
+  );
+}
+
 
 const Welcome = () => {
     const [isTypingComplete, setIsTypingComplete] = useState(false);

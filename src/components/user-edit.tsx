@@ -3,21 +3,17 @@ import { Button } from "./ui/button"
 import { Label } from "@/components/ui/label"
 import BadgeClosableDemo from "./removable-badge"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
-import { Plus, X } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useState } from "react"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
+import { Pencil } from 'lucide-react';
+
 import {
-    Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage
+    Form, FormControl, FormField, FormItem, FormLabel, FormMessage
 } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
-
-const formSchema = z.object({
-    username: z.string().min(0, "Username is required"),
-    email: z.string().email("Invalid Email Address"),
-    major: z.string().min(0, "Major is required"),
-    newCourse: z.string().optional()
-})
+import { formSchema } from "./update-form/update-form"
 
 function UserEdit(currentUser) {
     currentUser = currentUser['currentUser']
@@ -33,8 +29,8 @@ function UserEdit(currentUser) {
         setUserMod("")
     }
     const handleInputChange = (event) => { setUserMod(event.target.value) }
-    const onSubmit = () =>{}
-        const form = useForm<z.infer<typeof formSchema>>({
+    const onSubmit = () => { }
+    const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             username: currentUser['username'],
@@ -143,6 +139,7 @@ function UserEdit(currentUser) {
                                                 <div className="flex flex-row gap-x-2">
                                                     <Input
                                                         {...field} id="newCourse"
+                                                        value={userMod}
                                                         placeholder="Add your modules here"
                                                         className="placeholder:text-opacity-25 w-[95%] flex-grow border border-[#f1f5f9] hover:border-gray-300 transition-all duration-300 placeholder:text-grey-100"
                                                         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault() } }}
@@ -163,9 +160,9 @@ function UserEdit(currentUser) {
                         </div>
                     </CardContent>
                     <CardFooter className="flex justify-center w-full md:justify-end">
-                        <Button type="submit" className="w-[100%] md:w-auto">Update Profile</Button>
+                        <Button type="submit" className="w-[100%] md:w-auto">Update Profile  <Pencil /></Button>
                     </CardFooter>
-                    
+
                 </form>
             </Form>
         </Card>

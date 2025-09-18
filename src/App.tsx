@@ -29,6 +29,7 @@ import Error from './pages/ErrorPage'
 import AccountCreation from './pages/AccountCreation'
 import Welcome from './pages/Welcome'
 import NewHome from './pages/NewHome'
+import DashboardSeller from './pages/dashboardSeller'
 
 function App() {
     return (
@@ -50,6 +51,7 @@ function App() {
               <Route path ="/accountCreation" element={<AccountCreation/>}/>
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/profile" element={<Profile/>}/>
+               <Route path="/dashboardSeller" element={<DashboardSeller/>}/>
               
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>

@@ -1,12 +1,14 @@
 import Infobar from "@/components/listing/Infobar";
 import { InfobarTrigger } from "@/components/listing/InfobarTrigger";
-import PDFViewer from "@/components/listing/PDFViewer";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NoteListing } from "@/types/types";
 import { Download } from "lucide-react";
+import { lazy } from "react";
 import { useParams } from "react-router-dom";
+
+const PDFViewer = lazy(() => import("@/components/listing/PDFViewer"));
 
 export default function Listing() {
   const { id } = useParams<{ id: string }>();

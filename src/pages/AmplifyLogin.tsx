@@ -8,7 +8,6 @@ import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getUser } from '@/services/UserService';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { P } from 'node_modules/framer-motion/dist/types.d-Cjd591yU';
 import { User } from '@/types/types';
 
 const components = {

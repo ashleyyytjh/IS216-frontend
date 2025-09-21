@@ -11,4 +11,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: ["warning"],
+    exclude: ["react-pdf", "pdfjs-dist"],
+  },
 })

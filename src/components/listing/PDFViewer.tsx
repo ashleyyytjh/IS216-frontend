@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Slider } from "../ui/slider";
 import { Badge } from "../ui/badge";
+import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
@@ -36,10 +37,10 @@ export default function PDFViewer() {
             onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
             disabled={pageNumber <= 1}
           >
-            Prev
+            <ChevronLeft />
           </Button>
           <span style={{ margin: "0 10px" }}>
-            {pageNumber}/{numPages}
+            {pageNumber} of {numPages}
           </span>
           <Button
             size="sm"
@@ -48,10 +49,11 @@ export default function PDFViewer() {
             }
             disabled={pageNumber >= numPages}
           >
-            Next
+            <ChevronRight />
           </Button>
         </div>
         <div className="flex justify-center items-center w-2/5 gap-5">
+          <ZoomIn />
           <Slider
             defaultValue={[100]}
             min={50}

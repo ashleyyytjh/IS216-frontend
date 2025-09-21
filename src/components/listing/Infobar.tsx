@@ -10,12 +10,12 @@ import { NoteListing } from "@/types/types";
 export default function Infobar({ data } : { data: NoteListing }) {
   return (
     <Sidebar
-      variant="floating"
+      variant="inset"
       collapsible="offcanvas"
-      className="top-20 h-[calc(100vh-5rem)]"
+      className="top-20 h-fit pl-8"
     >
       <SidebarContent className="p-5">
-        <SidebarHeader className="font-medium">
+        <SidebarHeader className="text-lg font-medium">
           {data.originalName}
         </SidebarHeader>
         <SidebarGroup>

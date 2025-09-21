@@ -181,3 +181,21 @@ export const myNotes: Note[] =
             "createdAt": "2025-09-04T13:10:03.602Z"
         }
     ]
+
+export type GraphNode = {
+  id: string
+  title: string
+  description: string
+  type: "concept" | string
+}
+
+export type GraphEdge = {
+  source: string
+  target: string
+  relation: string
+}
+
+export type GraphData = {
+  nodes: GraphNode[]
+  edges: GraphEdge[]
+}

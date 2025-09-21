@@ -1,22 +1,24 @@
 import Infobar from "@/components/listing/Infobar";
 import { InfobarTrigger } from "@/components/listing/InfobarTrigger";
+import SuspenseFallback from "@/components/listing/SuspenseFallback";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { NoteListing } from "@/types/types";
-import { Download } from "lucide-react";
-import { lazy } from "react";
+import { GraphData, NoteListing } from "@/types/types";
+import { DollarSign, Info } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
 
+const Graph = lazy(() => import("@/components/listing/Graph"))
 const PDFViewer = lazy(() => import("@/components/listing/PDFViewer"));
 
 export default function Listing() {
   const { id } = useParams<{ id: string }>();
   const data: NoteListing = mockData;
   return (
-    <main className="text-sm">
+    <main className="text-sm h-full">
       <SidebarProvider
-        style={{ "--sidebar-width": "20rem" } as React.CSSProperties}
+        style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
       >
         <div className="flex h-full w-full">
           <Infobar data={data} />
@@ -26,18 +28,30 @@ export default function Listing() {
               <Tabs defaultValue="preview" className="mx-auto max-w-5xl gap-5">
                 <div className="flex flex-row justify-between">
                   <Button>
-                    <Download />
-                    Download
+                    <DollarSign />
+                    Purchase
                   </Button>
-                  <TabsList className="border font-medium border-none">
-                    <TabsTrigger value="preview">Preview</TabsTrigger>
-                    <TabsTrigger value="mindmap">Mindmap</TabsTrigger>
-                  </TabsList>
+                  <div className="flex gap-2">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Info className="h-4 w-4" />
+                      <span>This is a preview. Purchase the full notes to view all content.</span>
+                    </div>
+                    <TabsList className="border font-medium border-none">
+                      <TabsTrigger value="preview">Document</TabsTrigger>
+                      <TabsTrigger value="mindmap">Mindmap</TabsTrigger>
+                    </TabsList>
+                  </div>
                 </div>
                 <TabsContent value="preview">
+                  <Suspense fallback={<SuspenseFallback />}>
                     <PDFViewer />
+                  </Suspense>
                 </TabsContent>
-                <TabsContent value="mindmap">Mindmap</TabsContent>
+                <TabsContent value="mindmap">
+                  <Suspense fallback={<SuspenseFallback />}>
+                    <Graph title={data.originalName} graph={mockGraph} />
+                  </Suspense>
+                </TabsContent>
               </Tabs>
             </div>
           </article>
@@ -63,4 +77,164 @@ const mockData = {
   type: "notes",
   module: "cs425",
   createdAt: "2025-09-04T13:10:03.602Z",
+};
+
+const mockGraph: GraphData = {
+  nodes: [
+    {
+      id: "vector-semantics",
+      title: "Vector semantics",
+      description:
+        "Study of meaning via vector spaces; similarity = distance between word vectors in embedding space.",
+      type: "concept",
+    },
+    {
+      id: "word-embeddings",
+      title: "Word embeddings",
+      description:
+        "Dense vector representations of words learned from large corpora to capture semantic/syntactic relationships.",
+      type: "concept",
+    },
+    {
+      id: "cooccurrence-matrix",
+      title: "Cooccurrence matrix",
+      description:
+        "Word-context co-occurrence counts within a fixed window; basis for distributional semantics (e.g., used by GloVe).",
+      type: "concept",
+    },
+    {
+      id: "cosine-similarity",
+      title: "Cosine similarity",
+      description:
+        "Measure of similarity between two vectors defined as the cosine of the angle between them.",
+      type: "concept",
+    },
+    {
+      id: "word2vec",
+      title: "Word2Vec",
+      description:
+        "Popular method for learning word embeddings via predictive models (Skip-Gram / CBOW); SGNS is widely used.",
+      type: "concept",
+    },
+    {
+      id: "glove",
+      title: "GloVe",
+      description:
+        "Global Vectors; learns embeddings from global word-word co-occurrence statistics.",
+      type: "concept",
+    },
+    {
+      id: "skip-gram-neg-sampling",
+      title: "Skip-Gram with Negative Sampling",
+      description:
+        "SGNS training objective using positive and negative samples to learn embeddings.",
+      type: "concept",
+    },
+    {
+      id: "context-window",
+      title: "Context window",
+      description:
+        "Surrounding words used as context for a target word; defines co-occurrence structure.",
+      type: "concept",
+    },
+    {
+      id: "vocabulary",
+      title: "Vocabulary",
+      description:
+        "Set of unique words in the corpus; size |V|; defines embedding matrix dimensions.",
+      type: "concept",
+    },
+    {
+      id: "embedding-dimension",
+      title: "Embedding dimension",
+      description:
+        "Dimensionality d of word embeddings; trade-off between capacity and efficiency.",
+      type: "concept",
+    },
+    {
+      id: "training-objective",
+      title: "Training objective",
+      description:
+        "Log-likelihood objective for positive context pairs and negative samples guiding embedding learning.",
+      type: "concept",
+    },
+    {
+      id: "gradient-descent",
+      title: "Gradient descent",
+      description:
+        "Optimization algorithm that updates embeddings to minimize loss via gradient steps.",
+      type: "concept",
+    },
+    {
+      id: "positive-negative-samples",
+      title: "Positive and negative samples",
+      description:
+        "Positive: real context words; Negative: random words used to contrast with positives.",
+      type: "concept",
+    },
+    {
+      id: "word-analogies",
+      title: "Word analogies",
+      description:
+        "Embeddings enable vector arithmetic to capture relational meaning (e.g., king - man + woman ≈ queen).",
+      type: "concept",
+    },
+  ],
+  edges: [
+    {
+      source: "cooccurrence-matrix",
+      target: "word-embeddings",
+      relation: "produces",
+    },
+    {
+      source: "word2vec",
+      target: "skip-gram-neg-sampling",
+      relation: "references",
+    },
+    {
+      source: "glove",
+      target: "skip-gram-neg-sampling",
+      relation: "references",
+    },
+    {
+      source: "skip-gram-neg-sampling",
+      target: "context-window",
+      relation: "requires",
+    },
+    {
+      source: "skip-gram-neg-sampling",
+      target: "vocabulary",
+      relation: "requires",
+    },
+    {
+      source: "word-embeddings",
+      target: "embedding-dimension",
+      relation: "requires",
+    },
+    {
+      source: "word-embeddings",
+      target: "gradient-descent",
+      relation: "requires",
+    },
+    {
+      source: "training-objective",
+      target: "gradient-descent",
+      relation: "requires",
+    },
+    {
+      source: "skip-gram-neg-sampling",
+      target: "positive-negative-samples",
+      relation: "requires",
+    },
+    {
+      source: "word-embeddings",
+      target: "word-analogies",
+      relation: "produces",
+    },
+    {
+      source: "word-analogies",
+      target: "word-embeddings",
+      relation: "similar-to",
+    },
+  ],
 };

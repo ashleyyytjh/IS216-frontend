@@ -137,7 +137,7 @@
 
 }
 
-@keyframes fadeInText {
+@keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -149,5 +149,5 @@
 }
 
 .fade-in {
-  animation: fadeIn 2s ease-out forwards;
+  animation: fadeIn 1s ease-out forwards;
 }

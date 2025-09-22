@@ -157,7 +157,7 @@ export function ChartAreaInteractive() {
   })
 
   return (
-    <Card className="shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
+    <Card className="h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
       <CardHeader>
         <CardTitle>Total Sales</CardTitle>
         <CardDescription>

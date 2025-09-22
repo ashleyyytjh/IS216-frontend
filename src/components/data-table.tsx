@@ -1,19 +1,15 @@
-import * as React from "react"
-import {closestCenter, DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors, type DragEndEvent, type UniqueIdentifier} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import {IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight, IconCircleCheckFilled, IconDotsVertical,IconGripVertical, IconLayoutColumns, IconLoader, IconTrendingUp} from "@tabler/icons-react"
-import {ColumnDef, ColumnFiltersState,flexRender,getCoreRowModel,getFacetedRowModel, getFacetedUniqueValues,getFilteredRowModel,getPaginationRowModel,getSortedRowModel,Row,SortingState,useReactTable,VisibilityState,} from "@tanstack/react-table"
-import { toast } from "sonner"
+
+import { ColumnDef } from "@tanstack/react-table"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
-import {ChartConfig} from "@/components/ui/chart"
+import { useNavigate } from "react-router-dom"
+
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -26,20 +22,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { NoteDisplay } from "./note-display"
+import { IconDotsVertical } from "@tabler/icons-react"
+import { Filter, Search } from "lucide-react"
+import { Card, CardContent, CardHeader } from "./ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
+import { NoteListing } from "@/types/types"
+import { useState } from "react"
+import UserActivityListing from "./user-activity-listing"
 
 export const schema = z.object({
   id: z.number(),
@@ -54,69 +51,6 @@ export const schema = z.object({
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
 
-
-  {
-    accessorKey: "header",
-    header: "Receipt",
-    cell: ({ row }) => {
-      return <p className="text-center">{row.original.id}</p>
-    },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "type",
-    header: "Note Name",
-    cell: ({ row }) => (
-      <div className="w-32">
-         {row.original.type}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: "Buyer",
-    cell: ({ row }) => (
-      "Nicholas Soh"
-    ),
-  },
-  {
-    accessorKey: "target",
-    header: () => <div className="w-full text-center">Module</div>,
-    cell: ({ row }) => (
-      <p className="text-center">{row.original.target}</p>
-    ),
-  },
-  {
-    accessorKey: "limit",
-    header: () => <div className="w-full text-center">Total Price</div>,
-    cell: ({ row }) => (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-            loading: `Saving ${row.original.header}`,
-            success: "Done",
-            error: "Error",
-          })
-        }}
-      >
-        <Input
-          className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-          defaultValue={row.original.limit}
-          id={`${row.original.id}-limit`}
-        />
-      </form>
-    ),
-  },
-  {
-    accessorKey: "reviewer",
-    header: "Date",
-    cell: ({ row }) => {
-      return (<p>29/11/2022</p>);
-
-      
-    },
-  },
   {
     id: "actions",
     cell: () => (
@@ -144,107 +78,186 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 ]
 
 
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
-  const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
-  })
+const mockData: NoteListing[] = [
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "cs425",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "cs425",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "cs425",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "cs425",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "cs425",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "cs425",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "qf102",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "qf102",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+  {
+    id: "68b98faba389fd1819c78c17",
+    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
+    userFullName: "Ashley Toh",
+    userImageUrl:
+      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
+    major: "Computer Science",
+    yearOfStudy: 4,
+    description:
+      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
+    originalName: "Vector Semantics & Word Embeddings",
+    tags: ["NLP", "Machine Learning", "cs425"],
+    price: 5,
+    type: "notes",
+    module: "qf102",
+    createdAt: "2025-09-04T13:10:03.602Z",
+  },
+];
+const formatCurrency = (n: number) =>
+  n.toLocaleString("en-SG", { style: "currency", currency: "SGD" });
+export function DataTable() {
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemPerPage] = useState(5)
+  console.log(itemsPerPage)
 
-  return (
-    <TableRow
-      data-state={row.getIsSelected() && "selected"}
-      data-dragging={isDragging}
-      ref={setNodeRef}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition: transition,
-      }}
-    >
-      {row.getVisibleCells().map((cell) => (
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentItems = mockData.slice(startIndex, endIndex)
 
-        <TableCell key={cell.id}>
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </TableCell>
-      ))}
-    </TableRow>
-  )
-}
-
-export function DataTable({
-  data: initialData,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [data, setData] = React.useState(() => initialData)
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
-  })
-  const sortableId = React.useId()
-  const sensors = useSensors(
-    useSensor(MouseSensor, {}),
-    useSensor(TouchSensor, {}),
-    useSensor(KeyboardSensor, {})
-  )
-
-  const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
-    [data]
-  )
-
-  const table = useReactTable({
-    data,
-    columns,
-    state: {
-      sorting,
-      columnVisibility,
-      rowSelection,
-      columnFilters,
-      pagination,
-    },
-    getRowId: (row) => row.id.toString(),
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    onPaginationChange: setPagination,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event
-    if (active && over && active.id !== over.id) {
-      setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id)
-        const newIndex = dataIds.indexOf(over.id)
-        return arrayMove(data, oldIndex, newIndex)
-      })
-    }
-  }
+  const totalPages = Math.ceil(mockData.length / itemsPerPage)
+  const navigate = useNavigate()
+  const [view, setView] = useState("past-performance");
 
   return (
     <Tabs
-      defaultValue="outline"
+      value={view} onValueChange={setView}
       className="w-full flex-col justify-start gap-6 mb-10"
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
         <Label htmlFor="view-selector" className="sr-only">
           View
         </Label>
-        <Select defaultValue="outline">
+        <Select defaultValue={view} onValueChange={setView}>
           <SelectTrigger
             className="flex w-fit @4xl/main:hidden"
             size="sm"
@@ -258,188 +271,218 @@ export function DataTable({
           </SelectContent>
         </Select>
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex mb-5">
-          <TabsTrigger value="past-performance" className="p-4 transition-all duration-300 hover:!shadow-lg !font-semibold">My Notes</TabsTrigger>
+          <TabsTrigger value="past-performance" className="p-4 transition-all duration-300 hover:!shadow-lg !font-semibold">Listed Notes</TabsTrigger>
           <TabsTrigger value="outline" className="p-4 transition-all duration-300 hover:!shadow-lg !font-semibold">Notes Sold</TabsTrigger>
-          <TabsTrigger value="key-personnel" className="p-4 transition-all duration-300 hover:!shadow-lg !font-semibold">Key Personnel</TabsTrigger>
-          <TabsTrigger value="focus-documents" className="p-4 transition-all duration-300 hover:!shadow-lg !font-semibold">Focus Documents</TabsTrigger>
         </TabsList>
-        <div className="flex items-center gap-2 mb-5">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
-                <IconChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
       </div>
-      <TabsContent
-        value="outline"
-        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6 mt-5"
-      >
-        <div className="overflow-hidden rounded-lg border">
-          <DndContext
-            collisionDetection={closestCenter}
-            modifiers={[restrictToVerticalAxis]}
-            onDragEnd={handleDragEnd}
-            sensors={sensors}
-            id={sortableId}
-            
-          >
-            <Table>
-              <TableHeader className="bg-muted sticky top-0 z-10">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id} colSpan={header.colSpan}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      )
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                {table.getRowModel().rows?.length ? (
-                  <SortableContext
-                    items={dataIds}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    {table.getRowModel().rows.map((row) => (
-                      
-                      <DraggableRow key={row.id} row={row} />
-                    ))
-                    }
-                  </SortableContext>
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </DndContext>
-        </div>
-        <div className="flex items-center justify-between px-4">
-          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
-          </div>
-          <div className="flex w-full items-center gap-8 lg:w-fit">
-            <div className="hidden items-center gap-2 lg:flex">
-              <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                Rows per page
-              </Label>
-              <Select
-                value={`${table.getState().pagination.pageSize}`}
-                onValueChange={(value) => {
-                  table.setPageSize(Number(value))
-                }}
-              >
-                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
-                  <SelectValue
-                    placeholder={table.getState().pagination.pageSize}
-                  />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  {[10, 20, 30, 40, 50].map((pageSize) => (
-                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                      {pageSize}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
-            <div className="ml-auto flex items-center gap-2 lg:ml-0">
-              <Button
-                variant="outline"
-                className="hidden h-8 w-8 p-0 lg:flex"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to first page</span>
-                <IconChevronsLeft />
-              </Button>
-              <Button
-                variant="outline"
-                className="size-8"
-                size="icon"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to previous page</span>
-                <IconChevronLeft />
-              </Button>
-              <Button
-                variant="outline"
-                className="size-8"
-                size="icon"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to next page</span>
-                <IconChevronRight />
-              </Button>
-              <Button
-                variant="outline"
-                className="hidden size-8 lg:flex"
-                size="icon"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to last page</span>
-                <IconChevronsRight />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </TabsContent>
+
       <TabsContent
         value="past-performance"
-        className="flex flex-col px-4 lg:px-6"
+        className="flex flex-col px-4 lg:px-6 transition-opacity duration-200"
       >
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
+        <NoteDisplay />
+      </TabsContent>
+      <TabsContent
+        value="outline"
+        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6 transition-opacity duration-200"
+      >
+        <div className="flex-1">
+
+          {/* Content */}
+          <Card className="shadow-sm transition-shadow duration-500 hover:shadow-2xl w-[100%]">
+            <CardHeader className="pb-2">
+              {/* Toolbar */}
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-col w-full gap-3 sm:flex-row sm:items-center sm:gap-2">
+                  {/* search here */}
+                  <div className="relative w-full">
+                    <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search here"
+                      className="pl-9 bg-gray-100 text-gray-500 focus:bg-white focus:text-black transition-colors w-full"
+                    />
+                  </div>
+
+                  {/* drop down here */}
+                  {/* Filters */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline">
+                        <Filter className="mr-2 size-4" />
+                        Filter
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-72" align="start">
+                      <DropdownMenuLabel>Date range</DropdownMenuLabel>
+                      <div className="px-2 pb-2 text-xs text-muted-foreground">
+                        (Stub) Add your Calendar/DateRange picker here
+                      </div>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuLabel>Payment method</DropdownMenuLabel>
+                      {(["Card", "Bank Transfer", "Cash", "PayNow"] as const).map(
+                        (m) => (
+                          <DropdownMenuCheckboxItem
+                            key={m}
+                          // checked={paymentFilter[m]}
+                          // onCheckedChange={(v) =>
+                          //   setPaymentFilter((prev) => ({
+                          //     ...prev,
+                          //     [m]: Boolean(v),
+                          //   }))
+                          // }
+                          >
+                            {m}
+                          </DropdownMenuCheckboxItem>
+                        )
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Status */}
+                  <Select
+                  value={String(itemsPerPage)}
+onValueChange={(v) => setItemPerPage(Number(v))}
+
+                  >
+                    <SelectTrigger className="w-[100%] sm:w-[15%]">
+                      <SelectValue placeholder="View rows per page" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="5">5 rows</SelectItem>
+                      <SelectItem value="10">10 rows</SelectItem>
+                      <SelectItem value="15">15 rows</SelectItem>
+                      <SelectItem value="20">20 rows</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* <div className="flex items-center gap-2">
+                    {selected.length > 0 ? (
+                      <>
+                        <Button variant="outline" size="sm">
+                          <CircleCheck className="mr-2 size-4" />
+                          Mark as paid
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Truck className="mr-2 size-4" />
+                          Mark as shipped
+                        </Button>
+                        <Button variant="destructive" size="sm">
+                          <Trash2 className="mr-2 size-4" />
+                          Delete ({selected.length})
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button size="sm">
+                          <Plus className="mr-2 size-4" />
+                          Create order
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <RefreshCcw className="mr-2 size-4" />
+                          Sync
+                        </Button>
+                      </>
+                    )}
+                  </div> */}
+              </div>
+            </CardHeader>
+
+            <CardContent className="pt-2">
+
+              <div className="overflow-auto rounded-md flex flex-col gap-y-6 lg:hidden ">
+                {currentItems.map((o) => {
+                  return (
+                    <UserActivityListing key={o.id} note={o} location="seller" />
+                  )
+                })}
+
+              </div>
+              <div className="overflow-auto rounded-md border hidden lg:block">
+                <Table className="w-full">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="pl-[2rem]">ID</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Customer Name</TableHead>
+                      <TableHead>Note Name</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Module</TableHead>
+                      <TableHead>Type</TableHead>
+
+                    </TableRow>
+                  </TableHeader>
+
+                  <TableBody>
+                    {currentItems.map((o) => {
+                      // const meta = STATUS_META[o.status];
+                      return (
+                        <>
+                          <TableRow key={o.id} className="hover:bg-muted/40 cursor-pointer h-16 table-row w-full" onClick={() => navigate(`/orderdetails`)}>
+                            <TableCell className="font-medium pl-[2rem]">
+                              {o.id}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {new Date(o.createdAt).toLocaleString()}
+                            </TableCell>
+                            <TableCell>
+                              <div className="font-medium">{o.userFullName}</div>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {o.originalName}
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {formatCurrency(o.price)}
+                            </TableCell>
+                            <TableCell>
+                              {o.module}
+                            </TableCell>
+                            <TableCell>
+                              {o.type}
+                            </TableCell>
+                          </TableRow>
+                        </>
+
+                      );
+                    })}
+                    {mockData.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={9} className="h-24 text-center">
+                          No orders match your filters.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
+                <div>
+                  Page {currentPage} of {totalPages}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Prev
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
       </TabsContent>
       <TabsContent value="key-personnel" className="flex flex-col px-4 lg:px-6">
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>

@@ -344,10 +344,7 @@ export default function OrderManagement() {
     <div className="min-h-screen bg-background">
       <div className="flex">
         <SideNav />
-
-        {/* Main */}
         <div className="flex-1">
-          {/* Top bar */}
           <div className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur">
             <div className="flex items-center gap-3 p-3 lg:p-4">
               <MobileNav />

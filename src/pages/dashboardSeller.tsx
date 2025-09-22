@@ -3,21 +3,23 @@ import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { DataTable } from "@/components/data-table"
 import { SectionCards } from "@/components/section-cards"
 import { SiteHeader } from "@/components/site-header"
+import { ChartBarLabel } from "@/components/chart-bar-label";
 import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import AOS from "aos";
 import "aos/dist/aos.css";
-import { useEffect } from "react";
-//import {myNotes} from '../types/types.ts';
-import sampleData from '../app/dashboard/data.json'; // Adjust path as needed
- 
+import { useEffect, useState } from "react";
 
 export default function DashboardSeller() {
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    setAnimate(true); // trigger animation after mount
+  }, []);
 
   return (
-    <div className="container w-[80%] ml-auto mr-auto fade-in">
+    <div className={animate ? "fade-in container w-[80%] ml-auto mr-auto" : "container w-[80%] ml-auto mr-auto"}>
       <SidebarProvider
 
         style={
@@ -34,10 +36,15 @@ export default function DashboardSeller() {
             <div className="@container/main flex flex-1 flex-col gap-2">
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
                 <SectionCards />
-                <div className="px-4 lg:px-6">
-                  <ChartAreaInteractive />
+                <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-end">
+                  <div className="flex-1 px-4 lg:px-6">
+                    <ChartAreaInteractive />
+                  </div>
+                  <div className="flex-1 px-4 lg:px-6">
+                    <ChartBarLabel />
+                  </div>
                 </div>
-                <DataTable data={sampleData} />
+                <DataTable />
               </div>
             </div>
           </div>

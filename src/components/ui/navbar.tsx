@@ -29,18 +29,7 @@ const navbar = () => {
             try {
                 isAmplifyUser = await getCurrentUser(); // 2. Assign the value
                 setAmplifyUser(isAmplifyUser);
-                // const userDB = await getUser(); 
-                // console.log("DB user exists");
-                // setUser(userDB);
-                // console.log(userDB)
-                
             } catch (error) {
-                // if (isAmplifyUser) {
-                //     toast.warning("Please complete account details to continue");
-                //     console.log("Amplify user exists but not in DB, redirecting to account creation");
-                //     navigate('/accountCreation');
-                //     return;
-                // } 
             }
         };
         checkUser();
@@ -54,11 +43,11 @@ const navbar = () => {
             localStorage.clear();
             toast.success('Successfully signed out');
 
-            const timer = setTimeout(() => {
-                window.location.href = '/home';
-            },1000)
+            // const timer = setTimeout(() => {
+            //     window.location.href = '/home';
+            // },1000)
 
-            return () => clearTimeout(timer);   
+            // return () => clearTimeout(timer);   
 
         } catch (error) {
             console.log('error signing out: ', error);

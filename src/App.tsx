@@ -30,6 +30,7 @@ import Welcome from "./pages/Welcome";
 import NewHome from './pages/NewHome'
 import Listing from "./pages/Listing";
 import Payment from "./pages/Payment";
+import { PaymentSuccess } from "./pages/PaymentSuccessful";
 
 function App() {
   return (
@@ -53,7 +54,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/paymentSuccessful" element={<Payment/>}/>
+            <Route path="/payment" element={<Payment/>}/>
+            <Route path="/paymentSuccess" element={<PaymentSuccess/>}/>
             <Route path="/test" element={<LoginPage />} />
           </Route>
         </Route>

@@ -36,11 +36,11 @@ export default function DashboardSeller() {
             <div className="@container/main flex flex-1 flex-col gap-2">
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
                 <SectionCards />
-                <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-end">
-                  <div className="flex-1 px-4 lg:px-6">
+                <div className="flex flex-col lg:flex-col gap-4 items-stretch lg:items-end">
+                  <div className="w-[100%] px-4 lg:px-6">
                     <ChartAreaInteractive />
                   </div>
-                  <div className="flex-1 px-4 lg:px-6">
+                  <div className=" w-[100%] px-4 lg:px-6">
                     <ChartBarLabel />
                   </div>
                 </div>

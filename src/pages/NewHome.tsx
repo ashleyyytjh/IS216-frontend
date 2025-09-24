@@ -27,6 +27,7 @@ const featuredNotes = [
 import { useState } from 'react';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { User } from '@/types/types';
+import logo from '../assets/logodark.png';
 
 export default function ImprovedHomepage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
@@ -64,10 +65,12 @@ export default function ImprovedHomepage() {
 
   return (
     <div ref={targetRef} className="relative w-full">
-      <BackgroundNebula />
 
       {/* The Sticky Hero Section */}
+      <BackgroundNebula />
+
       <div className="h-screen w-full sticky top-0 flex flex-col items-center justify-center">
+
         <motion.div
           style={{ opacity: heroOpacity, scale: heroScale }}
           initial={{ scale: 0.2, opacity: 0 }}
@@ -96,6 +99,7 @@ export default function ImprovedHomepage() {
           <>
             <h1 className="text-5xl md:text-6xl 2xl:text-8xl font-bold tracking-tighter">
               OnlyNotes
+            {/* <img src={logo} className='w-90' alt="Logo" /> */}
             </h1>
             <p className="mt-4 max-w-xl mx-auto text-md md:text-xl text-slate-600 ">
               The pinnacle of student-curated knowledge. Ace your exams with notes from the best.

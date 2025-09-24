@@ -29,6 +29,7 @@ import AccountCreation from "./pages/AccountCreation";
 import Welcome from "./pages/Welcome";
 import NewHome from './pages/NewHome'
 import Listing from "./pages/Listing";
+import Payment from "./pages/Payment";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
+            <Route path="/paymentSuccessful" element={<Payment/>}/>
             <Route path="/test" element={<LoginPage />} />
           </Route>
         </Route>

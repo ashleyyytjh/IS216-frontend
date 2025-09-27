@@ -1,35 +1,40 @@
-import DashboardUser from "@/components/dashboard-user";
-import ProfileHeader from "@/components/profile-header";
-import { User } from "@/types/types";
-
-    const currentUser: User =
-    {
-        "userId": "594a352c-2081-706e-b679-00b936e6b8f9", //i dont need this for now 
-        "email": "owjoel@gmail.com",
-        "username": "owjoel",
-        "yearOfStudy": 4,
-        "major": "Computer Science",
-        "modules": [
-            "cs425",
-            "is216"
-        ], //can be updated
-        "purchasedNotes": [
-            "68b98faba389fd1819c78c17"
-        ]
-    }
+import { useEffect, useState } from "react"
+import DashboardUser from "@/components/dashboard-user"
+import ProfileHeader from "@/components/profile-header"
+import { getUser } from "@/services/UserService"
+import { User } from "@/types/types"
+import SpinItem from "@/components/spinner"
+// Hooked
 const Profile = () => {
-    return (
-        <div className="container mw-50 mr-auto ml-auto pl-2 pr-2 w-[100%] md:w-[75%] fade-in">
-            <div className="row-span-full mt-10 md: bg-white w-full ml-auto mr-auto">
-                <ProfileHeader current={currentUser}/>
-            </div>
-            <div className="row-span-full mt-10 bg-white w-full mb-20">
-                <DashboardUser current={currentUser}/>
-            </div>
-            
-        </div>
-    )
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
+  useEffect(() => {
+    getUser()
+      .then((resp) => {
+        setCurrentUser(resp)
+        console.log(resp)
+      })
+      .catch((err) => {
+        console.error("Error fetching user:", err)
+      })
+      .finally(() => setLoading(false))
+  }, [])
+  console.log(currentUser)
 
+    if (loading) return  <div className="flex justify-center items-center w-full h-64"> <SpinItem/></div>
+  if (!currentUser) return <p>No user data found</p>
+
+  return (
+    <div className="container mw-50 mr-auto ml-auto pl-2 pr-2 w-[100%] md:w-[75%] fade-in">
+      <div className="row-span-full mt-10 md: bg-white w-full ml-auto mr-auto">
+        <ProfileHeader current={currentUser} />
+      </div>
+      <div className="row-span-full mt-10 bg-white w-full mb-20">
+        <DashboardUser current={currentUser} />
+      </div>
+    </div>
+  )
 }
-export default Profile;
+
+export default Profile

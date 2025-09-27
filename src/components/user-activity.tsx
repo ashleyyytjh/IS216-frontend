@@ -1,5 +1,5 @@
 
-import type { Note } from "@/types/types"
+import { myNotes, type Note } from "@/types/types"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
 import UserActivityListing from "./user-activity-listing"
 import { useEffect, useState } from "react"
@@ -11,21 +11,64 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
-import { myNotes } from "@/types/types"
+// import { myNotes } from "@/types/types"
 import { Input } from "@/components/ui/input"
+import { getOrders, getUserOrderByUserId } from "@/services/OrdersService"
+import { getNotesById } from "@/services/NotesService"
+import SpinItem from "./spinner"
 
 function UserActivity(currentUser) {
 
+
     currentUser = currentUser['currentUser']
+    let usrID = currentUser.sub
+    console.log(usrID)
     const [currentPage, setCurrentPage] = useState(1)
     const [searchQuery, setSearchQuery] = useState('');
+
+    const [orders, setOrders] = useState<any[]>([])
+    const [loading, setLoading] = useState(true)
     const notesPerPage = 4
-    const filteredNotes = myNotes.filter(note => {
+    useEffect(() => {
+        async function fetchOrders() {
+            try {
+                const rawOrders = await getUserOrderByUserId(usrID)
+
+                const enrichedOrders = await Promise.all(
+                    rawOrders.map(async (order) => {
+                        const note = await getNotesById(order.note_id)
+                        return { ...order, note }
+                    })
+                )
+
+                setOrders(enrichedOrders)
+            } catch (err) {
+                console.error("Error fetching userOrders:", err)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchOrders()
+    }, [usrID])
+    console.log(orders)
+
+
+    //GET orders where buyer_id == currentUserID
+    //Using above, filter and get the individual note tags (individual note details)
+
+    //Get note name
+    //Get mod code
+    //Get price - done
+    //Get seller name?
+
+    const filteredNotes = orders.filter(note => {
         const query = searchQuery.toLowerCase()
+        console.log(query)
         return (
-            note['tags'][0].toLowerCase().includes(query) ||
-            note.description.toLowerCase().includes(query) ||
-            note.module.toLowerCase().includes(query)
+            note['note']['tags'][0].toLowerCase().includes(query) ||
+            note.note.description.toLowerCase().includes(query) ||
+            note.note.module.toLowerCase().includes(query)
         )
     })
     const pagesNeeded = Math.ceil(filteredNotes.length / notesPerPage)
@@ -33,10 +76,16 @@ function UserActivity(currentUser) {
     const endIndex = startIndex + notesPerPage
     const currentNotes = filteredNotes.slice(startIndex, endIndex) //slicing the myNotes according to page.
 
+
     useEffect(() => {
         setCurrentPage(1)
     }, [searchQuery])
+    if (loading) return  <div className="flex justify-center items-center w-full h-64"> <SpinItem/></div>
+    if (!orders.length) return <p>No orders found</p>
+
+
     return (
+        
         <Card className="hover:shadow-xl transition-all duration-300">
             <CardHeader>
                 <CardTitle>Purchased Notes</CardTitle>

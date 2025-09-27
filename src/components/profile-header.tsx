@@ -10,7 +10,7 @@ function ProfileHeader(currentUser) {
         <Card className="flex flex-col md:flex-row mt-4 ml-8 mr-8 pl-8 pr-8 relative transition-all duration-300 hover:shadow-lg">
             <div className="text-center md:text-left">
                 <Avatar className="w-20 h-20 inline-block md:ml-0 mr-0">
-                    <AvatarImage src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" />
+                    <AvatarImage src={currentUser.imageUrl} />
                 </Avatar>
             </div>
 

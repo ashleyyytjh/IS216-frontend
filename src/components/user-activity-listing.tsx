@@ -23,7 +23,7 @@ const UserActivityListing = (note) => {
                         note.location == "seller" ? (
                             <p className="text">{note.note.originalName}</p>
                         ) : (
-                            <p className="text">{note['note']['tags'][0]}</p>
+                            <p className="text">{note['note']['note']['tags'][0]}</p>
                         )
                     }
 
@@ -39,23 +39,23 @@ const UserActivityListing = (note) => {
                             <></>
                         )} 
                         
-                        <p className="text-muted-foreground">{note.note.module}</p>
+                        <p className="text-muted-foreground">{note.note.note.module}</p>
 
                         {
                             note.location == "seller" ? (
                                 <p>{note.note.userFullName}</p>
                             ):(
-                                <p className="text-muted-foreground">Nicholas Soh</p>
+                                <p className="text-muted-foreground">{note.note.note.userFullName}</p>
                             )}
                         
                     </div>
                     {/* Deafult is flex row. Once more than small, do the item center all. */}
                     <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between gap-2">
-                        <span className=" text-[#0e172b] md:mt-[-1em]">{formatCurrency(note['note']['price'])} </span>
+                        <span className=" text-[#0e172b] md:mt-[-1em]">{formatCurrency(note['note']['note']['price'])} </span>
 
                         <div className="flex flex-row items-center gap-2">
                             <span className="text-sm text-muted-foreground">
-                                {differenceInDays} days ago
+                                Download here
                             </span>
                             <Download className="w-4 h-4 cursor-pointer hover:shadow-lg" />
                         </div>

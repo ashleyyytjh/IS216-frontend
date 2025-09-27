@@ -8,6 +8,8 @@ import { useState } from "react"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
 import { Pencil } from 'lucide-react';
+import { toast } from "sonner";
+
 
 import {
     Form, FormControl, FormField, FormItem, FormLabel, FormMessage
@@ -15,6 +17,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { formSchema } from "./update-form/update-form"
 
+//Need to hook the updating function here.
 function UserEdit(currentUser) {
     currentUser = currentUser['currentUser']
     let curMods = currentUser['modules']
@@ -29,7 +32,15 @@ function UserEdit(currentUser) {
         setUserMod("")
     }
     const handleInputChange = (event) => { setUserMod(event.target.value) }
-    const onSubmit = () => { }
+    const onSubmit = (values: z.infer<typeof formSchema>) => { 
+
+        values.newCourse = curModsState;
+        //update code here. if ok,
+        toast.success('Successfully updated your account details!')
+        toast.error('Something went wrong, please try again later.')
+        console.log(values)
+
+    }
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -76,7 +87,7 @@ function UserEdit(currentUser) {
                                         <FormItem>
                                             <FormLabel>Email</FormLabel>
                                             <FormControl>
-                                                <Input placeholder={currentUser['email']} {...field} className="placeholder:text-opacity-25 border border-[#f1f5f9] hover:border-gray-300 transition-all duration-300 w-full" />
+                                                <Input disabled placeholder={currentUser['email']} {...field} className="placeholder:text-opacity-25 border border-[#f1f5f9] hover:border-gray-300 transition-all duration-300 w-full" />
                                             </FormControl>
 
                                             <FormMessage />

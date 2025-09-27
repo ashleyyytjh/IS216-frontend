@@ -16,9 +16,11 @@ export const searchNotes = async (queryParams: any) => {
     return response.data;
 }
 
-export const getNotesById = async(id: string) => {
-    const response = await axiosInstance.get(`/notes/${id}`);
-    return response.data;
+export const getNotesById = async (id: string) => {
+  const response = await axiosInstance.get(`/notes/${id}`, {
+    _noAuth: true
+  })
+  return response.data
 }
 
 export const createNotes = async (noteData: any) => {

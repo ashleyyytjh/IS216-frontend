@@ -14,11 +14,12 @@ import { formatRelativeMonthYear } from "@/utils/dates";
 import { Separator } from "@/components/ui/separator";
 import { formatPriceSGD } from "@/utils/currency";
 import { Link } from "react-router-dom";
+import { SearchNotesItem } from "@/types/requests/notes";
 
-export default function ListingCard({ data }: { data: NoteListing }) {
+export default function ListingCard({ data }: { data: SearchNotesItem }) {
   return (
-    <Link to={`/listings/${data.id}`}>
-      <Card className="p-4 rounded-md">
+    <Link to={`/listings/${data.id}`} className="h-full">
+      <Card className="h-full flex flex-col p-4 rounded-md">
         <CardHeader className="flex items-stretch gap-4 p-0">
           <Avatar className="h-12 w-12 rounded-md overflow-hidden">
             <AvatarImage src={data.userImageUrl} className="object-cover" />
@@ -33,13 +34,13 @@ export default function ListingCard({ data }: { data: NoteListing }) {
               </p>
             </div>
             <p className="text-xs text-muted-foreground">
-              Year {data.yearOfStudy} {data.major}
+              Year {data.userYear} {data.userMajor}
             </p>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-2 p-0 pb-3">
-          <h3 className="font-semibold">{data.originalName}</h3>
+        <CardContent className="flex-1 space-y-2 p-0 pb-3">
+          <h3 className="font-semibold h-10">{data.title}</h3>
           <p className="text-sm line-clamp-2">{data.description}</p>
           <div className="flex flex-wrap text-xs text-muted-foreground">
             {data.tags.map((tag, i) => (
@@ -62,9 +63,9 @@ export default function ListingCard({ data }: { data: NoteListing }) {
           <div className="flex h-6 gap-2">
             <Badge
               className="text-sm font-normal rounded-full border-none bg-linear-to-r text-white uppercase"
-              style={{ background: courseGradient(data.module) }}
+              style={{ background: data.module ? courseGradient(data.module): "black" }}
             >
-              {data.module}
+              {data.module ?? "General"} 
             </Badge>
             <Separator orientation="vertical" color="blue" />
             <span className="font-mono flex items-center">

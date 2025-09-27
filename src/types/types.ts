@@ -24,14 +24,15 @@ export type NoteListing = {
     userId: string;
     userFullName: string;
     userImageUrl: string;
-    yearOfStudy: number;
-    major: string;
+    userYear: number;
+    userMajor: string;
     description: string;
+    title: string;
     originalName: string;
     tags: string[];
     price: number;
     type: string;
-    module: string;
+    module?: string | null | undefined;
     createdAt: string; 
 }
 
@@ -199,3 +200,5 @@ export type GraphData = {
   nodes: GraphNode[]
   edges: GraphEdge[]
 }
+
+export type TypeOption = { value: string; label: string; count: number }

@@ -9,6 +9,8 @@ import UserTabs from "./user-tabs";
 import { useEffect, useState } from "react";
 import { getOrders } from "@/services/OrdersService";
 import { getNotesById } from "@/services/NotesService";
+import React from "react";
+import { Spinner } from "./ui/shadcn-io/spinner";
 
 function DashboardBuyer(currentUser) {
     console.log(currentUser['current']['current'])
@@ -23,29 +25,45 @@ function DashboardBuyer(currentUser) {
             .catch((err) => {
                 console.error("Error fetching orders:", err)
             })
-            .finally(() => setLoading(false))
+
     }, [])
-    let totalCount = 0;
-    let totalSpent = 0;
-    let hashMap = {}
-    for(let order of orders){
-        if(order['buyer_id'] == currentUser['current']['current']['sub']){
-            let currentID = order['note_id']
-            getNotesById(currentID).then((res)=>{
-                console.log(res.module)
-                if(hashMap[res.module]!= "undefined"){
-                    hashMap[res.module] += Number(1)
-                }else{
-                    hashMap[res.module] = Number(1)
-                }
-                console.log(hashMap)
-            }).catch((err)=>{
-                console.log(err)
-            })
-            totalCount += 1
-            totalSpent += order['price']
-        }
-    }
+    const [hashMap, setHashMap] = useState<Record<string, number>>({});
+    const [totalCount, setTotalCount] = useState(0);
+    const [totalSpent, setTotalSpent] = useState(0);
+
+    useEffect(() => {
+        if (!orders || orders.length === 0) return;
+
+        let map: Record<string, number> = {};
+        let count = 0;
+        let spent = 0;
+
+        const promises = orders
+            .filter(o => o.buyer_id === currentUser.current.current.sub)
+            .map(o =>
+                getNotesById(o.note_id).then(res => {
+                    map[res.module] = (map[res.module] || 0) + 1;
+                    count += 1;
+                    spent += o.price;
+                })
+            );
+
+        Promise.all(promises).then(() => {
+            setHashMap(map);
+            setTotalCount(count);
+            setTotalSpent(spent);
+            setLoading(false)
+        });
+    }, [orders, currentUser]);
+
+    const topModule = React.useMemo(() => {
+        if (!hashMap || Object.keys(hashMap).length === 0) return null;
+
+        const entries = Object.entries(hashMap);
+        entries.sort((a, b) => b[1] - a[1]);
+        return { module: entries[0][0], count: entries[0][1] };
+    }, [hashMap]);
+
 
     return (
         <>
@@ -55,10 +73,20 @@ function DashboardBuyer(currentUser) {
                         <h1 className="font-medium">Total purchased notes</h1>
                         <BookOpen />
                     </CardHeader>
-                    <CardContent>
-                        <h1 className="text-xl font-extrabold">{totalCount}</h1>
-                        <p className=" text-sm font-light">Note purchased</p>
-                    </CardContent>
+                    {
+                        loading ? (
+                            <CardContent>
+                                <Spinner variant="bars" />
+                            </CardContent>
+
+                        ) : (
+                            <CardContent>
+                                <h1 className="text-xl font-extrabold">{totalCount}</h1>
+                                <p className=" text-sm font-light">Notes purchased.</p>
+                            </CardContent>
+                        )
+                    }
+
                 </Card>
 
                 <Card className="w-[100%] md:w-[70%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
@@ -66,10 +94,20 @@ function DashboardBuyer(currentUser) {
                         <h1 className="font-medium">Total Spent</h1>
                         <DollarSign />
                     </CardHeader>
-                    <CardContent>
-                        <h1 className="text-xl font-extrabold">${totalSpent}</h1>
-                        <p className=" text-sm font-light">Spent in Onlynotes.</p>
-                    </CardContent>
+                    {
+                        loading ? (
+                            <CardContent>
+                                <Spinner variant="bars" />
+                            </CardContent>
+
+                        ) : (
+                            <CardContent>
+                                <h1 className="text-xl font-extrabold">${totalSpent}</h1>
+                                <p className=" text-sm font-light">Spent in Onlynotes.</p>
+                            </CardContent>
+                        )
+                    }
+
                 </Card>
 
                 <Card className="w-[100%] md:w-[70%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
@@ -77,11 +115,20 @@ function DashboardBuyer(currentUser) {
                         <h1 className="font-medium">Favourite Modules</h1>
                         <Heart />
                     </CardHeader>
+                    {
+                        loading ? (
+                            <CardContent>
+                                <Spinner variant="bars" />
+                            </CardContent>
 
-                    <CardContent>
-                        <h1 className="text-xl font-extrabold">IS216</h1>
-                        <p className=" text-sm font-light">Purchased 10 times</p>
-                    </CardContent>
+                        ) : (
+                            <CardContent>
+                                <h1 className="text-xl font-extrabold">{topModule?.module}</h1>
+                                <p className=" text-sm font-light">Purchased {topModule?.count} times.</p>
+                            </CardContent>
+                        )
+                    }
+
                 </Card>
             </div>
             <div className="flex flex-row w-full">

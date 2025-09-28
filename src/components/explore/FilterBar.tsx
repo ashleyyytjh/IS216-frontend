@@ -5,32 +5,15 @@ import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { ChangeEvent, useState } from "react";
 import { TypeOption } from "@/types/types";
+import { useListing } from "./ListingContext";
 
 type FilterBarProps = {
-  query: string;
-  setQuery: (q: string) => void;
-  type: string;
-  setType: (t: string) => void;
-  showPaid: boolean;
-  setShowPaid: (b: boolean) => void;
-  options: TypeOption[];
-  onSearch: () => void;
-  timeFilter: string;
-  setTimeFilter: (s: string) => void;
-};
+  onSearch: () => void
+}
 
-export default function FilterBar({
-  query,
-  setQuery,
-  type,
-  setType,
-  showPaid,
-  setShowPaid,
-  onSearch,
-  options,
-  timeFilter,
-  setTimeFilter,
-}: FilterBarProps) {
+export default function FilterBar({ onSearch }: FilterBarProps) {
+
+  const { query, setQuery, type, setType, showPaid, setShowPaid, options, timeFilter, setTimeFilter } = useListing()
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)
@@ -43,12 +26,8 @@ export default function FilterBar({
     }
   }
 
-  const handleType = (e: ChangeEvent<HTMLSelectElement>) => {
-    setType(e.target.value)
-  }
-
   return (
-    <section className="mx-auto max-w-6xl flex gap-4 text-sm">
+    <section className="mx-auto max-w-6xl flex gap-4 text-sm w-full">
       <div className="relative flex-1 basis-full md:basis-auto opacity-60 focus-within:opacity-100 transition-opacity">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input

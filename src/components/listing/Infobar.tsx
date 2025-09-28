@@ -26,9 +26,9 @@ export default function Infobar({ data } : { data: NoteListing }) {
             <div className="flex h-6 gap-2">
               <Badge
                 className="text-sm font-normal rounded-full border-none bg-linear-to-r text-white uppercase"
-                style={{ background: courseGradient(data.module) }}
+                style={{ background: data.module ? courseGradient(data.module): "black" }}
               >
-                {data.module}
+                {data.module} ?? "General"
               </Badge>
               <Separator orientation="vertical" color="blue" />
               <span className="font-mono flex items-center">

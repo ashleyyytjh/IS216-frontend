@@ -4,7 +4,6 @@ import SuspenseFallback from "@/components/listing/SuspenseFallback";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { searchNotes } from "@/services/NotesService";
 import { GraphData, NoteListing } from "@/types/types";
 import { DollarSign, Info } from "lucide-react";
 import { lazy, Suspense, useEffect } from "react";
@@ -12,8 +11,6 @@ import { useParams } from "react-router-dom";
 
 const Graph = lazy(() => import("@/components/listing/Graph"))
 const PDFViewer = lazy(() => import("@/components/listing/PDFViewer"));
-
-const defaultLimit = 10
 
 export default function Listing() {
   const { id } = useParams<{ id: string }>();
@@ -67,6 +64,8 @@ export default function Listing() {
 
 const mockData = {
   id: "68b98faba389fd1819c78c17",
+  yearOfStudy: 4,
+  major: "Computer Science",
   userId: "594a352c-2081-706e-b679-00b936e6b8f9",
   userFullName: "Ashley Toh",
   title: "Vector Semantics & Word Embeddings",

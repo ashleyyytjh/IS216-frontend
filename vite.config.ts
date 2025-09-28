@@ -15,4 +15,13 @@ export default defineConfig({
     include: ["warning"],
     exclude: ["react-pdf", "pdfjs-dist"],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          pdf: ["react-pdf", "pdfjs-dist"],
+        },
+      },
+    },
+  },
 })

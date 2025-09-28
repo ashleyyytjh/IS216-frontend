@@ -1,20 +1,16 @@
 import Hero from "@/components/explore/Hero";
 import FilterBar from "@/components/explore/FilterBar";
-import { NoteListing, TypeOption } from "@/types/types";
-import ListingCard from "@/components/listing/ListingCard";
-import { useEffect, useState } from "react";
+import { TypeOption } from "@/types/types";
+import ListingCard from "@/components/explore/ListingCard";
+import { useEffect } from "react";
 import { searchNotes } from "@/services/NotesService";
-import { SearchNotesItem } from "@/types/requests/notes";
+import { ListingProvider, useListing } from "@/components/explore/ListingContext";
+import ListingPagination from "@/components/explore/ListingPagination";
 
 const DEFAULT_PAGE_SIZE = 9
 
-export default function Explore() {
-  const [listings, setListings] = useState<SearchNotesItem[]>([])
-  const [query, setQuery] = useState("")
-  const [type, setType] = useState("")
-  const [showPaid, setShowPaid] = useState<boolean>(true)
-  const [options, setOptions] = useState<TypeOption[]>([])
-  const [timeFilter, setTimeFilter] = useState("")
+export function ExploreContent() {
+    const { query, type, showPaid, timeFilter, listings, setListings, setOptions, setTotal, page } = useListing()
 
   const getListings = async () => {
     let since = new Date()
@@ -44,40 +40,37 @@ export default function Explore() {
     }
     const data = await searchNotes(params);
     setListings(data.items)
-    const typeCounts = buildCounts(data.byType)
-    setOptions(typeCounts)
+    setOptions(buildCounts(data.byType))
+    setTotal(data.total)
   }
 
   useEffect(() => {
     getListings()
-  }, [type, showPaid, timeFilter])
+  }, [type, showPaid, timeFilter, page])
 
   return (
-    <main className="px-5 xl:px-0">
+    <main className="px-5 xl:px-0 flex flex-col gap-8 py-10">
       <Hero />
-      <FilterBar
-        query={query}
-        setQuery={setQuery}
-        type={type}
-        setType={setType}
-        showPaid={showPaid}
-        setShowPaid={setShowPaid}
-        onSearch={getListings}
-        options={options}
-        timeFilter={timeFilter}
-        setTimeFilter={setTimeFilter}
-      />
-
-      <section className="w-full text-sm font-light my-10">
+      <FilterBar onSearch={getListings} />
+      <section className="w-full text-sm font-light">
         <div className="max-w-6xl mx-auto grid gap-5 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
           {listings.map((listing) => (
             <ListingCard key={listing.id} data={listing} />
           ))}
         </div>
       </section>
+      <ListingPagination />
     </main>
   );
 };
+
+export default function Explore() {
+  return (
+    <ListingProvider>
+      <ExploreContent />
+    </ListingProvider>
+  )
+}
 
 export type ByTypeCount = { type: string; count: number };
 
@@ -94,28 +87,7 @@ function buildCounts(byType: ByTypeCount[]): TypeOption[] {
     return {
       value,
       label,
-      count: match?.count ?? 0, // default to 0 if not present
+      count: match?.count ?? 0,
     };
   });
 }
-
-const mockData: NoteListing[] = [
-  {
-    id: "68b98faba389fd1819c78c17",
-    userId: "594a352c-2081-706e-b679-00b936e6b8f9",
-    userFullName: "Ashley Toh",
-    userImageUrl:
-      "https://plus.unsplash.com/premium_photo-1661913010540-2edd44a5ea43?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJlJTIwd2F0ZXJ8ZW58MHx8MHx8fDA%3D",
-    userMajor: "Computer Science",
-    userYear: 4,
-    description:
-      "Covers vector semantics and word embeddings, from frequency-based models to Word2Vec/GloVe and their role in capturing word meaning",
-    originalName: "Vector Semantics & Word Embeddings",
-    title: "Vector Semantics & Word Embeddings",
-    tags: ["NLP", "Machine Learning", "cs425"],
-    price: 5,
-    type: "notes",
-    module: "cs425",
-    createdAt: "2025-09-04T13:10:03.602Z",
-  },
-];

@@ -28,6 +28,8 @@ export type NoteListing = {
     userMajor: string;
     description: string;
     title: string;
+    yearOfStudy: number;
+    major: string;
     originalName: string;
     tags: string[];
     price: number;

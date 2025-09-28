@@ -14,7 +14,7 @@ import { set } from "date-fns"
 
 const navigationItems = [
     { name: "Home", href: "/home" },
-    { name: "Notes Repository", href: "/explore" },
+    { name: "Explore", href: "/explore" },
     { name: "Upload Notes", href: "/upload" }
 ]
 

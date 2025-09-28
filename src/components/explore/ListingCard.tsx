@@ -4,7 +4,6 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { NoteListing } from "@/types/types";
 import { Heart } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { formatPriceSGD } from "@/utils/currency";
 import { Link } from "react-router-dom";
 import { SearchNotesItem } from "@/types/requests/notes";
+import { getAvatarFallback } from "@/utils/util";
 
 export default function ListingCard({ data }: { data: SearchNotesItem }) {
   return (
@@ -23,7 +23,7 @@ export default function ListingCard({ data }: { data: SearchNotesItem }) {
         <CardHeader className="flex items-stretch gap-4 p-0">
           <Avatar className="h-12 w-12 rounded-md overflow-hidden">
             <AvatarImage src={data.userImageUrl} className="object-cover" />
-            <AvatarFallback>??</AvatarFallback>
+            <AvatarFallback className="rounded-md">{getAvatarFallback(data.userFullName)}</AvatarFallback>
           </Avatar>
 
           <div className="flex-1 flex flex-col justify-center gap-1">

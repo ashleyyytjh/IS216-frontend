@@ -39,3 +39,7 @@ export const downloadNotes = async (noteId: string) => {
     return response.data;
 }
 
+export const getUserOwned = async()=>{
+    const response = await axiosInstance.get(`/notes/owned`)
+    return response.data
+}

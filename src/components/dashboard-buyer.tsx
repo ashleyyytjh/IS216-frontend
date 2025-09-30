@@ -32,7 +32,16 @@ function DashboardBuyer(currentUser) {
     const [totalSpent, setTotalSpent] = useState(0);
 
     useEffect(() => {
-        if (!orders || orders.length === 0) return;
+        if (!orders) return;
+
+        if (orders.length === 0) {
+            // No orders → just reset to defaults
+            setHashMap({});
+            setTotalCount(0);
+            setTotalSpent(0);
+            setLoading(false);
+            return;
+        }
 
         let map: Record<string, number> = {};
         let count = 0;
@@ -76,13 +85,17 @@ function DashboardBuyer(currentUser) {
                     {
                         loading ? (
                             <CardContent>
-                                <Spinner variant="bars" />
+                                <Spinner variant="default" />
                             </CardContent>
-
+                        ) : totalCount === 0 ? (
+                            <CardContent>
+                                <h1 className="text-xl font-extrabold">0</h1>
+                                <p className="text-sm font-light">No notes purchased yet.</p>
+                            </CardContent>
                         ) : (
                             <CardContent>
                                 <h1 className="text-xl font-extrabold">{totalCount}</h1>
-                                <p className=" text-sm font-light">Notes purchased.</p>
+                                <p className="text-sm font-light">Notes purchased.</p>
                             </CardContent>
                         )
                     }
@@ -97,13 +110,17 @@ function DashboardBuyer(currentUser) {
                     {
                         loading ? (
                             <CardContent>
-                                <Spinner variant="bars" />
+                                <Spinner variant="default" />
                             </CardContent>
-
+                        ) : totalSpent === 0 ? (
+                            <CardContent>
+                                <h1 className="text-xl font-extrabold">$0</h1>
+                                <p className="text-sm font-light">No spending yet.</p>
+                            </CardContent>
                         ) : (
                             <CardContent>
                                 <h1 className="text-xl font-extrabold">${totalSpent}</h1>
-                                <p className=" text-sm font-light">Spent in Onlynotes.</p>
+                                <p className="text-sm font-light">Spent in Onlynotes.</p>
                             </CardContent>
                         )
                     }
@@ -118,13 +135,17 @@ function DashboardBuyer(currentUser) {
                     {
                         loading ? (
                             <CardContent>
-                                <Spinner variant="bars" />
+                                <Spinner variant="default" />
                             </CardContent>
-
+                        ) : !topModule || topModule.count === 0 ? (
+                            <CardContent>
+                                <h1 className="text-xl font-extrabold">None</h1>
+                                <p className="text-sm font-light">No purchases yet.</p>
+                            </CardContent>
                         ) : (
                             <CardContent>
-                                <h1 className="text-xl font-extrabold">{topModule?.module}</h1>
-                                <p className=" text-sm font-light">Purchased {topModule?.count} times.</p>
+                                <h1 className="text-xl font-extrabold">{topModule.module}</h1>
+                                <p className="text-sm font-light">Purchased {topModule.count} times.</p>
                             </CardContent>
                         )
                     }

@@ -24,14 +24,17 @@ export type NoteListing = {
     userId: string;
     userFullName: string;
     userImageUrl: string;
+    userYear: number;
+    userMajor: string;
+    description: string;
+    title: string;
     yearOfStudy: number;
     major: string;
-    description: string;
     originalName: string;
     tags: string[];
     price: number;
     type: string;
-    module: string;
+    module?: string | null | undefined;
     createdAt: string; 
 }
 
@@ -181,3 +184,23 @@ export const myNotes: Note[] =
             "createdAt": "2025-09-04T13:10:03.602Z"
         }
     ]
+
+export type GraphNode = {
+  id: string
+  title: string
+  description: string
+  type: "concept" | string
+}
+
+export type GraphEdge = {
+  source: string
+  target: string
+  relation: string
+}
+
+export type GraphData = {
+  nodes: GraphNode[]
+  edges: GraphEdge[]
+}
+
+export type TypeOption = { value: string; label: string; count: number }

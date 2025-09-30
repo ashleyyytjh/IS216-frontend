@@ -1,3 +1,4 @@
+import { SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
 import axiosInstance from "./AxiosInstance";
 // Unprotected routes
 // notesRouter.get("/search", SearchNotes)
@@ -11,9 +12,10 @@ import axiosInstance from "./AxiosInstance";
 
 
 
-export const searchNotes = async (queryParams: any) => {
+export const searchNotes = async (queryParams: URLSearchParams): Promise<SearchNotesRes> => {
     const response = await axiosInstance.get('/notes/search', { params: queryParams });
-    return response.data;
+    const data = SearchNotesRes.parse(response.data)
+    return data;
 }
 
 export const getNotesById = async (id: string) => {

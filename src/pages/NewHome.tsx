@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Award, Wallet, Search, Sparkles, Star, GraduationCap, ArrowRight, UploadCloud, CheckCircle, DollarSign } from "lucide-react";
+import { BookOpen, Award, Wallet, Search, Sparkles, Star, GraduationCap, ArrowRight, UploadCloud, CheckCircle, DollarSign, Store, UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button"; // Assuming you have a Button component from shadcn/ui
 import BackgroundNebula from '@/components/Background';
 import TestimonialCard from '@/components/home/TestimonialCard';
@@ -27,10 +27,12 @@ const featuredNotes = [
 import { useState } from 'react';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { User } from '@/types/types';
+import logo from '../assets/logodark.png';
 
 export default function ImprovedHomepage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [user, setUser] = useState<User | null>(null);
+  const [stepSelection, setStepSelection] = useState<String>('buyer');
   const isMobile = useIsMobile();
     useEffect(() => {
         window.history.scrollRestoration = 'manual'; 
@@ -48,6 +50,10 @@ export default function ImprovedHomepage() {
       fetchData();
     }, []);
 
+    const onChangeSelection = (value:String) => {
+      setStepSelection(value);
+    }
+
     const targetRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: targetRef,
@@ -64,10 +70,12 @@ export default function ImprovedHomepage() {
 
   return (
     <div ref={targetRef} className="relative w-full">
-      <BackgroundNebula />
 
       {/* The Sticky Hero Section */}
+      <BackgroundNebula />
+
       <div className="h-screen w-full sticky top-0 flex flex-col items-center justify-center">
+
         <motion.div
           style={{ opacity: heroOpacity, scale: heroScale }}
           initial={{ scale: 0.2, opacity: 0 }}
@@ -96,6 +104,7 @@ export default function ImprovedHomepage() {
           <>
             <h1 className="text-5xl md:text-6xl 2xl:text-8xl font-bold tracking-tighter">
               OnlyNotes
+            {/* <img src={logo} className='w-90' alt="Logo" /> */}
             </h1>
             <p className="mt-4 max-w-xl mx-auto text-md md:text-xl text-slate-600 ">
               The pinnacle of student-curated knowledge. Ace your exams with notes from the best.
@@ -119,11 +128,15 @@ export default function ImprovedHomepage() {
       <motion.div style={{ y: contentY }} className="relative z-10 w-full bg-slate-50 dark:bg-gray-900 rounded-t-3xl l">
         <div className="max-w-7xl mx-auto px-6 md:px-8 py-20 md:py-32 space-y-28 md:space-y-40">
             <KeyPoints />
-            <StepsComponent />
+            <div className='space-y-4'>
+              <UserTypeToggle changeSelection={onChangeSelection} selection={stepSelection}/>
+              <StepsComponent option={stepSelection}/>
+            </div>
+
             <ExploreSubject/>
             <section>
-                <h2 className="text-4xl font-bold text-center mb-16">Loved by Students Everywhere</h2>
-                            <AnimatedTestimonials testimonials={testimonials} />
+                <h2 className="text-4xl font-bold text-center mb-16">Loved by all SMU Students </h2>
+                    <AnimatedTestimonials testimonials={testimonials} />
             </section>
         </div>
       </motion.div>
@@ -131,27 +144,54 @@ export default function ImprovedHomepage() {
   );
 }
 
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
+import { cn } from "@/lib/utils";
 
-const NoteCarouselCard = ({ title, author, university, price, image }) => {
-    return (
-        <div className="w-96 flex-shrink-0 h-[500px] rounded-2xl shadow-xl overflow-hidden relative group">
-            <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2">{title}</h3>
-                <div className="text-sm opacity-80 mb-4">
-                    <span>{author} &middot; {university}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                    <span className="text-2xl font-extrabold">{price}</span>
-                    <Button variant="outline" className="bg-white/20 border-white/30 backdrop-blur-sm text-white hover:bg-white/30">
-                        View
-                    </Button>
-                </div>
-            </div>
-        </div>
-    );
-};
+interface Props {
+  selection: String
+  changeSelection: (selected:String)=> void
+}
+export function UserTypeToggle({selection, changeSelection} : Props) {
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <ToggleGroup
+        type="single"
+        value={String(selection)}
+        onValueChange={(value) => {
+          if (value) changeSelection(value)
+        }}
+        className="h-12 rounded-xl border bg-background p-1 shadow-sm"
+      >
+        <ToggleGroupItem
+          value="buyer"
+          aria-label="Select buyer"
+          className={cn(
+            "rounded-xl px-6 py-2.5 text-sm font-medium transition-all",
+            "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:shadow-md"
+          )}
+        >
+          {/* <UserIcon className="rounded-full mr-2 h-4 w-4" /> */}
+          Buyer
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="seller"
+          aria-label="Select seller"
+          className={cn(
+            "rounded-xl px-6 py-2.5 text-sm font-medium transition-all",
+            "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:shadow-md"
+          )}
+        >
+          <Store className="mr-2 h-4 w-4" />
+          Seller
+        </ToggleGroupItem>
+      </ToggleGroup>
+    </div>
+  );
+}
+
 
 
 

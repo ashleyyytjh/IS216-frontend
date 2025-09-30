@@ -32,7 +32,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
         <CardTitle>Top 5 Revenue-Generating Modules</CardTitle>
         <CardDescription>Based on total revenue earned</CardDescription>
       </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+      <CardContent className="relative flex-1 flex items-center justify-center h-[380px] px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={{}}
           className="relative aspect-auto h-[250px] w-full"

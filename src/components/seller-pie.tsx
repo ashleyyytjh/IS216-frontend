@@ -108,24 +108,24 @@ export function ChartPieInteractive({
         </Select>
       </CardHeader>
       {/* Chart */}
-      <CardContent className="flex flex-1 items-center justify-center">
-        {/* ADD relative so the spinner overlay anchors correctly */}
-        <ChartContainer id={id} config={{}} className="relative w-full max-w-md aspect-square">
-          {/* Spinner overlay */}
+      <CardContent className="relative flex-1 flex items-center justify-center h-[380px]">
+
+        <ChartContainer id={id} config={{}} className="w-full h-full flex items-center justify-center -mt-25">
+
           <div
-            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
+            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${
+              isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
           >
             <SpinItem />
           </div>
-
           {/* Chart (fades in after mount) */}
           <div
             className={`h-full w-full transition-opacity duration-700 will-change-transform ${isLoading || !hasMounted ? "opacity-0" : "opacity-100"
               }`}
           >
-            <ResponsiveContainer width="100%" height="100%" debounce={80}>
-              <PieChart>
+            <ResponsiveContainer width="100%" height="100%" debounce={80} >
+              <PieChart margin={{ top: 10, bottom: 10, left: 10, right: 10 }} className="z-10">
                 <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
                 <Pie
                   key={activeMod ?? "none"}
@@ -133,9 +133,9 @@ export function ChartPieInteractive({
                   dataKey="count"
                   nameKey="module"
                   cx="50%"
-                  cy="25%"   
-                  innerRadius="39%"
-                  outerRadius="45%"
+                  cy="53%"
+                  innerRadius="70%"
+                  outerRadius="100%"
                   strokeWidth={5}
                   activeIndex={activeIndex >= 0 ? activeIndex : undefined}
                   isAnimationActive={hasMounted}
@@ -174,7 +174,7 @@ export function ChartPieInteractive({
                             <tspan
                               x={viewBox.cx}
                               y={(viewBox.cy || 0) + 20}
-                              className="hidden md:inline fill-muted-foreground text-sm md:text-base"
+                              className="md:inline fill-muted-foreground text-sm md:text-base"
                             >
                               notes sold
                             </tspan>

@@ -11,4 +11,17 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: ["warning"],
+    exclude: ["react-pdf", "pdfjs-dist"],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          pdf: ["react-pdf", "pdfjs-dist"],
+        },
+      },
+    },
+  },
 })

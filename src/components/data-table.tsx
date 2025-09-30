@@ -40,6 +40,7 @@ import { UserOwnNote } from "./own-user-note-display"
 import { getUserOwned } from "@/services/NotesService"
 import { getOrders } from "@/services/OrdersService"
 import { Description } from "@radix-ui/react-dialog"
+import { Badge } from "./ui/badge"
 
 export const schema = z.object({
   id: z.number(),
@@ -140,8 +141,6 @@ export function DataTable(currentUser) {
       })
       .catch(console.error)
   }, [currentUser, ownedID])
-
-  console.log(orders)
   return (
     <Tabs
       value={view} onValueChange={setView}
@@ -234,12 +233,11 @@ export function DataTable(currentUser) {
                 <Table className="w-full">
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="pl-[2rem]">ID</TableHead>
-                      <TableHead>Note Name</TableHead>
+                      <TableHead className="pl-[2rem]">Transaction ID</TableHead>
                       <TableHead>Note Name</TableHead>
                       <TableHead>Module</TableHead>
                       <TableHead>Price</TableHead>
-
+                      <TableHead>Status</TableHead>
                       <TableHead>Type</TableHead>
 
                     </TableRow>
@@ -257,9 +255,7 @@ export function DataTable(currentUser) {
                             </TableCell>
                             <TableCell>
                               <div className="font-medium">{o.originalName}</div>
-                              <p className="text-sm text-muted-foreground whitespace-normal break-words leading-relaxed">
-                                {o.description}
-                              </p>
+
                             </TableCell>
                             <TableCell className="text-muted-foreground">
                               {o.module}
@@ -268,7 +264,25 @@ export function DataTable(currentUser) {
                               {formatCurrency(o.price)}
                             </TableCell>
                             <TableCell>
-                              {o.module}
+                              {
+                                o.status == "created" ? (
+                                  <Badge className="bg-slate-500">
+                                    {o.status}
+                                  </Badge>
+                                ) : (
+                                  o.status == "processing" ? (
+                                    <Badge className="bg-amber-400">
+                                    {o.status}
+                                  </Badge>
+                                  ) : (
+                                    <Badge className="bg-emerald-500">
+                                    {o.status}
+                                  </Badge>
+                                  )
+                                )
+                              }
+
+
                             </TableCell>
                             <TableCell>
                               {o.type}

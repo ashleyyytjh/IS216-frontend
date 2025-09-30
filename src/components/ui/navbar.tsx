@@ -14,7 +14,7 @@ import { set } from "date-fns"
 
 const navigationItems = [
     { name: "Home", href: "/home" },
-    { name: "Notes Repository", href: "/explore" },
+    { name: "Explore", href: "/explore" },
     { name: "Upload Notes", href: "/upload" },
     { name: "Seller Dashboard", href: "/DashboardSeller" }
 ]
@@ -36,12 +36,6 @@ const navbar = () => {
                 // console.log(userDB)
 
             } catch (error) {
-                // if (isAmplifyUser) {
-                //     toast.warning("Please complete account details to continue");
-                //     console.log("Amplify user exists but not in DB, redirecting to account creation");
-                //     navigate('/accountCreation');
-                //     return;
-                // } 
             }
         };
         checkUser();
@@ -58,8 +52,16 @@ const navbar = () => {
             const timer = setTimeout(() => {
                 window.location.href = '/home';
             }, 1000)
+            // const timer = setTimeout(() => {
+            //     window.location.href = '/home';
+            // },1000)
 
-            return () => clearTimeout(timer);
+            //return () => clearTimeout(timer);
+            // const timer = setTimeout(() => {
+            //     window.location.href = '/home';
+            // },1000)
+
+            // return () => clearTimeout(timer);   
 
         } catch (error) {
             console.log('error signing out: ', error);

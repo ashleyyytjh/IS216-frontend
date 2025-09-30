@@ -48,7 +48,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               Earnings have not been great. <IconTrendingDown className="size-4" />
             </div>
           ) : (
-            <div className="line-clamp-1 flex gap-2 font-medium text-green-500 transition-all duration-500 ease-in-out">
+            <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b] transition-all duration-500 ease-in-out">
               Keep it going! <IconTrendingUp className="size-4" />
             </div>
           )}
@@ -83,7 +83,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               You can do better! <ThumbsDown className="size-4" />
             </div>
           ) : (
-            <div className="line-clamp-1 flex gap-2 font-medium text-green-500">
+            <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">
               More notes for the community! <ThumbsUp className="size-4" />
             </div>
           )}
@@ -115,8 +115,8 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
                 Loading your most popular note
               </div>
             ) : (
-              <div className="line-clamp-1 flex gap-2 font-medium text-green-500">
-                {topModule?.count} notes of {topModule?.module} <NotebookText size={4} />
+              <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">
+                {topModule?.count} notes of {topModule?.module} sold. <NotebookText className="size-4" />
               </div>
             )}
           </div>

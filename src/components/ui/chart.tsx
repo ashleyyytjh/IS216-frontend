@@ -84,13 +84,13 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
             ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
+                .map(([key, itemConfig]) => {
+                  const color =
+                    itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+                    itemConfig.color
+                  return color ? `  --color-${key}: ${color};` : null
+                })
+                .join("\n")}
 }
 `
           )
@@ -167,7 +167,13 @@ function ChartTooltipContent({
   }
 
   const nestLabel = payload.length === 1 && indicator !== "dot"
-
+  const currentPayload = payload[0]
+  const dataKey = currentPayload.dataKey as string;
+  const chartConf = config?.[dataKey as keyof typeof config]
+  const rawValue = currentPayload.value
+  const formattedValue = chartConf?.valueFormatter
+    ? chartConf.valueFormatter(rawValue)
+    : rawValue
   return (
     <div
       className={cn(
@@ -184,6 +190,7 @@ function ChartTooltipContent({
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
             const indicatorColor = color || item.payload.fill || item.color
 
+
             return (
               <div
                 key={item.dataKey}
@@ -192,6 +199,7 @@ function ChartTooltipContent({
                   indicator === "dot" && "items-center"
                 )}
               >
+
                 {formatter && item?.value !== undefined && item.name ? (
                   formatter(item.value, item.name, item, index, item.payload)
                 ) : (
@@ -237,6 +245,8 @@ function ChartTooltipContent({
                           {item.value.toLocaleString()}
                         </span>
                       )}
+                      <span className="font-medium">{chartConf?.label ?? dataKey}</span>
+                      <span className="ml-auto">{formattedValue}</span>
                     </div>
                   </>
                 )}
@@ -318,8 +328,8 @@ function getPayloadConfigFromPayload(
 
   const payloadPayload =
     "payload" in payload &&
-    typeof payload.payload === "object" &&
-    payload.payload !== null
+      typeof payload.payload === "object" &&
+      payload.payload !== null
       ? payload.payload
       : undefined
 

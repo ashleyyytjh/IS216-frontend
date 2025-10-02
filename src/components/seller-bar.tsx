@@ -1,6 +1,6 @@
 "use client"
 
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "recharts"
 
 import {
   Card,
@@ -21,9 +21,20 @@ import SpinItem from "./spinner"
 type ChartBarLabelProps = {
   moduleRevenueArray: { module: string; revenue: number }[]
 }
+const formatCurrency = (value: number) => {
+  if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`
+  if (value >= 1_000) return `$${Math.round(value / 1_000)}K`
+  return `$${value}`
+}
 
+const chartConfig = {
+  revenue: {
+    label: "Revenue:",
+    valueFormatter: (v: number) => formatCurrency(Number(v)),
+  },
+}
 export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
-  const chartData = moduleRevenueArray.slice(0, 5) // top 5 only
+  const chartData = moduleRevenueArray.slice(0, 5)
   const isLoading = chartData.length === 0
 
   return (
@@ -34,24 +45,20 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
       </CardHeader>
       <CardContent className="relative flex-1 flex items-center justify-center h-[380px] px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
-          config={{}}
+          config={chartConfig}
           className="relative aspect-auto h-[250px] w-full"
         >
-          {/* Spinner overlay */}
           <div
-            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${
-              isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
           >
             <SpinItem />
           </div>
 
-          {/* Chart (always mounted) */}
           <BarChart
             data={chartData}
-            className={`aspect-auto h-[250px] w-full transition-opacity duration-700 ${
-              isLoading ? "opacity-0" : "opacity-100"
-            }`}
+            className={`aspect-auto h-[250px] w-full transition-opacity duration-700 ${isLoading ? "opacity-0" : "opacity-100"
+              }`}
           >
             <CartesianGrid vertical={false} />
             <XAxis
@@ -59,19 +66,28 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
               tickLine={false}
               tickMargin={10}
               axisLine={false}
+              label={{ value: "Modules", position: "insideBottom", offset: -5 }}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
-              width={60}
-              tickFormatter={(val) => `$${val}`}
+              width={70}
+              domain={[0, "auto"]}
+              tickFormatter={(val) => formatCurrency(Number(val))}
+              label={{ value: "Revenue ($)", angle: -90, position: "insideLeft" }}
             />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+
+              labelFormatter={(label) => `Module: ${label}`}
+              formatter={(value: any, name: any, item: any) =>
+                [chartConfig[item.dataKey]?.label,formatCurrency(Number(value))]
+              }
+              content={<ChartTooltipContent hideIndicator />}
             />
             <Bar
               dataKey="revenue"
+              // name="Revenue:"
               fill="var(--chart-1)"
               radius={8}
               barSize={70}
@@ -79,13 +95,19 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
               animationDuration={800}
               animationEasing="ease-in-out"
             >
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"][index % 5]}
+                />
+              ))}
               <LabelList
                 dataKey="revenue"
                 position="top"
                 offset={4}
                 className="fill-foreground"
                 fontSize={12}
-                formatter={(val: number) => `$${val}`}
+                formatter={(val: number) => formatCurrency(val)}
               />
             </Bar>
           </BarChart>

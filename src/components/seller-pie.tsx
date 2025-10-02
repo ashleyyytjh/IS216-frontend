@@ -71,6 +71,13 @@ export function ChartPieInteractive({
 
   const isLoading = moduleCountsArray.length === 0
 
+  const chartConfig = {
+    count: {
+      label: "Count:",
+      valueFormatter: (v: number) => v.toLocaleString(),
+    },
+  }
+
   return (
     <Card
       data-chart={id}
@@ -110,12 +117,11 @@ export function ChartPieInteractive({
       {/* Chart */}
       <CardContent className="relative flex-1 flex items-center justify-center h-[380px]">
 
-        <ChartContainer id={id} config={{}} className="w-full h-full flex items-center justify-center -mt-25">
+        <ChartContainer id={id} config={chartConfig} className="w-full h-full flex items-center justify-center -mt-25">
 
           <div
-            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${
-              isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
           >
             <SpinItem />
           </div>
@@ -126,12 +132,23 @@ export function ChartPieInteractive({
           >
             <ResponsiveContainer width="100%" height="100%" debounce={80} >
               <PieChart margin={{ top: 10, bottom: 10, left: 10, right: 10 }} className="z-10">
-                <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                <ChartTooltip
+                  cursor={false}
+                  content={
+                    <ChartTooltipContent
+                      hideIndicator
+                      formatter={(value: any, name: any, item: any) => {
+                        const moduleName = item?.payload?.module ?? ""
+                        return [`Count: ${chartConfig.count.valueFormatter(value)}`, `Module: ${moduleName}`]
+                      }}
+                    />
+                  }
+                />
                 <Pie
                   key={activeMod ?? "none"}
                   data={pieData}
                   dataKey="count"
-                  nameKey="module"
+                  // nameKey="module"
                   cx="50%"
                   cy="53%"
                   innerRadius="70%"

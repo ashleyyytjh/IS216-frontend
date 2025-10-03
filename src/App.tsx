@@ -28,43 +28,44 @@ import Error from "./pages/ErrorPage";
 import AccountCreation from "./pages/AccountCreation";
 import Welcome from "./pages/Welcome";
 import NewHome from './pages/NewHome'
-import DashboardSeller from './pages/dashboardSeller'
-import Listing from "./pages/Listing";
-import Payment from "./pages/Payment";
-import { PaymentSuccess } from "./pages/PaymentSuccessful";
+import DashboardSeller from "./pages/dashboardSeller";
 
 function App() {
-  return (
-    <>
-      <Routes>
-        <Route path="/" element={<Welcome />} />
+    return (
+      <>
+        <Routes>
+          <Route path="/" element={<Welcome/>}/>
+          <Route path = '/'  element={<Layout/>}> 
+              {/* <Route path="/home" element={<Home/>}/> */}
+              <Route path="/home" element={<NewHome/>}/>
 
-        <Route path="/" element={<Layout />}>
-          <Route path="/home" element={<NewHome />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/listings/:id" element={<Listing />} />
-          <Route path="/login" element={<AmplifyLogin />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/ordermanage" element={<OrderManage />} />
-          <Route path="/orderdispute" element={<OrderDispute />} />
-          <Route path="/ordertrack" element={<OrderTrack />} />
-          <Route path="/returnrefund" element={<ReturnRefund />} />
-          <Route path="/orderdetails" element={<OrderDetails />} />
-          <Route path="/accountCreation" element={<AccountCreation />} />
-          <Route path="/upload" element={<Upload />} />
-          <Route path="/profile" element={<Profile />} />
-            <Route path="/dashboardSeller" element={<DashboardSeller/>}/>
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/payment" element={<Payment/>}/>
-            <Route path="/paymentSuccess" element={<PaymentSuccess/>}/>
-            <Route path="/test" element={<LoginPage />} />
-          </Route>
-        </Route>
-        <Route path="*" element={<Error />} />
-      </Routes>
-    </>
-  );
+              <Route path="/explore" element={<Explore/>}/>
+              <Route path ="/login" element={<AmplifyLogin/>}/>  
+              <Route path="/signup" element={<Signup/>}/>
+              <Route path="/ordermanage" element={<OrderManage/>}/>
+              <Route path="/orderdispute" element={<OrderDispute/>}/>
+              <Route path="/dashboardSeller" element={<DashboardSeller/>}/>
+              <Route path="/ordertrack" element={<OrderTrack/>}/>
+              <Route path="/returnrefund" element={<ReturnRefund/>}/>
+              <Route path="/orderdetails" element={<OrderDetails/>}/>
+              <Route path ="/accountCreation" element={<AccountCreation/>}/>
+              <Route path="/upload" element={<Upload/>}/>
+              <Route path="/profile" element={<Profile/>}/>
+              
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute/>}>
+                    <Route path="/test" element={<LoginPage />} />
+                    {/* <Route path="/profile" element={<Profile/>}/> */}
+              </Route>
+            
+                
+            
+            </Route>
+            <Route path="*" element={<Error/>}/>
+
+        </Routes>
+      </>
+    )
 }
 
 export default App;

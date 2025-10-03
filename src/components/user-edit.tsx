@@ -3,56 +3,132 @@ import { Button } from "./ui/button"
 import { Label } from "@/components/ui/label"
 import BadgeClosableDemo from "./removable-badge"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
-import { Plus } from "lucide-react"
-import { useState } from "react"
+import { Plus, Pencil, Camera } from "lucide-react"
+import { useState, useEffect } from "react"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
-import { Pencil } from 'lucide-react';
-
+import { toast } from "sonner"
 import {
     Form, FormControl, FormField, FormItem, FormLabel, FormMessage
 } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { formSchema } from "./update-form/update-form"
+import { updateUser } from "@/services/UserService"
+import { Avatar, AvatarImage } from "./ui/avatar"
+
+// ✅ Validation schema
+const formSchema = z.object({
+    username: z.string().min(0, "Username must be filled."),
+    email: z.string().email("Invalid email address"),
+    major: z.string().min(0, "Major must be filed"),
+    newCourse: z.array(z.string()).optional(),
+})
 
 function UserEdit(currentUser) {
-    currentUser = currentUser['currentUser']
-    let curMods = currentUser['modules']
+    currentUser = currentUser["currentUser"]
+    let curMods = currentUser["modules"]
     const [curModsState, setCurMods] = useState(() => curMods)
     const [userMod, setUserMod] = useState("")
+
     const addNewMod = () => {
-        setCurMods(prev => [...prev, userMod])
+        if (userMod.trim() === "") return
+        setCurMods((prev) => [...prev, userMod])
         setUserMod("")
     }
-    const removeModule = (moduleName: String) => {
-        setCurMods(prev => prev.filter((m) => m !== moduleName))
-        setUserMod("")
+
+    const removeModule = (moduleName: string) => {
+        setCurMods((prev) => prev.filter((m) => m !== moduleName))
     }
-    const handleInputChange = (event) => { setUserMod(event.target.value) }
-    const onSubmit = () => { }
+
+    const handleInputChange = (event) => setUserMod(event.target.value)
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: currentUser['username'],
-            email: currentUser['email'],
-            major: currentUser['major']
+            username: currentUser["fullName"] || currentUser["username"] || "",
+            email: currentUser["email"] || "",
+            major: currentUser["major"] || "",
+            newCourse: [],
         },
+        mode: "onSubmit",
     })
-    return (
 
+    const {
+        handleSubmit,
+        formState: { isSubmitting, isSubmitSuccessful, errors },
+    } = form
+
+    const onSubmit = (values: z.infer<typeof formSchema>) => {
+        values.newCourse = curModsState
+        console.log(values)
+        let newValues = {}
+        newValues['fullName'] = values['username']
+        newValues['major'] = values['major']
+        newValues['modules'] = values['newCourse']
+        updateUser(newValues).then((response) => {
+            toast.success("Successfully updated your account details!")
+            console.log(response)
+        }).catch((err) => {
+            toast.error("Unable to do so now. Please try again.")
+            console.error(err)
+        })
+
+    }
+
+    const onInvalid = (errors: any) => {
+        toast.error("Please fix the highlighted fields")
+    }
+
+    useEffect(() => {
+        if (isSubmitSuccessful) {
+            console.log('ok')
+        }
+    }, [isSubmitSuccessful])
+
+    return (
         <Card className="hover:shadow-xl transition-all duration-300 pl-4 pr-4">
             <CardHeader>
                 <CardTitle>Account</CardTitle>
                 <CardDescription>
-                    Make changes to your account here. Click save when you&apos;re
-                    done.
+                    Make changes to your account here. Click save when you&apos;re done.
                 </CardDescription>
             </CardHeader>
             <Form {...form}>
-                <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
+                <form className="space-y-8" onSubmit={handleSubmit(onSubmit, onInvalid)}>
+                    <div className="flex justify-center ml-auto mr-auto">
+                        <div className="relative w-24 h-24">
+                            <Avatar className="w-24 h-24">
+                                <AvatarImage src={currentUser['imageUrl']} alt="User avatar" />
+                            </Avatar>
+
+                            <label
+                                htmlFor="avatar-upload"
+                                className="absolute bottom-1 right-1 flex items-center justify-center
+                   w-8 h-8 rounded-full bg-black/70 text-white cursor-pointer
+                   hover:bg-black transition"
+                            >
+                                <Camera className="w-4 h-4" />
+                            </label>
+
+                            <input
+                                id="avatar-upload"
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                    if (e.target.files?.[0]) {
+                                        console.log("Selected file:", e.target.files[0])
+                                        // TODO: upload logic
+                                    }
+                                }}
+                            />
+                        </div>
+                    </div>
+
+
                     <CardContent className="flex flex-col gap-y-6">
                         <div className="flex flex-col md:flex-row gap-6 w-full">
                             <div className="grid gap-2 w-full md:w-1/2">
+
                                 <FormField
                                     control={form.control}
                                     name="username"
@@ -60,7 +136,7 @@ function UserEdit(currentUser) {
                                         <FormItem>
                                             <FormLabel>Username</FormLabel>
                                             <FormControl>
-                                                <Input {...field} className="placeholder:text-opacity-25 border border-[#f1f5f9] hover:border-gray-300 transition-all duration-300 w-full" />
+                                                <Input {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -76,9 +152,8 @@ function UserEdit(currentUser) {
                                         <FormItem>
                                             <FormLabel>Email</FormLabel>
                                             <FormControl>
-                                                <Input placeholder={currentUser['email']} {...field} className="placeholder:text-opacity-25 border border-[#f1f5f9] hover:border-gray-300 transition-all duration-300 w-full" />
+                                                <Input disabled {...field} />
                                             </FormControl>
-
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -86,6 +161,7 @@ function UserEdit(currentUser) {
                             </div>
                         </div>
 
+                        {/* Major */}
                         <div className="grid gap-2 w-full">
                             <FormField
                                 control={form.control}
@@ -94,79 +170,64 @@ function UserEdit(currentUser) {
                                     <FormItem>
                                         <FormLabel>Major</FormLabel>
                                         <FormControl>
-                                            <Input placeholder={currentUser['major']} {...field} className="placeholder:text-opacity-25 border border-[#f1f5f9] hover:border-gray-300 transition-all duration-300 w-full" />
+                                            <Input {...field} />
                                         </FormControl>
-
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
 
+                        {/* Modules */}
                         <div className="grid gap-2 w-full">
-                            <Label htmlFor="tabs-demo-username">Modules Taken</Label>
-                            <div className="p-4 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50/50 min-h-[80px] transition-colors hover:border-gray-300">
+                            <Label>Modules Taken</Label>
+                            <div className="p-4 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50/50 min-h-[80px]">
                                 {curModsState.length > 0 ? (
                                     <div className="flex flex-wrap gap-2">
                                         {curModsState.map((module) => (
                                             <BadgeClosableDemo
                                                 key={module}
-                                                variant="secondary"
                                                 currentModCode={module}
                                                 onRemove={() => removeModule(module)}
-                                                className="bg-slate-900 text-white hover:bg-slate-800 px-3 py-1.5 text-sm font-medium transition-colors"
-                                            >
-                                            </BadgeClosableDemo>
+                                                className="bg-slate-900 text-white hover:bg-slate-800 px-3 py-1.5 text-sm font-medium"
+                                            />
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="flex items-center justify-center h-12">
-                                        <span className="text-muted-foreground text-sm">
-                                            No modules added yet. Add your first module below.
-                                        </span>
-                                    </div>
+                                    <span className="text-muted-foreground text-sm">
+                                        No modules added yet.
+                                    </span>
                                 )}
                             </div>
 
-                            <div className="flex justify-between gap-x-2 mt-4 w-[100%]">
-                                <FormField
-                                    control={form.control}
-                                    name="newCourse"
-                                    render={({ field }) => (
-                                        <FormItem className="w-full">
-                                            <FormLabel>Add your modules taken</FormLabel>
-                                            <FormControl>
-                                                <div className="flex flex-row gap-x-2">
-                                                    <Input
-                                                        {...field} id="newCourse"
-                                                        value={userMod}
-                                                        placeholder="Add your modules here"
-                                                        className="placeholder:text-opacity-25 w-[95%] flex-grow border border-[#f1f5f9] hover:border-gray-300 transition-all duration-300 placeholder:text-grey-100"
-                                                        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault() } }}
-                                                        onChange={handleInputChange} />
-                                                    <div>
-                                                        <Button variant="secondary" type="button" size="icon" className="flex-shrink-0 w-auto px-4 py-2 hover:border-gray-300 transition-all duration-300"
-                                                            onClick={() => addNewMod()}>
-                                                            <Plus />
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
+                            <div className="flex gap-x-2 mt-4">
+                                <Input
+                                    value={userMod}
+                                    onChange={handleInputChange}
+                                    placeholder="Add your modules here"
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault()
+                                            addNewMod()
+                                        }
+                                    }}
                                 />
+                                <Button type="button" onClick={addNewMod}>
+                                    <Plus />
+                                </Button>
                             </div>
                         </div>
                     </CardContent>
-                    <CardFooter className="flex justify-center w-full md:justify-end">
-                        <Button type="submit" className="w-[100%] md:w-auto">Update Profile  <Pencil /></Button>
-                    </CardFooter>
 
+                    <CardFooter className="flex justify-end">
+                        <Button type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? "Updating..." : "Update Profile"} <Pencil />
+                        </Button>
+                    </CardFooter>
                 </form>
             </Form>
         </Card>
     )
 }
-export default UserEdit;
 
+export default UserEdit

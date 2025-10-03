@@ -18,9 +18,11 @@ export const searchNotes = async (queryParams: URLSearchParams): Promise<SearchN
     return data;
 }
 
-export const getNotesById = async(id: string) => {
-    const response = await axiosInstance.get(`/notes/${id}`);
-    return response.data;
+export const getNotesById = async (id: string) => {
+  const response = await axiosInstance.get(`/notes/${id}`, {
+    _noAuth: true
+  } as any)
+  return response.data
 }
 
 export const createNotes = async (noteData: any) => {
@@ -39,3 +41,7 @@ export const downloadNotes = async (noteId: string) => {
     return response.data;
 }
 
+export const getUserOwned = async()=>{
+    const response = await axiosInstance.get(`/notes/owned`)
+    return response.data
+}

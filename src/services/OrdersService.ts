@@ -16,6 +16,10 @@ const getOrderById = async (userId: string) => {
     return response.data;
 }
 
+//getting user order BY buyer ID (items I buy)
+const getUserOrderByUserId = async (userId: string) => {
+    const response = await AxiosInstance.get(`/orders/user/${userId}`);
+    return response.data;
+}
 
-
-export { getOrders, createOrder, getOrderById };
+export { getOrders, createOrder, getOrderById, getUserOrderByUserId };

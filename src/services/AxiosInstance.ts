@@ -9,30 +9,34 @@ const instance = axios.create({
     withCredentials: true,
 })
 
-
 instance.interceptors.request.use(
-    async (config) => {
-        try {
-            const session = await fetchAuthSession();
-            let token;
-            if (config._useIdToken) {
-                token = session.tokens?.idToken?.toString();
-                console.log("Interceptor: Using ID Token for this request.");
+  async (config: any) => {
+    try {
+      if (config._noAuth) {
+        console.log("Interceptor: Skipping Authorization header for this request.")
+        delete config.headers.Authorization
+        return config
+      }
 
-            } else {
-                token = session.tokens?.accessToken?.toString();
-            }
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`;
-            }
-        } catch (error) {
-            console.error("Error fetching auth session:", error);
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
+      const session = await fetchAuthSession()
+      let token
+
+      if (config._useIdToken) {
+        token = session.tokens?.idToken?.toString()
+        console.log("Interceptor: Using ID Token for this request.")
+      } else {
+        token = session.tokens?.accessToken?.toString()
+      }
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+    } catch (error) {
+      console.error("Error fetching auth session:", error)
     }
+    return config
+  },
+  (error) => Promise.reject(error)
 )
 
 export default instance

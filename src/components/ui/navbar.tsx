@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import {  Menu } from "lucide-react"
+import { Menu } from "lucide-react"
 import { Link } from 'react-router-dom';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import type { User } from "@/types/types"
@@ -15,20 +15,26 @@ import { set } from "date-fns"
 const navigationItems = [
     { name: "Home", href: "/home" },
     { name: "Explore", href: "/explore" },
-    { name: "Upload Notes", href: "/upload" }
+    { name: "Upload Notes", href: "/upload" },
+    { name: "Seller Dashboard", href: "/DashboardSeller" }
 ]
 
 const navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [user, setUser] = useState<User | null>(null); // Initialize user state as null
-    const [amplifyUser, setAmplifyUser] = useState<User|null>(null);
+    const [amplifyUser, setAmplifyUser] = useState<User | null>(null);
     const navigate = useNavigate();
     useEffect(() => {
         const checkUser = async () => {
-        let isAmplifyUser : any;
+            let isAmplifyUser: any;
             try {
                 isAmplifyUser = await getCurrentUser(); // 2. Assign the value
                 setAmplifyUser(isAmplifyUser);
+                // const userDB = await getUser(); 
+                // console.log("DB user exists");
+                // setUser(userDB);
+                // console.log(userDB)
+
             } catch (error) {
             }
         };
@@ -43,6 +49,14 @@ const navbar = () => {
             localStorage.clear();
             toast.success('Successfully signed out');
 
+            const timer = setTimeout(() => {
+                window.location.href = '/home';
+            }, 1000)
+            // const timer = setTimeout(() => {
+            //     window.location.href = '/home';
+            // },1000)
+
+            //return () => clearTimeout(timer);
             // const timer = setTimeout(() => {
             //     window.location.href = '/home';
             // },1000)
@@ -62,13 +76,13 @@ const navbar = () => {
                         <SheetTrigger asChild className="md:hidden">
                             <Button variant="ghost" size="icon" className="pl-18">
                                 <Menu className="h-6 w-6" />
-                                 <div className="flex items-center space-x-2">
+                                <div className="flex items-center space-x-2">
                                     <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
                                         <span className="text-primary-foreground font-bold text-sm">L</span>
                                     </div>
                                     <span className="font-bold text-xl">Onlynotes</span>
                                 </div>
-                                
+
 
                             </Button>
 
@@ -107,31 +121,37 @@ const navbar = () => {
                             </div>
                             <span className="font-bold text-xl">OnlyNotes</span>
                         </a>
-                        {navigationItems.map((item) => (
-                            <a
-                                key={item.name}
-                                href={item.href}
-                                className="hover:text-foreground transition-colors duration-200 font-medium text=[#0f172b]"
-                            >
-                                {item.name}
-                            </a>
-                        ))}
+                        {navigationItems.map((item) => {
+                            if (item.name === "Seller Dashboard" && !amplifyUser) {
+                                return null; // hide dashboard when user not logged in
+                            }
+
+                            return (
+                                <a
+                                    key={item.name}
+                                    href={item.href}
+                                    className="hover:text-foreground transition-colors duration-200 font-medium text-[#0f172b]"
+                                >
+                                    {item.name}
+                                </a>
+                            );
+                        })}
                     </div>
                     <div>
-                        { !amplifyUser ? (
+                        {!amplifyUser ? (
                             <Button>
-                            <Link to="/login">Login</Link>
+                                <Link to="/login">Login</Link>
                             </Button>
                         ) : (
                             <div className="flex items-center space-x-4">
                                 <Button>
-                                <Link to="/profile">Profile</Link>
+                                    <Link to="/profile">Profile</Link>
                                 </Button>
                                 <Button onClick={handleSignOut}>Sign out</Button>
                             </div>
                         )}
                     </div>
-                   
+
 
 
                 </div>

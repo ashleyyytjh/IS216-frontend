@@ -30,10 +30,7 @@ export default function StepReview({ files }: StepReviewProps) {
               <div>
                 <span className="font-medium">Course:</span> {item.courseCode}
               </div>
-              <div>
-                <span className="font-medium">School / Faculty:</span>{" "}
-                {item.school} / {item.faculty}
-              </div>
+          
               <div>
                 <span className="font-medium">Price:</span> $
                 {centsToDisplay(item.priceCents)}

@@ -1,8 +1,6 @@
 "use client"
 
-import * as React from "react"
-import { Label, Pie, PieChart, ResponsiveContainer, Sector } from "recharts"
-import { PieSectorDataItem } from "recharts/types/polar/Pie"
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "recharts"
 import {
   Card,
   CardContent,
@@ -12,199 +10,116 @@ import {
 } from "@/components/ui/card"
 import {
   ChartContainer,
-  ChartStyle,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import SpinItem from "./spinner"
 
-type ChartPieInteractiveProps = {
-  title: string
-  subtitle: string
+type ChartBarNotesProps = {
   moduleCountsArray: { module: string; count: number }[]
 }
 
-export function ChartPieInteractive({
-  title,
-  subtitle,
-  moduleCountsArray,
-}: ChartPieInteractiveProps) {
-  const id = "pie-interactive"
+const formatCount = (value: number) => {
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`
+  if (value >= 1_000) return `${Math.round(value / 1_000)}K`
+  return `${value}`
+}
 
-  const [activeMod, setActiveMod] = React.useState<string | null>(null)
-  const [hasMounted, setHasMounted] = React.useState(false)
+const chartConfig = {
+  count: {
+    label: "Notes Sold:",
+    valueFormatter: (v: number) => formatCount(Number(v)),
+  },
+}
 
-  // First load handling
-  React.useEffect(() => {
-    if (moduleCountsArray.length > 0) {
-      setActiveMod((prev) => prev ?? moduleCountsArray[0].module)
-      const t = setTimeout(() => setHasMounted(true), 120) // smooth fade-in
-      return () => clearTimeout(t)
-    }
-  }, [moduleCountsArray])
-
-  const pieData = React.useMemo(
-    () =>
-      moduleCountsArray.map((d, idx) => ({
-        ...d,
-        fill: `var(--chart-${(idx % 5) + 1})`,
-      })),
-    [moduleCountsArray]
-  )
-
-  const activeIndex = React.useMemo(() => {
-    if (!pieData.length || !activeMod) return -1
-    return pieData.findIndex((item) => item.module === activeMod)
-  }, [activeMod, pieData])
-
-  const modules = React.useMemo(
-    () => moduleCountsArray.map((d) => d.module),
-    [moduleCountsArray]
-  )
-
-  const isLoading = moduleCountsArray.length === 0
-
-  const chartConfig = {
-    count: {
-      label: "Count:",
-      valueFormatter: (v: number) => v.toLocaleString(),
-    },
-  }
+export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
+  const chartData = moduleCountsArray.slice(0, 5)
+  const isLoading = chartData.length === 0
 
   return (
-    <Card
-      data-chart={id}
-      className="flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10 h-[400px]"
-    >
-      <ChartStyle id={id} config={{}} />
-
-      {/* Header */}
-      <CardHeader className="flex-row items-start space-y-0 pb-2 relative z-20">
-        <div className="grid gap-1">
-          <CardTitle>{title}</CardTitle>
-          <CardDescription>{subtitle}</CardDescription>
-        </div>
-
-        <Select value={activeMod ?? ""} onValueChange={(val) => setActiveMod(val)}>
-          <SelectTrigger
-            className="ml-auto h-7 w-[160px] rounded-lg pl-2.5 relative z-20"
-            aria-label="Select module"
-          >
-            <SelectValue placeholder="Select module" />
-          </SelectTrigger>
-          <SelectContent align="end" className="rounded-xl">
-            {modules.map((mod, idx) => (
-              <SelectItem key={mod} value={mod} className="rounded-lg [&_span]:flex">
-                <div className="flex items-center gap-2 text-xs">
-                  <span
-                    className="flex h-3 w-3 shrink-0 rounded-xs"
-                    style={{ backgroundColor: `var(--chart-${(idx % 5) + 1})` }}
-                  />
-                  {mod}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <Card className="h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
+      <CardHeader>
+        <CardTitle>Amount of Notes Sold</CardTitle>
+        <CardDescription>According to note count</CardDescription>
       </CardHeader>
-      {/* Chart */}
-      <CardContent className="relative flex-1 flex items-center justify-center h-[380px]">
 
-        <ChartContainer id={id} config={chartConfig} className="w-full h-full flex items-center justify-center -mt-25">
-
-          <div
-            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
-          >
+      <CardContent className="relative flex-1 flex items-center justify-center h-[380px] px-2 pt-4 sm:px-6 sm:pt-6">
+        {/* Spinner overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center">
             <SpinItem />
           </div>
-          {/* Chart (fades in after mount) */}
-          <div
-            className={`h-full w-full transition-opacity duration-700 will-change-transform ${isLoading || !hasMounted ? "opacity-0" : "opacity-100"
-              }`}
-          >
-            <ResponsiveContainer width="100%" height="100%" debounce={80} >
-              <PieChart margin={{ top: 10, bottom: 10, left: 10, right: 10 }} className="z-10">
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      hideIndicator
-                      formatter={(value: any, name: any, item: any) => {
-                        const moduleName = item?.payload?.module ?? ""
-                        return [`Count: ${chartConfig.count.valueFormatter(value)}`, `Module: ${moduleName}`]
-                      }}
-                    />
+        )}
+
+        <ChartContainer
+          config={chartConfig}
+          className={`relative aspect-auto h-[250px] w-full transition-opacity duration-700 ${
+            isLoading ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          <BarChart layout="vertical" data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              type="number"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={2}
+              tickFormatter={(val) => formatCount(Number(val))}
+              label={{
+                value: "Amount of notes sold",
+                position: "insideBottom",
+                offset: -5,
+              }}
+            />
+            <YAxis
+              dataKey="module"
+              type="category"
+              tickLine={false}
+              axisLine={false}
+              width={70}
+              label={{
+                value: "Module Code",
+                angle: -90,
+                position: "insideLeft",
+                style: { textAnchor: "middle" },
+              }}
+            />
+            <ChartTooltip
+              cursor={false}
+              labelFormatter={(label) => `Module: ${label}`}
+              formatter={(value: any, _name: any, item: any) => [
+                chartConfig[item.dataKey]?.label,
+                formatCount(Number(value)),
+              ]}
+              content={<ChartTooltipContent hideIndicator />}
+            />
+            <Bar
+              dataKey="count"
+              radius={[0, 8, 8, 0]}
+              barSize={40}
+              isAnimationActive
+              animationDuration={800}
+              animationEasing="ease-in-out"
+            >
+              {chartData.map((_entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={
+                    ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"][
+                      index % 5
+                    ]
                   }
                 />
-                <Pie
-                  key={activeMod ?? "none"}
-                  data={pieData}
-                  dataKey="count"
-                  // nameKey="module"
-                  cx="50%"
-                  cy="53%"
-                  innerRadius="70%"
-                  outerRadius="100%"
-                  strokeWidth={5}
-                  activeIndex={activeIndex >= 0 ? activeIndex : undefined}
-                  isAnimationActive={hasMounted}
-                  animationDuration={700}
-                  animationEasing="ease-in-out"
-                  activeShape={({ outerRadius = 0, ...props }: PieSectorDataItem) => (
-                    <g>
-                      <Sector {...props} outerRadius={outerRadius * 1.05} />
-                      <Sector
-                        {...props}
-                        outerRadius={outerRadius * 1.15}
-                        innerRadius={outerRadius * 1.08}
-                      />
-                    </g>
-                  )}
-                >
-                  <Label
-                    key={`label-${activeMod ?? "none"}`}
-                    content={({ viewBox }) => {
-                      if (viewBox && "cx" in viewBox && "cy" in viewBox && activeIndex >= 0) {
-                        return (
-                          <text
-                            x={viewBox.cx}
-                            y={viewBox.cy}
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                            className="transition-opacity duration-500 ease-in-out"
-                          >
-                            <tspan
-                              x={viewBox.cx}
-                              y={viewBox.cy}
-                              style={{ fontSize: "clamp(1rem, 2vw, 2rem)" }}
-                            >
-                              {pieData[activeIndex].count.toLocaleString()}
-                            </tspan>
-                            <tspan
-                              x={viewBox.cx}
-                              y={(viewBox.cy || 0) + 20}
-                              className="md:inline fill-muted-foreground text-sm md:text-base"
-                            >
-                              notes sold
-                            </tspan>
-                          </text>
-                        )
-                      }
-                      return null
-                    }}
-                  />
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+              ))}
+              <LabelList
+                dataKey="count"
+                position="insideRight"
+                className="fill-white"
+                fontSize={12}
+                formatter={(val: number) => formatCount(val)}
+              />
+            </Bar>
+          </BarChart>
         </ChartContainer>
       </CardContent>
     </Card>

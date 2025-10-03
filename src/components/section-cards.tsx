@@ -17,6 +17,18 @@ type SectionCardsProps = {
   topModule: { module: string; count: number } | null
 }
 
+function formatNumber(num: number): string {
+  if (num < 1000) {
+    return num.toString();
+  } else if (num < 1_000_000) {
+    return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+  } else if (num < 1_000_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  } else {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+  }
+}
+
 export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }: SectionCardsProps) {
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-3 @5xl/main:grid-cols-3 mb-5">
@@ -29,11 +41,11 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               <SpinItem />
             </div>
             <CardTitle
-              className={`absolute text-2xl font-semibold tabular-nums transition-all duration-700 ${
-                loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
-              }`}
+              className={`absolute text-2xl font-semibold tabular-nums transition-all duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+                }`}
             >
-              ${totalSales}
+
+              ${formatNumber(totalSales)} 
             </CardTitle>
           </div>
           <CardAction />
@@ -61,12 +73,11 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
           <CardDescription>Total Notes Sold</CardDescription>
           <div className="relative h-8 flex">
             <div className={`absolute transition-opacity duration-700 ${loadInfo ? "opacity-100" : "opacity-0"}`}>
-             <SpinItem />
+              <SpinItem />
             </div>
             <CardTitle
-              className={`absolute text-2xl font-semibold tabular-nums transition-all duration-700 ${
-                loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
-              }`}
+              className={`absolute text-2xl font-semibold tabular-nums transition-all duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+                }`}
             >
               {totalNoteCount}
             </CardTitle>
@@ -99,9 +110,8 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               <SpinItem />
             </div>
             <CardTitle
-              className={`absolute text-2xl font-semibold tabular-nums transition-all duration-700 ${
-                loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
-              }`}
+              className={`absolute text-2xl font-semibold tabular-nums transition-all duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+                }`}
             >
               {topModule?.module}
             </CardTitle>

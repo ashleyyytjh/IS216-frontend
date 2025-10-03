@@ -16,10 +16,11 @@ export const getUser = async() => {
     return response.data;
 }
 
-export const updateUser = async (userId: string, userData: any) => {
-    const response = await axiosInstance.put(`/users/${userId}`, userData);
+export const updateUser = async (userData: any) => {
+    const response = await axiosInstance.patch(`/users`, userData);
     return response.data;
 }
+// export const updateUserImage = async()
 
 export const getUserPurchases = async (userId: string) => {
     const response = await axiosInstance.get(`/users/${userId}`);

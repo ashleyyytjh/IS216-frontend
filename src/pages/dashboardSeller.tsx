@@ -44,7 +44,7 @@ const [moduleRevenueArray, setModuleRevenueArray] = useState<{ module: string; r
 
         return Promise.all(
           uniqueNoteIds.map((id) =>
-            getNotesById(id).catch((err) => {
+            getNotesById(String(id)).catch((err) => {
               console.error("Failed fetching note", id, err)
               return null
             })
@@ -71,11 +71,11 @@ const [moduleRevenueArray, setModuleRevenueArray] = useState<{ module: string; r
         })
 
         // dummy additions (optional)
-        moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
-        moduleCountMap.set("IS216", (moduleCountMap.get("IS216") || 0) + 90)
+        // moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
+        // moduleCountMap.set("IS216", (moduleCountMap.get("IS216") || 0) + 90)
 
-        moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000)
-        moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000)
+        // moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000)
+        // moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000)
 
         const arr = Array.from(moduleCountMap.entries())
           .map(([module, count]) => ({ module, count }))
@@ -132,9 +132,7 @@ const [moduleRevenueArray, setModuleRevenueArray] = useState<{ module: string; r
                 <div className="flex flex-col lg:flex-row gap-4 items-stretch">
                   <div className="w-[100%] px-4 lg:w-[50%] px-6">
                     <ChartPieInteractive
-                      title={"Amount of notes sold"}
-                      subtitle={"According to note count"}
-                      moduleCountsArray={moduleCountsArray}
+                        moduleCountsArray={moduleCountsArray}
                     />
                   </div>
                   <div className="w-[100%] px-4 lg:w-[50%] px-6">

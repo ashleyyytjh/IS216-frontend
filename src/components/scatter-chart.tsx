@@ -1,23 +1,71 @@
 "use client"
 
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ZAxis, Label } from "recharts"
+import {
+    ScatterChart,
+    Scatter,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    ZAxis,
+    Label,
+} from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-
-const jitter = (range = 0.2) => (Math.random() - 0.5) * range;
-
-const data = [
-    //need to process the notes.
-    //Get all notes owned by the user first.
-    //Onced own, get those that she sold and keep the count
-    //use price from notes to count the amount of times (revenue)
-
-  { id: 1, note: "NLP Notes", price: 5, salesCount: 20, revenue: 100 },
-  { id: 2, note: "QF102 Notes", price: 8, salesCount: 5, revenue: 40 },
-  { id: 3, note: "CS425 Notes", price: 12, salesCount: 15, revenue: 180 },
-  { id: 4, note: "CS426 Notes", price: 12 + jitter(), salesCount: 15 + jitter(), revenue: 180 },
-];
+import { getUserOwned } from "@/services/NotesService"
+import { useEffect, useState } from "react"
+import { getOrders } from "@/services/OrdersService"
 
 export function ScatterVisual() {
+    const [userOrders, setUserOrder] = useState<any[]>([])
+    const [allOrders, setAllOrders] = useState<any[]>([])
+    const [matchedOrders, setMatchedOrders] = useState<any[]>([])
+
+    // get all orders
+    useEffect(() => {
+        getOrders()
+            .then((r) => setAllOrders(r))
+            .catch((e) => console.error(e))
+    }, [])
+
+    // get notes owned by current user
+    useEffect(() => {
+        getUserOwned()
+            .then((res) => {
+                setUserOrder(res)
+                console.log("User Owned Notes:", res)
+            })
+            .catch((err) => console.error(err))
+    }, [])
+
+    // aggregate sales/revenue for owned notes
+    useEffect(() => {
+        if (userOrders.length > 0 && allOrders.length > 0) {
+            const aggregated = userOrders.map((note) => {
+                // match orders by note_id
+                const noteOrders = allOrders.filter((order) => order.note_id === note.id)
+
+                // sales count = how many orders for this note
+                const salesCount = noteOrders.length
+
+                // revenue = salesCount * note.price
+                const revenue = salesCount * note.price
+
+                return {
+                    id: note.id,
+                    note: note.title,
+                    module: note.module,
+                    price: note.price,
+                    salesCount,
+                    revenue,
+                }
+            })
+
+            setMatchedOrders(aggregated)
+            console.log("Aggregated Orders:", aggregated)
+        }
+    }, [userOrders, allOrders])
+
     return (
         <Card className="shadow-md">
             <CardHeader>
@@ -27,40 +75,73 @@ export function ScatterVisual() {
             <CardContent className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%" className="align-content-center ml-auto mr-auto">
                     <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
-                        <CartesianGrid stroke="#e5e7eb"
-                            strokeDasharray="3 3"
-                            opacity={0.8} />
+                        <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" opacity={0.8} />
+
+                        {/* X-axis = Price */}
                         <XAxis
                             dataKey="price"
-                            name="Price"
-                            type="number"  
-                            stroke="#6b7280"
-                            tick={{ fill: "#374151", fontSize: 12 }}
+                            type="number"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            tick={{ fill: "#6B7280", fontSize: 12, fontWeight: 300 }}
                         >
                             <Label
-                                value="Price ($)"
-                                offset={-5}
+                                value="Price of Note ($)"
                                 position="insideBottom"
-                                style={{ textAnchor: "middle", fill: "#374151", fontSize: 14 }}
+                                offset={-5}
+                                style={{ fill: "#6B7280", fontSize: 13, fontWeight: 300 }}
                             />
                         </XAxis>
+
                         <YAxis
                             dataKey="salesCount"
-                            name="Sales Count"
-                            stroke="#6b7280"
-                            tick={{ fill: "#374151", fontSize: 14 }}
-
+                            type="number"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            tick={{ fill: "#6B7280", fontSize: 12, fontWeight: 300 }}
                         >
                             <Label
-                                value="Value (Units)"
+                                value="Total Sale Count"
                                 angle={-90}
-                                position="insideLeft"
-                                style={{ textAnchor: "middle", fill: "#374151", fontSize: 12 }}
+                                position="center"
+                                dx={-30}
+                                offset={100}
+                                style={{ fill: "#6B7280", fontSize: 13, fontWeight: 300 }}
                             />
                         </YAxis>
-                        <ZAxis type="number" dataKey="revenue" range={[50, 400]} name="Revenue" />
-                        <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-                        <Scatter data={data.map((d, i) => ({ ...d, id: i }))} fill="var(--chart-3)" strokeWidth={1.5} stroke="#374151"/>
+
+                        {/* Z-axis = Revenue (bubble size) */}
+                        <ZAxis type="number" dataKey="revenue" range={[60, 400]} name="Revenue" />
+
+                        {/* Tooltip */}
+                        <Scatter
+                            data={matchedOrders}
+                            fill="rgba(59, 130, 246, 0.8)" // blue like your bars
+                            stroke="#2563EB"
+                            strokeWidth={1.5}
+                            shape="circle"
+                        />
+
+                        <Tooltip
+                            cursor={{ strokeDasharray: "3 3" }}
+                            content={({ active, payload }) => {
+                                if (active && payload && payload.length) {
+                                    const { note, price, module, salesCount, revenue } = payload[0].payload
+                                    return (
+                                        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-md text-sm">
+                                            <p className="font-semibold text-gray-900">{note} - {module}</p>
+                                            <p className="text-gray-600">Price: ${price}</p>
+                                        
+                                            <p className="text-gray-600">Sales: {salesCount}</p>
+                                            <p className="text-gray-600">Revenue: ${revenue}</p>
+                                        </div>
+                                    )
+                                }
+                                return null
+                            }}
+                        />
                     </ScatterChart>
                 </ResponsiveContainer>
             </CardContent>

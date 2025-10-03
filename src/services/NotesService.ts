@@ -21,7 +21,7 @@ export const searchNotes = async (queryParams: URLSearchParams): Promise<SearchN
 export const getNotesById = async (id: string) => {
   const response = await axiosInstance.get(`/notes/${id}`, {
     _noAuth: true
-  })
+  } as any)
   return response.data
 }
 

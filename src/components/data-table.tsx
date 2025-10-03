@@ -89,13 +89,18 @@ export function DataTable(currentUser) {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemPerPage] = useState(5)
   const [ownedID, setOwnedID] = useState({})
-  const [orders, setAllOrders] = useState([])
+  const [orders, setAllOrders] = useState<any[]>([])
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentItems = orders.slice(startIndex, endIndex)
-
-  const totalPages = Math.ceil(orders.length / itemsPerPage)
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredOrders = orders.filter((o) =>
+    o.originalName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    o.module.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    o.status.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  const currentItems = filteredOrders.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage)
   const navigate = useNavigate()
   const [view, setView] = useState("past-performance");
 
@@ -141,6 +146,7 @@ export function DataTable(currentUser) {
       })
       .catch(console.error)
   }, [currentUser, ownedID])
+
   return (
     <Tabs
       value={view} onValueChange={setView}
@@ -150,22 +156,24 @@ export function DataTable(currentUser) {
         <Label htmlFor="view-selector" className="sr-only">
           View
         </Label>
-        <Select defaultValue={view} onValueChange={setView}>
-          <SelectTrigger
-            className="flex w-fit @4xl/main:hidden"
-            size="sm"
-            id="view-selector"
+        <TabsList className="flex flex-col h-auto md:flex-row w-[100%] mb-5 mt-10">
+          <TabsTrigger
+            value="past-performance"
+            className="
+      w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300
+    "
           >
-            <SelectValue placeholder="Select a view" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="outline">My Notes</SelectItem>
-            <SelectItem value="past-performance">Orders received</SelectItem>
-          </SelectContent>
-        </Select>
-        <TabsList className="z-20 **:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex mb-5">
-          <TabsTrigger value="past-performance" className="p-4 transition-all duration-300 hover:!shadow-lg !font-semibold">Listed Notes</TabsTrigger>
-          <TabsTrigger value="outline" className="p-4 transition-all duration-300 hover:!shadow-lg !font-semibold">Orders Received</TabsTrigger>
+            Your Listed Notes
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="outline"
+            className="
+w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300
+    "
+          >
+            Orders You Received
+          </TabsTrigger>
         </TabsList>
       </div>
 
@@ -193,6 +201,8 @@ export function DataTable(currentUser) {
                     <Input
                       placeholder="Search here"
                       className="pl-9 bg-gray-100 text-gray-500 focus:bg-white focus:text-black transition-colors w-full"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </div>
 
@@ -221,12 +231,6 @@ export function DataTable(currentUser) {
             <CardContent className="pt-2">
 
               <div className="overflow-auto rounded-md flex flex-col gap-y-6 lg:hidden ">
-                {/* {currentItems.map((o) => {
-                  console.log(o)
-                  return (
-                    <UserActivityListing key={o.id} note={o} location="seller" />
-                  )
-                })} */}
 
               </div>
               <div className="overflow-auto rounded-md border hidden lg:block">
@@ -272,12 +276,12 @@ export function DataTable(currentUser) {
                                 ) : (
                                   o.status == "processing" ? (
                                     <Badge className="bg-amber-400">
-                                    {o.status}
-                                  </Badge>
+                                      {o.status}
+                                    </Badge>
                                   ) : (
                                     <Badge className="bg-emerald-500">
-                                    {o.status}
-                                  </Badge>
+                                      {o.status}
+                                    </Badge>
                                   )
                                 )
                               }
@@ -301,6 +305,16 @@ export function DataTable(currentUser) {
                     )}
                   </TableBody>
                 </Table>
+              </div>
+              <div className="lg:hidden space-y-4">
+                {currentItems.map((note) => {
+
+                  return (
+                    <UserActivityListing note={note} onDownload={undefined} location={undefined} />
+
+                  )
+                })}
+
               </div>
 
               <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">

@@ -171,9 +171,8 @@ function ChartTooltipContent({
   const dataKey = currentPayload.dataKey as string;
   const chartConf = config?.[dataKey as keyof typeof config]
   const rawValue = currentPayload.value
-  const formattedValue = chartConf?.valueFormatter
-    ? chartConf.valueFormatter(rawValue)
-    : rawValue
+const formattedValue =
+  (chartConf as any)?.valueFormatter?.(rawValue) ?? rawValue
   return (
     <div
       className={cn(

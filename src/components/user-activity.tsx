@@ -98,7 +98,7 @@ function UserActivity(currentUser) {
                 {
                     currentNotes.map((note) => {
                         return (
-                            <UserActivityListing key={note.id} note={note} />
+                            <UserActivityListing key={note.id} note={note} onDownload={undefined} location={undefined}/>
                         )
                     })
                 }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Card, CardContent, CardHeader, CardTitle,
 } from "@/components/ui/card";
@@ -20,6 +20,7 @@ import {
 import { getOrders } from "@/services/OrdersService";
 import { getNotesById } from "@/services/NotesService";
 
+/* ---------------- Types & helpers ---------------- */
 
 type Status =
   | "Placed"
@@ -32,18 +33,17 @@ type Status =
 type ApiOrder = {
   id: string | number;
   note_id?: string | number;
-  price?: number;       
-  status?: string;       
-  createdAt?: string;    
-  
+  price?: number;
+  status?: string;
+  createdAt?: string;
 };
 
 type OrderItem = {
   type: "Soft copy" | "Hard copy";
   title: string;
-  sku: string;
+  sku: string;           // used as note id in the URL
   qty: number;
-  price: number;         
+  price: number;
   downloadUrl?: string;
 };
 
@@ -70,8 +70,8 @@ const STATUS_STEPS: Status[] = [
 const money = (n: number) =>
   (n ?? 0).toLocaleString("en-SG", { style: "currency", currency: "SGD" });
 
+// prices are already dollars
 const normalizePrice = (p?: number) => p ?? 0;
-
 
 function StatusPill({ s }: { s: Status }) {
   const map: Record<Status, string> = {
@@ -128,19 +128,15 @@ function toVM(api: ApiOrder, note?: any): OrderVM {
   const id = String(api.id);
   const title = note?.originalName ?? note?.title ?? `Note ${api.note_id ?? ""}`;
   const price = normalizePrice(api.price);
-  const placedAt =
-    api.createdAt ??
-    note?.createdAt ??
-    undefined;
+  const placedAt = api.createdAt ?? note?.createdAt ?? undefined;
 
   const items: OrderItem[] = [
     {
       type: "Soft copy",
       title,
-      sku: String(api.note_id ?? id),
+      sku: String(api.note_id ?? id), // navigate with this
       qty: 1,
       price,
-
     },
   ];
 
@@ -173,7 +169,7 @@ export default function OrderDetails() {
   const [loading, setLoading] = React.useState<boolean>(!location.state?.order);
   const [error, setError] = React.useState<string | null>(null);
 
-
+  // Fast path: from table (state)
   React.useEffect(() => {
     if (!location.state?.order) return;
     (async () => {
@@ -189,7 +185,7 @@ export default function OrderDetails() {
     })();
   }, [location.state?.order]);
 
-  
+  // Fallback: refresh / deep link
   React.useEffect(() => {
     if (vm || !id) return;
     (async () => {
@@ -269,7 +265,7 @@ export default function OrderDetails() {
           </div>
         </div>
 
-        {/* Aligned 12-col grid */}
+        {/* 12-col grid */}
         <div className="grid gap-6 lg:grid-cols-12">
           {/* Left column (8/12) */}
           <div className="lg:col-span-8 min-w-0">
@@ -287,8 +283,9 @@ export default function OrderDetails() {
 
                   {/* ITEMS */}
                   <TabsContent value="items">
+                    {/* Scrollable container */}
                     <div className="overflow-auto rounded-lg border">
-                      <Table>
+                      <Table className="w-full">
                         <TableHeader>
                           <TableRow>
                             <TableHead>Type</TableHead>
@@ -302,18 +299,47 @@ export default function OrderDetails() {
                           {vm.items.map((it, idx) => {
                             const icon = it.type === "Hard copy" ? <Book className="mr-2 size-4" /> : <FileText className="mr-2 size-4" />;
                             const canDL = it.type === "Soft copy" && softReady && !!it.downloadUrl;
+                            const to = `/listings/${encodeURIComponent(it.sku)}`;
                             return (
-                              <TableRow key={idx} className="hover:bg-muted/40">
-                                <TableCell className="flex items-center">{icon}{it.type}</TableCell>
-                                <TableCell>
-                                  <div className="font-medium">{it.title}</div>
-                                  <div className="text-xs text-muted-foreground">{it.sku}</div>
+                              <TableRow
+                                key={idx}
+                                className="group hover:bg-muted/40 cursor-pointer"
+                                onClick={() => navigate(to)}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" || e.key === " ") {
+                                    e.preventDefault();
+                                    navigate(to);
+                                  }
+                                }}
+                              >
+                                <TableCell className="whitespace-nowrap flex items-center">
+                                  {icon}{it.type}
                                 </TableCell>
-                                <TableCell>{it.qty}</TableCell>
-                                <TableCell className="text-right">{money(it.price)}</TableCell>
-                                <TableCell className="text-right">
+                                <TableCell className="min-w-[16rem]">
+                                  {/* Title: lights up on hover (no underline) */}
+                                  <Link
+                                    to={to}
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="font-medium text-foreground transition-all duration-200 group-hover:text-primary group-hover:bg-primary/10 group-hover:shadow-[0_0_14px_theme(colors.primary/30)] rounded px-1"
+                                  >
+                                    {it.title}
+                                  </Link>
+                                  <div className="text-xs text-muted-foreground break-words">
+                                    {it.sku}
+                                  </div>
+                                </TableCell>
+                                <TableCell className="whitespace-nowrap">{it.qty}</TableCell>
+                                <TableCell className="text-right whitespace-nowrap">{money(it.price)}</TableCell>
+                                <TableCell className="text-right whitespace-nowrap">
                                   {canDL ? (
-                                    <Button asChild size="sm" className="gap-2">
+                                    <Button
+                                      asChild
+                                      size="sm"
+                                      className="gap-2"
+                                      onClick={(e) => e.stopPropagation()} // prevent row navigation
+                                    >
                                       <a href={it.downloadUrl} download>
                                         <Download className="size-4" />
                                         Download
@@ -339,7 +365,7 @@ export default function OrderDetails() {
                       {vm.history.length ? vm.history.map((h, i) => (
                         <div key={i} className="flex items-start gap-3">
                           <div className="mt-1 size-2 rounded-full bg-muted-foreground/80" />
-                          <div className="text-sm">
+                          <div className="text-sm min-w-0">
                             <div className="font-medium">{h.text}</div>
                             <div className="text-xs text-muted-foreground">{h.at}</div>
                           </div>
@@ -408,11 +434,11 @@ export default function OrderDetails() {
                     </div>
                   </div>
                   <div className="mt-3 text-sm">
-                    {vm.items.some(i => i.type === "Hard copy") ? (
+                    {hasHardCopy ? (
                       vm.eta ? <>ETA: <span className="font-medium">{vm.eta}</span></> :
                         <span className="text-muted-foreground">ETA available after shipment.</span>
                     ) : (
-                      vm.status === "Ready for download" || vm.status === "Delivered"
+                      (vm.status === "Ready for download" || vm.status === "Delivered")
                         ? <span className="font-medium">Digital notes are ready to download.</span>
                         : <span className="text-muted-foreground">We’ll notify you when your digital notes are ready.</span>
                     )}
@@ -422,7 +448,7 @@ export default function OrderDetails() {
             </Card>
 
             {/* Shipping (hard copy only) */}
-            {vm.items.some(i => i.type === "Hard copy") && (
+            {hasHardCopy && (
               <Card className="shadow-sm">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-2 text-base">

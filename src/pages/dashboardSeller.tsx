@@ -9,10 +9,12 @@ import "aos/dist/aos.css"
 import { useEffect, useState } from "react"
 import { getUser } from "@/services/UserService"
 import { getOrders } from "@/services/OrdersService"
+import { getOrderById } from "@/services/OrdersService"
 import { getNotesById, getUserOwned } from "@/services/NotesService"
 import { ScatterVisual } from '@/components/scatter-chart';
 
 export default function DashboardSeller() {
+
   const [animate, setAnimate] = useState(false)
 
   // shared state
@@ -103,6 +105,7 @@ const [moduleRevenueArray, setModuleRevenueArray] = useState<{ module: string; r
     console.log(err)
   })
 
+  
   return (
     <div
       className={
@@ -154,3 +157,4 @@ const [moduleRevenueArray, setModuleRevenueArray] = useState<{ module: string; r
     </div>
   )
 }
+

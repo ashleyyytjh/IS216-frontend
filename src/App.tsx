@@ -47,11 +47,11 @@ function App() {
               <Route path="/dashboardSeller" element={<DashboardSeller/>}/>
               <Route path="/ordertrack" element={<OrderTrack/>}/>
               <Route path="/returnrefund" element={<ReturnRefund/>}/>
-              <Route path="/orderdetails" element={<OrderDetails/>}/>
               <Route path ="/accountCreation" element={<AccountCreation/>}/>
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/profile" element={<Profile/>}/>
-              
+              <Route path="/orderdetails/:id" element={<OrderDetails />} />
+
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>
                     <Route path="/test" element={<LoginPage />} />

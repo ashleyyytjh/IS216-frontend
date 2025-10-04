@@ -1,4 +1,3 @@
-
 import { User } from "@/types/types";
 import axiosInstance from "./AxiosInstance";
 

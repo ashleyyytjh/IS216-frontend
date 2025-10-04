@@ -252,7 +252,12 @@ w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=
                       console.log(o)
                       return (
                         <>
-                          <TableRow key={o.id} className="hover:bg-muted/40 cursor-pointer h-16 table-row w-full" onClick={() => navigate(`/orderdetails`)}>
+                          <TableRow
+  key={o.id}
+  className="hover:bg-muted/40 cursor-pointer h-16 table-row w-full"
+  onClick={() => navigate(`/orderdetails/${o.id}`, { state: { order: o } })}
+>
+
                             <TableCell className="font-medium pl-[2rem]">
                               {o.id}
 

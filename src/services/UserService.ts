@@ -20,6 +20,9 @@ export const updateUser = async (userData: any) => {
     return response.data;
 }
 // export const updateUserImage = async()
+export const updateUserImage = async() =>{
+    const response = await axiosInstance.post(`/photo/update`)
+}
 
 export const getUserPurchases = async (userId: string) => {
     const response = await axiosInstance.get(`/users/${userId}`);

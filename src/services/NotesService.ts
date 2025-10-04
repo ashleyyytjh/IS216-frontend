@@ -37,7 +37,7 @@ export const confirmUpload = async (noteId: string) => {
 
 //dont touch this first
 export const downloadNotes = async (noteId: string) => {
-    const response = await axiosInstance.get(`/notes/${noteId}/download`, { responseType: 'blob' });
+    const response = await axiosInstance.get(`/notes/${noteId}/download`);
     return response.data;
 }
 

@@ -34,7 +34,7 @@ import { useEffect, useMemo, useState } from "react"
 import UserActivityListing from "./user-activity-listing"
 import { UserOwnNote } from "./own-user-note-display"
 import { getUserOwned } from "@/services/NotesService"
-import { getOrders/*, approveRefund, rejectRefund*/ } from "@/services/OrdersService"
+import { getOrders } from "@/services/OrdersService"
 import { Badge } from "./ui/badge"
 
 export const schema = z.object({
@@ -74,11 +74,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
 ]
 
-// Helper
 const formatCurrency = (n: number) =>
   n.toLocaleString("en-SG", { style: "currency", currency: "SGD" });
 
-// Types
 type CurrentUserProp = {
   currentUser: { userFullName?: string }
 }
@@ -91,23 +89,19 @@ type OwnedMap = Record<
 export function DataTable(props: CurrentUserProp) {
   const navigate = useNavigate()
 
-  // Shared (Orders) states
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemPerPage] = useState(5)
   const [searchQuery, setSearchQuery] = useState("")
 
-  // Disputes tab states
   const [disputesPage, setDisputesPage] = useState(1)
   const [disputesPerPage, setDisputesPerPage] = useState(5)
   const [disputesQuery, setDisputesQuery] = useState("")
 
-  // Data
   const [ownedID, setOwnedID] = useState<OwnedMap>({})
   const [orders, setAllOrders] = useState<any[]>([])
   const [view, setView] = useState<"past-performance" | "outline" | "disputes">("past-performance")
   const [actionLoading, setActionLoading] = useState<Record<number, boolean>>({})
 
-  // ----- ORDERS (outline tab) -----
   const filteredOrders = useMemo(() => {
     return orders.filter((o) =>
       (o.originalName?.toLowerCase() ?? "").includes(searchQuery.toLowerCase()) ||
@@ -121,7 +115,6 @@ export function DataTable(props: CurrentUserProp) {
   const currentItems = filteredOrders.slice(startIndex, endIndex)
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage))
 
-  // ----- DISPUTES (disputes tab) -----
   const disputeStatuses = new Set(["refund_requested", "refund_pending", "disputed", "refund_approved", "refund_declined", "dispute_approved", "dispute_declined"])
 
   const allDisputes = useMemo(
@@ -144,7 +137,6 @@ export function DataTable(props: CurrentUserProp) {
   const currentDisputes = filteredDisputes.slice(disputesStart, disputesEnd)
   const disputesTotalPages = Math.max(1, Math.ceil(filteredDisputes.length / disputesPerPage))
 
-  // Load owned notes (for module/type/name joins)
   useEffect(() => {
     getUserOwned()
       .then((resp: any[]) => {
@@ -162,7 +154,6 @@ export function DataTable(props: CurrentUserProp) {
       .catch(console.error)
   }, [props])
 
-  // Load orders + add mock disputes so the Disputes tab isn't empty
   useEffect(() => {
     getOrders()
       .then((resp: any[] = []) => {
@@ -179,7 +170,6 @@ export function DataTable(props: CurrentUserProp) {
           description: ownedID[i.note_id]?.description,
         }))
 
-        // --- MOCK DISPUTES (always appended for visibility) ---
         const mockDisputes = [
           {
             id: 9991,
@@ -209,7 +199,7 @@ export function DataTable(props: CurrentUserProp) {
       })
       .catch((e) => {
         console.error(e)
-        // if API fails, still show mocks
+        
         const mockDisputes = [
           {
             id: 9991,
@@ -238,13 +228,10 @@ export function DataTable(props: CurrentUserProp) {
       })
   }, [props, ownedID])
 
-  // Dispute actions (mock optimistic update; swap in your API calls if needed)
   const handleRefundDecision = async (orderId: number, decision: "approve" | "decline") => {
     setActionLoading((m) => ({ ...m, [orderId]: true }))
     try {
-      // If you have real APIs, uncomment and use:
-      // if (decision === "approve") await approveRefund(orderId)
-      // else await rejectRefund(orderId)
+
 
       setAllOrders((prev) =>
         prev.map((o) => {
@@ -265,7 +252,6 @@ export function DataTable(props: CurrentUserProp) {
     }
   }
 
-  // Badge color by status
   const renderStatusBadge = (status?: string) => {
     const s = (status || "").toLowerCase()
     if (s.includes("approved")) return <Badge className="bg-emerald-500">{status}</Badge>

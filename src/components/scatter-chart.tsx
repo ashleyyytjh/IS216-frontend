@@ -16,6 +16,8 @@ import { getUserOwned } from "@/services/NotesService"
 import { useEffect, useState } from "react"
 import { getOrders } from "@/services/OrdersService"
 import SpinItem from "./spinner"
+import { correl } from "@/utils/correlation"
+
 
 export function ScatterVisual() {
   const [userOrders, setUserOrder] = useState<any[]>([])
@@ -24,6 +26,7 @@ export function ScatterVisual() {
 
   const [isLoading, setIsLoading] = useState(true)
   const [isEmpty, setIsEmpty] = useState(false)
+  const [correlation, setCorrelation] = useState(0)
 
   // fetch all orders
   useEffect(() => {
@@ -48,7 +51,7 @@ export function ScatterVisual() {
       const aggregated = userOrders
         .map((note) => {
           const noteOrders = allOrders.filter((order) => order.note_id === note.id)
-          if (noteOrders.length === 0) return null 
+          if (noteOrders.length === 0) return null
 
           const salesCount = noteOrders.length
           const revenue = (salesCount * Number(note.price)) / 100
@@ -62,16 +65,18 @@ export function ScatterVisual() {
             revenue,
           }
         })
-        .filter(Boolean) 
-
+        .filter(Boolean)
+      const prices = aggregated.map(n => n?.price).filter((v): v is number => v !== undefined);
+      const revenues = aggregated.map(n => n?.revenue).filter((v): v is number => v !== undefined);
+      const correlation = correl(prices, revenues);
       setMatchedOrders(aggregated)
       setIsLoading(false)
+      setCorrelation(correlation)
       setIsEmpty(aggregated.length === 0)
       console.log("Aggregated Orders:", aggregated)
     }
   }, [userOrders, allOrders])
   console.log(matchedOrders)
-  // fallback timeout — if no data after 5 s → mark as empty
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (matchedOrders.length === 0) {
@@ -83,10 +88,38 @@ export function ScatterVisual() {
   }, [matchedOrders])
 
   return (
-    <Card className="shadow-md">
+    <Card className="shadow-md hover:shadow-lg">
       <CardHeader>
         <CardTitle>Price vs Sales Count of Note</CardTitle>
         <CardDescription>Based on price of single note and revenue made.</CardDescription>
+        {(() => {
+          if (correlation > 0.5) {
+            return (
+              <CardDescription className="text-green-600">
+                <strong>Insights: </strong>Higher-priced notes tend to earn <strong>more revenue</strong>.
+              </CardDescription>
+            );
+          } else if (correlation > 0.1) {
+            return (
+              <CardDescription className="text-green-500">
+                <strong>Insights: </strong>Slight positive relationship — pricier notes may perform a bit better.
+              </CardDescription>
+            );
+          } else if (correlation < -0.1) {
+            return (
+              <CardDescription className="text-red-500">
+                <strong>Insights: </strong>Higher prices might reduce total sales — consider optimizing pricing.
+              </CardDescription>
+            );
+          } else {
+            return (
+              <CardDescription className="text-gray-500">
+                <strong>Insights: </strong>No clear relationship between price and revenue.
+              </CardDescription>
+            );
+          }
+        })()}
+
       </CardHeader>
       <CardContent className="h-[400px] flex items-center justify-center relative">
         {isLoading ? (
@@ -169,6 +202,7 @@ export function ScatterVisual() {
             </ScatterChart>
           </ResponsiveContainer>
         )}
+
       </CardContent>
     </Card>
   )

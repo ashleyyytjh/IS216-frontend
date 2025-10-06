@@ -77,7 +77,7 @@ export default function DashboardSeller() {
           if (note && note.userId === currentUser.sub) {
             total += Number(order.price) / 100;
             totalCnt += 1;
-            const mod = note.module || "Unknown";
+            const mod = note.module?.toUpperCase() || "Unknown";
             moduleCountMap.set(mod, (moduleCountMap.get(mod) || 0) + 1);
             moduleRevenueMap.set(
               mod,

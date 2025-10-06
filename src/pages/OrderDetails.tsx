@@ -168,13 +168,13 @@ export default function OrderDetails() {
   const [vm, setVm] = React.useState<OrderVM | null>(null);
   const [loading, setLoading] = React.useState<boolean>(!location.state?.order);
   const [error, setError] = React.useState<string | null>(null);
+  const ord = location.state?.order;
 
   // Fast path: from table (state)
   React.useEffect(() => {
-    if (!location.state?.order) return;
+    if (!ord) return;
     (async () => {
       try {
-        const ord = location.state.order;
         const note = ord.note_id ? await getNotesById(String(ord.note_id)).catch(() => null) : null;
         setVm(toVM(ord, note || undefined));
       } catch (e: any) {

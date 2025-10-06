@@ -391,7 +391,7 @@ export function DataTable(props: CurrentUserProp) {
                     key={note.id}
                     note={note}
                     onDownload={undefined}
-                    location={undefined}
+                    // location={undefined}
                   />
                 ))}
               </div>

@@ -1,4 +1,9 @@
 @import "tailwindcss";@import "tw-animate-css";
+@import "@fontsource/geist-sans/300.css";
+@import "@fontsource/geist-sans/400.css";
+@import "@fontsource/geist-sans/500.css";
+@import "@fontsource/geist-sans/600.css";
+@import "@fontsource/geist-sans/700.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -50,6 +55,7 @@
 }
 
 :root {
+  font-family: "Geist Sans", system-ui, sans-serif;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);

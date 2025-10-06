@@ -60,13 +60,27 @@ function SidebarProvider({
   className,
   style,
   children,
+  breakpoint,
   ...props
 }: React.ComponentProps<"div"> & {
   defaultOpen?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  breakpoint?: number
 }) {
-  const isMobile = useIsMobile()
+  const defaultIsMobile = useIsMobile()
+  const [customIsMobile, setCustomIsMobile] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!breakpoint) return
+    const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`)
+    const update = () => setCustomIsMobile(window.innerWidth < breakpoint)
+    mql.addEventListener("change", update)
+    update()
+    return () => mql.removeEventListener("change", update)
+  }, [breakpoint])
+
+  const isMobile = breakpoint ? customIsMobile : defaultIsMobile
   const [openMobile, setOpenMobile] = React.useState(false)
 
   // This is the internal state of the sidebar.

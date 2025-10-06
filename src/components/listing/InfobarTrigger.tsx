@@ -12,7 +12,7 @@ export function InfobarTrigger() {
       <TooltipTrigger asChild>
         <Button
           onClick={toggleSidebar}
-          className="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent fixed"
+          className="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent fixed z-20 rounded-l-none h-20 shadow"
           variant="secondary"
           size="icon"
         >

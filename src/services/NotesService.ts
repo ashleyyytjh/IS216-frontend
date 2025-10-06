@@ -1,4 +1,4 @@
-import { SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
+import { DownloadNotesRes, GetNotesRes, SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
 import axiosInstance from "./AxiosInstance";
 // Unprotected routes
 // notesRouter.get("/search", SearchNotes)
@@ -18,11 +18,10 @@ export const searchNotes = async (queryParams: URLSearchParams): Promise<SearchN
     return data;
 }
 
-export const getNotesById = async (id: string) => {
-  const response = await axiosInstance.get(`/notes/${id}`, {
-    _noAuth: true
-  } as any)
-  return response.data
+export const getNotesById = async(id: string) => {
+    const response = await axiosInstance.get(`/notes/${id}`);
+    console.log(response.data)
+    return response.data as GetNotesRes;
 }
 
 export const createNotes = async (noteData: any) => {
@@ -35,13 +34,15 @@ export const confirmUpload = async (noteId: string) => {
     return response.data;
 }
 
+
+export const getUserOwned = async() => {
+    const response = await axiosInstance.get(`/notes/owned`)
+    return response.data
+}
+
 //dont touch this first
 export const downloadNotes = async (noteId: string) => {
     const response = await axiosInstance.get(`/notes/${noteId}/download`);
+    console.log(response.data)
     return response.data;
-}
-
-export const getUserOwned = async()=>{
-    const response = await axiosInstance.get(`/notes/owned`)
-    return response.data
 }

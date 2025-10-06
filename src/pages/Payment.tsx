@@ -16,11 +16,12 @@ import getStripe from "@/utils/stripe";
 import { getUser } from "@/services/UserService";
 import { Progress } from "@/components/ui/progress";
 import { CardDescription } from "@/components/ui/card";
+import { GetNotesRes } from "@/types/requests/notes";
 
 const Payment = () => {
     const stripePromise = getStripe()
     const [clientSecret, setClientSecret] = useState<string>("");
-    const [note, setNote]=useState(null);
+    const [note, setNote]=useState<GetNotesRes|null>(null);
     const [searchParams] = useSearchParams();
     const noteId = searchParams.get('id'); // "68b98faba389fd1819c78c17"
     const navigate = useNavigate();

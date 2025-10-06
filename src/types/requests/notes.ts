@@ -6,6 +6,25 @@ export const ObjectIdString = z
 	.string()
 	.regex(/^[a-f\d]{24}$/i, 'Invalid Mongo ObjectId');
 
+
+export const ConceptNodeSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  type: z.enum(["concept", "subconcept", "keyword"]),
+});
+
+export const ConceptEdgeSchema = z.object({
+  source: z.string(),
+  target: z.string(),
+  relation: z.string(),
+});
+
+export const GraphSchema = z.object({
+  nodes: z.array(ConceptNodeSchema).default([]),
+  edges: z.array(ConceptEdgeSchema).default([]),
+});
+
 export const CreateNotesReq = z.object({
 	filename: z.string().min(1),
 	mimeType: z.string().min(1),
@@ -36,8 +55,10 @@ export const GetNotesRes = z.object({
 	userFullName: z.string(),
 	userImageUrl: z.string(),
 	userMajor: z.string(),
+	userYear: z.number(),
 	key: z.string(),
 	originalName: z.string(),
+	title: z.string(),
 	mimeType: z.string(),
 	size: z.number(),
     description: z.string(),
@@ -46,8 +67,9 @@ export const GetNotesRes = z.object({
 	module: z.string().optional().nullable(),
     price: z.number().min(0),
 	purchased: z.boolean(),
-	createdAt: z.date(),
-	updatedAt: z.date().optional(),
+	createdAt: z.string(),
+	updatedAt: z.string().optional(),
+	graph: GraphSchema
 })
 
 export const SearchNotesItem = z.object({
@@ -115,6 +137,10 @@ export const ErrorRes = z.object({
 	message: z.string(),
 })
 
+
+export type ConceptNode = z.infer<typeof ConceptNodeSchema>;
+export type ConceptEdge = z.infer<typeof ConceptEdgeSchema>;
+export type Graph = z.infer<typeof GraphSchema>;
 export type CreateNotesReq = z.infer<typeof CreateNotesReq>;
 export type CreateNotesRes = z.infer<typeof CreateNotesRes>;
 export type GetNotesReq = z.infer<typeof GetNotesReq>;

@@ -59,7 +59,7 @@ const UserActivityListing = ({ note, onDownload }) => {
           <CardTitle className="flex items-center justify-between">
             <span className="text-lg">{n.originalName}</span>
             <Badge variant="outline" className="font-mono">
-              {n.module}
+              {n.module.toUpperCase()}
             </Badge>
           </CardTitle>
           {n?.buyer_id && (

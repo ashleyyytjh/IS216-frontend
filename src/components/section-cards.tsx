@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { NotebookText, ThumbsDown, ThumbsUp } from "lucide-react"
+import { Frown, NotebookText, ThumbsDown, ThumbsUp } from "lucide-react"
 import SpinItem from "./spinner"
 
 type SectionCardsProps = {
@@ -91,7 +91,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
             </div>
           ) : totalNoteCount <= 20 ? (
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500">
-              You can do better! <ThumbsDown className="size-4" />
+              You can do better! <Frown className="size-4" />
             </div>
           ) : (
             <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">

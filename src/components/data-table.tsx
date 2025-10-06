@@ -115,28 +115,6 @@ export function DataTable(props: CurrentUserProp) {
   const currentItems = filteredOrders.slice(startIndex, endIndex)
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage))
 
-  const disputeStatuses = new Set(["refund_requested", "refund_pending", "disputed", "refund_approved", "refund_declined", "dispute_approved", "dispute_declined"])
-
-  const allDisputes = useMemo(
-    () => orders.filter(o => disputeStatuses.has((o.status || "").toLowerCase())),
-    [orders]
-  )
-
-  const filteredDisputes = useMemo(() => {
-    const q = disputesQuery.toLowerCase()
-    return allDisputes.filter((o) =>
-      (o.originalName?.toLowerCase() ?? "").includes(q) ||
-      (o.module?.toLowerCase() ?? "").includes(q) ||
-      (o.status?.toLowerCase() ?? "").includes(q) ||
-      String(o.id).includes(q)
-    )
-  }, [allDisputes, disputesQuery])
-
-  const disputesStart = (disputesPage - 1) * disputesPerPage
-  const disputesEnd = disputesStart + disputesPerPage
-  const currentDisputes = filteredDisputes.slice(disputesStart, disputesEnd)
-  const disputesTotalPages = Math.max(1, Math.ceil(filteredDisputes.length / disputesPerPage))
-
   useEffect(() => {
     getUserOwned()
       .then((resp: any[]) => {
@@ -215,7 +193,6 @@ export function DataTable(props: CurrentUserProp) {
         </TabsList>
       </div>
 
-      {/* Your Listed Notes */}
       <TabsContent
         value="past-performance"
         className="flex flex-col px-4 lg:px-6 transition-opacity duration-200"
@@ -223,7 +200,6 @@ export function DataTable(props: CurrentUserProp) {
         <UserOwnNote currentUserInfo={props.currentUser as any} />
       </TabsContent>
 
-      {/* Orders You Received */}
       <TabsContent
         value="outline"
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6 transition-opacity duration-200"
@@ -288,7 +264,7 @@ export function DataTable(props: CurrentUserProp) {
                         <TableCell>
                           <div className="font-medium">{o.originalName}</div>
                         </TableCell>
-                        <TableCell className="text-muted-foreground">{o.module}</TableCell>
+                        <TableCell className="text-muted-foreground">{o.module.toUpperCase()}</TableCell>
                         <TableCell className="font-medium">{formatCurrency(o.price/100)}</TableCell>
                         <TableCell>{renderStatusBadge(o.status)}</TableCell>
                         <TableCell>{o['type'].charAt(0).toUpperCase() + o['type'].slice(1)}</TableCell>

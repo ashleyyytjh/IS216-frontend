@@ -60,6 +60,10 @@ function App() {
               <Route element={<ProtectedRoute/>}>
                     <Route path="/test" element={<LoginPage />} />
                     {/* <Route path="/profile" element={<Profile/>}/> */}
+                    <Route path="/payment" element={<Payment />} />
+                    <Route path="/paymentSuccess" element={<PaymentSuccess />} />
+
+
               </Route>
           </Route>
           {/* Listing required custom footer layout */}

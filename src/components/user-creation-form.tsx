@@ -173,6 +173,19 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
             {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="fullName">Email</Label>
+            <Input
+              id="fullname"
+              className="opacity-50"
+              readOnly={true}
+              type="text"
+              placeholder="Enter email address"
+              value={formData.fullName || ""}
+            />
+            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+          </div>
+
           {/* Year of Study */}
           <div className="space-y-2">
             <Label htmlFor="yearOfStudy">Year of Study</Label>

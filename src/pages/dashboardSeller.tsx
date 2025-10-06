@@ -86,12 +86,12 @@ export default function DashboardSeller() {
           }
         });
 
-        // // dummy additions (optional)
+        // dummy additions (optional)
         // moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
         // moduleCountMap.set("IS216", (moduleCountMap.get("IS216") || 0) + 90)
 
-        // moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000)
-        // moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000)
+        // moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000/100)
+        // moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000/100)
         const arr = Array.from(moduleCountMap.entries())
           .map(([module, count]) => ({ module, count }))
           .sort((a, b) => b.count - a.count);

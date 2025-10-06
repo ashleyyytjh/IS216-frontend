@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "recharts"
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
@@ -31,6 +31,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
   console.log(moduleRevenueArray)
   const [isLoading, setIsLoading] = useState(true)
   const [isEmpty, setIsEmpty] = useState(false)
+  const [topMod, setTopMod] = useState<{ module: string; revenue: number } | null>(null)
 
   useEffect(() => {
     if (moduleRevenueArray.length === 0) {
@@ -46,18 +47,31 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
     }
   }, [moduleRevenueArray])
 
-  const chartData = moduleRevenueArray
-    .map((item) => ({
-      ...item,
-      revenue: item.revenue, // convert cents → dollars
-    }))
-    .slice(0, 5)
+  const chartData = useMemo(() => {
+    if (!moduleRevenueArray || moduleRevenueArray.length === 0) return []
+    // sort descending by revenue
+    return [...moduleRevenueArray]
+      .map((item) => ({ ...item, revenue: item.revenue }))
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5)
+  }, [moduleRevenueArray])
+
+  useEffect(() => {
+  if (chartData.length > 0) {
+    const top = chartData[0]
+    setTopMod((prev) =>
+      prev?.module === top.module && prev?.revenue === top.revenue ? prev : top
+    )
+  }
+}, [chartData])
+
+
 
   return (
     <Card className="h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
       <CardHeader>
         <CardTitle>Top 5 Revenue-Generating Modules</CardTitle>
-        <CardDescription>Based on total revenue earned</CardDescription>
+        <CardDescription><strong>Insight:</strong> Best performing note by revenue is <strong>{topMod?.module}</strong></CardDescription>
       </CardHeader>
 
       <CardContent className="relative flex-1 flex items-center justify-center h-[380px] px-2 pt-4 sm:px-6 sm:pt-6">
@@ -93,9 +107,9 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                   position: "insideLeft",
                   dx: -6,
                   style: { textAnchor: "middle" },
-                  
+
                 }}
-                
+
               />
               <ChartTooltip
                 cursor={false}
@@ -120,7 +134,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                     key={`cell-${index}`}
                     fill={
                       ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"][
-                        index % 5
+                      index % 5
                       ]
                     }
                   />
@@ -128,9 +142,9 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                 <LabelList
                   dataKey="revenue"
                   position="insideTop"
-  className="fill-white"
+                  className="fill-white"
                   offset={4}
-                  
+
                   fontSize={12}
                   formatter={(val: number) => formatCurrency(val)}
                 />

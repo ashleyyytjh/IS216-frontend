@@ -18,6 +18,7 @@ import { mockCourses } from "@/assets/data"
 
 const UserSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
+  fullName:  z.string().min(3, "Username must be at least 3 characters"),
   email: z.string().email("Please enter a valid email address"),
   yearOfStudy: z.number().min(1).max(6),
   major: z.string().min(1, "Please select a major"),
@@ -56,6 +57,7 @@ interface UserCreationFormProps {
 export function UserCreationForm( {user, changeSuccessfulState } : UserCreationFormProps) {
   const [formData, setFormData] = useState<UserFormData>({
     username: user!.username,
+    fullName: "",
     email: user!.email || "",
     yearOfStudy: 1,
     major: "",

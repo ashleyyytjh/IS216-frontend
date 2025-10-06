@@ -12,6 +12,7 @@ export type Order = {
 export type User = {
     userId?: string;
     username: string;
+    fullName?:string;
     email?: string;
     yearOfStudy?: number;
     major?: string;

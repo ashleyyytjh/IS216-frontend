@@ -161,7 +161,7 @@ export function DataTable(props: CurrentUserProp) {
 
   const renderStatusBadge = (status?: string) => {
     const s = (status || "").toLowerCase()
-    return <Badge className="bg-green-600">{status}</Badge>
+    return <Badge className="bg-green-600">{s?.charAt(0).toUpperCase()+ s?.slice(1)}</Badge>
   }
 
   return (

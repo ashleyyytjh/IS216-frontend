@@ -1,76 +1,90 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
-import { SiteHeader } from "@/components/site-header"
-import { ChartBarLabel } from "@/components/seller-bar"
-import { ChartPieInteractive } from "@/components/seller-pie"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import "aos/dist/aos.css"
-import { useEffect, useState } from "react"
-import { getUser } from "@/services/UserService"
-import { getOrders } from "@/services/OrdersService"
-import { getOrderById } from "@/services/OrdersService"
-import { getNotesById, getUserOwned } from "@/services/NotesService"
-import { ScatterVisual } from '@/components/scatter-chart';
+import { AppSidebar } from "@/components/app-sidebar";
+import { DataTable } from "@/components/data-table";
+import { SectionCards } from "@/components/section-cards";
+import { SiteHeader } from "@/components/site-header";
+import { ChartBarLabel } from "@/components/seller-bar";
+import { ChartPieInteractive } from "@/components/seller-pie";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import "aos/dist/aos.css";
+import { useEffect, useState } from "react";
+import { getUser } from "@/services/UserService";
+import { getOrders } from "@/services/OrdersService";
+import { getOrderById } from "@/services/OrdersService";
+import { getNotesById, getUserOwned } from "@/services/NotesService";
+import { ScatterVisual } from "@/components/scatter-chart";
+import { GetNotesRes } from "@/types/requests/notes";
 
 export default function DashboardSeller() {
-
-  const [animate, setAnimate] = useState(false)
+  const [animate, setAnimate] = useState(false);
 
   // shared state
-  const [currentUser, setCurrentUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [loadInfo, setLoadInfo] = useState(true)
-  const [totalSales, setTotalSales] = useState(0)
-  const [totalNoteCount, setTotalNoteCount] = useState(0)
-  const [topModule, setTopModule] = useState<{ module: string; count: number } | null>(null)
-  const [moduleCountsArray, setModuleCountsArray] = useState<{ module: string; count: number }[]>([])
-const [moduleRevenueArray, setModuleRevenueArray] = useState<{ module: string; revenue: number }[]>([])
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadInfo, setLoadInfo] = useState(true);
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalNoteCount, setTotalNoteCount] = useState(0);
+  const [topModule, setTopModule] = useState<{
+    module: string;
+    count: number;
+  } | null>(null);
+  const [moduleCountsArray, setModuleCountsArray] = useState<
+    { module: string; count: number }[]
+  >([]);
+  const [moduleRevenueArray, setModuleRevenueArray] = useState<
+    { module: string; revenue: number }[]
+  >([]);
   useEffect(() => {
-    setAnimate(true) // trigger animation after mount
-  }, [])
+    setAnimate(true); // trigger animation after mount
+  }, []);
 
   useEffect(() => {
     getUser()
       .then((resp) => setCurrentUser(resp))
       .catch((err) => console.error("Error fetching user:", err))
-      .finally(() => setLoading(false))
-  }, [])
+      .finally(() => setLoading(false));
+  }, []);
 
   useEffect(() => {
-    if (!currentUser) return
+    if (!currentUser) return;
 
     getOrders()
       .then((orders) => {
-        const uniqueNoteIds = [...new Set(orders.map((o) => o.note_id))]
+        const uniqueNoteIds = [...new Set(orders.map((o) => o.note_id))];
 
         return Promise.all(
           uniqueNoteIds.map((id) =>
             getNotesById(String(id)).catch((err) => {
-              console.error("Failed fetching note", id, err)
-              return null
+              console.error("Failed fetching note", id, err);
+              return null;
             })
           )
-        ).then((notes) => ({ orders, notes }))
+        ).then((notes) => ({ orders, notes }));
       })
       .then(({ orders, notes }) => {
-        const noteMap = new Map(notes.filter(Boolean).map((note) => [note.id, note]))
+const noteMap = new Map(
+  (notes ?? [])
+    .filter((note): note is GetNotesRes => Boolean(note))
+    .map(note => [note?.id, note])
+);
 
-        let total = 0
-        let totalCnt = 0
-        const moduleCountMap = new Map<string, number>()
-        const moduleRevenueMap = new Map<string, number>()
+        let total = 0;
+        let totalCnt = 0;
+        const moduleCountMap = new Map<string, number>();
+        const moduleRevenueMap = new Map<string, number>();
 
         orders.forEach((order) => {
-          const note = noteMap.get(order.note_id)
+          const note = noteMap.get(order.note_id);
           if (note && note.userId === currentUser.sub) {
-            total += Number(order.price)
-            totalCnt += 1
-            const mod = note.module || "Unknown"
-            moduleCountMap.set(mod, (moduleCountMap.get(mod) || 0) + 1)
-            moduleRevenueMap.set(mod, (moduleRevenueMap.get(mod) || 0) + Number(order.price))
+            total += Number(order.price);
+            totalCnt += 1;
+            const mod = note.module || "Unknown";
+            moduleCountMap.set(mod, (moduleCountMap.get(mod) || 0) + 1);
+            moduleRevenueMap.set(
+              mod,
+              (moduleRevenueMap.get(mod) || 0) + Number(order.price)
+            );
           }
-        })
+        });
 
         // dummy additions (optional)
         // moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
@@ -81,35 +95,36 @@ const [moduleRevenueArray, setModuleRevenueArray] = useState<{ module: string; r
 
         const arr = Array.from(moduleCountMap.entries())
           .map(([module, count]) => ({ module, count }))
-          .sort((a, b) => b.count - a.count)
-
+          .sort((a, b) => b.count - a.count);
 
         const revenueArr = Array.from(moduleRevenueMap.entries())
           .map(([module, revenue]) => ({ module, revenue }))
-          .sort((a, b) => b.revenue - a.revenue) 
+          .sort((a, b) => b.revenue - a.revenue);
 
-        setModuleCountsArray(arr)
-        setLoadInfo(false)
-        setModuleRevenueArray(revenueArr)
-        setTotalSales(total)
-        setTotalNoteCount(totalCnt)
-        setTopModule(arr[0] || null)
+        setModuleCountsArray(arr);
+        setLoadInfo(false);
+        setModuleRevenueArray(revenueArr);
+        setTotalSales(total);
+        setTotalNoteCount(totalCnt);
+        setTopModule(arr[0] || null);
       })
-      .catch((err) => console.error("Error fetching sales:", err))
-  }, [currentUser])
+      .catch((err) => console.error("Error fetching sales:", err));
+  }, [currentUser]);
 
+  getUserOwned()
+    .then((resp) => {
+      console.log(resp);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
-  getUserOwned().then((resp)=>{
-    console.log(resp)
-  }).catch((err)=>{
-    console.log(err)
-  })
-
-  
   return (
     <div
       className={
-        animate ? "fade-in container w-[80%] ml-auto mr-auto" : "container w-[80%] ml-auto mr-auto"
+        animate
+          ? "fade-in container w-[80%] ml-auto mr-auto"
+          : "container w-[80%] ml-auto mr-auto"
       }
     >
       <SidebarProvider
@@ -133,19 +148,19 @@ const [moduleRevenueArray, setModuleRevenueArray] = useState<{ module: string; r
                   topModule={topModule}
                 />
                 <div className="flex flex-col lg:flex-row gap-4 items-stretch">
-                  <div className="w-[100%] px-4 lg:w-[50%] px-6">
+                  <div className="w-[100%] lg:w-[50%] px-6">
                     <ChartPieInteractive
-                        moduleCountsArray={moduleCountsArray}
+                      moduleCountsArray={moduleCountsArray}
                     />
                   </div>
-                  <div className="w-[100%] px-4 lg:w-[50%] px-6">
-                    <ChartBarLabel moduleRevenueArray = {moduleRevenueArray}/>
+                  <div className="w-[100%] lg:w-[50%] px-6">
+                    <ChartBarLabel moduleRevenueArray={moduleRevenueArray} />
                   </div>
                 </div>
 
                 <div className="flex flex-col">
-                   <div className="w-[100%] px-4 lg:w-[100%] px-6">
-                    <ScatterVisual/>
+                  <div className="w-[100%] lg:w-[100%] px-6">
+                    <ScatterVisual />
                   </div>
                 </div>
                 <DataTable currentUser={currentUser} />
@@ -155,6 +170,5 @@ const [moduleRevenueArray, setModuleRevenueArray] = useState<{ module: string; r
         </SidebarInset>
       </SidebarProvider>
     </div>
-  )
+  );
 }
-

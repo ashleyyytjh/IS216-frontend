@@ -204,7 +204,7 @@ export default function OrderDetails() {
     })();
   }, [id, vm]);
 
-  if (loading) return <div className="p-6">Loading order…</div>;
+  if (loading) return <div className="flex justify-center"><div className="p-6">Loading order…</div>;</div>
   if (error)   return (
     <div className="p-6">
       <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>

@@ -33,6 +33,7 @@ export default function DashboardSeller() {
   const [moduleRevenueArray, setModuleRevenueArray] = useState<
     { module: string; revenue: number }[]
   >([]);
+  //total sales count is calling from API.
   useEffect(() => {
     setAnimate(true); // trigger animation after mount
   }, []);
@@ -50,7 +51,6 @@ export default function DashboardSeller() {
     getOrders()
       .then((orders) => {
         const uniqueNoteIds = [...new Set(orders.map((o) => o.note_id))];
-
         return Promise.all(
           uniqueNoteIds.map((id) =>
             getNotesById(String(id)).catch((err) => {
@@ -61,11 +61,11 @@ export default function DashboardSeller() {
         ).then((notes) => ({ orders, notes }));
       })
       .then(({ orders, notes }) => {
-const noteMap = new Map(
-  (notes ?? [])
-    .filter((note): note is GetNotesRes => Boolean(note))
-    .map(note => [note?.id, note])
-);
+        const noteMap = new Map(
+          (notes ?? [])
+            .filter((note): note is GetNotesRes => Boolean(note))
+            .map(note => [note?.id, note])
+        );
 
         let total = 0;
         let totalCnt = 0;
@@ -75,24 +75,23 @@ const noteMap = new Map(
         orders.forEach((order) => {
           const note = noteMap.get(order.note_id);
           if (note && note.userId === currentUser.sub) {
-            total += Number(order.price);
+            total += Number(order.price) / 100;
             totalCnt += 1;
             const mod = note.module || "Unknown";
             moduleCountMap.set(mod, (moduleCountMap.get(mod) || 0) + 1);
             moduleRevenueMap.set(
               mod,
-              (moduleRevenueMap.get(mod) || 0) + Number(order.price)
+              (moduleRevenueMap.get(mod) || 0) + Number(order.price) / 100
             );
           }
         });
 
-        // dummy additions (optional)
+        // // dummy additions (optional)
         // moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
         // moduleCountMap.set("IS216", (moduleCountMap.get("IS216") || 0) + 90)
 
         // moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000)
         // moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000)
-
         const arr = Array.from(moduleCountMap.entries())
           .map(([module, count]) => ({ module, count }))
           .sort((a, b) => b.count - a.count);

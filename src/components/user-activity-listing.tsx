@@ -47,7 +47,7 @@ const UserActivityListing = ({ note, onDownload }) => {
   const dateObject = new Date(isoString)
 
   const formatCurrency = (num: number) =>
-    num.toLocaleString("en-SG", { style: "currency", currency: "SGD" })
+    (num / 100).toLocaleString("en-SG", { style: "currency", currency: "SGD" })
 
   return (
     <Link
@@ -62,7 +62,7 @@ const UserActivityListing = ({ note, onDownload }) => {
               {n.module}
             </Badge>
           </CardTitle>
-          {!n?.userFullName && (
+          {n?.buyer_id && (
             <CardDescription className="text-md">
               Tracking ID : {n.id}
             </CardDescription>
@@ -73,8 +73,7 @@ const UserActivityListing = ({ note, onDownload }) => {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          {/* Author Info */}
-          {n.userFullName && (
+          {!n?.buyer_id && (
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center text-white text-sm font-bold">
                 {n.userFullName
@@ -102,13 +101,14 @@ const UserActivityListing = ({ note, onDownload }) => {
 
           {/* Rating and Date */}
           <div className="flex items-center justify-between text-sm text-gray-500">
-            <div />
-            {n?.userFullName && (
+            {!n?.buyer_id && (
               <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
                 <span>{dateObject.toLocaleDateString()}</span>
               </div>
             )}
+            <div />
+
           </div>
         </CardContent>
 
@@ -117,7 +117,7 @@ const UserActivityListing = ({ note, onDownload }) => {
             {formatCurrency(n.price)}
           </span>
 
-          {n?.userFullName && (
+          {!n?.buyer_id && (
             <Button
               className="hover:shadow-xl text-white"
               onClick={(e) => {
@@ -132,7 +132,7 @@ const UserActivityListing = ({ note, onDownload }) => {
             </Button>
           )}
 
-          {!n?.userFullName && <Button>Order Details</Button>}
+          {n?.buyer_id && <Button>Order Details</Button>}
         </CardFooter>
       </Card>
     </Link>

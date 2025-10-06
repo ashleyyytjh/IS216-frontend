@@ -159,6 +159,8 @@ export function DataTable(props: CurrentUserProp) {
       .then((resp: any[] = []) => {
         let userOrder = resp.filter((item: any) =>
           Object.keys(ownedID).includes(item.note_id)
+          &&
+          item.status === "succeeded"
         )
 
         userOrder = userOrder.map((i: any) => ({
@@ -170,94 +172,18 @@ export function DataTable(props: CurrentUserProp) {
           description: ownedID[i.note_id]?.description,
         }))
 
-        const mockDisputes = [
-          {
-            id: 9991,
-            note_id: "mock1",
-            module: "IS216",
-            type: "Lecture Notes",
-            originalName: "Week 5 - REST API Design",
-            description: "Buyer reported missing content in section 2",
-            price: 6.9,
-            status: "refund_requested",
-            userFullName: props.currentUser?.userFullName ?? "Test User",
-          },
-          {
-            id: 9992,
-            note_id: "mock2",
-            module: "IS112",
-            type: "Tutorial Answers",
-            originalName: "Tutorial 3 - Arrays & Loops",
-            description: "Buyer says file was corrupted",
-            price: 4.5,
-            status: "disputed",
-            userFullName: props.currentUser?.userFullName ?? "Test User",
-          },
-        ]
 
-        setAllOrders([...userOrder, ...mockDisputes])
+        setAllOrders([...userOrder])
       })
       .catch((e) => {
         console.error(e)
-        
-        const mockDisputes = [
-          {
-            id: 9991,
-            note_id: "mock1",
-            module: "IS216",
-            type: "Lecture Notes",
-            originalName: "Week 5 - REST API Design",
-            description: "Buyer reported missing content in section 2",
-            price: 6.9,
-            status: "refund_requested",
-            userFullName: props.currentUser?.userFullName ?? "Test User",
-          },
-          {
-            id: 9992,
-            note_id: "mock2",
-            module: "IS112",
-            type: "Tutorial Answers",
-            originalName: "Tutorial 3 - Arrays & Loops",
-            description: "Buyer says file was corrupted",
-            price: 4.5,
-            status: "disputed",
-            userFullName: props.currentUser?.userFullName ?? "Test User",
-          },
-        ]
-        setAllOrders(mockDisputes)
+
       })
   }, [props, ownedID])
 
-  const handleRefundDecision = async (orderId: number, decision: "approve" | "decline") => {
-    setActionLoading((m) => ({ ...m, [orderId]: true }))
-    try {
-
-
-      setAllOrders((prev) =>
-        prev.map((o) => {
-          if (o.id !== orderId) return o
-          const lower = (o.status || "").toLowerCase()
-          const isRefund = lower.includes("refund")
-          const newStatus =
-            isRefund
-              ? (decision === "approve" ? "refund_approved" : "refund_declined")
-              : (decision === "approve" ? "dispute_approved" : "dispute_declined")
-          return { ...o, status: newStatus }
-        })
-      )
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setActionLoading((m) => ({ ...m, [orderId]: false }))
-    }
-  }
-
   const renderStatusBadge = (status?: string) => {
     const s = (status || "").toLowerCase()
-    if (s.includes("approved")) return <Badge className="bg-emerald-500">{status}</Badge>
-    if (s.includes("declined") || s.includes("rejected")) return <Badge className="bg-red-500">{status}</Badge>
-    if (s.includes("processing") || s.includes("pending") || s.includes("disputed") || s.includes("refund")) return <Badge className="bg-amber-500">{status}</Badge>
-    return <Badge className="bg-slate-500">{status}</Badge>
+    return <Badge className="bg-green-600">{status}</Badge>
   }
 
   return (
@@ -285,12 +211,7 @@ export function DataTable(props: CurrentUserProp) {
             Orders You Received
           </TabsTrigger>
 
-          <TabsTrigger
-            value="disputes"
-            className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300"
-          >
-            Manage Disputes
-          </TabsTrigger>
+
         </TabsList>
       </div>
 
@@ -368,9 +289,9 @@ export function DataTable(props: CurrentUserProp) {
                           <div className="font-medium">{o.originalName}</div>
                         </TableCell>
                         <TableCell className="text-muted-foreground">{o.module}</TableCell>
-                        <TableCell className="font-medium">{formatCurrency(o.price)}</TableCell>
+                        <TableCell className="font-medium">{formatCurrency(o.price/100)}</TableCell>
                         <TableCell>{renderStatusBadge(o.status)}</TableCell>
-                        <TableCell>{o.type}</TableCell>
+                        <TableCell>{o['type'].charAt(0).toUpperCase() + o['type'].slice(1)}</TableCell>
                       </TableRow>
                     ))}
                     {filteredOrders.length === 0 && (
@@ -391,7 +312,7 @@ export function DataTable(props: CurrentUserProp) {
                     key={note.id}
                     note={note}
                     onDownload={undefined}
-                    // location={undefined}
+                  // location={undefined}
                   />
                 ))}
               </div>
@@ -423,135 +344,6 @@ export function DataTable(props: CurrentUserProp) {
         </div>
       </TabsContent>
 
-      {/* Manage Disputes */}
-      <TabsContent
-        value="disputes"
-        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6 transition-opacity duration-200"
-      >
-        <div className="flex-1">
-          <Card className="shadow-sm transition-shadow duration-500 hover:shadow-2xl w-[100%]">
-            <CardHeader className="pb-2">
-              {/* Toolbar for disputes: search + rows per page */}
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div className="flex flex-col w-full gap-3 sm:flex-row sm:items-center sm:gap-2">
-                  <div className="relative w-full">
-                    <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search disputes (id, note, module, status)"
-                      className="pl-9 bg-gray-100 text-gray-500 focus:bg-white focus:text-black transition-colors w-full"
-                      value={disputesQuery}
-                      onChange={(e) => {
-                        setDisputesQuery(e.target.value)
-                        setDisputesPage(1)
-                      }}
-                    />
-                  </div>
-
-                  <Select
-                    value={String(disputesPerPage)}
-                    onValueChange={(v) => {
-                      setDisputesPerPage(Number(v))
-                      setDisputesPage(1)
-                    }}
-                  >
-                    <SelectTrigger className="w-[100%] sm:w-[15%]">
-                      <SelectValue placeholder="Rows per page" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="5">5 rows</SelectItem>
-                      <SelectItem value="10">10 rows</SelectItem>
-                      <SelectItem value="15">15 rows</SelectItem>
-                      <SelectItem value="20">20 rows</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardHeader>
-
-            <CardContent className="pt-2">
-              <div className="overflow-auto rounded-md border">
-                <Table className="w-full">
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="pl-[2rem]">Transaction ID</TableHead>
-                      <TableHead>Note</TableHead>
-                      <TableHead>Module</TableHead>
-                      <TableHead>Price</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right pr-6">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {currentDisputes.map((o) => (
-                      <TableRow key={o.id} className="h-16">
-                        <TableCell className="font-medium pl-[2rem]">{o.id}</TableCell>
-                        <TableCell className="max-w-[28ch]">
-                          <div className="font-medium line-clamp-2">{o.originalName}</div>
-                          <div className="text-xs text-muted-foreground truncate">{o.description}</div>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">{o.module}</TableCell>
-                        <TableCell className="font-medium">{formatCurrency(o.price)}</TableCell>
-                        <TableCell>{renderStatusBadge(o.status)}</TableCell>
-                        <TableCell className="text-right pr-6">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              disabled={!!actionLoading[o.id]}
-                              onClick={() => handleRefundDecision(o.id, "decline")}
-                            >
-                              {actionLoading[o.id] ? "Declining..." : "Decline"}
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="default"
-                              disabled={!!actionLoading[o.id]}
-                              onClick={() => handleRefundDecision(o.id, "approve")}
-                            >
-                              {actionLoading[o.id] ? "Approving..." : "Approve"}
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-
-                    {filteredDisputes.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={6} className="h-24 text-center">
-                          No disputes match your filters.
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-
-              {/* pagination for disputes */}
-              <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
-                <div>Page {disputesPage} of {disputesTotalPages}</div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setDisputesPage((p) => Math.max(p - 1, 1))}
-                    disabled={disputesPage === 1}
-                  >
-                    Prev
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setDisputesPage((p) => Math.min(p + 1, disputesTotalPages))}
-                    disabled={disputesPage === disputesTotalPages}
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </TabsContent>
 
       {/* (Optional placeholders to keep structure) */}
       <TabsContent value="key-personnel" className="flex flex-col px-4 lg:px-6">

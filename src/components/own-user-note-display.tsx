@@ -22,6 +22,7 @@ import {
 } from "./ui/dropdown-menu"
 
 export const UserOwnNote = (currentUserInfo) => {
+  const user = currentUserInfo?.currentUserInfo ?? {}
   const [notes, setNotes] = useState<NoteListing[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
@@ -104,15 +105,15 @@ export const UserOwnNote = (currentUserInfo) => {
                     <div className="flex-1 flex flex-col justify-center gap-1">
                       <div className="flex">
                         <p className="flex-1 font-medium">
-                          {currentUserInfo.currentUserInfo.fullName}
+                          {user.fullName ?? "Unknown user"}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {formatRelativeMonthYear(listing.createdAt)}
                         </p>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Year {currentUserInfo.currentUserInfo.yearOfStudy}{" "}
-                        {currentUserInfo.currentUserInfo.major}
+                        Year {user.yearOfStudy ?? "Unknown year"}{" "}
+                        {user.major ?? "Unknown major"}
                       </p>
                     </div>
                   </CardHeader>

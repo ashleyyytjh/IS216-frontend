@@ -45,7 +45,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
                 }`}
             >
 
-              ${formatNumber(totalSales)} 
+              ${formatNumber(totalSales)}
             </CardTitle>
           </div>
           <CardAction />
@@ -55,7 +55,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
             <div className="line-clamp-1 flex gap-2 font-medium text-gray-500">
               Loading your earnings...
             </div>
-          ) : totalSales <= 100 ? (
+          ) : totalSales <= 1000 ? (
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500 transition-all duration-500 ease-in-out">
               Earnings have not been great. <IconTrendingDown className="size-4" />
             </div>
@@ -113,23 +113,27 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               className={`absolute text-2xl font-semibold tabular-nums transition-all duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
                 }`}
             >
-              {topModule?.module}
+              {topModule?.module
+                ? topModule.module
+                : "-"}
             </CardTitle>
           </div>
           <CardAction />
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            {loadInfo ? (
-              <div className="line-clamp-1 flex gap-2 font-medium text-gray-500">
-                Loading your most popular note
-              </div>
-            ) : (
-              <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">
-                {topModule?.count} notes of {topModule?.module} sold. <NotebookText className="size-4" />
-              </div>
-            )}
-          </div>
+          {loadInfo ? (
+            <div className="line-clamp-1 flex gap-2 font-medium text-gray-500">
+              Loading your most popular note
+            </div>
+          ) : topModule ? (
+            <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">
+              {topModule.count} notes of {topModule.module} sold. <NotebookText className="size-4" />
+            </div>
+          ) : (
+            <div className="line-clamp-1 flex gap-2 font-medium text-red-500">
+              No popular module data available.
+            </div>
+          )}
         </CardFooter>
       </Card>
     </div>

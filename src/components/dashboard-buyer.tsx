@@ -119,7 +119,7 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : (
                             <CardContent>
-                                <h1 className="text-xl font-extrabold">${totalSpent}</h1>
+                                <h1 className="text-xl font-extrabold">${totalSpent/100}</h1>
                                 <p className="text-sm font-light">Spent in Onlynotes.</p>
                             </CardContent>
                         )

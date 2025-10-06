@@ -101,7 +101,7 @@ export function FlipWordsDemo() {
 
   return (
     <div className=" flex justify-center items-center px-4">
-      <div className="text-4xl mx-auto font-semibold text-3xl font-semibold tracking-tighter sm:text-7xl">
+      <div className="text-4xl mx-auto font-semibold tracking-tighter sm:text-7xl">
         <FlipWords words={words} /> <br />
       </div>
     </div>

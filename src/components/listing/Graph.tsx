@@ -20,13 +20,22 @@ export default function Graph({
   graph,
 }: {
   title: string;
-  graph: GraphData;
+  graph?: GraphData;
 }) {
+  if (!graph || !graph.nodes?.length) {
+    return (
+      <div className="w-full h-screen border rounded-xl flex items-center justify-center text-muted-foreground">
+        Nothing to see
+      </div>
+    );
+  }
+
   const { nodes: initialNodes, edges: initialEdges } = useMemo(() => {
     const rfNodes: Node[] = graph.nodes.map((n) => ({
       id: n.id,
       data: { label: n.title },
       position: { x: 0, y: 0 },
+      style: { background: getColorByType(n.type) },
       draggable: true,
     }));
 
@@ -39,7 +48,7 @@ export default function Graph({
     }));
 
     return layoutElements(rfNodes, rfEdges, "LR");
-  }, []);
+  }, [graph]);
 
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
@@ -81,10 +90,6 @@ export default function Graph({
 const nodeWidth = 180;
 const nodeHeight = 50;
 
-/**
- * layoutElements take the sets of nodes and edges,
- * and returns their layout coordinates using dagre.
- */
 export function layoutElements(
   nodes: Node[],
   edges: Edge[],
@@ -113,4 +118,17 @@ export function layoutElements(
   });
 
   return { nodes: layoutedNodes, edges };
+}
+
+function getColorByType(type?: string): string {
+  switch (type) {
+    case "concept":
+      return "#A5D8FF"; // blue
+    case "subconcept":
+      return "#B2F2BB"; // green
+    case "keyword":
+      return "#FFEC99"; // amber
+    default:
+      return "#fff";
+  }
 }

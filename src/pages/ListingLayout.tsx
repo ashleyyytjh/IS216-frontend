@@ -1,18 +1,15 @@
-
 import Navbar from "@/components/ui/navbar"
 import { Outlet } from 'react-router-dom'
 import { Toaster } from "@/components/ui/sonner"
-import Footer from "@/components/Footer"
 
-const Layout = () => {
+const ListingLayout = () => {
     return (
         <>
             <Navbar/>
             <Outlet/>
-            <Footer/>
             <Toaster position="bottom-right" expand={true} richColors />
         </>
     )
 }
 
-export default Layout
+export default ListingLayout

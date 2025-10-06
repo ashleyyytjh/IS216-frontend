@@ -29,6 +29,10 @@ import AccountCreation from "./pages/AccountCreation";
 import Welcome from "./pages/Welcome";
 import NewHome from './pages/NewHome'
 import DashboardSeller from "./pages/dashboardSeller";
+import Listing from "./pages/Listing";
+import Payment from "./pages/Payment";
+import { PaymentSuccess } from "./pages/PaymentSuccessful";
+import ListingLayout from "./pages/ListingLayout";
 
 function App() {
     return (
@@ -57,11 +61,12 @@ function App() {
                     <Route path="/test" element={<LoginPage />} />
                     {/* <Route path="/profile" element={<Profile/>}/> */}
               </Route>
-            
-                
-            
-            </Route>
-            <Route path="*" element={<Error/>}/>
+          </Route>
+          {/* Listing required custom footer layout */}
+          <Route element={<ListingLayout />}>
+            <Route path="/listings/:id" element={<Listing />} /></Route>
+          <Route path="*" element={<Error />} />
+          <Route path="*" element={<Error/>}/>
 
         </Routes>
       </>

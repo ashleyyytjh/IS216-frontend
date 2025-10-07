@@ -74,6 +74,9 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
     }
   }
 
+  const editFullname = () => {
+    handleInputChange("fullName", [])
+  }
   const addModule = (module: string) => {
     if (module && !formData.modules?.includes(module)) {
       handleInputChange("modules", [...(formData.modules || []), module])
@@ -173,17 +176,19 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
             {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
           </div>
 
+         {/* FullName */}
           <div className="space-y-2">
-            <Label htmlFor="fullName">Email</Label>
+            <Label htmlFor="fullName">Full name</Label>
             <Input
-              id="fullname"
-              className="opacity-50"
-              readOnly={true}
+              id="fullName"
+              className=""
               type="text"
-              placeholder="Enter email address"
+              placeholder="Enter Full Name"
               value={formData.fullName || ""}
+              onChange={(e) => handleInputChange("fullName", e.target.value)}
+
             />
-            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+            {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
           </div>
 
           {/* Year of Study */}

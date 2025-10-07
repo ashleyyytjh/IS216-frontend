@@ -18,6 +18,9 @@ export type User = {
     major?: string;
     modules?: string[];
     purchasedNotes?: string[];
+    imageUrl?: string;
+
+    sub?: string; // Auth0 user ID
 }
 
 export type NoteListing = {

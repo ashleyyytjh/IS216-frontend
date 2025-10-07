@@ -33,6 +33,7 @@ import Listing from "./pages/Listing";
 import Payment from "./pages/Payment";
 import { PaymentSuccess } from "./pages/PaymentSuccessful";
 import ListingLayout from "./pages/ListingLayout";
+import AnnotationComponent from "./pages/Forum";
 
 function App() {
     return (
@@ -62,6 +63,7 @@ function App() {
                     {/* <Route path="/profile" element={<Profile/>}/> */}
                     <Route path="/payment" element={<Payment />} />
                     <Route path="/paymentSuccess" element={<PaymentSuccess />} />
+                    <Route path="/forum/:id" element={<AnnotationComponent />} />
 
 
               </Route>

@@ -91,34 +91,40 @@ export function ScatterVisual() {
     <Card className="shadow-md hover:shadow-lg">
       <CardHeader>
         <CardTitle>Price vs Sales Count of Note</CardTitle>
-        <CardDescription>Based on price of single note and revenue made.</CardDescription>
-        {(() => {
-          if (correlation > 0.5) {
-            return (
-              <CardDescription className="text-green-600">
-                <strong>Insights: </strong>Higher-priced notes tend to earn <strong>more revenue</strong>.
-              </CardDescription>
-            );
-          } else if (correlation > 0.1) {
-            return (
-              <CardDescription className="text-green-500">
-                <strong>Insights: </strong>Slight positive relationship — pricier notes may perform a bit better.
-              </CardDescription>
-            );
-          } else if (correlation < -0.1) {
-            return (
-              <CardDescription className="text-red-500">
-                <strong>Insights: </strong>Higher prices might reduce total sales — consider optimizing pricing.
-              </CardDescription>
-            );
-          } else {
-            return (
-              <CardDescription className="text-gray-500">
-                <strong>Insights: </strong>No clear relationship between price and revenue.
-              </CardDescription>
-            );
-          }
-        })()}
+        {isLoading ? (
+          <></>
+        ) : isEmpty ? (
+          <></>
+        ) : (
+          (() => {
+            if (correlation > 0.5) {
+              return (
+                <CardDescription className="text-green-600">
+                  <strong>Insights: </strong>Higher-priced notes tend to earn <strong>more revenue</strong>.
+                </CardDescription>
+              );
+            } else if (correlation > 0.1) {
+              return (
+                <CardDescription className="text-green-500">
+                  <strong>Insights: </strong>Slight positive relationship — pricier notes may perform a bit better.
+                </CardDescription>
+              );
+            } else if (correlation < -0.1) {
+              return (
+                <CardDescription className="text-red-500">
+                  <strong>Insights: </strong>Higher prices might reduce total sales — consider optimizing pricing.
+                </CardDescription>
+              );
+            } else {
+              return (
+                <CardDescription className="text-gray-500">
+                  <strong>Insights: </strong>No clear relationship between price and revenue.
+                </CardDescription>
+              );
+            }
+          })()
+        )}
+
 
       </CardHeader>
       <CardContent className="h-[400px] flex items-center justify-center relative">

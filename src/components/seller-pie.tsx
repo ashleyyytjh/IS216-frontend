@@ -34,7 +34,7 @@ const chartConfig = {
 }
 
 export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
-    console.log(moduleCountsArray)
+  console.log(moduleCountsArray)
   const [isLoading, setIsLoading] = useState(true)
   const [isEmpty, setIsEmpty] = useState(false)
   const [topMod, setTopMod] = useState<{ module: string; count: number } | null>(null)
@@ -54,16 +54,16 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
 
   // const chartData = moduleCountsArray.slice(0, 5)
 
-    const chartData = useMemo(() => {
-      if (!moduleCountsArray || moduleCountsArray.length === 0) return []
-      // sort descending by revenue
-      return [...moduleCountsArray]
-        .map((item) => ({ ...item, count: item.count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 5)
-    }, [moduleCountsArray])
-  
-    useEffect(() => {
+  const chartData = useMemo(() => {
+    if (!moduleCountsArray || moduleCountsArray.length === 0) return []
+    // sort descending by revenue
+    return [...moduleCountsArray]
+      .map((item) => ({ ...item, count: item.count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+  }, [moduleCountsArray])
+
+  useEffect(() => {
     if (chartData.length > 0) {
       const top = chartData[0]
       setTopMod((prev) =>
@@ -72,13 +72,18 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
     }
   }, [chartData])
 
-  
+
 
   return (
     <Card className="h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
       <CardHeader>
         <CardTitle>Amount of Notes Sold</CardTitle>
-        <CardDescription><strong>Insight:</strong> Best performing note by revenue is <strong>{topMod?.module}</strong></CardDescription>
+        {
+          isLoading ? (<></>) :
+
+            isEmpty ? (<></>) : (<CardDescription><strong>Insight:</strong> Best performing note by revenue is <strong>{topMod?.module}</strong></CardDescription>
+            )
+        }
       </CardHeader>
 
       <CardContent className="relative flex-1 flex items-center justify-center h-[380px] px-2 pt-4 sm:px-6 sm:pt-6">
@@ -142,7 +147,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                     key={`cell-${index}`}
                     fill={
                       ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"][
-                        index % 5
+                      index % 5
                       ]
                     }
                   />

@@ -35,7 +35,6 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
 
   useEffect(() => {
     if (moduleRevenueArray.length === 0) {
-      // wait 3 seconds before deciding it's truly empty
       const timeout = setTimeout(() => {
         setIsLoading(false)
         setIsEmpty(true)
@@ -57,13 +56,13 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
   }, [moduleRevenueArray])
 
   useEffect(() => {
-  if (chartData.length > 0) {
-    const top = chartData[0]
-    setTopMod((prev) =>
-      prev?.module === top.module && prev?.revenue === top.revenue ? prev : top
-    )
-  }
-}, [chartData])
+    if (chartData.length > 0) {
+      const top = chartData[0]
+      setTopMod((prev) =>
+        prev?.module === top.module && prev?.revenue === top.revenue ? prev : top
+      )
+    }
+  }, [chartData])
 
 
 
@@ -71,7 +70,12 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
     <Card className="h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
       <CardHeader>
         <CardTitle>Top 5 Revenue-Generating Modules</CardTitle>
-        <CardDescription><strong>Insight:</strong> Best performing note by revenue is <strong>{topMod?.module}</strong></CardDescription>
+        {
+          isLoading ? (<></>):
+          
+          isEmpty? (<></>) : ( <CardDescription><strong>Insight:</strong> Best performing note by revenue is <strong>{topMod?.module}</strong></CardDescription>)
+        }
+
       </CardHeader>
 
       <CardContent className="relative flex-1 flex items-center justify-center h-[380px] px-2 pt-4 sm:px-6 sm:pt-6">

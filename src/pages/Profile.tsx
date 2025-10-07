@@ -23,7 +23,7 @@ const Profile = () => {
   console.log(currentUser)
 
     if (loading) return  <div className="flex justify-center items-center w-full h-64"> <SpinItem/></div>
-  if (!currentUser) return <p>No user data found</p>
+  if (!currentUser) return  <div className="flex justify-center item-center p-128"><h1 className="text-4xl">No user data found</h1></div>
 
   return (
     <div className="container mw-50 mr-auto ml-auto pl-2 pr-2 w-[100%] md:w-[75%] fade-in">

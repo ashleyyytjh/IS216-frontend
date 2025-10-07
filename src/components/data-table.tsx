@@ -93,14 +93,10 @@ export function DataTable(props: CurrentUserProp) {
   const [itemsPerPage, setItemPerPage] = useState(5)
   const [searchQuery, setSearchQuery] = useState("")
 
-  const [disputesPage, setDisputesPage] = useState(1)
-  const [disputesPerPage, setDisputesPerPage] = useState(5)
-  const [disputesQuery, setDisputesQuery] = useState("")
 
   const [ownedID, setOwnedID] = useState<OwnedMap>({})
   const [orders, setAllOrders] = useState<any[]>([])
   const [view, setView] = useState<"past-performance" | "outline" | "disputes">("past-performance")
-  const [actionLoading, setActionLoading] = useState<Record<number, boolean>>({})
 
   const filteredOrders = useMemo(() => {
     return orders.filter((o) =>
@@ -288,7 +284,6 @@ export function DataTable(props: CurrentUserProp) {
                     key={note.id}
                     note={note}
                     onDownload={undefined}
-                  // location={undefined}
                   />
                 ))}
               </div>

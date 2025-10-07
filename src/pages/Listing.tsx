@@ -10,18 +10,20 @@ import { GetNotesRes } from "@/types/requests/notes";
 import { GraphData, NoteListing } from "@/types/types";
 import { DollarSign, Download, Info } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Graph = lazy(() => import("@/components/listing/Graph"));
 const PDFViewer = lazy(() => import("@/components/listing/PDFViewer"));
 
 export default function Listing() {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<GetNotesRes>();
   useEffect(() => {
     async function load() {
       if (!id) return;
       const data = await getNotesById(id);
+      console.log(data)
       setData(data);
     }
     load();
@@ -45,13 +47,13 @@ export default function Listing() {
                 <div className="grid grid-cols-1 md:grid-cols-4">
                   {/* Movable Section */}
                   <div className="md:col-span-3 fixed bottom-0 md:static flex md:flex-row flex-col gap-3 w-full px-5 py-10 md:p-0 items-center bg-muted md:bg-transparent z-10">
-                    {data?.purchased ? (
+                    {data?.purchased || data?.price === 0 ? (
                       <Button className="flex-1 md:flex-initial w-full md:w-fit">
                         <Download />
                         Download
                       </Button>
                     ) : (
-                      <Button className="flex-1 md:flex-initial w-full md:w-fit">
+                      <Button  onClick={() => navigate(`/payment?id=${id}`)} className="flex-1 md:flex-initial w-full md:w-fit">
                         <DollarSign />
                         Purchase
                       </Button>

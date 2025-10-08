@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { set } from "date-fns"
 
 const navigationItems = [
-    { name: "Home", href: "/home" },
+    // { name: "Home", href: "/home" },
     { name: "Explore", href: "/explore" },
     { name: "Upload", href: "/upload" },
     { name: "Dashboard", href: "/dashboardSeller" },

@@ -16,6 +16,10 @@ import ExploreSubject from '@/components/home/ExploreSubject';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
 import { testimonials } from '@/assets/data';
+import RecommendationsHub, {
+  type CalendarConfig,
+  type UserProfile,
+} from "@/components/RecommendationCarousel";
 
 const featuredNotes = [
     { id: 1, title: "Advanced Algorithms Cheatsheet", author: "Jane Doe", university: "Stanford University", rating: 5, price: "$9.99" },
@@ -30,6 +34,13 @@ import { User } from '@/types/types';
 import logo from '../assets/logodark.png';
 
 export default function ImprovedHomepage() {
+  const calendar: CalendarConfig = {
+    week1Monday: new Date("2025-08-18T00:00:00+08:00"),
+    // You can pass tuple or array; component normalizes to [start,end]
+    midtermWeeks: [6, 7,8],          // Weeks 6–7 (22 Sep–5 Oct 2025)
+    finalsWeeks: [15, 16],         // Weeks 15–16 (24 Nov–5 Dec 2025)
+  };
+
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [user, setUser] = useState<User | null>(null);
   const [stepSelection, setStepSelection] = useState<String>('buyer');
@@ -133,6 +144,16 @@ export default function ImprovedHomepage() {
               <StepsComponent option={stepSelection}/>
             </div>
 
+
+            <RecommendationsHub
+  isLoggedIn={isLoggedIn}
+  profile={
+    isLoggedIn
+      ? { modules: ["IS216", "CS203"], major: "Information Systems", budgetCents: 500 }
+      : undefined
+  }
+  calendar={calendar}
+/>
             <ExploreSubject/>
             <section>
                 <h2 className="text-4xl font-bold text-center mb-16">Loved by all SMU Students </h2>

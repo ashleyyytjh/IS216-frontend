@@ -105,7 +105,8 @@ export const RedirectOnLogin = ({ user }) => {
               console.log('User logged in:', user);
               setShowRedirecting(true);
               navigate(location.state?.from || '/home', { replace: true });
-              return () => clearTimeout(timer);
+              // return () => clearTimeout(timer);
+              return;
             }
           } catch (error) {
             toast.error("Please enter your account details");

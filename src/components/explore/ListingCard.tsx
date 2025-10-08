@@ -26,7 +26,7 @@ export default function ListingCard({ data }: { data: SearchNotesItem }) {
             <AvatarFallback className="rounded-md">{getAvatarFallback(data.userFullName)}</AvatarFallback>
           </Avatar>
 
-          <div className="flex-1 flex flex-col justify-center gap-1">
+          <div className="flex-1 flex flex-col justify-center gap-1 ">
             <div className="flex">
               <p className="flex-1 font-medium">{data.userFullName}</p>
               <p className="text-xs text-muted-foreground">
@@ -40,7 +40,7 @@ export default function ListingCard({ data }: { data: SearchNotesItem }) {
         </CardHeader>
 
         <CardContent className="flex-1 space-y-2 p-0 pb-3">
-          <h3 className="font-semibold h-10">{data.title}</h3>
+          <h3 className="font-semibold h-auto">{data.title}</h3>
           <p className="text-sm line-clamp-2">{data.description}</p>
           <div className="flex flex-wrap text-xs text-muted-foreground">
             {data.tags.map((tag, i) => (

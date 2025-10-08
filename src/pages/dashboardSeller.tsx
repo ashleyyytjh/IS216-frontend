@@ -73,25 +73,29 @@ export default function DashboardSeller() {
         const moduleRevenueMap = new Map<string, number>();
 
         orders.forEach((order) => {
+          console.log(order)
           const note = noteMap.get(order.note_id);
           if (note && note.userId === currentUser.sub) {
-            total += Number(order.price) / 100;
-            totalCnt += 1;
-            const mod = note.module?.toUpperCase() || "Unknown";
-            moduleCountMap.set(mod, (moduleCountMap.get(mod) || 0) + 1);
-            moduleRevenueMap.set(
-              mod,
-              (moduleRevenueMap.get(mod) || 0) + Number(order.price) / 100
-            );
+            if (order.status == "succeeded") {
+              total += Number(order.price) / 100;
+              totalCnt += 1;
+              const mod = note.module?.toUpperCase() || "Unknown";
+              moduleCountMap.set(mod, (moduleCountMap.get(mod) || 0) + 1);
+              moduleRevenueMap.set(
+                mod,
+                (moduleRevenueMap.get(mod) || 0) + Number(order.price) / 100
+              );
+            }
+
           }
         });
 
-        // dummy additions (optional)
+        //dummy additions (optional)
         // moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
         // moduleCountMap.set("IS216", (moduleCountMap.get("IS216") || 0) + 90)
 
-        // moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000/100)
-        // moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000/100)
+        // moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000 / 100)
+        // moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000 / 100)
         const arr = Array.from(moduleCountMap.entries())
           .map(([module, count]) => ({ module, count }))
           .sort((a, b) => b.count - a.count);
@@ -146,13 +150,11 @@ export default function DashboardSeller() {
                   totalNoteCount={totalNoteCount}
                   topModule={topModule}
                 />
-                <div className="flex flex-col lg:flex-row gap-4 items-stretch">
-                  <div className="w-[100%] lg:w-[50%] px-6">
-                    <ChartPieInteractive
-                      moduleCountsArray={moduleCountsArray}
-                    />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 lg:px-6 w-full items-stretch">
+                  <div className="w-full">
+                    <ChartPieInteractive moduleCountsArray={moduleCountsArray} />
                   </div>
-                  <div className="w-[100%] lg:w-[50%] px-6">
+                  <div className="w-full">
                     <ChartBarLabel moduleRevenueArray={moduleRevenueArray} />
                   </div>
                 </div>

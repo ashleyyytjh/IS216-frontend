@@ -13,12 +13,19 @@ import { Download, Calendar } from "lucide-react"
 import { downloadNotes } from "@/services/NotesService"
 import { toast } from "sonner"
 import { Link } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 
 const UserActivityListing = ({ note, onDownload }) => {
   const [downloadState, setDownloadState] = useState<string | null>(null)
+  const location = useLocation()
+  console.log(location.pathname)
+
+  const isSellerDashboard = location.pathname.includes("dashboardSeller")
+  const profile = location.pathname.includes("profile")
 
   // normalize data shape (if wrapped under note.note, unwrap it)
-  const n = note.note ? note.note : note
+  //const n = note.note ? note.note : note
+  const n = note.note ? { ...note, ...note.note } : note;
   const handleDownload = () => {
     setDownloadState("downloading")
     downloadNotes(n.id)
@@ -45,10 +52,8 @@ const UserActivityListing = ({ note, onDownload }) => {
 
   const isoString = n.createdAt
   const dateObject = new Date(isoString)
-
   const formatCurrency = (num: number) =>
     (num / 100).toLocaleString("en-SG", { style: "currency", currency: "SGD" })
-
   return (
     <Link
       to={!n?.userFullName ? `/orderdetails/${n.id}` : `/listings/${n.id}`}
@@ -62,7 +67,8 @@ const UserActivityListing = ({ note, onDownload }) => {
               {n.module.toUpperCase()}
             </Badge>
           </CardTitle>
-          {n?.buyer_id && (
+          {/* this means that the if have buyer id, it is to show in order page. */}
+          {isSellerDashboard && (
             <CardDescription className="text-md">
               Tracking ID : {n.id}
             </CardDescription>
@@ -101,11 +107,27 @@ const UserActivityListing = ({ note, onDownload }) => {
 
           {/* Rating and Date */}
           <div className="flex items-center justify-between text-sm text-gray-500">
-            {!n?.buyer_id && (
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                <span>{dateObject.toLocaleDateString()}</span>
-              </div>
+
+            {(
+              <>
+                {n.status === "processing" ? (
+                  <Badge className="bg-amber-100 text-amber-700 border border-amber-300">
+                    {n.status.charAt(0).toUpperCase() + n.status.slice(1)}
+                  </Badge>
+                ) : n.status === "created" ? (
+                  <Badge className="bg-blue-100 text-blue-700 border border-blue-300">
+                    Created
+                  </Badge>
+                ) : n.status === "succeeded" ? (
+                  <Badge className="bg-green-100 text-green-700 border border-green-300">
+                    Succeeded
+                  </Badge>
+                ) : n.status === "failed" ? (
+                  <Badge className="bg-red-100 text-red-700 border border-red-300">
+                    Failed
+                  </Badge>
+                ) : null}
+              </>
             )}
             <div />
 

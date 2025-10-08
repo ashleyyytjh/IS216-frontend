@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import TypingText from "@/components/ui/shadcn-io/typing-text";
 import BackgroundNebula from "@/components/Background";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { FlipWords } from "@/components/ui/flip-words";
 
 export const FADE_IN_UP_VARIANT: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -22,7 +22,6 @@ export const FADE_IN_UP_VARIANT: Variants = {
 };
 
 const WelcomeComponent = () => {
-    const isMobile = useIsMobile();
     const navigate = useNavigate();
     return (
         <div className="flex flex-col items-center justify-center bg-background h-screen">
@@ -33,7 +32,7 @@ const WelcomeComponent = () => {
                 variants={{
                     visible: {
                         transition: {
-                            staggerChildren: 0.7, 
+                            staggerChildren: 0.5, 
                         },
                     },
                 }}
@@ -76,6 +75,7 @@ interface TerminalIntroProps {
     pauseDuration?: number;
     textLines: string[];
 }
+
 function SmartTerminalIntro(props: TerminalIntroProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-background ">
@@ -94,7 +94,6 @@ function SmartTerminalIntro(props: TerminalIntroProps) {
   );
 }
 
-import { FlipWords } from "@/components/ui/flip-words";
 
 export function FlipWordsDemo() {
   const words = ["Welcome to OnlyNotes"];
@@ -115,7 +114,7 @@ const Welcome = () => {
     const typingSpeed = 40;
     const pauseDuration = 1000;
     const textLines = [
-        "The best notes, from the best students.",
+        // "The best notes, from the best students.",
         "Your key to academic success.",
         // "Welcome to OnlyNotes."
     ];

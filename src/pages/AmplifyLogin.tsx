@@ -104,11 +104,8 @@ export const RedirectOnLogin = ({ user }) => {
             if (user && dbUser) {
               console.log('User logged in:', user);
               setShowRedirecting(true);
-              const timer = setTimeout(() => {
-                navigate(location.state?.from || '/home', { replace: true });
-              }, 1500);
+              navigate(location.state?.from || '/home', { replace: true });
               return () => clearTimeout(timer);
-
             }
           } catch (error) {
             toast.error("Please enter your account details");
@@ -121,16 +118,7 @@ export const RedirectOnLogin = ({ user }) => {
 
    return (
     <>
-      {showRedirecting && (
-        <motion.div
-          initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: [0.5, 1], opacity: 1 }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
-          className="flex items-center justify-center"
-        >
-          <Heading level={1}>Welcome {user?.username}</Heading>
-        </motion.div>
-      )}
+
     </>
   );
 };

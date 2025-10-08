@@ -15,8 +15,10 @@ import { set } from "date-fns"
 const navigationItems = [
     { name: "Home", href: "/home" },
     { name: "Explore", href: "/explore" },
-    { name: "Upload Notes", href: "/upload" },
-    { name: "Seller Dashboard", href: "/DashboardSeller" }
+    { name: "Upload", href: "/upload" },
+    { name: "Dashboard", href: "/dashboardSeller" },
+    { name: "Forum", href: "/forum" }
+
 ]
 
 const navbar = () => {
@@ -30,11 +32,6 @@ const navbar = () => {
             try {
                 isAmplifyUser = await getCurrentUser(); // 2. Assign the value
                 setAmplifyUser(isAmplifyUser);
-                // const userDB = await getUser(); 
-                // console.log("DB user exists");
-                // setUser(userDB);
-                // console.log(userDB)
-
             } catch (error) {
             }
         };
@@ -49,19 +46,9 @@ const navbar = () => {
             localStorage.clear();
             toast.success('Successfully signed out');
 
-            const timer = setTimeout(() => {
+            setTimeout(() => {
                 window.location.href = '/home';
-            }, 1000)
-            // const timer = setTimeout(() => {
-            //     window.location.href = '/home';
-            // },1000)
-
-            //return () => clearTimeout(timer);
-            // const timer = setTimeout(() => {
-            //     window.location.href = '/home';
-            // },1000)
-
-            // return () => clearTimeout(timer);   
+            }, 500) 
 
         } catch (error) {
             console.log('error signing out: ', error);
@@ -78,7 +65,7 @@ const navbar = () => {
                                 <Menu className="h-6 w-6" />
                                 <div className="flex items-center space-x-2">
                                     <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                        <span className="text-primary-foreground font-bold text-sm">L</span>
+                                        <span className="text-primary-foreground font-bold text-sm">N</span>
                                     </div>
                                     <span className="font-bold text-xl">Onlynotes</span>
                                 </div>
@@ -92,7 +79,7 @@ const navbar = () => {
                             <SheetTitle className="pt-5 pl-3">
                                 <a href="/home" className="flex items-center space-x-2">
                                     <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                        <span className="text-primary-foreground font-bold text-sm">L</span>
+                                        <span className="text-primary-foreground font-bold text-sm">N</span>
                                     </div>
                                     <span className="font-bold text-xl">Onlynotes</span>
                                 </a>
@@ -116,13 +103,13 @@ const navbar = () => {
                     {/* The code here is for the main nav bar. text align might go here. */}
                     <div className="hidden md:flex flex-1 items-center space-x-8 text-[#0f172b] text-center mr-auto ml-auto">
                         <a href="/home" className="flex items-center space-x-2">
-                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                <span className="text-primary-foreground font-bold text-sm">L</span>
+                            <div className="h-6 w-6 rounded-lg bg-primary flex items-center justify-center">
+                                <span className="text-primary-foreground text-sm">N</span>
                             </div>
-                            <span className="font-bold text-xl">OnlyNotes</span>
+                            <span className="font-bold text-xl pr-12 ">OnlyNotes</span>
                         </a>
                         {navigationItems.map((item) => {
-                            if (item.name === "Seller Dashboard" && !amplifyUser) {
+                            if ((item.name === "Dashboard" || item.name === "Upload") && !amplifyUser) {
                                 return null; // hide dashboard when user not logged in
                             }
 
@@ -130,7 +117,7 @@ const navbar = () => {
                                 <a
                                     key={item.name}
                                     href={item.href}
-                                    className="hover:text-foreground transition-colors duration-200 font-medium text-[#0f172b]"
+                                    className="hover:border-b-2 border-primary hover:text-foreground transition-colors duration-200 font-medium text-sm "
                                 >
                                     {item.name}
                                 </a>
@@ -140,14 +127,20 @@ const navbar = () => {
                     <div>
                         {!amplifyUser ? (
                             <Button>
-                                <Link to="/login">Login</Link>
+                                <Link className="text-sm" to="/login">Login</Link>
                             </Button>
                         ) : (
                             <div className="flex items-center space-x-4">
-                                <Button>
-                                    <Link to="/profile">Profile</Link>
+                                <Button
+                                    size={"sm"}
+                                >
+                                    <Link className="text-sm" to="/profile">Profile</Link>
                                 </Button>
-                                <Button onClick={handleSignOut}>Sign out</Button>
+                                <Button   size={"sm"} onClick={handleSignOut}>
+                                <p className="text-sm"> 
+                                        Sign out
+                                </p>
+                                </Button>
                             </div>
                         )}
                     </div>

@@ -188,7 +188,17 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
             )
           ) : topModule ? (
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500">
-              {topModule.count} notes of {topModule.module} sold. <NotebookText className="size-4" />
+              {
+                topModule.count > 1 ?(
+                  <>
+                  {topModule.count} notes of {topModule.module} sold. <NotebookText className="size-4" />
+                  </>
+                ):(
+                  <>
+                  {topModule.count} note of {topModule.module} sold. <NotebookText className="size-4" /></>
+                )
+              }
+              
             </div>
           ) : (
             <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">

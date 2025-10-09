@@ -14,7 +14,7 @@ const UserTabs = (currentUser) => {
             <Tabs defaultValue="personal" className="w-full">
                 <TabsList className="flex flex-col h-auto md:flex-row w-[100%] mb-13">
                     <TabsTrigger value="personal" className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300">Personal</TabsTrigger>
-                    <TabsTrigger value="usernotes" className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300">Purchased Notes</TabsTrigger>
+                    <TabsTrigger value="usernotes" className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300">Order History</TabsTrigger>
                 </TabsList>
                 <TabsContent value="personal">
                    <UserEdit currentUser={currentUser}/>

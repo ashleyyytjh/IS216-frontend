@@ -8,9 +8,7 @@ import { Link } from 'react-router-dom';
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import type { User } from "@/types/types"
 import { useNavigate } from "react-router-dom"
-import { getUser } from "@/services/UserService"
 import { toast } from "sonner";
-import { set } from "date-fns"
 
 const navigationItems = [
     // { name: "Home", href: "/home" },
@@ -95,7 +93,38 @@ const navbar = () => {
                                     >
                                         {item.name}
                                     </a>
-                                ))}
+                                ))
+
+                                }
+
+                                {!amplifyUser ? (
+                                    <a
+                                        href="/login"
+                                        className="text-foreground hover:text-primary font-medium text-lg py-2 md:hidden"
+                                        onClick={() => setIsOpen(false)}
+                                    >
+                                        Login
+                                    </a>
+                                ) : (
+                                    <>
+                                        <a
+                                            href="/profile"
+                                            className="text-foreground hover:text-primary font-medium text-lg py-2 md:hidden"
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            Profile
+                                        </a>
+                                        <a
+                                            onClick={() => {
+                                                handleSignOut()
+                                                setIsOpen(false)
+                                            }}
+                                            className="text-destructive hover:text-primary font-medium text-lg py-2 md:hidden"
+                                        >
+                                            Sign Out
+                                        </a>
+                                    </>
+                                )}
                             </div>
                         </SheetContent>
                     </Sheet>
@@ -124,7 +153,7 @@ const navbar = () => {
                             );
                         })}
                     </div>
-                    <div>
+                    <div className="hidden md:block">
                         {!amplifyUser ? (
                             <Button>
                                 <Link className="text-sm" to="/login">Login</Link>

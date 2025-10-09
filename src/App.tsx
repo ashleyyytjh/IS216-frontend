@@ -30,10 +30,12 @@ import Welcome from "./pages/Welcome";
 import NewHome from './pages/NewHome'
 import DashboardSeller from "./pages/dashboardSeller";
 import Listing from "./pages/Listing";
+import UserEdit from "./pages/Editor";
 import Payment from "./pages/Payment";
 import { PaymentSuccess } from "./pages/PaymentSuccessful";
 import ListingLayout from "./pages/ListingLayout";
 import AnnotationComponent from "./pages/Forum";
+import Example from "./pages/Editor";
 
 function App() {
     return (
@@ -41,7 +43,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome/>}/>
           <Route path = '/'  element={<Layout/>}> 
-              {/* <Route path="/home" element={<Home/>}/> */}
               <Route path="/home" element={<NewHome/>}/>
 
               <Route path="/explore" element={<Explore/>}/>
@@ -56,6 +57,8 @@ function App() {
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/orderdetails/:id" element={<OrderDetails />} />
+               <Route path="/writeNotes" element={<Example/>} />
+               <Route path="/editNote/:id" element={<Example/>} />
 
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>

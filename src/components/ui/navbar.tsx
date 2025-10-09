@@ -46,8 +46,7 @@ const navbar = () => {
 
             setTimeout(() => {
                 window.location.href = '/home';
-            }, 1000)
-
+            }, 500) 
 
         } catch (error) {
             console.log('error signing out: ', error);

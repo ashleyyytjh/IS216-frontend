@@ -22,22 +22,22 @@ export default function AestheticFooter() {
       links: [
         { name: "Subjects", href: "#" },
         { name: "Top Notes", href: "#" },
-        { name: "Featured Sellers", href: "#" },
+        // { name: "Featured Sellers", href: "#" },
       ],
     },
     {
       title: "Sell",
       links: [
         { name: "Become a Seller", href: "#" },
-        { name: "Seller Guidelines", href: "#" },
-        { name: "Payouts", href: "#" },
+        // { name: "Seller Guidelines", href: "#" },
+        // { name: "Payouts", href: "#" },
       ],
     },
     {
       title: "Company",
       links: [
         { name: "About Us", href: "#" },
-        { name: "Blog", href: "#" },
+        // { name: "Blog", href: "#" },
         { name: "Contact Us", href: "#" },
       ],
     },

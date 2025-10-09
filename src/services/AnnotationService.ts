@@ -6,5 +6,15 @@ const getAnnotationsByNoteId = async ( note_id : string) => {
     return response.data;
 }
 
+const createAnnotation = async ( annotationData : any) => {
+    const response = await AxiosInstance.post('/annotations', annotationData);
+    return response.data;
+}
 
-export { getAnnotationsByNoteId };
+const deleteAnnotation = async ( annotationId : string) => {
+    const response = await AxiosInstance.post(`/annotations/${annotationId}`);
+    return response.data;
+}
+
+
+export { getAnnotationsByNoteId, createAnnotation, deleteAnnotation };

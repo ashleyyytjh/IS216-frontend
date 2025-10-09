@@ -11,7 +11,6 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
-// import { myNotes } from "@/types/types"
 import { Input } from "@/components/ui/input"
 import { getOrders, getUserOrderByUserId } from "@/services/OrdersService"
 import { getNotesById } from "@/services/NotesService"
@@ -35,7 +34,6 @@ function UserActivity(currentUser) {
         if (!usrID) return
         async function fetchOrders() {
             try {
-                //user's raw orders
                 const rawOrders = await getUserOrderByUserId(usrID)
                 console.log("Raw orders returned:", rawOrders)
 

@@ -83,14 +83,11 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
 
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-3">
-          {/* Left: Title */}
           <CardTitle className="text-base font-semibold text-gray-800">
             Top Revenue-Generating Modules
           </CardTitle>
 
-          {/* Right: Filters */}
           <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start sm:justify-end mt-1 sm:mt-0">
-            {/* Module Filter */}
             <Select value={moduleFilter} onValueChange={setModuleFilter}>
               <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md  hover:bg-gray-100">
                 <SelectValue placeholder="Module" />

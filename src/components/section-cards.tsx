@@ -33,6 +33,7 @@ function formatNumber(num: number): string {
 export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }: SectionCardsProps) {
   const [noData, setNoData] = useState(false)
   useEffect(() => {
+    //if after 5 seconds no response, then this will happen.
     let timeout: ReturnType<typeof setTimeout> | null = null;
     if (loadInfo) {
       setNoData(false)
@@ -53,7 +54,6 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
   }, [loadInfo])
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-3 @5xl/main:grid-cols-3 mb-5">
-      {/* Total Revenue */}
       <Card className=" bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
           <CardDescription>Total Revenue</CardDescription>
@@ -100,7 +100,6 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
         </CardFooter>
       </Card>
 
-      {/* Total Notes Sold */}
       <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
           <CardDescription>Total Notes Sold</CardDescription>
@@ -149,7 +148,6 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
         </CardFooter>
       </Card>
 
-      {/* Most Popular Module */}
       <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
           <CardDescription>Most Popular Module</CardDescription>

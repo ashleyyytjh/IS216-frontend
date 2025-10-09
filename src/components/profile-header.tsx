@@ -14,7 +14,7 @@ function ProfileHeader(currentUser) {
                 </Avatar>
             </div>
 
-            <div className="text-center mt-2 md:text-left align-items-left ">
+            <div className="text-center mt-2 md:text-left align-items-left">
                 <h1 className="text-3xl font-extrabold mb-3">{currentUser.fullName ?? currentUser.username}</h1>
                 <p className="text-md mb-3">{currentUser.major} Student</p>
                 <div className="flex flex-col gap-y-3">

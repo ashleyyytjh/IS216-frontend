@@ -23,8 +23,6 @@ const UserActivityListing = ({ note, onDownload }) => {
   const isSellerDashboard = location.pathname.includes("dashboardSeller")
   const profile = location.pathname.includes("profile")
 
-  // normalize data shape (if wrapped under note.note, unwrap it)
-  //const n = note.note ? note.note : note
   const n = note.note ? { ...note, ...note.note } : note;
   const handleDownload = () => {
     setDownloadState("downloading")
@@ -105,7 +103,6 @@ const UserActivityListing = ({ note, onDownload }) => {
             </div>
           )}
 
-          {/* Rating and Date */}
           <div className="flex items-center justify-between text-sm text-gray-500">
 
             {(

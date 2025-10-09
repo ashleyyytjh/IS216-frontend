@@ -61,7 +61,6 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
     }
   }, [moduleCountsArray])
 
-  // const chartData = moduleCountsArray.slice(0, 5)
 
   const chartData = useMemo(() => {
     if (!moduleCountsArray || moduleCountsArray.length === 0) return []
@@ -91,14 +90,11 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
     <Card className="min-h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-3">
-          {/* Left: Title */}
           <CardTitle className="text-base font-semibold text-gray-800">
             Amount of Notes Sold
           </CardTitle>
 
-          {/* Right: Filters */}
           <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start sm:justify-end mt-1 sm:mt-0">
-            {/* Module Filter */}
             <Select value={moduleFilter} onValueChange={setModuleFilter}>
               <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
                 <SelectValue placeholder="Module" />
@@ -113,7 +109,6 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
               </SelectContent>
             </Select>
 
-            {/* Sort Filter */}
             <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "asc" | "desc")}>
               <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md  hover:bg-gray-100">
                 <SelectValue placeholder="Sort" />

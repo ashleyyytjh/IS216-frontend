@@ -93,7 +93,7 @@ export function ScatterVisual() {
     ? matchedOrders
     : matchedOrders.filter((n) => n.note === noteFilter);
   return (
-    <Card className="shadow-md hover:shadow-lg">
+    <Card className="min-h-[400px] shadow-md hover:shadow-lg">
       <CardHeader>
         <CardTitle>Price vs Sales Count of Note</CardTitle>
         <Select value={noteFilter} onValueChange={setNoteFilter}>
@@ -149,7 +149,10 @@ export function ScatterVisual() {
         {isLoading ? (
           <SpinItem />
         ) : isEmpty ? (
-          <p className="text-gray-500 text-sm">No data found.</p>
+          <div className="align-center text-center ml-auto mr-auto">
+             <p className="text-gray-500 text-sm">No data found.</p>
+          </div>
+         
         ) : (
           <ResponsiveContainer width="100%" height="100%" className="align-content-center ml-auto mr-auto justify-start sm:justify-center">
             <ScatterChart

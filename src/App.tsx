@@ -35,7 +35,7 @@ import Payment from "./pages/Payment";
 import { PaymentSuccess } from "./pages/PaymentSuccessful";
 import ListingLayout from "./pages/ListingLayout";
 import AnnotationComponent from "./pages/Forum";
-import Example from "./pages/Editor";
+import EditPage from "./pages/Editor";
 
 function App() {
     return (
@@ -57,8 +57,8 @@ function App() {
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/orderdetails/:id" element={<OrderDetails />} />
-               <Route path="/writeNotes" element={<Example/>} />
-               <Route path="/editNote/:id" element={<Example/>} />
+               <Route path="/writeNotes" element={<EditPage/>} />
+               <Route path="/editNote/:id" element={<EditPage/>} />
 
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>

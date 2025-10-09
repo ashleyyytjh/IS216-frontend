@@ -14,12 +14,6 @@ import { NoteListing } from "@/types/types"
 import { Spinner } from './ui/shadcn-io/spinner';
 import { Input } from "./ui/input"
 import { Link } from "react-router-dom"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
 export const UserOwnNote = (currentUserInfo) => {
@@ -36,7 +30,6 @@ export const UserOwnNote = (currentUserInfo) => {
       .finally(() => setLoading(false))
   }, [])
 
-  // filtering logic
   const filteredNotes = notes.filter((note) => {
     const matchesSearch =
       note.originalName.toLowerCase().includes(searchQuery.toLowerCase()) ||

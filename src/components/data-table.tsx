@@ -48,32 +48,7 @@ export const schema = z.object({
   reviewer: z.string(),
 })
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
-]
+
 
 const formatCurrency = (n: number) =>
   n.toLocaleString("en-SG", { style: "currency", currency: "SGD" });
@@ -158,7 +133,7 @@ export function DataTable(props: CurrentUserProp) {
 
   const renderStatusBadge = (status?: string) => {
     const s = (status || "").toLowerCase()
-    return <Badge className="bg-green-600">{s?.charAt(0).toUpperCase()+ s?.slice(1)}</Badge>
+    return; 
   }
 
   return (
@@ -270,7 +245,9 @@ export function DataTable(props: CurrentUserProp) {
                         </TableCell>
                         <TableCell className="text-muted-foreground">{o.module.toUpperCase()}</TableCell>
                         <TableCell className="font-medium">{formatCurrency(o.price/100)}</TableCell>
-                        <TableCell>{renderStatusBadge(o.status)}</TableCell>
+                        <TableCell>
+                          <Badge className="bg-green-600">{o?.status.charAt(0).toUpperCase()+ o?.status.slice(1)}</Badge>
+                          </TableCell>
                         <TableCell>{o['type'].charAt(0).toUpperCase() + o['type'].slice(1)}</TableCell>
                       </TableRow>
                     ))}
@@ -285,7 +262,6 @@ export function DataTable(props: CurrentUserProp) {
                 </Table>
               </div>
 
-              {/* mobile cards */}
               <div className="lg:hidden space-y-4">
                 {currentItems.map((note) => (
                   <UserActivityListing
@@ -296,7 +272,6 @@ export function DataTable(props: CurrentUserProp) {
                 ))}
               </div>
 
-              {/* pagination */}
               <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
                 <div>Page {currentPage} of {totalPages}</div>
                 <div className="flex items-center gap-2">

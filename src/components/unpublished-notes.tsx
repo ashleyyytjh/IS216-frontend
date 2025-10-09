@@ -1,32 +1,19 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { formatRelativeMonthYear } from "@/utils/dates"
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card"
-import { Badge } from "./ui/badge"
-import { courseGradient } from "@/utils/colors"
-import { Separator } from "./ui/separator"
-import { formatPriceSGD } from "@/utils/currency"
-import { Button } from "./ui/button"
+
 import { Search, ChevronDown } from "lucide-react"
-import { getUserOwned } from "@/services/NotesService"
 import { NoteListing } from "@/types/types"
 import { Spinner } from './ui/shadcn-io/spinner';
 import { Input } from "./ui/input"
 import { Link } from "react-router-dom"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
 
 export const UnpublishedNotes = (currentUserInfo) => {
   const user = currentUserInfo?.currentUserInfo ?? {}
   const [notes, setNotes] = useState<NoteListing[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeFilter, setActiveFilter] = useState("All")
 
   useEffect(() => {
     const saved = localStorage.getItem('draft-notes')

@@ -53,7 +53,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Download, PrinterIcon, Save, Trash, Upload } from 'lucide-react';
 import { Separator } from 'radix-ui';
 
-const Example = () => {
+const EditPage = () => {
   const [notes, setNotes] = useState<LocalNote[]>([]);
   const [editorInstance, setEditorInstance] = useState<Editor | null>(null)
   const [currentNote, setCurrentNote] = useState<LocalNote | null>(null);
@@ -234,6 +234,7 @@ const Example = () => {
     const allNotes = getNotes();
 
     if (currentNote !== null) {
+      //deletion and parsing back.
       const updatedNotes = allNotes.filter((note) => note.id !== currentNote.id);
       localStorage.setItem("draft-notes", JSON.stringify(updatedNotes));
       setNotes(updatedNotes);
@@ -385,4 +386,4 @@ const Example = () => {
   );
 };
 
-export default Example;
+export default EditPage;

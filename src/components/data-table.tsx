@@ -36,6 +36,7 @@ import { UserOwnNote } from "./own-user-note-display"
 import { getUserOwned } from "@/services/NotesService"
 import { getOrders } from "@/services/OrdersService"
 import { Badge } from "./ui/badge"
+import { UnpublishedNotes } from "./unpublished-notes"
 
 export const schema = z.object({
   id: z.number(),
@@ -185,6 +186,13 @@ export function DataTable(props: CurrentUserProp) {
             Orders You Received
           </TabsTrigger>
 
+           <TabsTrigger
+            value="unpublished"
+            className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300"
+          >
+            Unpublished Notes
+          </TabsTrigger>
+
 
         </TabsList>
       </div>
@@ -316,13 +324,11 @@ export function DataTable(props: CurrentUserProp) {
       </TabsContent>
 
 
-      {/* (Optional placeholders to keep structure) */}
-      <TabsContent value="key-personnel" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
+     <TabsContent value="unpublished"
+        className="flex flex-col px-4 lg:px-6 transition-opacity duration-200">
+          <UnpublishedNotes currentUserInfo={props.currentUser as any} />
       </TabsContent>
-      <TabsContent value="focus-documents" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
+
     </Tabs>
   )
 }

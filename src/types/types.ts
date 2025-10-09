@@ -24,6 +24,7 @@ export type User = {
 }
 
 export type NoteListing = {
+    updatedAt: any;
     id: string;
     userId: string;
     userFullName: string;

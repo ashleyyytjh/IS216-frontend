@@ -58,6 +58,7 @@ function App() {
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/orderdetails/:id" element={<OrderDetails />} />
                <Route path="/writeNotes" element={<Example/>} />
+               <Route path="/editNote/:id" element={<Example/>} />
 
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>

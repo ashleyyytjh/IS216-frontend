@@ -164,15 +164,6 @@ export const defaultSlashSuggestions = (): SuggestionItem[] => [
     },
   },
   {
-    title: 'To-do List',
-    description: 'Track tasks with a to-do list.',
-    searchTerms: ['todo', 'task', 'list', 'check', 'checkbox'],
-    icon: CheckSquareIcon,
-    command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleTaskList().run();
-    },
-  },
-  {
     title: 'Heading 1',
     description: 'Big section heading.',
     searchTerms: ['title', 'big', 'large', 'h1'],
@@ -273,20 +264,6 @@ export const defaultSlashSuggestions = (): SuggestionItem[] => [
     command: ({ editor, range }) => {
       editor.chain().focus().deleteRange(range).toggleOrderedList().run();
     },
-  },
-  {
-    title: 'Quote',
-    description: 'Capture a quote.',
-    searchTerms: ['blockquote'],
-    icon: TextQuoteIcon,
-    command: ({ editor, range }) =>
-      editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .toggleNode('paragraph', 'paragraph')
-        .toggleBlockquote()
-        .run(),
   },
   {
     title: 'Code',
@@ -667,8 +644,14 @@ export const EditorProvider = ({
                 props: onStartProps,
                 editor: onStartProps.editor,
               });
-              ensurePopup(onStartProps.clientRect)?.setContent(component.element);
-              ensurePopup(onStartProps.clientRect)?.show();
+              if (onStartProps.clientRect) {
+                ensurePopup(onStartProps.clientRect)?.setContent(component.element);
+                ensurePopup(onStartProps.clientRect)?.show();
+              } else {
+                ensurePopup(() => getCaretRect())?.setContent(component.element);
+                ensurePopup(() => getCaretRect())?.show();
+              }
+
             },
 
             onUpdate(p) {
@@ -678,11 +661,13 @@ export const EditorProvider = ({
 
               const items = (p.items?.length ? p.items : defaultSlashSuggestions());
               component.updateProps({ ...p, items });
+              if (p.clientRect) {
+                const t = ensurePopup(p.clientRect);
+                if (component.element) t.setContent(component.element);
+                t.setProps({ getReferenceClientRect: () => p.clientRect?.() ?? getCaretRect() });
+                t.show();
+              }
 
-              const t = ensurePopup(p.clientRect);
-              if (component.element) t.setContent(component.element);
-              t.setProps({ getReferenceClientRect: () => p.clientRect?.() ?? getCaretRect() });
-              t.show();
             },
 
             onKeyDown(onKeyDownProps) {

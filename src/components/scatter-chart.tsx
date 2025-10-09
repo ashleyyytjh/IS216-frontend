@@ -145,23 +145,22 @@ export function ScatterVisual() {
 
 
       </CardHeader>
-      <CardContent className="h-[400px] flex items-center justify-center relative">
+      <CardContent className="h-[400px] flex items-center justify-start sm:justify-center relative px-3 sm:px-6">
         {isLoading ? (
           <SpinItem />
         ) : isEmpty ? (
           <p className="text-gray-500 text-sm">No data found.</p>
         ) : (
-          <ResponsiveContainer width="100%" height="100%" className="align-content-center ml-auto mr-auto">
+          <ResponsiveContainer width="100%" height="100%" className="align-content-center ml-auto mr-auto justify-start sm:justify-center">
             <ScatterChart
               margin={
                 isSmallScreen
-                  ? { top: 30, right: 10, bottom: 40, left: 5 } // more breathing room on small
-                  : { top: 20, right: 30, bottom: 20, left: 20 } // normal desktop layout
+                  ? { top: 30, right: 10, bottom: 40, left: 5 } 
+                  : { top: 20, right: 30, bottom: 20, left: 20 }
               }
             >
               <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" opacity={0.8} />
 
-              {/* X-axis = Price */}
               <XAxis
                 dataKey="price"
                 type="number"
@@ -178,7 +177,6 @@ export function ScatterVisual() {
                 />
               </XAxis>
 
-              {/* Y-axis = Sales Count */}
               <YAxis
                 dataKey="salesCount"
                 type="number"
@@ -202,10 +200,8 @@ export function ScatterVisual() {
                 />
               </YAxis>
 
-              {/* Z-axis = Revenue (bubble size) */}
               <ZAxis type="number" dataKey="revenue" range={[60, 400]} name="Revenue" />
 
-              {/* Scatter plot */}
               <Scatter
                 data={filteredData}
                 fill="#14B8A6"
@@ -220,7 +216,6 @@ export function ScatterVisual() {
                 style={{ cursor: "pointer" }}
               />
 
-              {/* Tooltip */}
               <Tooltip
                 cursor={{ strokeDasharray: "3 3" }}
                 content={({ active, payload }) => {

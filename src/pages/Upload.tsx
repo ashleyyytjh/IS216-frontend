@@ -48,6 +48,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 /* ------------------------------ Consts ----------------------------- */
 const API_BASE = "http://localhost:8080";
@@ -196,7 +197,7 @@ export default function Upload() {
   const isPublishing = step === 4 && !allDone;
 
   return (
-    <main className="min-h-screen py-5">
+    <main className="min-h-screen py-5 container w-[80%] ml-auto mr-auto">
       <Card className="mx-auto w-full max-w-4xl">
         <CardHeader>
           <CardTitle>Upload Notes</CardTitle>
@@ -249,11 +250,10 @@ export default function Upload() {
 
                           <div className={`transition-all duration-300`}>
                             <StepperTitle
-                              className={`font-medium text-sm transition-colors ${
-                                step === s.id
+                              className={`font-medium text-sm transition-colors ${step === s.id
                                   ? "text-black"
                                   : "text-muted-foreground"
-                              }`}
+                                }`}
                             >
                               {s.title}
                             </StepperTitle>
@@ -319,37 +319,56 @@ export default function Upload() {
             </Form>
           </FormProvider>
         </CardContent>
-        <CardFooter>
-          <div className="w-full flex justify-between">
-            <Button
-              size="sm"
-              variant="outline"
-              type="button"
-              onClick={prev}
-              disabled={step === 1 || step === totalSteps}
-            >
-              <ChevronLeft /> Previous
-            </Button>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={next}
-                disabled={step === 1 && !file}
-              >
-                Next <ChevronRight />
-              </Button>
-              <Button
-                onClick={next}
-                disabled={step !== 3}
-                size="sm"
-              >
-                Publish
-              </Button>
-            </div>
-          </div>
-        </CardFooter>
+<CardFooter className="border-t pt-4">
+  <div className="w-full flex flex-col gap-3 xs:flex-col sm:flex-row sm:justify-between sm:items-center">
+    <Button
+      size="sm"
+      variant="outline"
+      type="button"
+      onClick={prev}
+      disabled={step === 1 || step === totalSteps}
+      className="w-full sm:w-auto"
+    >
+      <ChevronLeft className="mr-1 h-4 w-4" />
+      Previous
+    </Button>
+
+    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={next}
+        disabled={step === 1 && !file}
+        className="w-full sm:w-auto"
+      >
+        Next
+        <ChevronRight className="ml-1 h-4 w-4" />
+      </Button>
+
+      <Button
+        onClick={next}
+        disabled={step !== 3}
+        size="sm"
+        className="w-full sm:w-auto  text-white hover:bg-green-700"
+      >
+        Publish
+      </Button>
+    </div>
+  </div>
+</CardFooter>
       </Card>
+
+      <div className="mt-6 text-center">
+        <p className="text-md text-muted-foreground mb-2">
+          Prefer to write your notes manually?
+        </p>
+        <Link
+          to="/writeNotes"
+          className="inline-flex items-center justify-center gap-2 text-md font-medium text-gray-600 hover:text-gray-700 hover:underline transition-colors"
+        >
+          ✍️ Write a note instead
+        </Link>
+      </div>
     </main>
   );
 }

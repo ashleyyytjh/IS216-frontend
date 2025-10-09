@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
 export const UserOwnNote = (currentUserInfo) => {
   const user = currentUserInfo?.currentUserInfo ?? {}
@@ -50,7 +51,7 @@ export const UserOwnNote = (currentUserInfo) => {
   if (loading)
     return (
       <div className="flex justify-center w-full">
-         <Spinner variant="default" />
+        <Spinner variant="default" />
       </div>
     )
 
@@ -65,34 +66,31 @@ export const UserOwnNote = (currentUserInfo) => {
               onChange={(e) => setSearchQuery(e.target.value)}
               type="search"
               placeholder="Search for notes..."
-              className="w-full pl-9 bg-muted border-none text-foreground/80 focus:bg-white focus:text-foreground transition-colors"
+              className="w-full pl-9 bg-muted border-none text-foreground/80 focus:bg-white focus:text-foreground transition-colors flex-1"
             />
           </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex items-center gap-1 rounded-md shadow-sm"
-              >
-                {activeFilter}
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {["All", "Notes", "Cheat Sheets", "Answer Key", "Knowledge"].map((f) => (
-                <DropdownMenuItem key={f} onClick={() => setActiveFilter(f)}>
-                  {f}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Select
+            value={activeFilter}
+            onValueChange={(v) => setActiveFilter(v)}
+          >
+            <SelectTrigger className="w-[80px] sm:w-[80px] md:w-[80px]">
+              <SelectValue placeholder="Type of note" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All</SelectItem>
+              <SelectItem value="notes">Notes</SelectItem>
+              <SelectItem value="cheatsheet">Cheatsheets</SelectItem>
+              <SelectItem value="Answer Key">Answer Key</SelectItem>
+               <SelectItem value="knowledge">Knowledge</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </section>
 
       <section className="w-full text-sm font-light">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full">
           {filteredNotes.map((listing) => {
+            console.log(listing)
 
             return (
               <Link
@@ -123,7 +121,7 @@ export const UserOwnNote = (currentUserInfo) => {
                     <p className="text-sm line-clamp-2">{listing.description}</p>
                     <div className="flex flex-wrap text-xs text-muted-foreground gap-y-2">
                       {listing.tags?.map((tag, i) => {
-                        console.log("Tag:", tag)   
+                        console.log("Tag:", tag)
 
                         return (
                           <div key={tag} className="flex items-center">
@@ -146,7 +144,7 @@ export const UserOwnNote = (currentUserInfo) => {
                     <div className="flex h-6 gap-2">
                       <Badge
                         className="text-sm font-normal rounded-full border-none text-white uppercase"
-                        style={{ background: courseGradient(listing.module ?? "")}}
+                        style={{ background: courseGradient(listing.module ?? "") }}
                       >
                         {listing.module}
                       </Badge>

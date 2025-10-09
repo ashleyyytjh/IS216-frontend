@@ -134,27 +134,16 @@ const UserActivityListing = ({ note, onDownload }) => {
           </div>
         </CardContent>
 
-        <CardFooter className="flex justify-between items-center pt-4 border-t">
+        <CardFooter className="flex flex-col xs:flex-col sm:flex-row justify-between items-center pt-4 border-t gap-2">
           <span className="text-2xl font-bold text-black-600">
             {formatCurrency(n.price)}
           </span>
 
-          {!n?.buyer_id && (
-            <Button
-              className="hover:shadow-xl text-white"
-              onClick={(e) => {
-                e.preventDefault() // prevent Link navigation
-                e.stopPropagation() // stop bubbling
-                handleDownload()
-              }}
-              disabled={downloadState === "downloading"}
-            >
-              <Download className="h-4 mr-2" />
-              {getDownloadText()}
+          {n?.buyer_id && (
+            <Button className="w-full sm:w-auto mt-2 sm:mt-0">
+              Order Details
             </Button>
           )}
-
-          {n?.buyer_id && <Button>Order Details</Button>}
         </CardFooter>
       </Card>
     </Link>

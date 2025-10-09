@@ -131,7 +131,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
             className="relative aspect-auto h-[250px] w-full transition-opacity duration-700"
           >
             <BarChart data={chartData}>
-              <CartesianGrid vertical={false} />
+              <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" opacity={0.8} />
               <XAxis
                 dataKey="module"
                 tickLine={false}

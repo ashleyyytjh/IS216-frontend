@@ -105,6 +105,7 @@ export const RedirectOnLogin = ({ user }) => {
               console.log('User logged in:', user);
               setShowRedirecting(true);
               navigate(location.state?.from || '/home', { replace: true });
+              window.location.reload();
               // return () => clearTimeout(timer);
               return;
             }

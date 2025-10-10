@@ -5,7 +5,6 @@ import LoginPage from "./pages/Login";
 import Explore from "./pages/Explore";
 import { Routes, Route } from "react-router-dom";
 import Signup from "./pages/Signup";
-import OrderManage from "./pages/OrderManage";
 import AmplifyLogin from "./pages/AmplifyLogin";
 import { Amplify } from "aws-amplify";
 import ProtectedRoute from "./components/protectedRoute";
@@ -18,8 +17,6 @@ Amplify.configure({
     },
   },
 });
-import OrderDispute from "./pages/OrderDispute";
-import OrderTrack from "./pages/OrderTrack";
 import ReturnRefund from "./pages/ReturnRefund";
 import OrderDetails from "./pages/OrderDetails";
 import Upload from "./pages/Upload";
@@ -48,10 +45,7 @@ function App() {
               <Route path="/explore" element={<Explore/>}/>
               <Route path ="/login" element={<AmplifyLogin/>}/>  
               <Route path="/signup" element={<Signup/>}/>
-              <Route path="/ordermanage" element={<OrderManage/>}/>
-              <Route path="/orderdispute" element={<OrderDispute/>}/>
               <Route path="/dashboardSeller" element={<DashboardSeller/>}/>
-              <Route path="/ordertrack" element={<OrderTrack/>}/>
               <Route path="/returnrefund" element={<ReturnRefund/>}/>
               <Route path ="/accountCreation" element={<AccountCreation/>}/>
               <Route path="/upload" element={<Upload/>}/>

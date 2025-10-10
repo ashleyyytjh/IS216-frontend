@@ -17,7 +17,7 @@ Amplify.configure({
     },
   },
 });
-import ReturnRefund from "./pages/ReturnRefund";
+import Refund from "./pages/Refund";
 import OrderDetails from "./pages/OrderDetails";
 import Upload from "./pages/Upload";
 import Profile from "./pages/Profile";
@@ -46,14 +46,14 @@ function App() {
               <Route path ="/login" element={<AmplifyLogin/>}/>  
               <Route path="/signup" element={<Signup/>}/>
               <Route path="/dashboardSeller" element={<DashboardSeller/>}/>
-              <Route path="/returnrefund" element={<ReturnRefund/>}/>
+              <Route path="/refund/:id" element={<Refund/>}/>
               <Route path ="/accountCreation" element={<AccountCreation/>}/>
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/orderdetails/:id" element={<OrderDetails />} />
-               <Route path="/writeNotes" element={<EditPage/>} />
-               <Route path="/editNote/:id" element={<EditPage/>} />
-
+              <Route path="/writeNotes" element={<EditPage/>} />
+              <Route path="/editNote/:id" element={<EditPage/>} />
+              
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>
                     <Route path="/test" element={<LoginPage />} />

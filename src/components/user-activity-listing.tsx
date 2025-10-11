@@ -52,20 +52,32 @@ const UserActivityListing = ({ note, onDownload }) => {
   const dateObject = new Date(isoString)
   const formatCurrency = (num: number) =>
     (num / 100).toLocaleString("en-SG", { style: "currency", currency: "SGD" })
+
   return (
     <Link
       to={!n?.userFullName ? `/orderdetails/${n.id}` : `/listings/${n.id}`}
       className="block"
     >
-      <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span className="text-lg">{n.originalName}</span>
-            <Badge variant="outline" className="font-mono">
+      {/* ✅ make card relative so badge can be positioned inside */}
+      <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer relative overflow-hidden">
+        <CardHeader className="pr-0 md:pr-24">
+          {/* ✅ wrap title and reposition badge */}
+          <div className="flex flex-col">
+            <span className="text-lg font-semibold break-words">{n.originalName}</span>
+
+            {/* Badge below title on mobile, top-right on desktop, white color */}
+            <Badge
+              variant="outline"
+              className="
+                mt-2 w-fit font-mono
+                md:absolute md:top-3 md:right-3
+                bg-white text-gray-800 border
+              "
+            >
               {n.module.toUpperCase()}
             </Badge>
-          </CardTitle>
-          {/* this means that the if have buyer id, it is to show in order page. */}
+          </div>
+
           {isSellerDashboard && (
             <CardDescription className="text-md">
               Tracking ID : {n.id}
@@ -104,30 +116,26 @@ const UserActivityListing = ({ note, onDownload }) => {
           )}
 
           <div className="flex items-center justify-between text-sm text-gray-500">
-
-            {(
-              <>
-                {n.status === "processing" ? (
-                  <Badge className="bg-amber-100 text-amber-700 border border-amber-300">
-                    {n.status.charAt(0).toUpperCase() + n.status.slice(1)}
-                  </Badge>
-                ) : n.status === "created" ? (
-                  <Badge className="bg-blue-100 text-blue-700 border border-blue-300">
-                    Created
-                  </Badge>
-                ) : n.status === "succeeded" ? (
-                  <Badge className="bg-green-100 text-green-700 border border-green-300">
-                    Succeeded
-                  </Badge>
-                ) : n.status === "failed" ? (
-                  <Badge className="bg-red-100 text-red-700 border border-red-300">
-                    Failed
-                  </Badge>
-                ) : null}
-              </>
-            )}
+            <>
+              {n.status === "processing" ? (
+                <Badge className="bg-amber-100 text-amber-700 border border-amber-300">
+                  {n.status.charAt(0).toUpperCase() + n.status.slice(1)}
+                </Badge>
+              ) : n.status === "created" ? (
+                <Badge className="bg-blue-100 text-blue-700 border border-blue-300">
+                  Created
+                </Badge>
+              ) : n.status === "succeeded" ? (
+                <Badge className="bg-green-100 text-green-700 border border-green-300">
+                  Succeeded
+                </Badge>
+              ) : n.status === "failed" ? (
+                <Badge className="bg-red-100 text-red-700 border border-red-300">
+                  Failed
+                </Badge>
+              ) : null}
+            </>
             <div />
-
           </div>
         </CardContent>
 

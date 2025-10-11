@@ -262,7 +262,9 @@ export function DataTable(props: CurrentUserProp) {
                 </Table>
               </div>
 
-              <div className="lg:hidden space-y-4">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-fr">
+  <div className="h-full [&>a]:h-full [&>a>div]:h-full">
                 {currentItems.map((note) => (
                   <UserActivityListing
                     key={note.id}
@@ -270,6 +272,7 @@ export function DataTable(props: CurrentUserProp) {
                     onDownload={undefined}
                   />
                 ))}
+              </div>
               </div>
 
               <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">

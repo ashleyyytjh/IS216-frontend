@@ -5,35 +5,26 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Download, Calendar } from "lucide-react"
 import { downloadNotes } from "@/services/NotesService"
 import { toast } from "sonner"
-import { Link } from "react-router-dom"
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 const UserActivityListing = ({ note, onDownload }) => {
   const [downloadState, setDownloadState] = useState<string | null>(null)
   const location = useLocation()
-  console.log(location.pathname)
 
   const isSellerDashboard = location.pathname.includes("dashboardSeller")
-  const profile = location.pathname.includes("profile")
+  const n = note.note ? { ...note, ...note.note } : note
 
-  const n = note.note ? { ...note, ...note.note } : note;
   const handleDownload = () => {
     setDownloadState("downloading")
     downloadNotes(n.id)
-      .then((res) => {
-        toast.success("Successfully downloaded!")
-        console.log(res)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+      .then(() => toast.success("Successfully downloaded!"))
+      .catch(console.error)
+
     setTimeout(() => {
       setDownloadState("completed")
       setTimeout(() => setDownloadState(null), 2000)
@@ -48,34 +39,32 @@ const UserActivityListing = ({ note, onDownload }) => {
     return n.status === "downloaded" ? "Re-download" : "Download"
   }
 
-  const isoString = n.createdAt
-  const dateObject = new Date(isoString)
   const formatCurrency = (num: number) =>
     (num / 100).toLocaleString("en-SG", { style: "currency", currency: "SGD" })
 
   return (
     <Link
       to={!n?.userFullName ? `/orderdetails/${n.id}` : `/listings/${n.id}`}
-      className="block"
+      className="block h-full"
     >
-      {/* ✅ make card relative so badge can be positioned inside */}
-      <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer relative overflow-hidden">
+      {/* make card fill and stack so footer sits at bottom */}
+      <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer relative overflow-hidden">
         <CardHeader className="pr-0 md:pr-24">
-          {/* ✅ wrap title and reposition badge */}
           <div className="flex flex-col">
             <span className="text-lg font-semibold break-words">{n.originalName}</span>
 
-            {/* Badge below title on mobile, top-right on desktop, white color */}
-            <Badge
-              variant="outline"
-              className="
-                mt-2 w-fit font-mono
-                md:absolute md:top-3 md:right-3
-                bg-white text-gray-800 border
-              "
-            >
-              {n.module.toUpperCase()}
-            </Badge>
+            {n?.module && (
+              <Badge
+                variant="outline"
+                className="
+                  mt-2 w-fit font-mono
+                  md:absolute md:top-3 md:right-3
+                  bg-white text-gray-800 border
+                "
+              >
+                {String(n.module).toUpperCase()}
+              </Badge>
+            )}
           </div>
 
           {isSellerDashboard && (
@@ -84,18 +73,16 @@ const UserActivityListing = ({ note, onDownload }) => {
             </CardDescription>
           )}
           <CardDescription>
-            Note Type : {n.type.charAt(0).toUpperCase() + n.type.slice(1)}
+            Note Type : {n.type?.charAt(0).toUpperCase() + n.type?.slice(1)}
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        {/* grow to consume remaining space for equal heights */}
+        <CardContent className="space-y-4 flex-1">
           {!n?.buyer_id && (
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center text-white text-sm font-bold">
-                {n.userFullName
-                  .split(" ")
-                  .map((part) => part[0])
-                  .join("")}
+                {n.userFullName?.split(" ").map((p) => p[0]).join("")}
               </div>
               <p className="font-semibold text-sm">{n.userFullName}</p>
             </div>

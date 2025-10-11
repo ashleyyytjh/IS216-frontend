@@ -24,7 +24,7 @@ export default function Refund() {
 
   if (!passed) {
     return (
-      <div className="mx-auto max-w-6xl px-4 md:px-6 lg:px-8 py-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8 py-8">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
@@ -55,7 +55,7 @@ export default function Refund() {
   const [submitting, setSubmitting] = React.useState(false);
 
   React.useEffect(() => {
-    setSelected(Object.fromEntries(ORDER.items.map(i => [i.id, { checked: false, qty: 1 }])));
+    setSelected(Object.fromEntries(ORDER.items.map(i => [ i.id, { checked: false, qty: 1 } ])));
   }, [ORDER.items]);
 
   const selectedLineItems = React.useMemo(() => {
@@ -99,30 +99,33 @@ export default function Refund() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 md:px-6 lg:px-8 py-8">
+    <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8 py-8">
       <Card className="rounded-2xl border shadow-lg">
-        {/* Header: Back + Refund (left) | meta (right) */}
+        {/* Header */}
         <CardHeader className="pb-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
-                <ArrowLeft className="mr-2 h-4 w-4" /> Back
-              </Button>
-              <CardTitle className="text-2xl font-medium tracking-tight">Refund</CardTitle>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Order #{ORDER.id}
-              {ORDER.placedAt ? ` • Placed ${new Date(ORDER.placedAt).toLocaleString()}` : ""}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+                  <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                </Button>
+                <CardTitle className="text-xl sm:text-2xl font-semibold tracking-tight">Refund</CardTitle>
+              </div>
+              <div className="text-xs sm:text-sm text-muted-foreground text-right">
+                Order #{ORDER.id}
+                {ORDER.placedAt ? ` • Placed ${new Date(ORDER.placedAt).toLocaleString()}` : ""}
+              </div>
             </div>
           </div>
         </CardHeader>
 
         <CardContent className="p-0">
-          {/* Inner bordered panel */}
+          {/* Panel */}
           <div className="mx-4 my-4 rounded-2xl border overflow-hidden">
             <div className="px-4 pt-4 pb-2 text-base font-medium">Select items to refund</div>
 
-            <div className="overflow-x-auto">
+            {/* md+ table */}
+            <div className="hidden md:block overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
@@ -141,7 +144,7 @@ export default function Refund() {
                           <Checkbox checked={sel?.checked} onCheckedChange={(v) => toggleItem(it.id, Boolean(v))} />
                         </TableCell>
                         <TableCell>
-                          <div className="truncate">{it.title}</div>
+                          <div className="truncate font-medium">{it.title}</div>
                           <div className="text-xs text-muted-foreground break-words">{it.sku}</div>
                         </TableCell>
                         <TableCell>
@@ -166,7 +169,44 @@ export default function Refund() {
               </Table>
             </div>
 
-            {/* Refunded-to-card row */}
+            {/* mobile stacked list */}
+            <div className="md:hidden divide-y">
+              {ORDER.items.map((it) => {
+                const sel = selected[it.id];
+                return (
+                  <div key={it.id} className="px-4 py-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          checked={sel?.checked}
+                          onCheckedChange={(v) => toggleItem(it.id, Boolean(v))}
+                          className="mt-1"
+                        />
+                        <div>
+                          <div className="font-medium leading-snug">{it.title}</div>
+                          <div className="text-xs text-muted-foreground break-words">{it.sku}</div>
+                        </div>
+                      </div>
+                      <div className="text-right text-sm font-medium">{money(it.unitPrice)}</div>
+                    </div>
+                    <div className="mt-3 flex items-center justify-between gap-2">
+                      <span className="text-xs text-muted-foreground">Quantity (of {it.qty})</span>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={it.qty}
+                        value={sel?.qty ?? 1}
+                        onChange={(e) => changeQty(it.id, Number(e.target.value), it.qty)}
+                        className="h-9 w-24"
+                        disabled={!sel?.checked}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Refunded-to-card bar */}
             <div className="border-t px-4 py-3">
               <div className="rounded-xl border bg-muted/30 px-4 py-3 flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Refunded to card</span>
@@ -175,10 +215,14 @@ export default function Refund() {
             </div>
           </div>
 
-          {/* Buttons in the bottom-right of the card (the red area) */}
-          <div className="px-6 pb-6 pt-4 border-t flex items-center justify-end gap-2">
-            <Button variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
-            <Button onClick={onSubmit} disabled={submitting}>Submit Refund</Button>
+          {/* Bottom buttons */}
+          <div className="px-4 sm:px-6 pb-6 pt-4 border-t flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
+            <Button variant="outline" onClick={() => navigate(-1)} className="w-full sm:w-auto">
+              Cancel
+            </Button>
+            <Button onClick={onSubmit} disabled={submitting} className="w-full sm:w-auto">
+              Submit Refund
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -211,7 +255,9 @@ export default function Refund() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={() => { setSuccessOpen(false); navigate("/orders"); }}>Back to My Orders</Button>
+            <Button onClick={() => { setSuccessOpen(false); navigate("/orders"); }}>
+              Back to My Orders
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

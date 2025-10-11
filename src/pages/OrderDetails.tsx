@@ -54,7 +54,7 @@ function toVM(api: ApiOrder, note?: any): OrderVM {
   const items: OrderItem[] = [
     {
       title,
-      module: module ? module.charAt(0).toUpperCase() + module.slice(1) : undefined,
+      module: module ? module.toUpperCase() : undefined,
       sku: String(api.note_id ?? id),
       qty: 1,
       price,
@@ -146,95 +146,110 @@ export default function OrderDetails() {
 
   return (
     <TooltipProvider>
-      <div className="mx-auto w-full max-w-7xl px-6 py-10">
+      {/* container: comfy on mobile, centered on desktop */}
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8 py-8 sm:py-10">
         <Card className="shadow-lg border bg-background">
-          <CardHeader className="pb-4 border-b">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
-                  <ArrowLeft className="mr-2 size-4" /> Back
-                </Button>
-                <h1 className="text-2xl font-medium tracking-tight">
-                  Order #{vm.id}
-                </h1>
+          {/* Header */}
+          <CardHeader className="pb-3 sm:pb-4 border-b">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate(-1)}
+                    className="w-fit"
+                  >
+                    <ArrowLeft className="mr-2 size-4" /> Back
+                  </Button>
+                  <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">
+                    Order #{vm.id}
+                  </h1>
+                </div>
+
+                {/* Actions reflow to full-width on mobile */}
+                <div className="flex flex-col xs:flex-row sm:flex-row gap-2 w-full sm:w-auto">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                        <HelpCircle className="mr-2 size-4" />
+                        Get help
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Chat with support about this order.</TooltipContent>
+                  </Tooltip>
+
+                  <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
+                    <Link to={`/refund/${vm.id}`} state={{ order: vm }}>
+                      Request refund
+                    </Link>
+                  </Button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <HelpCircle className="mr-2 size-4" /> Get help
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Chat with support about this order.
-                  </TooltipContent>
-                </Tooltip>
-                {/* Dynamic link to Return/Refund page with state */}
-                <Button asChild variant="outline" size="sm">
-                  <Link to={`/refund/${vm.id}`} state={{ order: vm }}>
-                    Request refund
-                  </Link>
-                </Button>
+
+              {/* Placed on */}
+              <div className="text-sm text-muted-foreground">
+                {vm.placedAt ? (
+                  <>Placed on {new Date(vm.placedAt).toLocaleString()}</>
+                ) : (
+                  "—"
+                )}
               </div>
-            </div>
-            <div className="mt-2 text-sm text-muted-foreground">
-              {vm.placedAt ? (
-                <>Placed on {new Date(vm.placedAt).toLocaleString()}</>
-              ) : (
-                "—"
-              )}
             </div>
           </CardHeader>
 
-          <CardContent className="p-6 space-y-6">
-            {/* Summary */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm bg-background border rounded-xl p-4">
-              <div>
+          <CardContent className="p-4 sm:p-6 space-y-6">
+            {/* Summary tiles */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
+              <div className="rounded-lg border bg-background p-4">
                 <div className="text-muted-foreground">Transaction ID</div>
-                <div>{vm.id}</div>
+                <div className="mt-0.5 font-medium break-all">{vm.id}</div>
               </div>
-              <div>
+              <div className="rounded-lg border bg-background p-4">
                 <div className="text-muted-foreground">Items</div>
-                <div>{vm.items.length}</div>
+                <div className="mt-0.5 font-medium">{vm.items.length}</div>
               </div>
-              <div>
+              <div className="rounded-lg border bg-background p-4">
                 <div className="text-muted-foreground">Total</div>
-                <div>{money(vm.total)}</div>
+                <div className="mt-0.5 font-semibold">{money(vm.total)}</div>
               </div>
             </div>
 
             <Separator />
 
             {/* Items */}
-            <div className="grid gap-6 md:gap-8">
+            <div className="grid gap-4 sm:gap-6">
               {vm.items.map((it, idx) => {
                 const to = `/listings/${encodeURIComponent(it.sku)}`;
                 return (
                   <div
                     key={idx}
-                    className="rounded-xl border bg-background p-5 hover:shadow-md transition-all"
+                    className="rounded-xl border bg-background p-4 sm:p-5 hover:shadow-md transition-all"
                   >
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4">
+                      <div className="space-y-1 md:space-y-1.5">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
                           <FileText className="size-4" />
-                          <span>{it.module ?? "—"}</span>
+                          <span className="truncate max-w-[80vw] sm:max-w-none">
+                            {it.module ?? "—"}
+                          </span>
                         </div>
-                        <div className="text-lg leading-snug">{it.title}</div>
-                        <div className="text-xs text-muted-foreground break-words">
+                        <div className="text-base sm:text-lg leading-snug break-words">
+                          {it.title}
+                        </div>
+                        <div className="text-[11px] sm:text-xs text-muted-foreground break-words">
                           SKU: {it.sku}
                         </div>
                       </div>
+
                       <div className="text-right md:min-w-[160px]">
-                        <div>{money(it.price)}</div>
-                        <div className="text-xs text-muted-foreground">
-                          Qty {it.qty}
-                        </div>
+                        <div className="text-base sm:text-lg font-medium">{money(it.price)}</div>
+                        <div className="text-[11px] sm:text-xs text-muted-foreground">Qty {it.qty}</div>
                       </div>
                     </div>
 
-                    <div className="mt-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                      <div className="text-sm text-muted-foreground">
+                    <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                      <div className="text-xs sm:text-sm text-muted-foreground">
                         <span>View details:</span>
                         <Link
                           to={to}
@@ -243,11 +258,12 @@ export default function OrderDetails() {
                           open note
                         </Link>
                       </div>
+
                       <Button
                         asChild
                         variant="outline"
                         size="sm"
-                        className="gap-2 w-full md:w-auto"
+                        className="gap-2 w-full sm:w-auto"
                       >
                         <Link to={to} aria-label={`Open ${it.title}`}>
                           <span>Open note</span>

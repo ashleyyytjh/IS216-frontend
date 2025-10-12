@@ -1,4 +1,4 @@
-import { DownloadNotesRes, GetNotesRes, SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
+import { CreateNotesReq, CreateNotesRes, DownloadNotesRes, GetNotesRes, SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
 import axiosInstance from "./AxiosInstance";
 // Unprotected routes
 // notesRouter.get("/search", SearchNotes)
@@ -23,14 +23,14 @@ export const getNotesById = async(id: string) => {
     return response.data as GetNotesRes;
 }
 
-export const createNotes = async (noteData: any) => {
+export const createNotes = async (noteData: CreateNotesReq) => {
     const response = await axiosInstance.post('/notes', noteData);
-    return response.data;
+    return response.data as CreateNotesRes;
 }
 
 export const confirmUpload = async (noteId: string) => {
     const response = await axiosInstance.patch(`/notes/${noteId}/confirm-upload`);
-    return response.data;
+    return { ok: response.status == 200, status: response.statusText };
 }
 
 

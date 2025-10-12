@@ -1,21 +1,16 @@
 import { z } from "zod";
 
 
-export const fileItemSchema = z.object({
+export const uploadSchema = z.object({
   fileId: z.string(),
   fileName: z.string(),
   title: z.string().min(2, "Title is required"),
-  description: z.string().min(10, "Add a short description (≥ 10 chars)"),
-  courseCode: z.string().min(2, "Course code required"),
-  priceCents: z.coerce.number().int().min(0, "Price must be ≥ 0"),
-  visibility: z.enum(["public", "unlisted"]).default("public"),
-  tags: z.array(z.string()).max(8).default([]),
+  description: z.string().min(1, "A description is required"),
+  courseCode: z.string().optional(),
+  priceCents: z.coerce.number().int().min(0, "Please enter a valid price"),
+  tags: z.array(z.string()).max(5).default([]),
   type: z.enum(["cheatsheet", "notes", "answerkey", "knowledge"]).default("notes"),
 });
 
-export const formSchema = z.object({
-  items: z.array(fileItemSchema).min(1, "Upload at least one file"),
-});
-
-export type UploadFormValues = z.input<typeof formSchema>;
-export type UploadFormParsed = z.output<typeof formSchema>;
+export type UploadFormValues = z.input<typeof uploadSchema>;
+export type UploadFormParsed = z.output<typeof uploadSchema>;

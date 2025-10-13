@@ -2,7 +2,9 @@ import AestheticFooter from "@/components/Footer";
 import Infobar from "@/components/listing/Infobar";
 import { InfobarTrigger } from "@/components/listing/InfobarTrigger";
 import SuspenseFallback from "@/components/listing/SuspenseFallback";
+import SpinItem from "@/components/spinner";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { downloadNotes, getNotesById } from "@/services/NotesService";
@@ -30,7 +32,8 @@ export default function Listing() {
   }, []);
 
   return (
-    <main className="text-sm h-full">
+    data ? (
+          <main className="text-sm h-full">
       <SidebarProvider
         breakpoint={1100}
         style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
@@ -96,6 +99,10 @@ export default function Listing() {
         </div>
       </SidebarProvider>
     </main>
+    ) : (
+      <div className="flex justify-center items-center w-full h-64"> <SpinItem/></div>
+    )
+
   );
 }
 

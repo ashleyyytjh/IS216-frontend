@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm, FormProvider, FieldError } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -24,7 +24,7 @@ import {
   StepperTrigger,
 } from "@/components/ui/stepper";
 
-import { uploadSchema, UploadFormValues } from "../components/schema"; // 🔸 updated import
+import { uploadSchema, UploadFormValues } from "../components/schema";
 import { mkId } from "../components/utils";
 
 import StepUpload from "../components/stepupload";
@@ -42,22 +42,12 @@ import {
 import { cn } from "@/lib/utils";
 import { confirmUpload, createNotes } from "@/services/NotesService";
 import { toast } from "sonner";
+import { useIsSmall } from "@/utils/util";
+import { useNavigate } from "react-router-dom";
 
-/* ------------------------------ Hooks ----------------------------------- */
-function useIsSmall() {
-  const [isSmall, setIsSmall] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 768px)");
-    const update = () => setIsSmall(mq.matches);
-    update();
-    mq.addEventListener?.("change", update);
-    return () => mq.removeEventListener?.("change", update);
-  }, []);
-  return isSmall;
-}
 
-/* ------------------------------ Component ------------------------------- */
 export default function Upload() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [file, setFile] = useState<File | null>(null);
   const [state, setState] = useState<UploadState>({ stage: "pending" });
@@ -88,7 +78,7 @@ export default function Upload() {
   );
 
   const methods = useForm<UploadFormValues>({
-    resolver: zodResolver(uploadSchema), // 🔸 updated schema reference
+    resolver: zodResolver(uploadSchema),
     defaultValues: {
       fileId: "",
       fileName: "",
@@ -105,13 +95,11 @@ export default function Upload() {
 
   const { handleSubmit, trigger } = methods;
 
-  // --- handle file change
+
   const onDrop = (fs: File[]) => {
     if (!fs.length) return;
     const f = fs[0];
     setFile(f);
-
-    // 🔸 flattened field paths
     methods.setValue("fileName", f.name);
     methods.setValue("fileId", mkId(f));
     methods.setValue("title", f.name.replace(/\.[^.]+$/, ""));
@@ -154,6 +142,7 @@ export default function Upload() {
       setStep(3);
     } else if (step === 3) {
       await handleSubmit(onSubmit)();
+      setStep(4)
     }
   };
 
@@ -164,7 +153,6 @@ export default function Upload() {
     setStep(4);
     const token = ``;
 
-    // 🔸 no items array
     const item = values;
     if (!file) return;
 
@@ -181,6 +169,7 @@ export default function Upload() {
         module: item.courseCode,
         type: item.type ?? "notes",
       });
+      console.log("record saved")
 
       const resp = await fetch(res.url, {
         method: "PUT",
@@ -195,12 +184,14 @@ export default function Upload() {
       }
 
       updateState("uploaded", { noteId: res.noteId });
-
+      console.log("uploaded")
       const confirmResp = await confirmUpload(res.noteId);
       if (!confirmResp.ok) {
         toast.error("Error recording notes upload status", {
           description: confirmResp.status,
         });
+      } else {
+        navigate(`/upload/${res.noteId}`, { replace: true })
       }
     } catch (err: any) {
       updateState("pending", { error: err?.message || "Upload failed" });
@@ -245,7 +236,6 @@ export default function Upload() {
                       <StepperItem
                         key={s.id}
                         step={s.id}
-                        loading={s.id === 4 && isPublishing}
                         className={`relative group/step cursor-pointer ${
                           isSmall
                             ? "flex-row items-center"
@@ -330,14 +320,13 @@ export default function Upload() {
                         {s.id === 2 && file && (
                           <StepDetails
                             file={file}
-                            field={methods.getValues()} // 🔸 flattened
+                            field={methods.getValues()}
                             onDelete={onDeleteFile}
                           />
                         )}
 
                         {s.id === 4 && (
                           <StepFinish
-                            file={file}
                             state={state}
                             allDone={allDone}
                             onGoToNotes={() =>
@@ -367,7 +356,7 @@ export default function Upload() {
               <ChevronLeft /> Previous
             </Button>
             <div className="flex gap-2">
-              {step !== 3 ? (
+              {step < 4 ? step < 3 ? (
                 <Button
                   variant="outline"
                   size="sm"
@@ -380,7 +369,7 @@ export default function Upload() {
                 <Button onClick={next} size="sm">
                   Publish
                 </Button>
-              )}
+              ) : <></>}
             </div>
           </div>
         </CardFooter>

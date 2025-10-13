@@ -130,6 +130,14 @@ export const SearchNotesReq = z.object({
   limit: z.coerce.number().min(1).max(50).default(10),
 });
 
+export const GetUploadStatusReq = z.object({
+	id: z.string().regex(/^[a-f\d]{24}$/i)
+})
+
+export const GetUploadStatusRes = z.object({
+	status: z.string(),
+})
+
 
 export const ErrorRes = z.object({
 	code: z.number(),
@@ -151,4 +159,6 @@ export type ConfirmUploadReq = z.infer<typeof ConfirmUploadReq>;
 export type SearchNotesItem = z.infer<typeof SearchNotesItem>;
 export type SearchNotesReq = z.infer<typeof SearchNotesReq>
 export type SearchNotesRes = z.infer<typeof SearchNotesRes>
+export type GetUploadStatusReq = z.infer<typeof GetUploadStatusReq>;
+export type GetUploadStatusRes = z.infer<typeof GetUploadStatusRes>;
 export type ErrorRes = z.infer<typeof ErrorRes>;

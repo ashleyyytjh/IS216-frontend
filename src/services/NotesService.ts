@@ -1,5 +1,6 @@
-import { CreateNotesReq, CreateNotesRes, DownloadNotesRes, GetNotesRes, SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
+import { CreateNotesReq, CreateNotesRes, DownloadNotesRes, GetNotesRes, GetUploadStatusRes, SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
 import axiosInstance from "./AxiosInstance";
+import { isAxiosError } from "axios";
 // Unprotected routes
 // notesRouter.get("/search", SearchNotes)
 // notesRouter.get("/:id", GetNotesById)
@@ -19,8 +20,12 @@ export const searchNotes = async (queryParams: URLSearchParams): Promise<SearchN
 }
 
 export const getNotesById = async(id: string) => {
-    const response = await axiosInstance.get(`/notes/${id}`);
-    return response.data as GetNotesRes;
+    try {
+        const response = await axiosInstance.get(`/notes/${id}`);
+        return response.data as GetNotesRes;
+    } catch (err) {
+        return undefined
+    }
 }
 
 export const createNotes = async (noteData: CreateNotesReq) => {
@@ -43,4 +48,17 @@ export const getUserOwned = async() => {
 export const downloadNotes = async (noteId: string) => {
     const response = await axiosInstance.get(`/notes/${noteId}/download`);
     return response.data;
+}
+
+export const getUploadStatus = async (id: string) => {
+  try {
+    const res = await axiosInstance.get(`/notes/upload/${id}`);
+    const data = GetUploadStatusRes.parse(res.data)
+    return { status: data.status, ok: true }
+  } catch (err) {
+    if (isAxiosError(err)) {
+      return { status: "", ok: false }
+    }
+    throw err;
+  }
 }

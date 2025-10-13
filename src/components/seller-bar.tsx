@@ -9,6 +9,13 @@ import {
   ChartContainer, ChartTooltip, ChartTooltipContent,
 } from "@/components/ui/chart"
 import SpinItem from "./spinner"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type ChartBarLabelProps = {
   moduleRevenueArray: { module: string; revenue: number }[]
@@ -32,6 +39,8 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [isEmpty, setIsEmpty] = useState(false)
   const [topMod, setTopMod] = useState<{ module: string; revenue: number } | null>(null)
+  const [moduleFilter, setModuleFilter] = useState("All")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
 
   useEffect(() => {
     if (moduleRevenueArray.length === 0) {
@@ -48,12 +57,15 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
 
   const chartData = useMemo(() => {
     if (!moduleRevenueArray || moduleRevenueArray.length === 0) return []
-    // sort descending by revenue
-    return [...moduleRevenueArray]
-      .map((item) => ({ ...item, revenue: item.revenue }))
-      .sort((a, b) => b.revenue - a.revenue)
-      .slice(0, 5)
-  }, [moduleRevenueArray])
+    let filtered = [...moduleRevenueArray]
+    if (moduleFilter !== "All") {
+      filtered = filtered.filter((item) => item.module === moduleFilter)
+    }
+    filtered.sort((a, b) =>
+      sortOrder === "asc" ? a.revenue - b.revenue : b.revenue - a.revenue
+    )
+    return filtered.slice(0, 5)
+  }, [moduleRevenueArray, moduleFilter, sortOrder])
 
   useEffect(() => {
     if (chartData.length > 0) {
@@ -67,16 +79,43 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
 
 
   return (
-    <Card className="h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
-      <CardHeader>
-        <CardTitle>Top 5 Revenue-Generating Modules</CardTitle>
-        {
-          isLoading ? (<></>):
-          
-          isEmpty? (<></>) : ( <CardDescription><strong>Insight:</strong> Best performing note by revenue is <strong>{topMod?.module}</strong></CardDescription>)
-        }
+    <Card className="min-h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
 
+      <CardHeader className="pb-2">
+        <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-3">
+          <CardTitle className="text-base font-semibold text-gray-800">
+            Top Revenue-Generating Modules
+          </CardTitle>
+
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start sm:justify-end mt-1 sm:mt-0">
+            <Select value={moduleFilter} onValueChange={setModuleFilter}>
+              <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md  hover:bg-gray-100">
+                <SelectValue placeholder="Module" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Modules</SelectItem>
+                {moduleRevenueArray.map((m, i) => (
+                  <SelectItem key={i} value={m.module}>
+                    {m.module}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Sort Filter */}
+            <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "asc" | "desc")}>
+              <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md  hover:bg-gray-100">
+                <SelectValue placeholder="Sort" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="desc">Decreasing</SelectItem>
+                <SelectItem value="asc">Increasing</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </CardHeader>
+
 
       <CardContent className="relative flex-1 flex items-center justify-center h-[380px] px-2 pt-4 sm:px-6 sm:pt-6">
         {isLoading ? (
@@ -89,7 +128,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
             className="relative aspect-auto h-[250px] w-full transition-opacity duration-700"
           >
             <BarChart data={chartData}>
-              <CartesianGrid vertical={false} />
+              <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" opacity={0.8} />
               <XAxis
                 dataKey="module"
                 tickLine={false}
@@ -145,8 +184,8 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                 ))}
                 <LabelList
                   dataKey="revenue"
-                  position="insideTop"
-                  className="fill-white"
+                  position="top"
+                  className="fill-gray-700"
                   offset={4}
 
                   fontSize={12}

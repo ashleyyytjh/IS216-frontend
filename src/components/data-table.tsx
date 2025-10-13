@@ -36,6 +36,7 @@ import { UserOwnNote } from "./own-user-note-display"
 import { getUserOwned } from "@/services/NotesService"
 import { getOrders } from "@/services/OrdersService"
 import { Badge } from "./ui/badge"
+import { UnpublishedNotes } from "./unpublished-notes"
 
 export const schema = z.object({
   id: z.number(),
@@ -47,32 +48,7 @@ export const schema = z.object({
   reviewer: z.string(),
 })
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
-]
+
 
 const formatCurrency = (n: number) =>
   n.toLocaleString("en-SG", { style: "currency", currency: "SGD" });
@@ -157,7 +133,7 @@ export function DataTable(props: CurrentUserProp) {
 
   const renderStatusBadge = (status?: string) => {
     const s = (status || "").toLowerCase()
-    return <Badge className="bg-green-600">{s?.charAt(0).toUpperCase()+ s?.slice(1)}</Badge>
+    return; 
   }
 
   return (
@@ -183,6 +159,13 @@ export function DataTable(props: CurrentUserProp) {
             className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300"
           >
             Orders You Received
+          </TabsTrigger>
+
+           <TabsTrigger
+            value="unpublished"
+            className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300"
+          >
+            Unpublished Notes
           </TabsTrigger>
 
 
@@ -262,7 +245,9 @@ export function DataTable(props: CurrentUserProp) {
                         </TableCell>
                         <TableCell className="text-muted-foreground">{o.module.toUpperCase()}</TableCell>
                         <TableCell className="font-medium">{formatCurrency(o.price/100)}</TableCell>
-                        <TableCell>{renderStatusBadge(o.status)}</TableCell>
+                        <TableCell>
+                          <Badge className="bg-green-600">{o?.status.charAt(0).toUpperCase()+ o?.status.slice(1)}</Badge>
+                          </TableCell>
                         <TableCell>{o['type'].charAt(0).toUpperCase() + o['type'].slice(1)}</TableCell>
                       </TableRow>
                     ))}
@@ -277,8 +262,9 @@ export function DataTable(props: CurrentUserProp) {
                 </Table>
               </div>
 
-              {/* mobile cards */}
-              <div className="lg:hidden space-y-4">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-fr">
+  <div className="h-full [&>a]:h-full [&>a>div]:h-full">
                 {currentItems.map((note) => (
                   <UserActivityListing
                     key={note.id}
@@ -287,8 +273,8 @@ export function DataTable(props: CurrentUserProp) {
                   />
                 ))}
               </div>
+              </div>
 
-              {/* pagination */}
               <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
                 <div>Page {currentPage} of {totalPages}</div>
                 <div className="flex items-center gap-2">
@@ -316,13 +302,11 @@ export function DataTable(props: CurrentUserProp) {
       </TabsContent>
 
 
-      {/* (Optional placeholders to keep structure) */}
-      <TabsContent value="key-personnel" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
+     <TabsContent value="unpublished"
+        className="flex flex-col px-4 lg:px-6 transition-opacity duration-200">
+          <UnpublishedNotes currentUserInfo={props.currentUser as any} />
       </TabsContent>
-      <TabsContent value="focus-documents" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
+
     </Tabs>
   )
 }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { XIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
+//for profile page.
 const BadgeClosableDemo = (props) => {
   let currentModCode = props.currentModCode
   let onRemove = props.onRemove

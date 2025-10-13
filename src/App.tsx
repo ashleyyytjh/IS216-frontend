@@ -5,7 +5,6 @@ import LoginPage from "./pages/Login";
 import Explore from "./pages/Explore";
 import { Routes, Route } from "react-router-dom";
 import Signup from "./pages/Signup";
-import OrderManage from "./pages/OrderManage";
 import AmplifyLogin from "./pages/AmplifyLogin";
 import { Amplify } from "aws-amplify";
 import ProtectedRoute from "./components/protectedRoute";
@@ -18,9 +17,7 @@ Amplify.configure({
     },
   },
 });
-import OrderDispute from "./pages/OrderDispute";
-import OrderTrack from "./pages/OrderTrack";
-import ReturnRefund from "./pages/ReturnRefund";
+import Refund from "./pages/Refund";
 import OrderDetails from "./pages/OrderDetails";
 import Upload from "./pages/Upload";
 import Profile from "./pages/Profile";
@@ -30,11 +27,16 @@ import Welcome from "./pages/Welcome";
 import NewHome from './pages/NewHome'
 import DashboardSeller from "./pages/dashboardSeller";
 import Listing from "./pages/Listing";
+import UserEdit from "./pages/Editor";
 import Payment from "./pages/Payment";
 import { PaymentSuccess } from "./pages/PaymentSuccessful";
 import ListingLayout from "./pages/ListingLayout";
 import AnnotationComponent from "./pages/Forum";
+<<<<<<< HEAD
 import { PaymentUnsuccessful } from "./pages/PaymentUnsuccessful";
+=======
+import EditPage from "./pages/Editor";
+>>>>>>> 4ea53f323d584fd9af06d9f5a6742b62826b7540
 
 function App() {
     return (
@@ -42,22 +44,20 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome/>}/>
           <Route path = '/'  element={<Layout/>}> 
-              {/* <Route path="/home" element={<Home/>}/> */}
               <Route path="/home" element={<NewHome/>}/>
 
               <Route path="/explore" element={<Explore/>}/>
               <Route path ="/login" element={<AmplifyLogin/>}/>  
               <Route path="/signup" element={<Signup/>}/>
-              <Route path="/ordermanage" element={<OrderManage/>}/>
-              <Route path="/orderdispute" element={<OrderDispute/>}/>
               <Route path="/dashboardSeller" element={<DashboardSeller/>}/>
-              <Route path="/ordertrack" element={<OrderTrack/>}/>
-              <Route path="/returnrefund" element={<ReturnRefund/>}/>
+              <Route path="/refund/:id" element={<Refund/>}/>
               <Route path ="/accountCreation" element={<AccountCreation/>}/>
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/orderdetails/:id" element={<OrderDetails />} />
-
+              <Route path="/writeNotes" element={<EditPage/>} />
+              <Route path="/editNote/:id" element={<EditPage/>} />
+              
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>
                     <Route path="/test" element={<LoginPage />} />

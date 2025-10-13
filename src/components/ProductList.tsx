@@ -110,7 +110,6 @@ function FilterSection() {
 
       <Separator />
 
-      {/* Colors */}
       <div>
         <h3 className="mb-3 font-semibold">Colors</h3>
         <div className="grid grid-cols-1 gap-2">
@@ -132,7 +131,6 @@ function FilterSection() {
 
       <Separator />
 
-      {/* Delivery Date */}
       <div>
         <h3 className="mb-3 font-semibold">Delivery date</h3>
         <RadioGroup value={deliveryDate} onValueChange={setDeliveryDate}>

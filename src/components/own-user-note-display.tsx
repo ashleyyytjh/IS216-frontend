@@ -11,15 +11,10 @@ import { Button } from "./ui/button"
 import { Search, ChevronDown } from "lucide-react"
 import { getUserOwned } from "@/services/NotesService"
 import { NoteListing } from "@/types/types"
-import { Spinner } from './ui/shadcn-io/spinner';
+import { Spinner } from "./ui/shadcn-io/spinner"
 import { Input } from "./ui/input"
 import { Link } from "react-router-dom"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
 export const UserOwnNote = (currentUserInfo) => {
   const user = currentUserInfo?.currentUserInfo ?? {}
@@ -35,22 +30,19 @@ export const UserOwnNote = (currentUserInfo) => {
       .finally(() => setLoading(false))
   }, [])
 
-  // filtering logic
   const filteredNotes = notes.filter((note) => {
     const matchesSearch =
       note.originalName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       note.description.toLowerCase().includes(searchQuery.toLowerCase())
 
-    const matchesFilter =
-      activeFilter === "All" || note.type === activeFilter
-
+    const matchesFilter = activeFilter === "All" || note.type === activeFilter
     return matchesSearch && matchesFilter
   })
 
   if (loading)
     return (
       <div className="flex justify-center w-full">
-         <Spinner variant="default" />
+        <Spinner variant="default" />
       </div>
     )
 
@@ -65,67 +57,59 @@ export const UserOwnNote = (currentUserInfo) => {
               onChange={(e) => setSearchQuery(e.target.value)}
               type="search"
               placeholder="Search for notes..."
-              className="w-full pl-9 bg-muted border-none text-foreground/80 focus:bg-white focus:text-foreground transition-colors"
+              className="w-full pl-9 bg-muted border-none text-foreground/80 focus:bg-white focus:text-foreground transition-colors flex-1"
             />
           </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex items-center gap-1 rounded-md shadow-sm"
-              >
-                {activeFilter}
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {["All", "Notes", "Cheat Sheets", "Answer Key", "Knowledge"].map((f) => (
-                <DropdownMenuItem key={f} onClick={() => setActiveFilter(f)}>
-                  {f}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Select value={activeFilter} onValueChange={(v) => setActiveFilter(v)}>
+            <SelectTrigger className="w-[80px] sm:w-[80px] md:w-[80px]">
+              <SelectValue placeholder="Type of note" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All</SelectItem>
+              <SelectItem value="notes">Notes</SelectItem>
+              <SelectItem value="cheatsheet">Cheatsheets</SelectItem>
+              <SelectItem value="Answer Key">Answer Key</SelectItem>
+              <SelectItem value="knowledge">Knowledge</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </section>
 
       <section className="w-full text-sm font-light">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full">
+        {/* equal-height rows */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr">
           {filteredNotes.map((listing) => {
-
             return (
-              <Link
-                to={`/listings/${(listing as any).note_id || listing.id}`}
-                className="h-full"
-                key={listing.id}
-              >
-                <Card className="p-5 rounded-md transition-shadow duration-300 hover:shadow-xl">
-                  <CardHeader className="flex items-stretch gap-4 p-0">
-                    <div className="flex-1 flex flex-col justify-center gap-1">
-                      <div className="flex">
-                        <p className="flex-1 font-medium">
-                          {user.fullName ?? "Unknown user"}
-                        </p>
+              // each cell fills height
+              <div key={listing.id} className="h-full">
+                <Link
+                  to={`/listings/${(listing as any).note_id || listing.id}`}
+                  className="block h-full"
+                >
+                  {/* card fills cell and stacks content */}
+                  <Card className="h-full flex flex-col p-5 rounded-md transition-shadow duration-300 hover:shadow-xl">
+                    <CardHeader className="flex items-stretch gap-4 p-0">
+                      <div className="flex-1 flex flex-col justify-center gap-1">
+                        <div className="flex">
+                          <p className="flex-1 font-medium">
+                            {user.fullName ?? "Unknown user"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {formatRelativeMonthYear(listing.createdAt)}
+                          </p>
+                        </div>
                         <p className="text-xs text-muted-foreground">
-                          {formatRelativeMonthYear(listing.createdAt)}
+                          Year {user.yearOfStudy ?? "Unknown year"} {user.major ?? "Unknown major"}
                         </p>
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        Year {user.yearOfStudy ?? "Unknown year"}{" "}
-                        {user.major ?? "Unknown major"}
-                      </p>
-                    </div>
-                  </CardHeader>
+                    </CardHeader>
 
-                  <CardContent className="space-y-2 p-0 pb-3">
-                    <h3 className="font-semibold">{listing.originalName}</h3>
-                    <p className="text-sm line-clamp-2">{listing.description}</p>
-                    <div className="flex flex-wrap text-xs text-muted-foreground gap-y-2">
-                      {listing.tags?.map((tag, i) => {
-                        console.log("Tag:", tag)   
-
-                        return (
+                    {/* grow to push footer to bottom */}
+                    <CardContent className="space-y-2 p-0 pb-3 flex-1">
+                      <h3 className="font-semibold">{listing.originalName}</h3>
+                      <p className="text-sm line-clamp-2">{listing.description}</p>
+                      <div className="flex flex-wrap text-xs text-muted-foreground gap-y-2">
+                        {listing.tags?.map((tag, i) => (
                           <div key={tag} className="flex items-center">
                             <Badge
                               variant="secondary"
@@ -137,27 +121,27 @@ export const UserOwnNote = (currentUserInfo) => {
                               <span className="mx-2 text-muted-foreground">•</span>
                             )}
                           </div>
-                        )
-                      })}
-                    </div>
-                  </CardContent>
+                        ))}
+                      </div>
+                    </CardContent>
 
-                  <CardFooter className="flex items-center justify-between p-0">
-                    <div className="flex h-6 gap-2">
-                      <Badge
-                        className="text-sm font-normal rounded-full border-none text-white uppercase"
-                        style={{ background: courseGradient(listing.module ?? "")}}
-                      >
-                        {listing.module}
-                      </Badge>
-                      <Separator orientation="vertical" />
-                      <span className="font-mono flex items-center">
-                        {formatPriceSGD(listing.price)}
-                      </span>
-                    </div>
-                  </CardFooter>
-                </Card>
-              </Link>
+                    <CardFooter className="flex items-center justify-between p-0">
+                      <div className="flex h-6 gap-2">
+                        <Badge
+                          className="text-sm font-normal rounded-full border-none text-white uppercase"
+                          style={{ background: courseGradient(listing.module ?? "") }}
+                        >
+                          {listing.module}
+                        </Badge>
+                        <Separator orientation="vertical" />
+                        <span className="font-mono flex items-center">
+                          {formatPriceSGD(listing.price)}
+                        </span>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </Link>
+              </div>
             )
           })}
           {filteredNotes.length === 0 && (

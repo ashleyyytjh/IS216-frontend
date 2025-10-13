@@ -35,7 +35,6 @@ function DashboardBuyer(currentUser) {
         if (!orders) return;
 
         if (orders.length === 0) {
-            // No orders → just reset to defaults
             setHashMap({});
             setTotalCount(0);
             setTotalSpent(0);

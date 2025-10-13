@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import * as React from "react";
 import { useFormContext } from "react-hook-form";
@@ -8,14 +8,13 @@ import { Button } from "@/components/ui/button";
 import {
   FileText,
   DollarSign,
-  Eye,
   Tag as TagIcon,
   Sparkles,
-  BookOpen,
   Edit3,
   Grid3x3,
   CheckIcon,
   PlusIcon,
+  File,
 } from "lucide-react";
 import {
   FormControl,
@@ -44,6 +43,7 @@ import {
   TagsTrigger,
   TagsValue,
 } from "./ui/shadcn-io/tags";
+import { PriceInput } from "./upload/PriceInput";
 
 export function TagInput({
   value,
@@ -86,6 +86,7 @@ export function TagInput({
       </TagsTrigger>
       <TagsContent>
         <TagsInput
+          className="placeholder:font-light"
           value={inputValue}
           onValueChange={setInputValue}
           placeholder="Type and press Enter..."
@@ -106,7 +107,10 @@ export function TagInput({
               {value.map((tag) => (
                 <TagsItem key={tag} onSelect={handleSelect} value={tag}>
                   {tag}
-                  <CheckIcon size={14} className="text-muted-foreground opacity-70" />
+                  <CheckIcon
+                    size={14}
+                    className="text-muted-foreground opacity-70"
+                  />
                 </TagsItem>
               ))}
             </TagsGroup>
@@ -123,7 +127,11 @@ type StepDetailsProps = {
   onDelete: () => void;
 };
 
-export default function StepDetails({ file, field, onDelete }: StepDetailsProps) {
+export default function StepDetails({
+  file,
+  field,
+  onDelete,
+}: StepDetailsProps) {
   const methods = useFormContext<UploadFormValues>();
   const { clearErrors, trigger } = methods;
 
@@ -135,22 +143,24 @@ export default function StepDetails({ file, field, onDelete }: StepDetailsProps)
   const smartFillFromFileName = () => {
     const fileName = field.fileName;
     const courseMatch = fileName.match(/([A-Z]{2,4}\s*\d{3,4}[A-Z]?)/i);
-    if (courseMatch && !methods.getValues(`items.0.courseCode`)) {
+    if (courseMatch && !methods.getValues("courseCode")) {
       const courseCode = courseMatch[1].replace(/\s+/g, "").toUpperCase();
-      methods.setValue(`items.0.courseCode`, courseCode, { shouldValidate: false });
-      methods.clearErrors(`items.0.courseCode` as any);
-      methods.trigger(`items.0.courseCode` as any);
+      methods.setValue("courseCode", courseCode, {
+        shouldValidate: false,
+      });
+      methods.clearErrors("courseCode" as any);
+      methods.trigger("courseCode" as any);
     }
-    if (!methods.getValues(`items.0.title`)) {
+    if (!methods.getValues("title")) {
       const smartTitle = fileName
         .replace(/\.[^.]+$/, "")
         .replace(/[_-]/g, " ")
         .split(" ")
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
         .join(" ");
-      methods.setValue(`items.0.title`, smartTitle, { shouldValidate: false });
-      methods.clearErrors(`items.0.title` as any);
-      methods.trigger(`items.0.title` as any);
+      methods.setValue("title", smartTitle, { shouldValidate: false });
+      methods.clearErrors("title" as any);
+      methods.trigger("title" as any);
     }
   };
 
@@ -162,7 +172,7 @@ export default function StepDetails({ file, field, onDelete }: StepDetailsProps)
       </Button>
 
       <div className="flex items-center gap-2">
-        <FileText />
+        <File />
         <div>
           <h3 className="text-sm font-medium">{field.fileName}</h3>
           <p className="text-xs text-muted-foreground font-light">
@@ -171,112 +181,77 @@ export default function StepDetails({ file, field, onDelete }: StepDetailsProps)
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8">
         <FormField
           control={methods.control}
-          name="items.0.title"
+          name="title"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-2">
-                <BookOpen className="w-4 h-4" />
-                Title<span className="text-red-500">*</span>
-              </FormLabel>
+            <FormItem className="col-span-2 md:col-span-1">
+              <FormLabel className="flex items-center gap-2">Title</FormLabel>
               <FormControl>
                 <Input
                   placeholder="e.g., CS425 Word Embeddings Notes"
                   {...field}
                   onChange={(e) => {
                     field.onChange(e);
-                    touchOk("items.0.title");
+                    touchOk("title");
                   }}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
 
         <FormField
           control={methods.control}
-          name="items.0.courseCode"
+          name="courseCode"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="col-span-2 md:col-span-1">
               <FormLabel className="flex items-center gap-2">
-                <Grid3x3 className="w-4 h-4" />
-                Course Code<span className="text-red-500">*</span>
+                Course Code
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="e.g., CS425"
+                  className="placeholder:font-light"
+                  placeholder="cs12345"
                   {...field}
                   onChange={(e) => {
                     field.onChange(e);
-                    touchOk("items.0.courseCode");
+                    touchOk("courseCode");
                   }}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={methods.control}
-            name="items.0.priceCents"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center gap-2">
-                  <DollarSign className="w-4 h-4" />
-                  Price (SGD)<span className="text-red-500">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    inputMode="decimal"
-                    placeholder="0.00"
-                    value={centsToDisplay(field.value ?? 0)}
-                    onChange={(e) => {
-                      field.onChange(displayToCents(e.target.value));
-                      touchOk("items.0.priceCents");
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
         <FormField
           control={methods.control}
-          name="items.0.description"
+          name="description"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-2">
-                <FileText className="w-4 h-4" />
-                Description<span className="text-red-500">*</span>
-              </FormLabel>
+            <FormItem className="col-span-2">
+              <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
+                  className="placeholder:font-light"
                   rows={4}
-                  placeholder="What does this cover? Any disclaimers?"
+                  placeholder="Topics and concepts covered, or where they are adapted from."
                   {...field}
                   onChange={(e) => {
                     field.onChange(e);
-                    touchOk("items.0.description");
+                    touchOk("description");
                   }}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
 
         <FormField
           control={methods.control}
-          name="items.0.tags"
+          name="tags"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="col-span-2 md:col-span-1">
               <FormLabel className="flex items-center gap-2">
                 <TagIcon className="w-4 h-4" />
                 Tags
@@ -286,31 +261,27 @@ export default function StepDetails({ file, field, onDelete }: StepDetailsProps)
                   value={field.value || []}
                   onChange={(tags) => {
                     field.onChange(tags);
-                    touchOk("items.0.tags");
+                    touchOk("tags");
                   }}
                   maxTags={8}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
 
         <FormField
           control={methods.control}
-          name="items.0.type"
+          name="type"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-2">
-                <Edit3 className="w-4 h-4" />
-                Type<span className="text-red-500">*</span>
-              </FormLabel>
+            <FormItem className="col-span-2 md:col-span-1">
+              <FormLabel>Type</FormLabel>
               <FormControl>
                 <Select
                   value={field.value}
                   onValueChange={(v) => {
                     field.onChange(v);
-                    touchOk("items.0.type");
+                    touchOk("type");
                   }}
                 >
                   <SelectTrigger>
@@ -323,6 +294,22 @@ export default function StepDetails({ file, field, onDelete }: StepDetailsProps)
                     <SelectItem value="knowledge">Knowledge</SelectItem>
                   </SelectContent>
                 </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={methods.control}
+          name="priceCents"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2 font-semibold">
+                Price (SGD)
+              </FormLabel>
+              <FormControl>
+                <PriceInput field={field} touchOk={touchOk} />
               </FormControl>
               <FormMessage />
             </FormItem>

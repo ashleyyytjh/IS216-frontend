@@ -50,7 +50,7 @@ function DashboardBuyer(currentUser) {
             .filter(o => o.buyer_id === currentUser.current.current.sub)
             .map(o =>
                 getNotesById(o.note_id).then(res => {
-                    map[res.module ?? "Others"] = (map[res.module ?? "Others"] || 0) + 1;
+                    map[res?.module ?? "Others"] = (map[res?.module ?? "Others"] || 0) + 1;
                     count += 1;
                     spent += o.price;
                 })

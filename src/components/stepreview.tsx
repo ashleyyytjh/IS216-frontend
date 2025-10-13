@@ -1,53 +1,59 @@
 import * as React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { centsToDisplay } from "../components/utils";
 import { useFormContext } from "react-hook-form";
+import { UploadFormValues } from "./schema";
+import { priceOrFree } from "@/utils/currency";
 
 interface StepReviewProps {
-  files: File[];
+  file: File;
 }
 
-export default function StepReview({ files }: StepReviewProps) {
-  const { watch } = useFormContext();
-  const items = watch("items");
+export default function StepReview({ file }: StepReviewProps) {
+  const { watch } = useFormContext<UploadFormValues>();
+  const item = watch();
 
   return (
     <section className="space-y-4">
-      <h2 className="text-xl font-semibold">Review & confirm</h2>
-      <div className="space-y-4">
-        {items.map((item: any, i: number) => (
-          <Card key={item.fileId}>
-            <CardHeader>
-              <CardTitle className="truncate">
-                {item.title}{" "}
-                <span className="text-muted-foreground">
-                  ({files[i]?.name || item.fileName})
-                </span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-2 p-6 text-sm">
-              <div>
-                <span className="font-medium">Course:</span> {item.courseCode}
-              </div>
-          
-              <div>
-                <span className="font-medium">Price:</span> $
-                {centsToDisplay(item.priceCents)}
-              </div>
-              <div className="truncate">
-                <span className="font-medium">Visibility:</span>{" "}
-                {item.visibility}
-              </div>
-              <div className="truncate">
-                <span className="font-medium">Tags:</span>{" "}
-                {item.tags?.join(", ") || "—"}
-              </div>
-              <Separator className="my-2" />
-              <p className="text-muted-foreground">{item.description}</p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid grid-cols-12 gap-4 [&>div]:col-span-full [&>div]:md:col-span-6 [&_h5]:font-medium [&_span]:text-muted-foreground">
+        <div>
+          <h5>Title</h5>
+          <span>{item.title}</span>
+        </div>
+        <div>
+          <h5>Course:</h5>
+          <span>{item.courseCode || "None"}</span>
+        </div>
+        <Separator className="!col-span-full" />
+        <div className="!col-span-full min-h-32">
+          <h5>Description</h5>
+          <span>{item.description}</span>
+        </div>
+        <Separator className="!col-span-full" />
+        <div>
+          <h5>Tags:</h5>{" "}
+          <span>{item.tags?.join(", ") || "—"}</span>
+        </div>
+        <div>
+          <h5>Type</h5>
+          <span className="capitalize">{item.type}</span>
+        </div>
+        <div>
+          <h5>Price:</h5>
+          <span>{priceOrFree(item.priceCents)}</span>
+        </div>
+      </div>
+
+      <Separator className="my-3" />
+
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Attachment:</span>
+          <span>{file.name}</span>
+        </div>
+        <div className="text-sm text-muted-foreground">
+          {(file.size / 1024).toFixed(1)} KB • {file.type || "Unknown type"}
+        </div>
       </div>
     </section>
   );

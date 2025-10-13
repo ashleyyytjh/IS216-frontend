@@ -41,7 +41,7 @@ const Payment = () => {
                 const orderDTO = {
                     note_id: noteId,
                     buyer_id: user.sub,
-                    price: note.price,
+                    price: note?.price,
                 }
                 const timer3 = setTimeout(() => {
                 }, 800)
@@ -50,7 +50,7 @@ const Payment = () => {
 
                 }, 1200)
                 const cs = await createOrder(orderDTO);
-                setNote(note);
+                setNote(note ?? null);
                 setClientSecret(cs);
                 // console.log('clientSecret'+ cs)
 

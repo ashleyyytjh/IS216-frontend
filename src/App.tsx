@@ -32,11 +32,9 @@ import Payment from "./pages/Payment";
 import { PaymentSuccess } from "./pages/PaymentSuccessful";
 import ListingLayout from "./pages/ListingLayout";
 import AnnotationComponent from "./pages/Forum";
-<<<<<<< HEAD
 import { PaymentUnsuccessful } from "./pages/PaymentUnsuccessful";
-=======
 import EditPage from "./pages/Editor";
->>>>>>> 4ea53f323d584fd9af06d9f5a6742b62826b7540
+import UploadStatus from "./pages/UploadStatus";
 
 function App() {
     return (
@@ -53,6 +51,7 @@ function App() {
               <Route path="/refund/:id" element={<Refund/>}/>
               <Route path ="/accountCreation" element={<AccountCreation/>}/>
               <Route path="/upload" element={<Upload/>}/>
+              <Route path="/upload/:id" element={<UploadStatus/>}/>
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/orderdetails/:id" element={<OrderDetails />} />
               <Route path="/writeNotes" element={<EditPage/>} />

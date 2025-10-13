@@ -13,6 +13,7 @@ import { GraphData, NoteListing } from "@/types/types";
 import { DollarSign, Download, Info } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Error from "./ErrorPage";
 
 const Graph = lazy(() => import("@/components/listing/Graph"));
 const PDFViewer = lazy(() => import("@/components/listing/PDFViewer"));
@@ -21,15 +22,24 @@ export default function Listing() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<GetNotesRes>();
+  const [exist, setExist] = useState<boolean>(true)
+
   useEffect(() => {
     async function load() {
       if (!id) return;
       const data = await getNotesById(id);
+      if (!data) {
+        setExist(false)
+        return
+      }
       console.log(data)
       setData(data);
     }
     load();
   }, []);
+  if (!exist) {
+    return <Error />
+  }
 
   return (
     data ? (

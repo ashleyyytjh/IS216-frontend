@@ -1,13 +1,10 @@
-// StepFinish.tsx
-import * as React from "react";
-import { ReactFlow, Background, Node, Edge, Position, Handle } from "@xyflow/react";
+import { ReactFlow, Node, Edge, Position, Handle } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
 import { BaseNode, BaseNodeContent } from "@/components/base-node";
 import { NodeStatusIndicator } from "@/components/node-status-indicator";
-import { mkId } from "../components/utils";
 
-/* ---------------- Types (3 states only) ---------------- */
+/* ---------------- Types ---------------- */
 export type UploadStage = "pending" | "uploaded" | "done";
 
 export type UploadState = {
@@ -17,9 +14,7 @@ export type UploadState = {
 };
 
 type StepFinishProps = {
-  files: File[];
-  // Parent should pass: Object.fromEntries(files.map(f => [mkId(f), stateForThatFile]))
-  states: Record<string, UploadState>;
+  state: UploadState;
   allDone: boolean;
   onGoToNotes?: () => void;
 };
@@ -35,7 +30,6 @@ function StatusNode({
       <BaseNode>
         <BaseNodeContent>{data.label}</BaseNodeContent>
       </BaseNode>
-      {/* Provide handles so edges can connect without error #008 */}
       <Handle type="target" position={Position.Left} id="l" isConnectable={false} />
       <Handle type="source" position={Position.Right} id="r" isConnectable={false} />
     </NodeStatusIndicator>
@@ -63,120 +57,69 @@ function toIndicator(
   if (target === "uploaded") {
     if (stage === "pending") return "default";
     if (stage === "uploaded") return "loading";
-    return "success"; // stage === "done"
+    return "success";
   }
-  // target === "done"
   return stage === "done" ? "success" : "default";
 }
 
 function edgeStyle(progressReached: boolean, error: boolean) {
   return {
-    stroke: error ? "#ef4444" : progressReached ? "#22c55e" : "#cbd5e1", // red | green | gray
+    stroke: error ? "#ef4444" : progressReached ? "#22c55e" : "#cbd5e1",
     strokeWidth: 2,
   };
 }
 
 /* ---------------- Component ---------------- */
-export default function StepFinish({ files, states, allDone, onGoToNotes }: StepFinishProps) {
+export default function StepFinish({ state, allDone, onGoToNotes }: StepFinishProps) {
+  const hasError = !!state.error;
+
+  const nodes: Node[] = (["pending", "uploaded", "done"] as UploadStage[]).map(
+    (stage, i) => ({
+      id: stage,
+      type: "status",
+      position: { x: i * 200, y: 0 },
+      data: {
+        label: LABEL[stage],
+        status: toIndicator(state.stage, stage, hasError),
+      },
+      sourcePosition: Position.Right,
+      targetPosition: Position.Left,
+      draggable: false,
+      selectable: false,
+    })
+  );
+
+  const edges: Edge[] = [
+    {
+      id: "e-p-u",
+      source: "pending",
+      target: "uploaded",
+      sourceHandle: "r",
+      targetHandle: "l",
+      animated: state.stage !== "pending",
+      style: edgeStyle(state.stage !== "pending", hasError),
+    },
+    {
+      id: "e-u-d",
+      source: "uploaded",
+      target: "done",
+      sourceHandle: "r",
+      targetHandle: "l",
+      animated: state.stage === "done",
+      style: edgeStyle(state.stage === "done", hasError),
+    },
+  ];
+
   return (
     <section className="space-y-6">
       <header className="text-center space-y-2">
         <h2 className="text-2xl font-semibold">
-          {allDone ? "All done 🎉" : "Publishing your notes…"}
+          You will be redirected shortly.
         </h2>
         <p className="text-muted-foreground">
-          We’ll update each checkpoint as your files move through the pipeline.
+          Please do not close this page.
         </p>
       </header>
-
-      <div className="space-y-4">
-        {files.map((f) => {
-          const key = mkId(f); // ensure parent keying matches this
-          const st: UploadState = states[key] ?? { stage: "pending" };
-          const hasError = !!st.error;
-
-          // Build 3 nodes horizontally: pending -> uploaded -> done
-          const nodes: Node[] = (["pending", "uploaded", "done"] as UploadStage[]).map(
-            (stage, i) => ({
-              id: stage,
-              type: "status",
-              position: { x: i * 200, y: 0 },
-              data: {
-                label: LABEL[stage],
-                status: toIndicator(st.stage, stage, hasError),
-              },
-              sourcePosition: Position.Right,
-              targetPosition: Position.Left,
-              draggable: false,
-              selectable: false,
-            })
-          );
-
-          const edges: Edge[] = [
-            {
-              id: "e-p-u",
-              source: "pending",
-              target: "uploaded",
-              sourceHandle: "r",
-              targetHandle: "l",
-              animated: st.stage !== "pending", // animate once we move beyond pending
-              style: edgeStyle(st.stage !== "pending", hasError),
-            },
-            {
-              id: "e-u-d",
-              source: "uploaded",
-              target: "done",
-              sourceHandle: "r",
-              targetHandle: "l",
-              animated: st.stage === "done",
-              style: edgeStyle(st.stage === "done", hasError),
-            },
-          ];
-
-          return (
-            <div key={key} className="rounded-lg border p-4 bg-card/50">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-medium truncate">{f.name}</h4>
-                {hasError && (
-                  <span className="text-xs text-red-600 ml-3">Error: {st.error}</span>
-                )}
-              </div>
-
-              <div className="h-28 w-full">
-                <ReactFlow
-                  nodes={nodes}
-                  edges={edges}
-                  nodeTypes={nodeTypes}
-                  fitView
-                  fitViewOptions={{ padding: 0.2, includeHiddenNodes: true }}
-                  nodesDraggable={false}
-                  elementsSelectable={false}
-                  zoomOnScroll={false}
-                  panOnScroll={false}
-                  zoomOnPinch={false}
-                  zoomOnDoubleClick={false}
-                  proOptions={{ hideAttribution: true }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <footer className="pt-2 text-center">
-        {allDone ? (
-          <button
-            onClick={onGoToNotes}
-            className="inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium hover:bg-slate-50"
-          >
-            View in Repository
-          </button>
-        ) : (
-          <p className="text-xs text-muted-foreground">
-            You can navigate away—processing continues in the background.
-          </p>
-        )}
-      </footer>
     </section>
   );
 }

@@ -15,6 +15,7 @@ import sampleImage from '../assets/sampleimg.jpeg';
 
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const formatPrice = (priceInCents) => {
   return (priceInCents / 100).toLocaleString("en-US", {
@@ -28,7 +29,7 @@ const CheckoutForm = ({notes: note}) => {
   const elements = useElements();
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -47,16 +48,17 @@ const CheckoutForm = ({notes: note}) => {
     });
 
     if (error.type === "card_error" || error.type === "validation_error") {
-        
+        navigate('/paymentUnsuccessful');
+        toast.error("Payment failed. Please try again.");
     } else {
-      toast.success('Successful')
+      toast.success('Payment successful! Enjoy your notes!');
     }
     setIsLoading(false);
 
   };
-    const paymentElementOptions: StripePaymentElementOptions = {
-        layout: 'tabs'
-    };
+  const paymentElementOptions: StripePaymentElementOptions = {
+      layout: 'tabs'
+  };
 
     return (
     

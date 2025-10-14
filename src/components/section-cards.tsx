@@ -88,7 +88,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
                 Loading your earnings...
               </div>
             )
-          ) : totalSales <= 1000 ? (
+          ) : totalSales <= 100 ? (
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500 transition-all duration-500 ease-in-out">
               Earnings have not been great. <IconTrendingDown className="size-4" />
             </div>
@@ -135,7 +135,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
                 Loading your total notes sold
               </div>
             )
-          ) : totalNoteCount <= 20 ? (
+          ) : totalNoteCount <= 5 ? (
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500">
               You can do better! <Frown className="size-4" />
             </div>
@@ -185,7 +185,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               </div>
             )
           ) : topModule ? (
-            <div className="line-clamp-1 flex gap-2 font-medium text-red-500">
+            <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">
               {
                 topModule.count > 1 ?(
                   <>

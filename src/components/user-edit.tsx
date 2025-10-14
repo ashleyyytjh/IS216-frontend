@@ -3,7 +3,7 @@ import { Button } from "./ui/button"
 import { Label } from "@/components/ui/label"
 import BadgeClosableDemo from "./removable-badge"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
-import { Plus, Pencil, Camera } from "lucide-react"
+import { Plus, Pencil, Camera, User } from "lucide-react"
 import { useState, useEffect } from "react"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { updateUser } from "@/services/UserService"
-import { Avatar, AvatarImage } from "./ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
 const formSchema = z.object({
   username: z.string().min(0, "Username must be filled."),
@@ -102,7 +102,13 @@ function UserEdit(currentUser) {
           <div className="flex justify-center ml-auto mr-auto">
             <div className="relative w-24 h-24">
               <Avatar className="w-24 h-24">
-                <AvatarImage src={previewImage} alt="User avatar" />
+                  {previewImage ? (
+    <AvatarImage src={previewImage} alt="User avatar" />
+  ) : (
+    <AvatarFallback>
+      <User className="w-8 h-8 text-gray-500" />
+    </AvatarFallback>
+  )}
               </Avatar>
 
               <label

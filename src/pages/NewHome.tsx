@@ -21,17 +21,11 @@ import RecommendationsHub, {
   type UserProfile,
 } from "@/components/RecommendationCarousel";
 
-const featuredNotes = [
-    { id: 1, title: "Advanced Algorithms Cheatsheet", author: "Jane Doe", university: "Stanford University", rating: 5, price: "$9.99" },
-    { id: 2, title: "Corporate Law Case Summaries", author: "John Smith", university: "Harvard University", rating: 4, price: "$12.50" },
-    { id: 3, title: "Marketing 101 Full Semester Notes", author: "Emily White", university: "Wharton School", rating: 5, price: "$19.00" },
-];
 
 
 import { useState } from 'react';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { User } from '@/types/types';
-import logo from '../assets/logodark.png';
 
 export default function ImprovedHomepage() {
   const calendar: CalendarConfig = {

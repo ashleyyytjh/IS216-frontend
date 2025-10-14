@@ -263,8 +263,8 @@ export function DataTable(props: CurrentUserProp) {
               </div>
 
 
-              <div className="gap-4 auto-rows-fr lg:hidden">
-  <div className="h-full [&>a]:h-full [&>a>div]:h-full w-full">
+              <div className="flex flex-col gap-4 auto-rows-fr lg:hidden">
+  <div className="flex flex-col h-full [&>a]:h-full [&>a>div]:h-full w-full gap-y-5">
                 {currentItems.map((note) => (
                   <UserActivityListing
                     key={note.id}

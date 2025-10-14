@@ -223,7 +223,7 @@
                   shape="circle"
                   onClick={(data) => {
                     if (data && data.id) {
-                      window.location.href = `/listing/${data.id}`;
+                      window.location.href = `/listings/${data.id}`;
                     }
                   }}
                   style={{ cursor: "pointer" }}

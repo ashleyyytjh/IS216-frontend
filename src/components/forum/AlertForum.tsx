@@ -20,10 +20,10 @@ export function AlertForum({ handleDialogConfirm, confirmOpen, setConfirmOpen }:
             </AlertDialogHeader>
             <AlertDialogFooter>
             <AlertDialogCancel asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="!text-sm">Cancel</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-                <Button variant="destructive" onClick={handleDialogConfirm}>Delete</Button>
+                <Button variant="destructive" className="!text-sm" onClick={handleDialogConfirm}>Delete</Button>
             </AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>

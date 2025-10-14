@@ -120,7 +120,7 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : (
                             <CardContent>
-                                <h1 className="text-foreground text-xl font-extrabold">${totalSpent/100}</h1>
+                                <h1 className="text-foreground text-xl font-extrabold">${Number(totalSpent/100).toFixed(2)}</h1>
                                 <p className="text-sm font-light text-foreground">Spent in Onlynotes.</p>
                             </CardContent>
                         )

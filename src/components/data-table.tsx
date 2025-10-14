@@ -263,8 +263,8 @@ export function DataTable(props: CurrentUserProp) {
               </div>
 
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-fr">
-  <div className="h-full [&>a]:h-full [&>a>div]:h-full">
+              <div className="gap-4 auto-rows-fr lg:hidden">
+  <div className="h-full [&>a]:h-full [&>a>div]:h-full w-full">
                 {currentItems.map((note) => (
                   <UserActivityListing
                     key={note.id}

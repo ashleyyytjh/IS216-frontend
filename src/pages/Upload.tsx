@@ -202,7 +202,7 @@ export default function Upload() {
   const isPublishing = step === 4 && !allDone;
 
   return (
-    <main className="min-h-screen py-5 container w-[80%] ml-auto mr-auto">
+    <main className="min-h-screen py-5 container w-[90%] sm:w-[85%] md:w-[80%] ml-auto mr-auto">
       <Card className="mx-auto w-full max-w-4xl">
         <CardHeader>
           <CardTitle>Upload Notes</CardTitle>

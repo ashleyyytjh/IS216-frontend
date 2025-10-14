@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
+import { useMediaQuery } from "usehooks-ts"
 type ChartBarLabelProps = {
   moduleRevenueArray: { module: string; revenue: number }[]
 }
@@ -27,6 +27,7 @@ const formatCurrency = (value: number) => {
   return `$${value.toFixed(2)}`
 }
 
+
 const chartConfig = {
   revenue: {
     label: "Revenue:",
@@ -35,6 +36,9 @@ const chartConfig = {
 }
 
 export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
+  const smallSize = useMediaQuery("(max-width: 400px)");
+  const overlapBP = useMediaQuery("(max-width: 419px)");
+
   console.log(moduleRevenueArray)
   const [isLoading, setIsLoading] = useState(true)
   const [isEmpty, setIsEmpty] = useState(false)
@@ -80,20 +84,24 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
 
   return (
     <Card className="min-h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
-
       <CardHeader className="pb-2">
-        <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-3">
+        <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-3 mb-2">
           <CardTitle className="text-base font-semibold text-gray-800">
             Top Revenue-Generating Modules
           </CardTitle>
 
-          <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start sm:justify-end mt-1 sm:mt-0">
+          <div  className="
+    flex flex-col sm:flex-row
+    sm:justify-end sm:items-center
+    gap-2 sm:gap-3
+    w-full sm:w-auto
+  ">
             <Select value={moduleFilter} onValueChange={setModuleFilter}>
-              <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md  hover:bg-gray-100">
+              <SelectTrigger  className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
                 <SelectValue placeholder="Module" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="All">All Modules</SelectItem>
+                <SelectItem value="All">All</SelectItem>
                 {moduleRevenueArray.map((m, i) => (
                   <SelectItem key={i} value={m.module}>
                     {m.module}
@@ -104,7 +112,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
 
             {/* Sort Filter */}
             <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "asc" | "desc")}>
-              <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md  hover:bg-gray-100">
+              <SelectTrigger  className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
                 <SelectValue placeholder="Sort" />
               </SelectTrigger>
               <SelectContent>
@@ -117,7 +125,11 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
       </CardHeader>
 
 
-      <CardContent className="relative flex-1 flex items-center justify-center h-[380px] px-2 pt-4 sm:px-6 sm:pt-6">
+      <CardContent   className="
+    relative flex-1 flex items-center justify-center
+    h-[380px] sm:h-[380px] xs:h-[300px] max-[400px]:h-[250px]
+    px-2 pt-4 sm:px-6 sm:pt-6 space-y-3 sm:space-y-4
+  ">
         {isLoading ? (
           <SpinItem />
         ) : isEmpty ? (
@@ -125,17 +137,22 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="relative aspect-auto h-[250px] w-full transition-opacity duration-700"
+              className="
+    relative aspect-auto
+    h-[250px] sm:h-[250px] xs:h-[200px] max-[400px]:h-[160px]
+    w-full transition-opacity duration-700
+  "
           >
-            <BarChart data={chartData}>
+            <BarChart data={chartData} >
               <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" opacity={0.8} />
               <XAxis
                 dataKey="module"
                 tickLine={false}
+                interval={0}
                 tickMargin={2}
                 axisLine={false}
                 label={{ value: "Module Code", position: "insideBottom", offset: -4 }}
-                tick={{ fill: "#6B7280", fontSize: 13, fontWeight: 400 }}
+                tick={{ fill: "#6B7280", fontSize: smallSize ? 9 : 13, fontWeight: 400 }}
               />
               <YAxis
                 tickLine={false}
@@ -143,7 +160,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                 width={70}
                 domain={[0, "auto"]}
                 tickFormatter={(val) => formatCurrency(Number(val))}
-                tick={{ fill: "#6B7280", fontSize: 13, fontWeight: 400 }}
+                tick={{ fill: "#6B7280", fontSize: smallSize ? 11 : 13, fontWeight: 400 }}
                 label={{
                   value: "Revenue ($)",
                   angle: -90,
@@ -167,7 +184,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                 dataKey="revenue"
                 fill="var(--chart-1)"
                 radius={8}
-                barSize={70}
+                barSize={smallSize ? 25 : 50}
                 isAnimationActive
                 animationDuration={800}
                 animationEasing="ease-in-out"
@@ -188,7 +205,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                   className="fill-gray-700"
                   offset={4}
 
-                  fontSize={12}
+                  fontSize={overlapBP ? 8 : 12}
                   formatter={(val: number) => formatCurrency(val)}
                 />
               </Bar>

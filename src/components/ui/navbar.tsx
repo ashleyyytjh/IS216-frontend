@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "sonner";
 
 const navigationItems = [
-    // { name: "Home", href: "/home" },
     { name: "Explore", href: "/explore" },
     { name: "Upload", href: "/upload" },
     { name: "Dashboard", href: "/dashboardSeller" },
@@ -62,8 +61,8 @@ const navbar = () => {
                             <Button variant="ghost" size="icon" className="pl-18">
                                 <Menu className="h-6 w-6" />
                                 <div className="flex items-center space-x-2">
-                                    <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                        <span className="text-primary-foreground font-bold text-sm">N</span>
+                                    <div className="h-7 w-8 rounded-lg bg-primary flex items-center justify-center">
+                                        <span className="text-primary-foreground font-bold text-sm">ON</span>
                                     </div>
                                     <span className="font-bold text-xl">Onlynotes</span>
                                 </div>
@@ -76,8 +75,8 @@ const navbar = () => {
                         <SheetContent side="left" className="w-[300px] sm:w-[400px] pl-3">
                             <SheetTitle className="pt-5 pl-3">
                                 <a href="/home" className="flex items-center space-x-2">
-                                    <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                        <span className="text-primary-foreground font-bold text-sm">N</span>
+                                    <div className="h-7 w-8 rounded-lg bg-primary flex items-center justify-center">
+                                        <span className="text-primary-foreground font-bold text-sm">ON</span>
                                     </div>
                                     <span className="font-bold text-xl">Onlynotes</span>
                                 </a>
@@ -132,8 +131,8 @@ const navbar = () => {
                     {/* The code here is for the main nav bar. text align might go here. */}
                     <div className="hidden md:flex flex-1 items-center space-x-8 text-[#0f172b] text-center mr-auto ml-auto">
                         <a href="/home" className="flex items-center space-x-2">
-                            <div className="h-6 w-6 rounded-lg bg-primary flex items-center justify-center">
-                                <span className="text-primary-foreground text-sm">N</span>
+                            <div className="h-7 w-8 rounded-lg bg-primary flex items-center justify-center">
+                                <span className="text-primary-foreground text-sm px">ON</span>
                             </div>
                             <span className="font-bold text-xl pr-12 ">OnlyNotes</span>
                         </a>

@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
+import { useMediaQuery } from "usehooks-ts";
 type ChartBarNotesProps = {
   moduleCountsArray: { module: string; count: number }[]
 }
@@ -85,7 +85,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
   }, [chartData])
 
 
-
+  const onSmallScreen = useMediaQuery("(max-width: 400px)");
   return (
     <Card className="min-h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
       <CardHeader className="pb-2">
@@ -94,13 +94,18 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
             Amount of Notes Sold
           </CardTitle>
 
-          <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start sm:justify-end mt-1 sm:mt-0">
+          <div   className="
+    flex flex-col sm:flex-row
+    sm:justify-end sm:items-center
+    gap-2 sm:gap-3
+    w-full sm:w-auto
+  ">
             <Select value={moduleFilter} onValueChange={setModuleFilter}>
               <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
                 <SelectValue placeholder="Module" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="All">All Modules</SelectItem>
+                <SelectItem value="All">All</SelectItem>
                 {moduleCountsArray.map((m, i) => (
                   <SelectItem key={i} value={m.module}>
                     {m.module}
@@ -122,7 +127,11 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="relative flex-1 flex items-center justify-center h-[380px] px-2 pt-4 sm:px-6 sm:pt-6">
+      <CardContent className="
+    relative flex-1 flex items-center justify-center
+    h-[380px] sm:h-[380px] xs:h-[300px] max-[400px]:h-[250px]
+    px-2 pt-4 sm:px-6 sm:pt-6
+  ">
         {isLoading ? (
           <SpinItem />
         ) : isEmpty ? (
@@ -130,9 +139,13 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="relative aspect-auto h-[250px] w-full transition-opacity duration-700"
+            className="
+      relative aspect-auto
+      h-[250px] sm:h-[250px] xs:h-[200px] max-[400px]:h-[160px]
+      w-full transition-opacity duration-700
+    "
           >
-            <BarChart layout="vertical" data={chartData}margin={{ right: 40, bottom: 0 }}>
+            <BarChart layout="vertical" data={chartData} margin={{ right: 40, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 type="number"
@@ -140,20 +153,20 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                 axisLine={false}
                 tickMargin={2}
                 tickFormatter={(val) => formatCount(Number(val))}
-                tick={{ fill: "#6B7280", fontSize: 13, fontWeight: 400 }}
+                tick={{ fill: "#6B7280",fontSize: onSmallScreen ? 11 : 13, fontWeight: 400 }}
                 label={{
                   value: "Amount of notes sold",
                   position: "outsideBottom",
                   offset: -10,
-                  dy:10
+                  dy: 10
                 }}
 
-  //                 label={{
-  //   value: "Amount of notes sold",
-  //   position: "outsideBottom",
-  //   dy: 20,
-  //   textAnchor: "middle",
-  // }}
+              //                 label={{
+              //   value: "Amount of notes sold",
+              //   position: "outsideBottom",
+              //   dy: 20,
+              //   textAnchor: "middle",
+              // }}
               />
               <YAxis
                 dataKey="module"
@@ -161,7 +174,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                 tickLine={false}
                 axisLine={false}
                 width={70}
-                tick={{ fill: "#6B7280", fontSize: 13, fontWeight: 400 }}
+                tick={{ fill: "#6B7280", fontSize: onSmallScreen ? 11 : 13, fontWeight: 400 }}
                 label={{
                   value: "Module Code",
                   angle: -90,
@@ -181,7 +194,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
               <Bar
                 dataKey="count"
                 radius={[0, 8, 8, 0]}
-                barSize={40}
+                barSize={onSmallScreen?20 :40}
                 isAnimationActive
                 animationDuration={800}
                 animationEasing="ease-in-out"

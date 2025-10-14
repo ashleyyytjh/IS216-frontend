@@ -8,50 +8,29 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { downloadNotes } from "@/services/NotesService"
-import { toast } from "sonner"
-import { Link, useLocation } from "react-router-dom"
+
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 const UserActivityListing = ({ note, onDownload }) => {
-  const [downloadState, setDownloadState] = useState<string | null>(null)
+  const navigate = useNavigate();
   const location = useLocation()
 
   const isSellerDashboard = location.pathname.includes("dashboardSeller")
   const n = note.note ? { ...note, ...note.note } : note
+  console.log(n)
 
-  const handleDownload = () => {
-    setDownloadState("downloading")
-    downloadNotes(n.id)
-      .then(() => toast.success("Successfully downloaded!"))
-      .catch(console.error)
-
-    setTimeout(() => {
-      setDownloadState("completed")
-      setTimeout(() => setDownloadState(null), 2000)
-    }, 1500)
-
-    if (onDownload) onDownload(n.id)
-  }
-
-  const getDownloadText = () => {
-    if (downloadState === "downloading") return "Downloading..."
-    if (downloadState === "completed") return "Downloaded!"
-    return n.status === "downloaded" ? "Re-download" : "Download"
-  }
 
   const formatCurrency = (num: number) =>
     (num / 100).toLocaleString("en-SG", { style: "currency", currency: "SGD" })
 
+  
   return (
-    <Link
-      to={!n?.userFullName ? `/orderdetails/${n.id}` : `/listings/${n.id}`}
-      className="block h-full"
-    >
+    <>
       {/* make card fill and stack so footer sits at bottom */}
       <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer relative overflow-hidden">
-        <CardHeader className="pr-0 md:pr-24">
+        <CardHeader className="pr-6 md:pr-24">
           <div className="flex flex-col">
-            <span className="text-lg font-semibold break-words">{n.originalName}</span>
+            <span className="text-sm sm:text-lg font-semibold break-words">{n.originalName}</span>
 
             {n?.module && (
               <Badge
@@ -88,9 +67,9 @@ const UserActivityListing = ({ note, onDownload }) => {
             </div>
           )}
 
-          <p className="text-gray-600 text-sm leading-relaxed">
-            {n.description}
-          </p>
+          <p className="text-gray-600 text-sm leading-relaxed hidden sm:block">
+  {n.description}
+</p>
 
           {n?.userFullName && (
             <div className="flex flex-wrap gap-1">
@@ -126,19 +105,44 @@ const UserActivityListing = ({ note, onDownload }) => {
           </div>
         </CardContent>
 
-        <CardFooter className="flex flex-col xs:flex-col sm:flex-row justify-between items-center pt-4 border-t gap-2">
-          <span className="text-2xl font-bold text-black-600">
-            {formatCurrency(n.price)}
-          </span>
+<CardFooter
+  className="
+    flex flex-col sm:flex-row justify-between items-start sm:items-center
+    pt-4 border-t gap-2
+  "
+>
+  {/* Price on the left */}
+  <span className="text-2xl font-bold text-black-600">
+    {formatCurrency(n.price)}
+  </span>
 
-          {n?.buyer_id && (
-            <Button className="w-full sm:w-auto mt-2 sm:mt-0">
-              Order Details
-            </Button>
-          )}
-        </CardFooter>
+  {/* Buttons group */}
+  {n?.buyer_id && (
+    <div
+      className="
+        flex flex-col gap-1.5 sm:flex-row sm:gap-2
+        sm:ml-auto sm:justify-end w-full sm:w-auto
+      "
+    >
+      <Button
+        className="w-full sm:w-auto mt-2 sm:mt-0"
+        onClick={() => navigate(`/orderdetails/${n.id}`)}
+      >
+        <p className="text-sm">Order Details</p>
+      </Button>
+
+      <Button
+        className="w-full sm:w-auto mt-2 sm:mt-0"
+        onClick={() => navigate(`/listings/${n.note_id}`)}
+      >
+        <p className="text-sm">Note Details</p>
+      </Button>
+    </div>
+  )}
+</CardFooter>
       </Card>
-    </Link>
+    </>
+
   )
 }
 

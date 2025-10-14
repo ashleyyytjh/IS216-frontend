@@ -78,7 +78,7 @@ function DashboardBuyer(currentUser) {
             <div className="w-full flex flex-col gap-y-5 md:flex-row gap-x-5 mt-4">
                 <Card className="w-[100%] md:w-[70%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
                     <CardHeader className="justify-between flex flex-row">
-                        <h1 className="font-medium">Total purchased notes</h1>
+                        <h1 className="font-medium text-foreground">Total purchased notes</h1>
                         <BookOpen />
                     </CardHeader>
                     {
@@ -88,13 +88,13 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : totalCount === 0 ? (
                             <CardContent>
-                                <h1 className="text-xl font-extrabold">0</h1>
-                                <p className="text-sm font-light">No notes purchased yet.</p>
+                                <h1 className="text-foreground text-xl font-extrabold">0</h1>
+                                <p className="text-sm font-light text-foreground">No notes purchased yet.</p>
                             </CardContent>
                         ) : (
                             <CardContent>
-                                <h1 className="text-xl font-extrabold">{totalCount}</h1>
-                                <p className="text-sm font-light">Notes purchased.</p>
+                                <h1 className="text-foreground text-xl font-extrabold">{totalCount}</h1>
+                                <p className="text-sm font-light text-foreground">Notes purchased.</p>
                             </CardContent>
                         )
                     }
@@ -103,7 +103,7 @@ function DashboardBuyer(currentUser) {
 
                 <Card className="w-[100%] md:w-[70%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row justify-between">
-                        <h1 className="font-medium">Total Spent</h1>
+                        <h1 className="font-medium text-foreground">Total Spent</h1>
                         <DollarSign />
                     </CardHeader>
                     {
@@ -113,13 +113,13 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : totalSpent === 0 ? (
                             <CardContent>
-                                <h1 className="text-xl font-extrabold">$0</h1>
-                                <p className="text-sm font-light">No spending yet.</p>
+                                <h1 className="text-foreground text-xl font-extrabold">$0</h1>
+                                <p className="text-sm font-light text-foreground">No spending yet.</p>
                             </CardContent>
                         ) : (
                             <CardContent>
-                                <h1 className="text-xl font-extrabold">${totalSpent/100}</h1>
-                                <p className="text-sm font-light">Spent in Onlynotes.</p>
+                                <h1 className="text-foreground text-xl font-extrabold">${totalSpent/100}</h1>
+                                <p className="text-sm font-light text-foreground">Spent in Onlynotes.</p>
                             </CardContent>
                         )
                     }
@@ -128,7 +128,7 @@ function DashboardBuyer(currentUser) {
 
                 <Card className="w-[100%] md:w-[70%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row justify-between">
-                        <h1 className="font-medium">Favourite Modules</h1>
+                        <h1 className="font-medium text-foreground">Favourite Modules</h1>
                         <Heart />
                     </CardHeader>
                     {
@@ -138,13 +138,13 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : !topModule || topModule.count === 0 ? (
                             <CardContent>
-                                <h1 className="text-xl font-extrabold">None</h1>
-                                <p className="text-sm font-light">No purchases yet.</p>
+                                <h1 className="text-xl font-extrabold text-foreground">None</h1>
+                                <p className="text-sm font-light text-foreground">No purchases yet.</p>
                             </CardContent>
                         ) : (
                             <CardContent>
-                                <h1 className="text-xl font-extrabold">{topModule.module}</h1>
-                                <p className="text-sm font-light">Purchased {topModule.count} times.</p>
+                                <h1 className="text-xl font-extrabold text-foreground">{topModule.module.toUpperCase()}</h1>
+                                <p className="text-sm font-light text-foreground">Purchased {topModule.count} times.</p>
                             </CardContent>
                         )
                     }

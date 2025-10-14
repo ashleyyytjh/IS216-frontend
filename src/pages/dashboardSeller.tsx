@@ -34,7 +34,7 @@ export default function DashboardSeller() {
   >([]);
   //total sales count is calling from API.
   useEffect(() => {
-    setAnimate(true); 
+    setAnimate(true);
   }, []);
 
   useEffect(() => {
@@ -90,11 +90,17 @@ export default function DashboardSeller() {
         });
 
         //dummy additions (optional)
-        // moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
-        // moduleCountMap.set("IS216", (moduleCountMap.get("IS216") || 0) + 90)
+        moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
+        moduleCountMap.set("IS216", (moduleCountMap.get("IS216") || 0) + 90)
 
-        // moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000 / 100)
-        // moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000 / 100)
+        moduleCountMap.set("CS103", (moduleCountMap.get("CS103") || 0) + 100)
+        moduleCountMap.set("IS217", (moduleCountMap.get("IS217") || 0) + 90)
+
+        moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000 / 100)
+        moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000 / 100)
+
+        moduleRevenueMap.set("CS103", (moduleRevenueMap.get("CS103") || 0) + 500000 / 100)
+        moduleRevenueMap.set("IS217", (moduleRevenueMap.get("IS217") || 0) + 30000 / 100)
         const arr = Array.from(moduleCountMap.entries())
           .map(([module, count]) => ({ module, count }))
           .sort((a, b) => b.count - a.count);
@@ -123,11 +129,11 @@ export default function DashboardSeller() {
 
   return (
     <div
-      className={
-        animate
-          ? "fade-in container w-[80%] ml-auto mr-auto"
-          : "container w-[80%] ml-auto mr-auto"
-      }
+  className={
+    animate
+      ? "fade-in container w-[95%] sm:w-[85%] lg:w-[80%] ml-auto mr-auto"
+      : "container w-[90%] sm:w-[85%] lg:w-[80%] ml-auto mr-auto"
+  }
     >
       <SidebarProvider
         style={
@@ -150,15 +156,18 @@ export default function DashboardSeller() {
                 />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 lg:px-6 w-full items-stretch">
                   <div className="w-full">
+                    {/* This is the left bar chart */}
                     <ChartPieInteractive moduleCountsArray={moduleCountsArray} />
                   </div>
                   <div className="w-full">
+                    {/* This is the right bar chart */}
                     <ChartBarLabel moduleRevenueArray={moduleRevenueArray} />
                   </div>
                 </div>
 
                 <div className="flex flex-col">
                   <div className="w-[100%] lg:w-[100%] px-6">
+                    {/* Scatter Plot */}
                     <ScatterVisual />
                   </div>
                 </div>

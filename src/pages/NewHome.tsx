@@ -109,7 +109,6 @@ export default function ImprovedHomepage() {
           <>
             <h1 className="text-5xl md:text-6xl 2xl:text-8xl font-bold tracking-tighter">
               OnlyNotes
-            {/* <img src={logo} className='w-90' alt="Logo" /> */}
             </h1>
             <p className="mt-4 max-w-xl mx-auto text-md md:text-xl text-slate-600 ">
               The pinnacle of student-curated knowledge. Ace your exams with notes from the best.

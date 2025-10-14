@@ -20,7 +20,7 @@ function DashboardBuyer(currentUser) {
         getOrders()
             .then((resp) => {
                 console.log(resp)
-                const fil = resp.filter((r)=>{ return r.status == "succeeded"})
+                const fil = resp //.filter((r)=>{ return r.status == "succeeded"})
                 console.log(fil)
                 setOrders(fil)
             })

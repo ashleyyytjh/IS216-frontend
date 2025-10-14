@@ -9,6 +9,7 @@ import {
   ChevronRight,
   Check,
   LoaderCircleIcon,
+  Pencil,
 } from "lucide-react";
 
 import {
@@ -384,10 +385,10 @@ export default function Upload() {
     Instead of uploading a file, you can use our built-in editor to create and publish notes online.
   </p>
   <Button
-    onClick={() => navigate("/write")}
-    className="flex items-center gap-2 px-6 py-2 rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
+    onClick={() => navigate("/writeNotes")}
+    className="flex items-center gap-2 px-6 py-2 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 !text-sm"
   >
-    <Check className="w-4 h-4" />
+    <Pencil className="w-4 h-4" />
     Start Writing
   </Button>
 </section>

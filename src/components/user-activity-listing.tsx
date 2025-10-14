@@ -124,12 +124,19 @@ const UserActivityListing = ({ note, onDownload }) => {
         sm:ml-auto sm:justify-end w-full sm:w-auto
       "
     >
-      <Button
+      {
+        isSellerDashboard ? (
+                <Button
         className="w-full sm:w-auto mt-2 sm:mt-0"
         onClick={() => navigate(`/orderdetails/${n.id}`)}
       >
         <p className="text-sm">Order Details</p>
       </Button>
+        ) : (
+          <></>
+        )
+      }
+
 
       <Button
         className="w-full sm:w-auto mt-2 sm:mt-0"

@@ -43,10 +43,7 @@ function UserActivity(currentUser) {
                 //         index === self.findIndex((o) => o.note_id === order.note_id)
                 // )
 
-                const succeededOrders = rawOrders.filter(
-                    (order) => order.status === "succeeded"
-                );
-
+                const succeededOrders = rawOrders
                 const enrichedOrders = await Promise.all(
                     succeededOrders.map(async (order) => {
                         console.log("note_id passed to getNotesById:", order.note_id)

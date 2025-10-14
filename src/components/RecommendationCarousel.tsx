@@ -3,8 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import ListingCarousel from "@/components/ListingCarousel";
 import { searchNotes } from "@/services/NotesService"; // adjust path if needed
-
-// ⬇️ Import YOUR app's canonical type so we match what ListingCarousel expects
 import type { SearchNotesItem } from "@/types/requests/notes";
 
 /* ===== Your NoteHit coming from backend search ===== */
@@ -275,6 +273,7 @@ export function RecommendationCarousel({
   });
 
   return (
+    
     <ListingCarousel
       title={title}
       subtitle={subtitle}
@@ -282,6 +281,7 @@ export function RecommendationCarousel({
       loading={loading}
       error={error}
       skeletonCount={8}
+      
     />
   );
 }

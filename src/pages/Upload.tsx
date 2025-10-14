@@ -160,6 +160,7 @@ export default function Upload() {
       updateState("pending");
 
       const res = await createNotes({
+        title: item.title,
         filename: item.fileName,
         description: item.description,
         tags: item.tags ?? [],
@@ -170,7 +171,7 @@ export default function Upload() {
         type: item.type ?? "notes",
       });
       console.log("record saved")
-
+      console.log(res)
       const resp = await fetch(res.url, {
         method: "PUT",
         headers: {

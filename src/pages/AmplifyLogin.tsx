@@ -9,6 +9,7 @@ import { getUser } from '@/services/UserService';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { User } from '@/types/types';
+import SpinItem from '@/components/spinner';
 
 const components = {
   Header() {
@@ -103,10 +104,13 @@ export const RedirectOnLogin = ({ user }) => {
             dbUser = await getUser();
             if (user && dbUser) {
               console.log('User logged in:', user);
-              setShowRedirecting(true);
-              navigate(location.state?.from || '/home', { replace: true });
-              window.location.reload();
-              // return () => clearTimeout(timer);
+
+              setTimeout(() => {
+                setShowRedirecting(true);
+                toast.success("Logged in successfully");
+                navigate(location.state?.from || '/home', { replace: true });
+                window.location.reload();
+              }, 1200);
               return;
             }
           } catch (error) {
@@ -120,6 +124,7 @@ export const RedirectOnLogin = ({ user }) => {
 
    return (
     <>
+      <div className="flex justify-center flex-col items-center w-full h-64"> <SpinItem/> Logging in...</div>
 
     </>
   );

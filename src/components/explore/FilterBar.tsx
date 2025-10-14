@@ -1,6 +1,7 @@
 import { Search, Settings2 } from "lucide-react";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+
+import {Button} from "@/components/ui/button"
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { ChangeEvent, useState } from "react";
@@ -63,8 +64,8 @@ export default function FilterBar({ onSearch }: FilterBarProps) {
         ))}
       </RadioGroupPrimitive.Root>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button size="icon">
+        <DropdownMenuTrigger>
+          <Button size="icon" className="">
             <Settings2 />
           </Button>
         </DropdownMenuTrigger>

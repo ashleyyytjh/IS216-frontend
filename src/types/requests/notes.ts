@@ -1,3 +1,4 @@
+import { title } from 'process';
 import z from 'zod';
 
 // zod-to-openapi requirement to extend zod objects with openapi definitions.
@@ -26,6 +27,7 @@ export const GraphSchema = z.object({
 });
 
 export const CreateNotesReq = z.object({
+	title: z.string().min(1).max(100),
 	filename: z.string().min(1),
 	mimeType: z.string().min(1),
 	size: z.number().int().positive().max(10 * 1024 * 1024),

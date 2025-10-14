@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Quote, MessageSquare, MapPin, Loader, Reply, Trash2 } from "lucide-react";
+import { Quote, MessageSquare, MapPin, Loader, Reply, Trash2, ChevronDown } from "lucide-react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { User } from '@/types/types';
 import { toast } from 'sonner';
@@ -359,7 +359,7 @@ export default function AnnotationComponent() {
             className={cn(
                 "mb-3 p-3 border rounded-lg transition-all duration-200 relative",
                 {
-                "ring-2 ring-yellow-400 bg-yellow-50": hoveredAnnotation === annotation.id, 
+                "border-2 ring-yellow-400 bg-yellow-50": hoveredAnnotation === annotation.id, 
                 "border-2 border-blue-400 bg-blue-50 shadow-sm": annotation.author_id === note.userId, 
                 "bg-white border-gray-200":annotation.author_id !== note.userId && hoveredAnnotation !== annotation.id 
                 }
@@ -571,38 +571,44 @@ export default function AnnotationComponent() {
         )}
 
         {/* Discussion Section with Nested Comments */}
-        <section className="overflow-hidden h-96 md:h-128 lg:h-144 xl:h-160 2xl:h-176">
+        <section className=" h-96 md:h-128 lg:h-144 xl:h-160 2xl:h-176">
             <h2 className="text-xl font-semibold tracking-tight mb-4 flex items-center">
                 <MessageSquare className="mr-3 h-6 w-6 text-muted-foreground" />
                 Discussion ({nestedAnnotations.length})
             </h2>
-{/* h-64 sm:h-96 xl:h-128 2xl:h-136 */}
-            <ScrollArea className="h-full pr-2">
+            <ScrollArea className=" h-96 sm:h-128 xl:h-148 2xl:h-170">
                 <div>
-                {nestedAnnotations.map((annotation) => (
-                    <motion.div
-                    key={annotation.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }} // Animation triggers only once
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                    >
-                    <CommentItem
-                        annotation={annotation}
-                        depth={0}
-                        handleDelete={handleDeleteFunction}
-                        note={note}
-                    />
-                    </motion.div>
-                ))}
+                    {nestedAnnotations.map((annotation) => (
+                        <motion.div
+                        key={annotation.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }} // Animation triggers only once
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        >
+                        <CommentItem
+                            annotation={annotation}
+                            depth={0}
+                            handleDelete={handleDeleteFunction}
+                            note={note}
+                        />
+                        </motion.div>
+                    ))}
 
-                {nestedAnnotations.length === 0 && (
-                    <div className="text-center py-12 text-muted-foreground">
-                    {/* Empty state content */}
+                    {nestedAnnotations.length === 0 && (
+                        <div className="text-center py-12 text-muted-foreground">
+                        {/* Empty state content */}
+                        </div>
+                    )}
+                </div>
+                {nestedAnnotations.length > 3 && (
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 pointer-events-none animate-bounce">
+                    <span className="text-xs text-muted-foreground">Scroll for more</span>
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     </div>
                 )}
-                </div>
             </ScrollArea>
+              
             </section>
       </div>
     </div>

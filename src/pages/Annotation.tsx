@@ -26,6 +26,7 @@ import SpinItem from "@/components/spinner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils_stepper";
+import { fa } from "zod/v4/locales";
 
 // --- Types ---
 interface Annotation {
@@ -63,14 +64,16 @@ export default function AnnotationComponent() {
 
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [replyInputs, setReplyInputs] = useState<{[key: string]: string}>({});
+    const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
    
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true)
             const userFetch = await getUser();
             setUser(userFetch);
             if (!noteId) {
-                console.log('no id');
+                // console.log('no id');
                 navigate('/home');
                 toast.error('Error loading page, please try again')
                 return;
@@ -82,20 +85,16 @@ export default function AnnotationComponent() {
                 return;
             }
             setNote(data);
-            console.log('note', data);
-        }
-        fetchData();
-    },[]);
-
-    useEffect(() => {
-        const fetchAndProcessAnnotations = async () => {
-            const data = await getAnnotationsByNoteId(noteId!);
-            console.log(data)
-            const commentTree = buildCommentTree(data);
+            const d = await getAnnotationsByNoteId(noteId!);
+            const commentTree = buildCommentTree(d);
             setNestedAnnotations(commentTree);
-        };
-        fetchAndProcessAnnotations();
-    }, [noteId]);
+            setLoading(false);  
+        }
+  
+        fetchData();
+  
+        console.log('loading status', loading)
+    },[noteId]);
 
     const buildCommentTree = (comments: Annotation[]): Annotation[] => {
         const commentMap: { [key: string]: Annotation & { replies: Annotation[] } } = {};
@@ -105,25 +104,19 @@ export default function AnnotationComponent() {
         comments.forEach(comment => {
             commentMap[comment.id] = { ...comment, replies: [] };
         });
-        console.log('commentMap', commentMap);
-
+        console.log(comments)
+        console.log(commentMap)
         // link replies to their parents
         comments.forEach(comment => {
-            console.log('Processing comment:', comment);    
-            console.log('Parent ID:', comment.parent_id);
             if (comment.parent_id !== null) {
-                // It's a reply, add it to its parent's replies array
-                console.log('true');
-                console.log(comment.parent_id)
-                // console.log('Parent exists:', commentMap[comment.parentId]);
+                // add reply to parent
+                console.log('found parent', comment.parent_id, 'for reply', comment.id)
                 commentMap[comment.parent_id].replies.push(commentMap[comment.id]);
-        
             } else {
-                // It's a root comment
+                // root comment
                 rootComments.push(commentMap[comment.id]);
             }
         });
-            console.log('Built comment tree:', rootComments);
             return rootComments;
     };
 
@@ -383,6 +376,7 @@ export default function AnnotationComponent() {
                 <AvatarFallback className="text-xs">X</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
+
                 {/* Header */}
                 <div className="flex items-center gap-2 mb-1">
                     <p className="font-medium text-xs">{annotation.author_name}</p>
@@ -427,7 +421,7 @@ export default function AnnotationComponent() {
                     }}
                     >
                     <Reply className="h-3 w-3" />
-                    Reply
+                        Reply
                     </button>
 
                     {annotation.author_id === user?.sub && (
@@ -506,10 +500,10 @@ export default function AnnotationComponent() {
 
 
   return (
-    note ? ( <div className="bg-background  text-foreground min-h-screen p-4 sm:p-8">
+    (note && !loading) ? ( <div className="bg-background  text-foreground min-h-screen p-4 sm:p-8">
       <div className="max-w-4xl mx-auto h-full">
         <header className="mb-6 space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">{note?.title}</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{note.title}</h1>
                 <Badge
                     className="text-md font-normal  rounded-full border-none bg-linear-to-r text-white uppercase"
                     style={{ background: note.module ? courseGradient(note.module): "black" }}

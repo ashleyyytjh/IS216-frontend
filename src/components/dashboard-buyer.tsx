@@ -20,7 +20,9 @@ function DashboardBuyer(currentUser) {
         getOrders()
             .then((resp) => {
                 console.log(resp)
-                setOrders(resp)
+                const fil = resp.filter((r)=>{ return r.status == "succeeded"})
+                console.log(fil)
+                setOrders(fil)
             })
             .catch((err) => {
                 console.error("Error fetching orders:", err)

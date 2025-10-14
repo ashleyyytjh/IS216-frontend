@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Avatar, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
-import type { User } from '../types/types';
-import { Calendar, Mail } from 'lucide-react';
+import { Calendar, Mail, User } from 'lucide-react';
 function ProfileHeader(currentUser) {
     currentUser = currentUser['current']
     return (
@@ -11,6 +10,9 @@ function ProfileHeader(currentUser) {
             <div className="text-center md:text-left">
                 <Avatar className="w-20 h-20 inline-block md:ml-0 mr-0">
                     <AvatarImage src={currentUser.imageUrl} />
+                      <AvatarFallback>
+    <User className="w-8 h-8 text-gray-500" />
+  </AvatarFallback>
                 </Avatar>
             </div>
 

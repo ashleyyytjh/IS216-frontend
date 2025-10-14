@@ -9,6 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useLocation } from "react-router-dom";
+import { format } from "path";
 
 // Dummy data to illustrate the new information displayed.
 // In a real application, you would pass this data as props.
@@ -23,7 +25,26 @@ const orderDetails = {
   paymentMethod: "Visa ending in 4242",
 };
 
+
 export function PaymentSuccess() {
+
+  const location = useLocation();
+
+  const params = new URLSearchParams(location.search);
+  const noteName = params.get("note_name");
+  const price = params.get("price");
+
+  const formattedPrice = (Number(price) / 100).toFixed(2);
+
+  const today = new Date();
+
+  let day = String(today.getDate()).padStart(2, '0');
+  let month = String(today.getMonth() + 1).padStart(2, '0');
+  let year = today.getFullYear();
+
+  const formattedDate = `${day}/${month}/${year}`;
+
+  console.log(formattedDate);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <Card className="w-full max-w-lg rounded-xl shadow-2xl">
@@ -44,31 +65,25 @@ export function PaymentSuccess() {
             <h3 className="text-lg font-semibold">Order Summary</h3>
             <div className="grid gap-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Order Number</span>
-                <span>{orderDetails.orderNumber}</span>
-              </div>
-              <div className="flex justify-between">
                 <span className="text-muted-foreground">Purchase Date</span>
-                <span>{orderDetails.purchaseDate}</span>
+                <span>{formattedDate}</span>
               </div>
             </div>
           </div>
           <Separator className="my-6" />
           <div className="space-y-4">
-            {orderDetails.items.map((item, index) => (
-              <div key={index} className="flex justify-between items-center">
-                <span className="font-medium">{item.name}</span>
-                <span className="text-muted-foreground">{item.price}</span>
-              </div>
-            ))}
+            <div className="flex justify-between items-center">
+              <span className="font-medium">{noteName}</span>
+              <span className="text-muted-foreground">${formattedPrice}</span>
+            </div>
+
             <Separator className="my-4" />
             <div className="flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span>{orderDetails.total}</span>
+              <span>${formattedPrice}</span>
             </div>
             <div className="flex justify-between text-xs text-muted-foreground pt-2">
-                <span>Paid with</span>
-                <span>{orderDetails.paymentMethod}</span>
+              <span>Paid with Stripe.</span>
             </div>
           </div>
         </CardContent>

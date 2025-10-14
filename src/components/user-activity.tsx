@@ -43,8 +43,12 @@ function UserActivity(currentUser) {
                 //         index === self.findIndex((o) => o.note_id === order.note_id)
                 // )
 
+                const succeededOrders = rawOrders.filter(
+                    (order) => order.status === "succeeded"
+                );
+
                 const enrichedOrders = await Promise.all(
-                    rawOrders.map(async (order) => {
+                    succeededOrders.map(async (order) => {
                         console.log("note_id passed to getNotesById:", order.note_id)
                         const note = await getNotesById(order.note_id)
                         return { ...order, note }
@@ -73,7 +77,7 @@ function UserActivity(currentUser) {
     const filteredNotes = orders.filter(note => {
         const query = searchQuery.toLowerCase()
         const matchesSearch =
-        
+
             note['note']['tags'][0].toLowerCase().includes(query) ||
             note.note.description.toLowerCase().includes(query) ||
             note.note.module.toLowerCase().includes(query)
@@ -123,16 +127,16 @@ function UserActivity(currentUser) {
                 {
                     currentNotes.length > 0 ? (
                         currentNotes.map((note) => {
-                        console.log(note)
-                        return (
-                            <UserActivityListing key={note.id} note={note} onDownload={undefined} />
-                        )
-                    })
-                        
+                            console.log(note)
+                            return (
+                                <UserActivityListing key={note.id} note={note} onDownload={undefined} />
+                            )
+                        })
+
                     ) : (
                         <div className="flex text-center justify-center"><p>No results matches your search.</p></div>
                     )
-                    
+
                 }
             </CardContent>
 

@@ -199,7 +199,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               
             </div>
           ) : (
-            <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">
+            <div className="line-clamp-1 flex gap-2 font-medium text-[#FF0000]">
               No popular module data available.
             </div>
           )}

@@ -3,34 +3,14 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { getUser } from '@/services/UserService';
 import { toast } from 'sonner';
-import { is } from 'date-fns/locale';
+import { User } from '@/types/types';
+import { set } from 'date-fns';
 
 const ProtectedRoute = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // useEffect(() => {
-  //     const checkUser = async () => {
-  //     let isAmplifyUser : any;
-  //         try {
-  //             isAmplifyUser = await getCurrentUser(); // 2. Assign the value
-  //             setAmplifyUser(isAmplifyUser);
-  //             if (isAmplifyUser) {
-  //                 console.log("Amplify user exists, attempting to fetch from DB");
-  //                 const userDB = await getUser(); 
-  //                 console.log("DB user exists");
-  //                 setUser(userDB);
-  //             }
-  //         } catch (error) {
-  //             if (isAmplifyUser) {
-  //                 toast.warning("Please complete account creation");
-  //                 console.log("Amplify user exists but not in DB, redirecting to account creation");
-  //                 navigate('/accountCreation');
-  //                 return;
-  //             } 
-  //         }
-  //     };
-  //     checkUser();
-  // }, []);
+  const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
     const checkAuthStatus = async () => {
       let isAmplifyUser : any;
@@ -38,6 +18,7 @@ const ProtectedRoute = () => {
         isAmplifyUser = await getCurrentUser();
         const user = await getUser();
         console.log(user)
+        setUser(user);
         setIsAuthenticated(true);
       } catch (error) {
 
@@ -56,7 +37,7 @@ const ProtectedRoute = () => {
     checkAuthStatus();
   }, [navigate]);
 
-  return isAuthenticated ? <Outlet/> : null;
+  return isAuthenticated ? <Outlet context={{ user }}/> : null;
 };
 
 export default ProtectedRoute;

@@ -29,6 +29,7 @@ export const getNotesById = async(id: string) => {
 }
 
 export const createNotes = async (noteData: CreateNotesReq) => {
+  console.log("creating note with data:", noteData)
     const response = await axiosInstance.post('/notes', noteData);
     return response.data as CreateNotesRes;
 }
@@ -38,7 +39,7 @@ export const confirmUpload = async (noteId: string) => {
     return { ok: response.status == 200, status: response.statusText };
 }
 
-
+//notes that the user uploaded
 export const getUserOwned = async() => {
     const response = await axiosInstance.get(`/notes/owned`)
     return response.data

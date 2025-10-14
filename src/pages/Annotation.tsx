@@ -22,6 +22,10 @@ import { courseGradient } from '@/utils/colors';
 import { Badge } from '@/components/ui/badge';
 import { createAnnotation, deleteAnnotation, getAnnotationsByNoteId } from '@/services/AnnotationService';
 import { AlertForum } from "@/components/forum/AlertForum";
+import SpinItem from "@/components/spinner";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils_stepper";
 
 // --- Types ---
 interface Annotation {
@@ -46,7 +50,7 @@ const NOTE_CONTENT = "The Solar System is the gravitationally bound system of th
 
 export default function AnnotationComponent() {
     const contentRef = useRef<HTMLDivElement>(null);
-    const { id } = useParams<{ id: string }>();
+    const { noteId } = useParams<{ noteId: string }>();
     const [user, setUser] = useState<User>();
     const [note, setNote] = useState<GetNotesRes>();
     const [selectedText, setSelectedText] = useState<string>("");
@@ -60,41 +64,38 @@ export default function AnnotationComponent() {
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [replyInputs, setReplyInputs] = useState<{[key: string]: string}>({});
     const navigate = useNavigate();
+   
+    useEffect(() => {
+        const fetchData = async () => {
+            const userFetch = await getUser();
+            setUser(userFetch);
+            if (!noteId) {
+                console.log('no id');
+                navigate('/home');
+                toast.error('Error loading page, please try again')
+                return;
+            };
+            const data = await getNotesById(noteId); //68b98faba389fd1819c78c17
+            if (!data || data.purchased == false) {
+                navigate('/home');
+                toast.error('Error getting notes, please try again')
+                return;
+            }
+            setNote(data);
+            console.log('note', data);
+        }
+        fetchData();
+    },[]);
 
     useEffect(() => {
         const fetchAndProcessAnnotations = async () => {
-            const data = await getAnnotationsByNoteId(id!);
+            const data = await getAnnotationsByNoteId(noteId!);
             console.log(data)
             const commentTree = buildCommentTree(data);
             setNestedAnnotations(commentTree);
         };
         fetchAndProcessAnnotations();
-    }, [id]);
-
-    useEffect(() => {
-        //retrieve user
-        const fetchData = async () => {
-            //fetch user
-            const userFetch = await getUser();
-            setUser(userFetch);
-            if (!id) {
-                navigate('/home');
-                toast.error('Error loading page, please try again')
-                return;
-            };
-            console.log('user is' , userFetch);
-            //fetch note?
-            const data = await getNotesById(id); //68b98faba389fd1819c78c17
-            
-            if (!data || data.purchased == false) {
-                navigate('/home');
-                toast.error('Error loading page, please try again')
-                return;
-            }
-            setNote(data);
-        }
-        fetchData();
-    },[]);
+    }, [noteId]);
 
     const buildCommentTree = (comments: Annotation[]): Annotation[] => {
         const commentMap: { [key: string]: Annotation & { replies: Annotation[] } } = {};
@@ -314,7 +315,7 @@ export default function AnnotationComponent() {
             return (
             <>
                 {beforeText}
-                    <mark className="bg-yellow-300 px-1 py-0.5 rounded animate-pulse">
+                    <mark className="bg-yellow-300 px-0.5 py-0.5 rounded animate-pulse">
                         {highlightedText}
                     </mark>
                 {afterText}
@@ -343,9 +344,6 @@ export default function AnnotationComponent() {
 
     // This is the main handler function you will call from your component's onClick.
     const handleDeleteFunction = async (annotationToDelete: Annotation) => {
-        // if (!window.confirm("Are you sure you want to delete this comment? This will also delete all replies.")) {
-        //     return;
-        // }
         try {
             await deleteAnnotation(annotationToDelete.id);
             setNestedAnnotations(prevTree => removeCommentFromTree(prevTree, annotationToDelete.id));
@@ -356,19 +354,29 @@ export default function AnnotationComponent() {
         }
     };
 
-    console.log('target', deleteTarget)
+    // console.log('target', deleteTarget)
     const handleDialogConfirm = async () => {
         setDeleteTarget(null);                        
         if (!deleteTarget) return;
         await handleDeleteFunction(deleteTarget);   
     };
-    const CommentItem =  ({ annotation, depth, handleDelete }) => (
+    const CommentItem =  ({ annotation, depth, handleDelete, note }) => (
         <div className={`${depth > 0 ? 'ml-6 border-l border-gray-200 pl-3' : ''}`}>
-            <div 
-            className={`mb-3 p-3 bg-white border rounded-lg transition-all duration-200 ${
-                hoveredAnnotation === annotation.id ? 'ring-1 ring-yellow-400 bg-yellow-50' : ''
-            }`}
+        <div 
+            className={cn(
+                "mb-3 p-3 border rounded-lg transition-all duration-200 relative",
+                {
+                "ring-2 ring-yellow-400 bg-yellow-50": hoveredAnnotation === annotation.id, 
+                "border-2 border-blue-400 bg-blue-50 shadow-sm": annotation.author_id === note.userId, 
+                "bg-white border-gray-200":annotation.author_id !== note.userId && hoveredAnnotation !== annotation.id 
+                }
+            )}
             >
+            {annotation.author_id === note.userId && (
+                <div className="absolute top-0 right-0 px-1.5 py-0.5 text-[9px] font-bold text-blue-700 bg-blue-200 rounded-bl-md rounded-tr-md">
+                    AUTHOR
+                </div>
+            )}
             <div className="flex items-start space-x-2">
                 <Avatar className="h-6 w-6 mt-0.5">
                 <AvatarImage src={annotation?.imageUrl} />
@@ -379,7 +387,14 @@ export default function AnnotationComponent() {
                 <div className="flex items-center gap-2 mb-1">
                     <p className="font-medium text-xs">{annotation.author_name}</p>
                     <p className="text-xs text-muted-foreground">
-                    {new Date(annotation.created_at.replace(' ', 'T')).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                   
+                    {new Date(annotation.created_at.replace(' ', 'T')).toLocaleString([], { 
+                        day: '2-digit', 
+                        month: '2-digit', 
+                        year: 'numeric',
+                        hour: '2-digit', 
+                        minute: '2-digit'
+                        })}
                     </p>
                 </div>
                 
@@ -482,18 +497,18 @@ export default function AnnotationComponent() {
 
             {/* Render replies recursively */}
             {annotation.replies.map(reply => (
-                <CommentItem key={reply.id} annotation={reply} depth={depth + 1} handleDelete={handleDelete} />
+                <CommentItem key={reply.id} annotation={reply} depth={depth + 1} note={note} handleDelete={handleDelete} />
             ))}
         </div>
-);
+    );
 
 
 
 
   return (
-    note ? (  <div className="bg-background text-foreground min-h-screen p-4 sm:p-8">
-      <div className="max-w-4xl mx-auto">
-        <header className="mb-8 space-y-2">
+    note ? ( <div className="bg-background  text-foreground min-h-screen p-4 sm:p-8">
+      <div className="max-w-4xl mx-auto h-full">
+        <header className="mb-6 space-y-2">
             <h1 className="text-3xl font-bold tracking-tight">{note?.title}</h1>
                 <Badge
                     className="text-md font-normal  rounded-full border-none bg-linear-to-r text-white uppercase"
@@ -501,15 +516,13 @@ export default function AnnotationComponent() {
                     >
                 {note.module ?? "General"} 
                 </Badge>
-            {/* <p className="text-muted-foreground mt-2">Note ID: {noteId}</p> */}
             <p className="text-md text-muted-foreground">
                {note.description}
             </p>
         </header>
 
-        {/* Note Content */}
         <Card className="mb-2">
-          <CardContent className="p-6">
+          <CardContent className="">
             <div 
               ref={contentRef}
               className="text-md leading-relaxed select-text cursor-text"
@@ -564,29 +577,44 @@ export default function AnnotationComponent() {
         )}
 
         {/* Discussion Section with Nested Comments */}
-        <section>
-          <h2 className="text-xl font-semibold tracking-tight mb-4 flex items-center">
-            <MessageSquare className="mr-3 h-6 w-6 text-muted-foreground" />
-            Discussion ({nestedAnnotations.length})
-          </h2>
-          
-          <div>
-            {nestedAnnotations.map(annotation => (
-              <CommentItem key={annotation.id} annotation={annotation} depth={0} handleDelete={handleDeleteFunction}/>
-            ))}
-            
-            {nestedAnnotations.length === 0 && (
-              <div className="text-center py-12 text-muted-foreground">
-                <MessageSquare className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                <p className="text-lg">No comments yet</p>
-                <p className="text-sm">Highlight some text above to start the discussion!</p>
-              </div>
-            )}
-          </div>
-        </section>
+        <section className="overflow-hidden h-96 md:h-128 lg:h-144 xl:h-160 2xl:h-176">
+            <h2 className="text-xl font-semibold tracking-tight mb-4 flex items-center">
+                <MessageSquare className="mr-3 h-6 w-6 text-muted-foreground" />
+                Discussion ({nestedAnnotations.length})
+            </h2>
+{/* h-64 sm:h-96 xl:h-128 2xl:h-136 */}
+            <ScrollArea className="h-full pr-2">
+                <div>
+                {nestedAnnotations.map((annotation) => (
+                    <motion.div
+                    key={annotation.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }} // Animation triggers only once
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    >
+                    <CommentItem
+                        annotation={annotation}
+                        depth={0}
+                        handleDelete={handleDeleteFunction}
+                        note={note}
+                    />
+                    </motion.div>
+                ))}
+
+                {nestedAnnotations.length === 0 && (
+                    <div className="text-center py-12 text-muted-foreground">
+                    {/* Empty state content */}
+                    </div>
+                )}
+                </div>
+            </ScrollArea>
+            </section>
       </div>
     </div>
-    ) : ( <Loader></Loader> )
+    ) : ( 
+        <div className="flex justify-center items-center w-full h-screen"> <SpinItem/></div>
+    )
   
   );
 }

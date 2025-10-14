@@ -31,10 +31,13 @@ import UserEdit from "./pages/Editor";
 import Payment from "./pages/Payment";
 import { PaymentSuccess } from "./pages/PaymentSuccessful";
 import ListingLayout from "./pages/ListingLayout";
-import AnnotationComponent from "./pages/Forum";
+import AnnotationComponent from "./pages/Annotation";
 import { PaymentUnsuccessful } from "./pages/PaymentUnsuccessful";
 import EditPage from "./pages/Editor";
 import UploadStatus from "./pages/UploadStatus";
+import ForumPage from "./pages/ForumLayout";
+import ForumPageLayout from "./pages/ForumLayout";
+import ForumHome from "./pages/ForumHome";
 
 function App() {
     return (
@@ -64,7 +67,10 @@ function App() {
                     <Route path="/payment" element={<Payment />} />
                     <Route path="/paymentSuccess" element={<PaymentSuccess />} />
                     <Route path="/paymentUnsuccessful" element={<PaymentUnsuccessful />} />
-                    <Route path="/forum/:id" element={<AnnotationComponent />} />
+                    <Route path="/forum" element={<ForumPageLayout />}>
+                      <Route index element={<ForumHome />} />
+                      <Route path=":noteId" element={<AnnotationComponent />} />
+                    </Route>
 
 
               </Route>

@@ -75,20 +75,19 @@ export default function ListingCarousel({
           <CarouselContent className="-ml-4 mx-2">
             {items.map((item) => (
               <CarouselItem
-  key={item.id}
-  className="
-    pl-4 pr-4
-    basis-[300px]
-    sm:basis-[340px]
-    md:basis-[380px]
-    lg:basis-[420px]
-    xl:basis-[460px]
-  "
->
-  <ListingCard data={item} />
-  
-</CarouselItem>
-
+                key={item.id}
+                className="
+                          pl-4 pr-4
+                         basis-full
+                          sm:basis-[340px]
+                          md:basis-[380px]
+                          lg:basis-[420px]
+                          xl:basis-[460px]
+                          hover:scale-101 transition
+                        "
+              >
+                <ListingCard data={item} />
+              </CarouselItem>
 
             ))}
           </CarouselContent>

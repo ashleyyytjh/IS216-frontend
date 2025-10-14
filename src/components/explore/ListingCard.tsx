@@ -18,9 +18,9 @@ import { getAvatarFallback } from "@/utils/util";
 
 export default function ListingCard({ data }: { data: SearchNotesItem }) {
   return (
-    <Link to={`/listings/${data.id}`} className="h-full">
+    <Link to={`/listings/${data.id}`} className="h-full hover:scale-101 transition">
       <Card className="h-full flex flex-col p-4 rounded-md">
-        <CardHeader className="flex items-stretch gap-4 p-0">
+        <CardHeader className="flex items-stretch gap-4 p-0 md:flex-row sm:flex-row flex-col relative">
           <Avatar className="h-12 w-12 rounded-md overflow-hidden">
             <AvatarImage src={data.userImageUrl} className="object-cover" />
             <AvatarFallback className="rounded-md">{getAvatarFallback(data.userFullName)}</AvatarFallback>
@@ -29,11 +29,11 @@ export default function ListingCard({ data }: { data: SearchNotesItem }) {
           <div className="flex-1 flex flex-col justify-center gap-1 ">
             <div className="flex">
               <p className="flex-1 font-medium">{data.userFullName}</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground absolute top-0 right-0">
                 {formatRelativeMonthYear(data.createdAt)}
               </p>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground ">
               Year {data.userYear} {data.userMajor}
             </p>
           </div>

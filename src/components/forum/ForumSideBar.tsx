@@ -107,7 +107,6 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
   }, [listedNotes]);
 
   const handleSelectNote = (note: GetNotesRes) => {
-    setDesktopSidebarOpen(false);
     navigate(`/forum/${note.id}`);
     setSheetOpen(false); 
   };
@@ -148,7 +147,7 @@ const sidebarContent = (
                 <Collapsible key={course} defaultOpen={false}>
                 <CollapsibleTrigger asChild>
                     <Button variant="ghost" className="flex w-full justify-between pr-2">
-                    <span className="font-semibold">{course}</span>
+                    <span className="font-semibold">{course.toUpperCase()}</span>
                     <ChevronsUpDown className="h-4 w-4" />
                     </Button>
                 </CollapsibleTrigger>
@@ -162,12 +161,14 @@ const sidebarContent = (
                     setSheetOpen(false);
                   }}
                   className={cn(
-                    "w-full justify-start h-auto py-2",
-                    selectedId === note.id && "bg-muted"
+                    "w-full justify-start h-auto py-2 transition-all duration-200",
+                    selectedId === note.id 
+                      ? "bg-primary text-primary-foreground font-bold animate-pulse shadow-sm" 
+                      : ""
                   )}
                   >
                   <span className="flex-1 text-left whitespace-normal break-words">
-                  {note.originalName}
+                  {note.title}
                   </span>
                   </Button>
                 ))}
@@ -181,8 +182,7 @@ const sidebarContent = (
 
         {/* --- Purchased Notes Section --- */}
         <div className="grid gap-2">
-                      <h3 className="px-2 font-semibold tracking-tight text-muted-foreground border-t pt-4 mt-2">
-
+          <h3 className="px-2 font-semibold tracking-tight text-muted-foreground border-t pt-4 mt-2">
             Purchased
           </h3>
           {loading ? (
@@ -194,7 +194,7 @@ const sidebarContent = (
               <Collapsible key={course} defaultOpen={false}>
                 <CollapsibleTrigger asChild>
                     <Button variant="ghost" className="flex w-full justify-between pr-2">
-                    <span className="font-bold">{course}</span>
+                    <span className="font-bold">{course.toUpperCase()}</span>
                     <ChevronsUpDown className="h-4 w-4" />
                     </Button>
                 </CollapsibleTrigger>
@@ -208,12 +208,14 @@ const sidebarContent = (
                     setSheetOpen(false);
                   }}
                   className={cn(
-                    "w-full justify-start h-auto py-2",
-                    selectedId === note.id && "bg-muted"
+                    "w-full justify-start h-auto py-2 transition-all duration-200",
+                    selectedId === note.id 
+                      ? "bg-primary text-primary-foreground font-bold animate-pulse shadow-sm" 
+                      : ""
                   )}
                   >
                   <span className="flex-1 text-left whitespace-normal break-words">
-                  {note.originalName}
+                  {note.title}
                   </span>
                   </Button>
                 ))}

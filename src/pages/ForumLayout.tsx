@@ -4,7 +4,7 @@ import ForumSidebar from "@/components/forum/ForumSideBar";
 
 const ForumPageLayout: React.FC = () => {
   const { noteId } = useParams<{ noteId: string }>();
-
+  console.log({ noteId });
   return (
     <div className="flex h-dvh ">
       <ForumSidebar selectedId={noteId} />

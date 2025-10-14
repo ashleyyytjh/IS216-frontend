@@ -17,7 +17,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
 import { testimonials } from '@/assets/data';
 import RecommendationsHub, { } from "@/components/RecommendationHub";
-import { type CalendarConfig } from "@/lib/calendar"
+import { type CalendarConfig } from "@/utils/calendar"
 
 import { HeroGeometric } from "@/components/ui/shadcn-io/shape-landing-hero";
 
@@ -75,7 +75,7 @@ export default function ImprovedHomepage() {
     <div ref={targetRef} className="relative w-full">
 
       {/* The Sticky Hero Section */}
-      <BackgroundNebula />
+    
 
       <div className="h-screen w-full sticky top-0 flex flex-col items-center justify-center">
 

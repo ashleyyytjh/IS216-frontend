@@ -246,10 +246,10 @@ export function HeroGeometric({
     >
       {/* background: ultra subtle grid to give depth on white */}
       <div
-        className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_85%)]"
+        className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_100%)]"
         style={{
           background:
-            "repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(0,0,0,0.03) 20px), repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(0,0,0,0.03) 20px)",
+            "repeating-linear-gradient(0deg, transparent,  19px, rgba(0,0,0,0.04) 20px), repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(0,0,0,0.04) 20px)",
         }}
       />
 

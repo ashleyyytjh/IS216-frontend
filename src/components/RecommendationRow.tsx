@@ -10,7 +10,7 @@ import {
   type CalendarConfig,
   type PhaseIntent,
   type TermPhase,
-} from "@/lib/calendar";
+} from "@/utils/calendar";
 import { type UserProfile } from "@/utils/userProfile";
 /* ===== Frontend-only shapes ===== */
 

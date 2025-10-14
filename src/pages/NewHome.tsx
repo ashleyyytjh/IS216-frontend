@@ -21,17 +21,11 @@ import RecommendationsHub, {
   type UserProfile,
 } from "@/components/RecommendationCarousel";
 
-const featuredNotes = [
-    { id: 1, title: "Advanced Algorithms Cheatsheet", author: "Jane Doe", university: "Stanford University", rating: 5, price: "$9.99" },
-    { id: 2, title: "Corporate Law Case Summaries", author: "John Smith", university: "Harvard University", rating: 4, price: "$12.50" },
-    { id: 3, title: "Marketing 101 Full Semester Notes", author: "Emily White", university: "Wharton School", rating: 5, price: "$19.00" },
-];
 
 
 import { useState } from 'react';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { User } from '@/types/types';
-import logo from '../assets/logodark.png';
 
 export default function ImprovedHomepage() {
   const calendar: CalendarConfig = {
@@ -115,7 +109,6 @@ export default function ImprovedHomepage() {
           <>
             <h1 className="text-5xl md:text-6xl 2xl:text-8xl font-bold tracking-tighter">
               OnlyNotes
-            {/* <img src={logo} className='w-90' alt="Logo" /> */}
             </h1>
             <p className="mt-4 max-w-xl mx-auto text-md md:text-xl text-slate-600 ">
               The pinnacle of student-curated knowledge. Ace your exams with notes from the best.

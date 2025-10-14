@@ -564,10 +564,10 @@ export default function AnnotationComponent() {
                   autoFocus
                 />
                 <div className="flex gap-2">
-                  <Button onClick={handleCommentSubmit} disabled={!commentInput.trim()}>
+                  <Button onClick={handleCommentSubmit} disabled={!commentInput.trim()} className="!text-sm">
                     Submit
                   </Button>
-                  <Button variant="outline" onClick={handleCancel}>
+                  <Button variant="outline" onClick={handleCancel} className="!text-sm">
                     Cancel
                   </Button>
                 </div>

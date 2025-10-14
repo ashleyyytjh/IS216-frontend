@@ -304,7 +304,7 @@ export default function StepDetails({
           control={methods.control}
           name="priceCents"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="col-span-2 md:col-span-1">
               <FormLabel className="flex items-center gap-2 font-semibold">
                 Price (SGD)
               </FormLabel>

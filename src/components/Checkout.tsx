@@ -6,7 +6,7 @@ import {
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter} from "./ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "./ui/card";
 import { LinkAuthenticationElement } from "@stripe/react-stripe-js";
 import { StripePaymentElementOptions } from "@stripe/stripe-js";
 import { Separator } from "./ui/separator";
@@ -24,7 +24,7 @@ const formatPrice = (priceInCents) => {
   });
 };
 
-const CheckoutForm = ({notes: note}) => {
+const CheckoutForm = ({ notes: note }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState(null);
@@ -39,17 +39,17 @@ const CheckoutForm = ({notes: note}) => {
     }
 
     setIsLoading(true);
-
+    console.log(note)
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/paymentSuccess`,
+        return_url: `${window.location.origin}/paymentSuccess?note_id=${note.id}&note_name=${encodeURIComponent(note.originalName)}&price=${note.price}`,
       },
     });
 
     if (error.type === "card_error" || error.type === "validation_error") {
-        navigate('/paymentUnsuccessful');
-        toast.error("Payment failed. Please try again.");
+      navigate('/paymentUnsuccessful');
+      toast.error("Payment failed. Please try again.");
     } else {
       toast.success('Payment successful! Enjoy your notes!');
     }
@@ -57,48 +57,55 @@ const CheckoutForm = ({notes: note}) => {
 
   };
   const paymentElementOptions: StripePaymentElementOptions = {
-      layout: 'tabs'
+    layout: 'tabs'
   };
 
-    return (
-    
-        <div className="m-12 w-full flex md:flex-row flex-col justify-center space-y-10 md:space-x-10">
-            <Card className="w-full max-w-sm flex flex-col border h-full overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1">
-      {/* Card Header with Module Badge and Title */}
+  return (
+
+<div
+  className="
+    w-full 
+    flex flex-col md:flex-row 
+    justify-center items-start
+    gap-8 md:gap-12 
+    px-4 md:px-12 
+    max-w-6xl mx-auto
+    mt-8 mb-12
+  "
+>
+  {/* --- Note Card --- */}
+  <div className="w-full flex justify-center md:justify-start">
+    <Card className="w-full max-w-md md:max-w-sm flex flex-col border h-full overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1">
       <CardHeader className="pb-4">
         <div className="flex justify-between items-center mb-2">
           <Badge variant="secondary">{note.module}</Badge>
-          <span className="text-xs text-muted-foreground">PDF &bull; {(note.size / 1024 / 1024).toFixed(2)} MB</span>
+          <span className="text-xs text-muted-foreground">
+            PDF • {(note.size / 1024 / 1024).toFixed(2)} MB
+          </span>
         </div>
-        <CardTitle className="text-lg font-bold ">
-          {note.originalName}
-        </CardTitle>
-            <img
-            src={sampleImage}
-            alt="Preview Of Notes"
-            className="w-1/2 rounded-lg shadow-lg"
-            />
+        <CardTitle className="text-lg font-bold">{note.originalName}</CardTitle>
+        <img
+          src={sampleImage}
+          alt="Preview Of Notes"
+          className="w-3/4 md:w-1/2 rounded-lg shadow-lg mx-auto md:mx-0"
+        />
       </CardHeader>
 
-      {/* Card Content with Description */}
-      <CardContent className="flex-grow">
+      <CardContent>
         <p className="text-sm text-muted-foreground line-clamp-3">
           {note.description}
         </p>
       </CardContent>
 
-      {/* Card Footer with Tags and Purchase Action */}
       <CardFooter className="flex flex-col items-start gap-4 pt-4">
-        {/* Tags */}
         <div className="flex flex-wrap gap-2">
-          {note.tags.map((tag:any, index:any) => (
+          {note.tags.map((tag: any, index: any) => (
             <Badge key={index} variant="outline">
               {tag}
             </Badge>
           ))}
         </div>
-          <Separator/>
-        {/* Action Button and Price */}
+        <Separator />
         <div className="w-full flex justify-between items-center">
           <span className="text-xl font-bold">
             Price {formatPrice(note.price)}
@@ -106,44 +113,56 @@ const CheckoutForm = ({notes: note}) => {
         </div>
       </CardFooter>
     </Card>
-            <form id="payment-form" onSubmit={handleSubmit} className=" pl-2 w-full md:pt-2 md:w-1/2">
-                <div className="flex flex-row w-3/4">
-                    <div className="w-full">
-                        <div className="pb-2">
-                            <LinkAuthenticationElement id="link-authentication-element" />
-                        </div>
-                        <PaymentElement id="payment-element" options={paymentElementOptions} />
+  </div>
 
-                        <div className="mt-5 flex justify-between">
-                            <Button
-                                disabled={isLoading || !stripe || !elements}
-                                id="submit"
-                                type="submit"
-                                className={`px-4 py-2 text-white font-bold rounded`}
-                            >
-                                Pay
-                            </Button>
-
-                            <Button
-                                disabled={isLoading || !stripe || !elements}
-                                variant="destructive"
-                                className={`px-4 py-2 text-white font-bold rounded  hover:bg-red-600 ${
-                                    isLoading || !stripe || !elements ? 'cursor-not-allowed opacity-50' : ''
-                                }`}
-                                onClick={()=>{}}
-                            >
-                                Cancel
-                            </Button>
-                        </div>
-
-                        {/* Show any error or success messages */}
-                        {message && <div id="payment-message" className="mt-2 text-red-500">{message}</div>}
-                    </div>
-                </div>
-            </form>
+  {/* --- Payment Form --- */}
+  <div className="w-full flex justify-center md:justify-start">
+    <form
+      id="payment-form"
+      onSubmit={handleSubmit}
+      className="w-full max-w-md md:max-w-lg"
+    >
+      <div className="w-full">
+        <div className="pb-2">
+          <LinkAuthenticationElement id="link-authentication-element" />
         </div>
-      
-    );
+
+        <PaymentElement id="payment-element" options={paymentElementOptions} />
+
+        <div className="mt-5 flex justify-between">
+          <Button
+            disabled={isLoading || !stripe || !elements}
+            id="submit"
+            type="submit"
+            className="px-4 py-2 text-white font-bold rounded !text-sm"
+          >
+            Pay
+          </Button>
+
+          <Button
+            disabled={isLoading || !stripe || !elements}
+            variant="destructive"
+            className={`px-4 py-2 text-white font-bold !text-sm rounded hover:bg-red-600 ${
+              isLoading || !stripe || !elements
+                ? "cursor-not-allowed opacity-50"
+                : ""
+            }`}
+            onClick={() => {}}
+          >
+            Cancel
+          </Button>
+        </div>
+
+        {message && (
+          <div id="payment-message" className="mt-2 text-red-500">
+            {message}
+          </div>
+        )}
+      </div>
+    </form>
+  </div>
+</div>
+  );
 };
 
 
@@ -159,11 +178,11 @@ const NoteCard = ({ note }) => {
         <CardTitle className="text-lg font-bold ">
           {note.originalName}
         </CardTitle>
-            <img
-            src={sampleImage}
-            alt="Preview Of Notes"
-            className="w-1/2 rounded-lg shadow-lg"
-            />
+        <img
+          src={sampleImage}
+          alt="Preview Of Notes"
+          className="w-1/2 rounded-lg shadow-lg"
+        />
       </CardHeader>
 
       {/* Card Content with Description */}
@@ -177,13 +196,13 @@ const NoteCard = ({ note }) => {
       <CardFooter className="flex flex-col items-start gap-4 pt-4">
         {/* Tags */}
         <div className="flex flex-wrap gap-2">
-          {note.tags.map((tag:any, index:any) => (
+          {note.tags.map((tag: any, index: any) => (
             <Badge key={index} variant="outline">
               {tag}
             </Badge>
           ))}
         </div>
-          <Separator/>
+        <Separator />
         {/* Action Button and Price */}
         <div className="w-full flex justify-between items-center">
           <span className="text-xl font-bold">

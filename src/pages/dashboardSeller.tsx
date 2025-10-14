@@ -90,17 +90,17 @@ export default function DashboardSeller() {
         });
 
         //dummy additions (optional)
-        moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
-        moduleCountMap.set("IS216", (moduleCountMap.get("IS216") || 0) + 90)
+        // moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
+        // moduleCountMap.set("IS216", (moduleCountMap.get("IS216") || 0) + 90)
 
-        moduleCountMap.set("CS103", (moduleCountMap.get("CS103") || 0) + 100)
-        moduleCountMap.set("IS217", (moduleCountMap.get("IS217") || 0) + 90)
+        // moduleCountMap.set("CS103", (moduleCountMap.get("CS103") || 0) + 100)
+        // moduleCountMap.set("IS217", (moduleCountMap.get("IS217") || 0) + 90)
 
-        moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000 / 100)
-        moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000 / 100)
+        // moduleRevenueMap.set("CS101", (moduleRevenueMap.get("CS101") || 0) + 500000 / 100)
+        // moduleRevenueMap.set("IS216", (moduleRevenueMap.get("IS216") || 0) + 30000 / 100)
 
-        moduleRevenueMap.set("CS103", (moduleRevenueMap.get("CS103") || 0) + 500000 / 100)
-        moduleRevenueMap.set("IS217", (moduleRevenueMap.get("IS217") || 0) + 30000 / 100)
+        // moduleRevenueMap.set("CS103", (moduleRevenueMap.get("CS103") || 0) + 500000 / 100)
+        // moduleRevenueMap.set("IS217", (moduleRevenueMap.get("IS217") || 0) + 30000 / 100)
         const arr = Array.from(moduleCountMap.entries())
           .map(([module, count]) => ({ module, count }))
           .sort((a, b) => b.count - a.count);

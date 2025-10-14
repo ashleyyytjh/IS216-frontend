@@ -9,6 +9,7 @@ import {
   ChevronRight,
   Check,
   LoaderCircleIcon,
+  Pencil,
 } from "lucide-react";
 
 import {
@@ -350,6 +351,7 @@ export default function Upload() {
             <Button
               size="sm"
               variant="outline"
+              className="!text-sm"
               type="button"
               onClick={prev}
               disabled={step === 1 || step === totalSteps}
@@ -362,12 +364,13 @@ export default function Upload() {
                   variant="outline"
                   size="sm"
                   onClick={next}
+                  className="!text-sm"
                   disabled={step === 1 && !file}
                 >
                   Next <ChevronRight />
                 </Button>
               ) : (
-                <Button onClick={next} size="sm">
+                <Button onClick={next} size="sm" className="!text-sm">
                   Publish
                 </Button>
               ) : <></>}
@@ -375,6 +378,20 @@ export default function Upload() {
           </div>
         </CardFooter>
       </Card>
+
+      <section className="mt-10 flex flex-col items-center justify-center text-center space-y-4">
+  <h3 className="text-lg font-semibold">Prefer to write your notes directly?</h3>
+  <p className="text-muted-foreground text-sm max-w-md">
+    Instead of uploading a file, you can use our built-in editor to create and publish notes online.
+  </p>
+  <Button
+    onClick={() => navigate("/writeNotes")}
+    className="flex items-center gap-2 px-6 py-2 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 !text-sm"
+  >
+    <Pencil className="w-4 h-4" />
+    Start Writing
+  </Button>
+</section>
     </main>
   );
 }

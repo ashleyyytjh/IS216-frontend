@@ -20,7 +20,9 @@ function DashboardBuyer(currentUser) {
         getOrders()
             .then((resp) => {
                 console.log(resp)
-                setOrders(resp)
+                const fil = resp //.filter((r)=>{ return r.status == "succeeded"})
+                console.log(fil)
+                setOrders(fil)
             })
             .catch((err) => {
                 console.error("Error fetching orders:", err)
@@ -118,7 +120,7 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : (
                             <CardContent>
-                                <h1 className="text-foreground text-xl font-extrabold">${totalSpent/100}</h1>
+                                <h1 className="text-foreground text-xl font-extrabold">${Number(totalSpent/100).toFixed(2)}</h1>
                                 <p className="text-sm font-light text-foreground">Spent in Onlynotes.</p>
                             </CardContent>
                         )

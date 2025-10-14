@@ -72,9 +72,11 @@ export default function Graph({
         onEdgesChange={onEdgesChange}
         proOptions={{ hideAttribution: true }}
         fitView
+        
+        
       >
         <Panel position="top-center">
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          <h3 className="scroll-m-20 text-sm sm:text-2xl font-semibold tracking-tight">
             {title}
           </h3>
         </Panel>

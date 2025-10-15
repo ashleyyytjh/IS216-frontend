@@ -92,25 +92,3 @@ export default function FilterBar({ onSearch }: FilterBarProps) {
   );
 }
 
-const mockData = [
-  {
-    value: "notes",
-    label: "Notes",
-    count: 22,
-  },
-  {
-    value: "cheatsheet",
-    label: "Cheat Sheets",
-    count: 14,
-  },
-  {
-    value: "answerkey",
-    label: "Answer Key",
-    count: 4,
-  },
-  {
-    value: "knowledge",
-    label: "Knowledge",
-    count: 8,
-  },
-];

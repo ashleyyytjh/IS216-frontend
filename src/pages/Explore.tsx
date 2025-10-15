@@ -2,17 +2,20 @@ import Hero from "@/components/explore/Hero";
 import FilterBar from "@/components/explore/FilterBar";
 import { TypeOption } from "@/types/types";
 import ListingCard from "@/components/explore/ListingCard";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { searchNotes } from "@/services/NotesService";
 import { ListingProvider, useListing } from "@/components/explore/ListingContext";
 import ListingPagination from "@/components/explore/ListingPagination";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
+
 
 const DEFAULT_PAGE_SIZE = 9
 
 export function ExploreContent() {
-    const { query, type, showPaid, timeFilter, listings, setListings, setOptions, setTotal, page } = useListing()
-
+  const { query, type, showPaid, timeFilter, listings, setListings, setOptions, setTotal, page } = useListing()
+  const [loading, setLoading] = useState(false);
   const getListings = async () => {
+    setLoading(true);
     let since = new Date()
     const now = new Date();
 
@@ -42,6 +45,7 @@ export function ExploreContent() {
     setListings(data.items)
     setOptions(buildCounts(data.byType))
     setTotal(data.total)
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -53,10 +57,28 @@ export function ExploreContent() {
       <Hero />
       <FilterBar onSearch={getListings} />
       <section className="w-full text-sm font-light">
-        <div className="max-w-6xl mx-auto grid gap-5 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
-          {listings.map((listing) => (
-            <ListingCard key={listing.id} data={listing} />
-          ))}
+        <div className="max-w-6xl mx-auto">
+          {loading ? (
+            <div className="flex justify-center items-center py-10">
+              <Spinner variant={'default'} />
+            </div>
+
+          ) : (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+              {listings.length === 0 ? (
+                <div className="col-span-full flex items-center justify-center">
+                  <p className="text-center text-muted-foreground !text-sm">
+                    No notes match your search.
+                  </p>
+                </div>
+              ) : (
+                listings.map((listing) => (
+                  <ListingCard key={listing.id} data={listing} />
+                ))
+              )}
+
+            </div>
+          )}
         </div>
       </section>
       <ListingPagination />

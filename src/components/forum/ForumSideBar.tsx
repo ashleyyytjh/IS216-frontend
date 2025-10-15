@@ -23,7 +23,7 @@ import {
 import { getUser, getUserPurchases } from "@/services/UserService";
 import { useNavigate } from "react-router-dom";
 import { getUserOrderByUserId } from "@/services/OrdersService";
-import { getNotesById, getUserOwned } from "@/services/NotesService";
+import { getNotesById, getUserDoneNotes, getUserOwned } from "@/services/NotesService";
 import { GetNotesRes } from "@/types/requests/notes";
 import { Order } from "@/types/types";
 
@@ -67,10 +67,10 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
 
         setNotes(sortedNotes);
 
-        const uploadedNotes = await getUserOwned();
+        const uploadedNotes = await getUserDoneNotes();
         console.log("Fetched user uploaded notes:", uploadedNotes);
         setListedNotes(uploadedNotes);
-
+        console.log('listed', listedNotes)
   
       } catch (e: any) {
         setError(e.message);
@@ -82,26 +82,31 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
     fetchNotes();
   }, [token]);
 
+
   const noteGroups = useMemo(() => {
     return notes.reduce((acc, note) => {
-      const { module } = note;
-      if (!module) return acc;
-        if (!acc[module]) {
-          acc[module] = [];
-        }
-      acc[module].push(note);
+      const moduleKey = note.module || 'general';
+
+      if (!acc[moduleKey]) {
+        acc[moduleKey] = [];
+      }
+      
+      acc[moduleKey].push(note);
+      
       return acc;
     }, {} as Record<string, GetNotesRes[]>);
   }, [notes]);
 
   const listedNoteGroups = useMemo(() => {
     return listedNotes.reduce((acc, note) => {
-      const { module } = note;
-      if (!module) return acc;
-        if (!acc[module]) {
-          acc[module] = [];
-        }
-      acc[module].push(note);
+      const moduleKey = note.module || 'general';
+
+      if (!acc[moduleKey]) {
+        acc[moduleKey] = [];
+      }
+      
+      acc[moduleKey].push(note);
+      
       return acc;
     }, {} as Record<string, GetNotesRes[]>);
   }, [listedNotes]);

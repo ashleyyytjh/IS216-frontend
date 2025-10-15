@@ -571,19 +571,19 @@ export default function AnnotationComponent() {
         )}
 
         {/* Discussion Section with Nested Comments */}
-        <section className=" h-96 md:h-128 lg:h-144 xl:h-160 2xl:h-176">
+        <section >
             <h2 className="text-xl font-semibold tracking-tight mb-4 flex items-center">
                 <MessageSquare className="mr-3 h-6 w-6 text-muted-foreground" />
                 Discussion ({nestedAnnotations.length})
             </h2>
-            <ScrollArea className=" h-96 sm:h-128 xl:h-148 2xl:h-170">
+            <ScrollArea className=" h-64 sm:h-96 lg:h-128 xl:h-160 relative">
                 <div>
                     {nestedAnnotations.map((annotation) => (
                         <motion.div
                         key={annotation.id}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }} // Animation triggers only once
+                        // viewport={{ once: true }} // Animation triggers only once
                         transition={{ duration: 0.5, ease: "easeOut" }}
                         >
                         <CommentItem

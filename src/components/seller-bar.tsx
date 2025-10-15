@@ -27,6 +27,15 @@ const formatCurrency = (value: number) => {
   return `$${value.toFixed(2)}`
 }
 
+type SafeLabelProps = {
+  x?: number | string
+  y?: number | string
+  width?: number | string
+  height?: number | string
+  value?: number | string
+  viewBox?: { x: number; y: number; width: number; height: number }
+}
+
 
 const chartConfig = {
   revenue: {
@@ -38,8 +47,14 @@ const chartConfig = {
 export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
   const smallSize = useMediaQuery("(max-width: 400px)");
   const overlapBP = useMediaQuery("(max-width: 419px)");
-
-  console.log(moduleRevenueArray)
+  type CustomLabelProps = {
+    x?: number
+    y?: number
+    width?: number
+    height?: number
+    value?: number | string
+    viewBox?: { x: number; y: number; width: number; height: number }
+  }
   const [isLoading, setIsLoading] = useState(true)
   const [isEmpty, setIsEmpty] = useState(false)
   const [topMod, setTopMod] = useState<{ module: string; revenue: number } | null>(null)
@@ -90,14 +105,14 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
             Top Revenue-Generating Modules
           </CardTitle>
 
-          <div  className="
+          <div className="
     flex flex-col sm:flex-row
     sm:justify-end sm:items-center
     gap-2 sm:gap-3
     w-full sm:w-auto
   ">
             <Select value={moduleFilter} onValueChange={setModuleFilter}>
-              <SelectTrigger  className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
+              <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
                 <SelectValue placeholder="Module" />
               </SelectTrigger>
               <SelectContent>
@@ -112,7 +127,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
 
             {/* Sort Filter */}
             <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "asc" | "desc")}>
-              <SelectTrigger  className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
+              <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
                 <SelectValue placeholder="Sort" />
               </SelectTrigger>
               <SelectContent>
@@ -125,7 +140,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
       </CardHeader>
 
 
-      <CardContent   className="
+      <CardContent className="
     relative flex-1 flex items-center justify-center
     h-[380px] sm:h-[380px] xs:h-[300px] max-[400px]:h-[250px]
     px-2 pt-4 sm:px-6 sm:pt-6 space-y-3 sm:space-y-4
@@ -137,13 +152,13 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
         ) : (
           <ChartContainer
             config={chartConfig}
-              className="
+            className="
     relative aspect-auto
     h-[250px] sm:h-[250px] xs:h-[200px] max-[400px]:h-[160px]
     w-full transition-opacity duration-700
   "
           >
-            <BarChart data={chartData} >
+            <BarChart data={chartData} style={{ overflow: "hidden" }}>
               <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" opacity={0.8} />
               <XAxis
                 dataKey="module"
@@ -204,9 +219,40 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                   position="top"
                   className="fill-gray-700"
                   offset={4}
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  content={(props: SafeLabelProps) => {
+                    // make sure everything is numeric
+                    const x = Number(props.x ?? 0)
+                    const y = Number(props.y ?? 0)
+                    const width = Number(props.width ?? 0)
+                    const height = Number(props.height ?? 0)
+                    const value = Number(props.value ?? 0)
+
+                    const labelY = y - 6        // label sits slightly above the bar
+                    const chartTop = 0          // top of chart coordinate space
+
+                    // 🔒 hide label if it would overflow above chart
+                    if (labelY < chartTop) return null
+
+                    return (
+                      <text
+                        x={x + width / 2}
+                        y={labelY}
+                        fill={overlapBP ? "black" : "#374151"}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fontSize={overlapBP ? 8 : 12}
+                        pointerEvents="none"
+                      >
+                        {formatCurrency(value)}
+                      </text>
+                    )
+                  }}
 
                   fontSize={overlapBP ? 8 : 12}
                   formatter={(val: number) => formatCurrency(val)}
+
                 />
               </Bar>
             </BarChart>

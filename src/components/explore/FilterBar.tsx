@@ -57,13 +57,12 @@ export default function FilterBar({ onSearch }: FilterBarProps) {
           <RadioGroupPrimitive.Item
             key={option.value}
             value={option.value}
-            className="ring-[1px] ring-border rounded-md py-1 px-3 data-[state=checked]:bg-muted shadow-xs"
+            className="ring-[1px] ring-border rounded-md py-1 px-3 data-[state=checked]:bg-muted shadow-xs h-auto"
           >
             <span className="tracking-tight whitespace-nowrap">{`${option.label}(${option.count})`}</span>
           </RadioGroupPrimitive.Item>
         ))}
-      </RadioGroupPrimitive.Root>
-      <DropdownMenu>
+              <DropdownMenu>
         <DropdownMenuTrigger>
           <Button size="icon" className="">
             <Settings2 />
@@ -87,6 +86,8 @@ export default function FilterBar({ onSearch }: FilterBarProps) {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
+      </RadioGroupPrimitive.Root>
+
     </section>
   );
 }

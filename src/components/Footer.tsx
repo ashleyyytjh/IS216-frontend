@@ -33,21 +33,21 @@ export default function AestheticFooter() {
         // { name: "Payouts", href: "#" },
       ],
     },
-    {
-      title: "Company",
-      links: [
-        { name: "About Us", href: "#" },
-        // { name: "Blog", href: "#" },
-        { name: "Contact Us", href: "#" },
-      ],
-    },
+    // {
+    //   title: "Company",
+    //   links: [
+    //     { name: "About Us", href: "#" },
+    //     // { name: "Blog", href: "#" },
+    //     { name: "Contact Us", href: "#" },
+    //   ],
+    // },
   ];
 
   return (
     <footer className="bg-white dark:bg-gray-900 border-t border-slate-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-8">
         {/* --- Main Footer Area --- */}
-        <div className="py-16 grid lg:grid-cols-3 text-slate-700 dark:text-slate-300">
+        <div className="py-10 grid lg:grid-cols-3 text-slate-700 dark:text-slate-300">
           {/* 1. Branding Section (Left) */}
           <div className="lg:col-span-1">
             <a href="#" className="flex items-center gap-2 mb-4">

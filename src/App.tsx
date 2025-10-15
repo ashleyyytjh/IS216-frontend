@@ -37,6 +37,7 @@ import EditPage from "./pages/Editor";
 import UploadStatus from "./pages/UploadStatus";
 import ForumPage from "./pages/ForumLayout";
 import ForumPageLayout from "./pages/ForumLayout";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import ForumHome from "./pages/ForumHome";
 
 function App() {

@@ -45,7 +45,7 @@ const navbar = () => {
 
             setTimeout(() => {
                 window.location.href = '/home';
-            }, 500) 
+            }, 500)
 
         } catch (error) {
             console.log('error signing out: ', error);
@@ -83,16 +83,23 @@ const navbar = () => {
 
                             </SheetTitle>
                             <div className="flex flex-col space-y-4 mt-8 pl-2">
-                                {navigationItems.map((item) => (
-                                    <a
-                                        key={item.name}
-                                        href={item.href}
-                                        className="text-foreground hover:text-primary transition-colors duration-200 font-medium text-lg py-2"
-                                        onClick={() => setIsOpen(false)}
-                                    >
-                                        {item.name}
-                                    </a>
-                                ))
+                                {navigationItems.map((item) => {
+                                    if ((item.name === "Dashboard" || item.name === "Upload") && !amplifyUser) {
+                                        return null; // hide dashboard when user not logged in
+                                    } else {
+                                        return (
+                                            <a
+                                                key={item.name}
+                                                href={item.href}
+                                                className="text-foreground hover:text-primary transition-colors duration-200 font-medium text-lg py-2"
+                                                onClick={() => setIsOpen(false)}
+                                            >
+                                                {item.name}
+                                            </a>
+                                        )
+                                    }
+
+                                })
 
                                 }
 
@@ -164,10 +171,10 @@ const navbar = () => {
                                 >
                                     <Link className="text-sm" to="/profile">Profile</Link>
                                 </Button>
-                                <Button   size={"sm"} onClick={handleSignOut}>
-                                <p className="text-sm"> 
+                                <Button size={"sm"} onClick={handleSignOut}>
+                                    <p className="text-sm">
                                         Sign out
-                                </p>
+                                    </p>
                                 </Button>
                             </div>
                         )}

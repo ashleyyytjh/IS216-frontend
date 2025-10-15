@@ -72,10 +72,11 @@ function UserActivity(currentUser) {
     //Get seller name?
     const [statusFilter, setStatusFilter] = useState("All");
     const filteredNotes = orders.filter(note => {
+        
         const query = searchQuery.toLowerCase()
         const matchesSearch =
-
-            note['note']['tags'][0].toLowerCase().includes(query) ||
+            
+            note?.['note']?.['tags']?.[0]?.toLowerCase()?.includes(query) ||
             note.note.description.toLowerCase().includes(query) ||
             note.note.module.toLowerCase().includes(query)
         const matchedQuery = statusFilter == "All" || note.status.toLowerCase() === statusFilter.toLowerCase();
@@ -84,7 +85,7 @@ function UserActivity(currentUser) {
     const pagesNeeded = Math.ceil(filteredNotes.length / notesPerPage)
     const startIndex = (currentPage - 1) * notesPerPage
     const endIndex = startIndex + notesPerPage
-    const currentNotes = filteredNotes.slice(startIndex, endIndex) //slicing the myNotes according to page.
+    const currentNotes = filteredNotes.slice(startIndex, endIndex) 
 
 
     useEffect(() => {

@@ -65,17 +65,17 @@ const CheckoutForm = ({ notes: note }) => {
 <div
   className="
     w-full 
-    flex flex-col md:flex-row 
-    justify-center items-start
-    gap-8 md:gap-12 
-    px-4 md:px-12 
-    max-w-6xl mx-auto
+    flex flex-col
+    justify-center items-center
+    gap-8
+    px-4
+    max-w-3xl mx-auto
     mt-8 mb-12
   "
 >
   {/* --- Note Card --- */}
-  <div className="w-full flex justify-center md:justify-start">
-    <Card className="w-full max-w-md md:max-w-sm flex flex-col border h-full overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1">
+  <div className="w-full flex justify-center px-4">
+    <Card className="w-full flex flex-col border h-full overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1">
       <CardHeader className="pb-4">
         <div className="flex justify-between items-center mb-2">
           <Badge variant="secondary">{note.module}</Badge>
@@ -116,11 +116,11 @@ const CheckoutForm = ({ notes: note }) => {
   </div>
 
   {/* --- Payment Form --- */}
-  <div className="w-full flex justify-center md:justify-start">
+  <div className="w-full flex justify-center px-4">
     <form
       id="payment-form"
       onSubmit={handleSubmit}
-      className="w-full max-w-md md:max-w-lg"
+      className="w-full flex flex-col h-full overflow-hidden transition-all"
     >
       <div className="w-full">
         <div className="pb-2">

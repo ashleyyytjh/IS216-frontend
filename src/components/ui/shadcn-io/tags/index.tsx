@@ -117,6 +117,7 @@ export const TagsTrigger = ({
   ...props
 }: TagsTriggerProps) => (
   <PopoverTrigger asChild>
+    <span>
     <Button
       className={cn('h-auto w-full justify-between p-2', className)}
       // biome-ignore lint/a11y/useSemanticElements: "Required"
@@ -131,6 +132,7 @@ export const TagsTrigger = ({
         </span>
       </div>
     </Button>
+    </span>
   </PopoverTrigger>
 );
 

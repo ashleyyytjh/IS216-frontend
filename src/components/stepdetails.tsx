@@ -55,7 +55,12 @@ export function TagInput({
   maxTags?: number;
 }) {
   const [inputValue, setInputValue] = React.useState<string>("");
-
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleCreateTag();
+    }
+  };
   const handleSelect = (id: string) => {
     if (value.includes(id)) {
       onChange(value.filter((v) => v !== id));
@@ -77,26 +82,29 @@ export function TagInput({
 
   return (
     <Tags className="w-full">
-      <TagsTrigger>
+      <TagsTrigger className="w-max-[350px]">
         {value.map((id) => (
           <TagsValue key={id} onRemove={() => handleRemove(id)}>
             {id}
           </TagsValue>
         ))}
       </TagsTrigger>
-      <TagsContent>
+      <TagsContent className="mt-2">
         <TagsInput
           className="placeholder:font-light"
           value={inputValue}
           onValueChange={setInputValue}
           placeholder="Type and press Enter..."
+          onKeyDown={handleKeyDown}
         />
         <TagsList>
           <TagsEmpty>
             <button
+
               type="button"
               onClick={handleCreateTag}
               className="mx-auto flex cursor-pointer items-center gap-2"
+
             >
               <PlusIcon size={14} className="text-muted-foreground" />
               Create tag: {inputValue}
@@ -258,10 +266,12 @@ export default function StepDetails({
               </FormLabel>
               <FormControl>
                 <TagInput
+
                   value={field.value || []}
                   onChange={(tags) => {
                     field.onChange(tags);
                     touchOk("tags");
+
                   }}
                   maxTags={8}
                 />

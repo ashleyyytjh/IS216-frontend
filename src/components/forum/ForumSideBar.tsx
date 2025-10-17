@@ -119,7 +119,7 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
 const sidebarContent = (
   <div className="flex h-full flex-col bg-muted/40">
     <div className="flex h-14 items-center border-b px-4 justify-between">
-      <div className="flex items-center gap-2 font-semibold">
+      <div className="flex items-center gap-2 font-semibold ">
         <Book className="h-6 w-6" />
         <span>My Notes</span>
       </div>
@@ -128,10 +128,10 @@ const sidebarContent = (
       <Button
         variant="ghost"
         size="icon"
-        className="hidden md:flex"
+        className="hidden md:flex "
         onClick={() => setDesktopSidebarOpen(false)}
       >
-        <PanelLeftClose className="h-5 w-5" />
+        <PanelLeftClose className="h-5 w-5 " />
         <span className="sr-only">Close sidebar</span>
       </Button>
     </div>

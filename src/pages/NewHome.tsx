@@ -37,6 +37,7 @@ export default function ImprovedHomepage() {
   const [user, setUser] = useState<User | null>(null);
   const [stepSelection, setStepSelection] = useState<String>('buyer');
   const isMobile = useIsMobile();
+  
   useEffect(() => {
     window.history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);

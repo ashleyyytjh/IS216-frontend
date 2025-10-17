@@ -1,9 +1,10 @@
 "use client";
-
+import React from "react";
 import { motion } from "framer-motion";
 import { Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
-
+import { useDragControls } from "motion/react"
+import { useLayoutEffect, useRef, useState } from "react";
 type ElegantShapeProps = {
   className?: string;
   delay?: number;
@@ -15,7 +16,8 @@ type ElegantShapeProps = {
   variant?: "notebook" | "book" | "paper" | "pill";
   ruled?: boolean;    // also applies to paper
   bookmark?: boolean; // book only
-  rings?: number;     // notebook only
+  rings?: number;  
+  boundsRef?: React.RefObject<HTMLDivElement> | null   // notebook only
 };
 
 function ElegantShape({
@@ -29,9 +31,20 @@ function ElegantShape({
   ruled = true,
   bookmark = true,
   rings = 6,
+  boundsRef = null,
+
 }: ElegantShapeProps) {
+  
+ React.useEffect(() => {
+    console.log(boundsRef + "Hau");
+  }, [boundsRef]);
+  console.log(boundsRef + "Hau");
+ 
+  const controls = useDragControls()
+
   return (
     <motion.div
+      drag dragControls={controls} dragElastic={1} dragConstraints={boundsRef ?? undefined} dragMomentum={true} dragTransition={{ bounceStiffness: 600, bounceDamping: 10 }} onViewportLeave={(entry) => console.log(entry ? entry.intersectionRect : "")}
       initial={{ opacity: 0, y: -150, rotate: rotate - 15 }}
       animate={{ opacity: 1, y: 0, rotate }}
       transition={{
@@ -40,7 +53,7 @@ function ElegantShape({
         ease: [0.23, 0.86, 0.39, 0.96],
         opacity: { duration: 1.2 },
       }}
-      className={cn("absolute", className)}
+      className={cn("absolute", className, "hover:cursor-pointer")}
     >
       <motion.div
         animate={{ y: [0, 15, 0] }}
@@ -236,7 +249,12 @@ export function HeroGeometric({
       },
     }),
   };
+  const boundsRef = useRef<HTMLDivElement>(null!);
+  const [ready, setReady] = React.useState(false);
 
+  React.useEffect(() => {
+    setReady(!!boundsRef.current);
+  }, [boundsRef]);
   return (
     <div
       className={cn(
@@ -253,7 +271,7 @@ export function HeroGeometric({
         }}
       />
 
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden" ref={boundsRef}>
         {/* Notebook */}
         <ElegantShape
           variant="notebook"
@@ -266,6 +284,7 @@ export function HeroGeometric({
           rotate={10}
           gradient="from-neutral-200"
           className="left-[-10%] md:left-[-5%] top-[10%] md:top-[16%]"
+          boundsRef={boundsRef}
         />
 
         {/* Hardcover book */}
@@ -279,6 +298,7 @@ export function HeroGeometric({
           rotate={-12}
           gradient="from-neutral-300"
           className="right-[-6%] md:right-[0%] top-[64%] md:top-[70%]"
+          boundsRef={boundsRef}
         />
 
         {/* Papers */}
@@ -290,6 +310,7 @@ export function HeroGeometric({
           height={200}
           rotate={-6}
           className="left-[5%] md:left-[10%] bottom-[5%] md:bottom-[10%]"
+          boundsRef={boundsRef}
         />
         <ElegantShape
           variant="paper"
@@ -299,6 +320,7 @@ export function HeroGeometric({
           height={170}
           rotate={18}
           className="right-[15%] md:right-[20%] top-[10%] md:top-[15%]"
+          boundsRef={boundsRef}
         />
         <ElegantShape
           variant="paper"
@@ -308,10 +330,11 @@ export function HeroGeometric({
           height={150}
           rotate={-22}
           className="left-[20%] md:left-[25%] top-[5%] md:top-[10%]"
+          boundsRef={boundsRef}
         />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 md:px-6">
+      <div className="relative z-10 container mx-auto px-4 md:px-6 w-auto">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
             custom={0}
@@ -333,7 +356,7 @@ export function HeroGeometric({
               </span>
               <br />
               {/* monochrome “transition” gradient—still only black/white family */}
-             
+
             </h1>
           </motion.div>
 

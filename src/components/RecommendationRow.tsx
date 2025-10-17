@@ -74,7 +74,7 @@ function useRecommendations(
 
   const [items, setItems] = useState<SearchNotesItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -86,7 +86,7 @@ function useRecommendations(
       .then((res) => {
         if (cancelled) return;
 
-        // Backend already returns full SearchNotesItem[]
+
         const raw: SearchNotesItem[] = (res as any)?.items ?? [];
 
         const ranked = raw
@@ -104,9 +104,11 @@ function useRecommendations(
           .slice(0, limit);
 
         setItems(ranked);
-        setError(null);
+        setError(false);
       })
-      .catch((e: any) => !cancelled && setError(e?.message ?? "Search failed"))
+      .catch(error=> {
+        setError(true);
+      }) 
       .finally(() => !cancelled && setLoading(false));
 
     return () => {

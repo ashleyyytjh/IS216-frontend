@@ -104,7 +104,7 @@ function useRecommendations(
           .slice(0, limit);
 
         setItems(ranked);
-        setError(null);
+        setError(false);
       })
       .catch(error=> {
         setError(true);

@@ -138,7 +138,10 @@ export function Plugins() {
       {/* toolbar plugins */}
       <ToolbarPlugin>
         {({ blockType }) => (
-          <div className="vertical-align-middle sticky top-0 z-10 flex gap-2 overflow-auto border-b p-1">
+          <div className="vertical-align-middle sticky top-0 z-10 border-b p-2">
+        <div className="flex flex-row flex-wrap items-center gap-2 overflow-x-auto">
+    {/* put all toolbar items INSIDE this row (see step 2) */}
+
             <HistoryToolbarPlugin />
             <BlockFormatDropDown>
               <FormatParagraph />
@@ -163,6 +166,7 @@ export function Plugins() {
               {/* <InsertImage /> */}
               <InsertTable />
             </BlockInsertPlugin>
+          </div>
           </div>
         )}
       </ToolbarPlugin>

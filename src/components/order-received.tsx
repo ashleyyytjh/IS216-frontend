@@ -41,8 +41,7 @@ export function OrderReceived({
   return (
     <div className="flex-1">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-col w-full gap-3 mb-10 mt-4 sm:flex-row sm:items-center sm:gap-2">
-
+        <div className="flex flex-row w-full gap-3 mb-10 mt-4 sm:flex-row sm:items-center sm:gap-2">
           <div className="relative flex-1 opacity-70 focus-within:opacity-100 transition-opacity">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -56,8 +55,9 @@ export function OrderReceived({
           <Select
             value={String(itemsPerPage)}
             onValueChange={(v) => setItemPerPage(Number(v))}
+            
           >
-            <SelectTrigger className="w-[100%] sm:w-[15%]">
+            <SelectTrigger className="w-[150px] sm:w-[80px] md:w-[170px]">
               <SelectValue placeholder="View rows per page" />
             </SelectTrigger>
             <SelectContent>
@@ -101,7 +101,7 @@ export function OrderReceived({
                   {formatCurrency(o.price / 100)}
                 </TableCell>
                 <TableCell>
-                  <Badge className="bg-green-600">
+                  <Badge className="bg-green-50 hover:bg-green-100 text-green-700">
                     {o?.status.charAt(0).toUpperCase() + o?.status.slice(1)}
                   </Badge>
                 </TableCell>

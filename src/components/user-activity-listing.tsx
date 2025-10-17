@@ -44,12 +44,12 @@ const UserActivityListing = ({ note }) => {
           </div>
 
           {isSellerDashboard && (
-            <CardDescription className="text-md">
+            <CardDescription className="text-sm">
               Tracking ID : {n.id}
             </CardDescription>
           )}
-          <CardDescription>
-            Note Type : {n.type?.charAt(0).toUpperCase() + n.type?.slice(1)}
+          <CardDescription className="text-sm">
+            Type : {n.type?.charAt(0).toUpperCase() + n.type?.slice(1)}
           </CardDescription>
         </CardHeader>
 
@@ -110,15 +110,16 @@ const UserActivityListing = ({ note }) => {
 
           {n?.buyer_id && (
             <div
-              className="flex flex-col gap-1.5 sm:flex-row sm:gap-2 sm:ml-auto sm:justify-end w-full sm:w-auto"
+              className="flex flex-row gap-1.5 sm:flex-row sm:gap-2 sm:ml-auto sm:justify-end w-full sm:w-auto"
             >
               {
                 isSellerDashboard ? (
                   <Button
-                    className="w-full sm:w-auto mt-2 sm:mt-0"
+                  size="sm"
+                    className="flex items-center gap-1 border-none px-2 py-1 w-[50%] bg-slate-900 hover:bg-slate-800 text-white"
                     onClick={() => navigate(`/orderdetails/${n.id}`)}
                   >
-                    <p className="text-sm">Order Details</p>
+                    <span className="text-xs font-medium">Order Details</span>
                   </Button>
                 ) : (
                   <></>
@@ -127,10 +128,11 @@ const UserActivityListing = ({ note }) => {
 
 
               <Button
-                className="w-full sm:w-auto mt-2 sm:mt-0"
+              size="sm"
+                className="flex items-center gap-1 border-none px-2 py-1 w-[50%] bg-slate-800/90 hover:bg-slate-700/90 text-slate-100"
                 onClick={() => navigate(`/listings/${n.note_id}`)}
               >
-                <p className="text-sm">Note Details</p>
+                <span className="text-xs font-medium">Note Details</span>
               </Button>
             </div>
           )}

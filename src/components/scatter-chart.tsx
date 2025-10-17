@@ -114,7 +114,8 @@ export function ScatterVisual() {
     <Card className="min-h-[400px] shadow-md hover:shadow-lg">
       <CardHeader>
         <CardTitle>Price vs Sales Count of Note</CardTitle>
-        <Select value={noteFilter} onValueChange={setNoteFilter}>
+        <div className="w-[130px] max-[400px]:w-[115px] max-[400px]:text-sm max-[400px]:h-6">
+                <Select value={noteFilter} onValueChange={setNoteFilter}>
           <SelectTrigger className="w-[180px] h-8 text-xs border-gray-200 shadow-sm">
             <SelectValue placeholder="Select Note" />
           </SelectTrigger>
@@ -127,7 +128,9 @@ export function ScatterVisual() {
             ))}
           </SelectContent>
         </Select>
-        {isLoading || isEmpty ? (
+        </div>
+        <div className="max-[400px]:mt-5">
+                    {isLoading || isEmpty ? (
           <></>
         ) : (
           (() => {
@@ -158,6 +161,8 @@ export function ScatterVisual() {
             }
           })()
         )}
+        </div>
+
 
 
       </CardHeader>

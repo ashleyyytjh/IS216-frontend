@@ -204,7 +204,6 @@ function UserEdit(currentUser) {
           <CardFooter className="flex justify-end">
             <Button type="submit" className="!text-sm">
               Update Profile
-              <Pencil className="w-3 h-3 ml-2" />
             </Button>
           </CardFooter>
         </form>

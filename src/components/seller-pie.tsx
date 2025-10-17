@@ -85,33 +85,37 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-3">
           <CardTitle className="text-base font-semibold text-gray-800">
-            Amount of Notes Sold
+            Amount of Notes Sold by Module
           </CardTitle>
 
-          <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
-            <Select value={moduleFilter} onValueChange={setModuleFilter}>
-              <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
-                <SelectValue placeholder="Module" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All</SelectItem>
-                {moduleCountsArray.map((m, i) => (
-                  <SelectItem key={i} value={m.module}>
-                    {m.module}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-1 sm:gap-1 w-full sm:w-auto">
+            <div className="w-[130px] max-[400px]:w-[100px] max-[400px]:text-sm max-[400px]:h-6">
+              <Select value={moduleFilter} onValueChange={setModuleFilter}>
+                <SelectTrigger className="w-full h-7 text-xs border-gray-200 shadow-sm px-2 rounded-l-md hover:bg-gray-100">
+                  <SelectValue placeholder="Module" />
+                </SelectTrigger>
+                <SelectContent className="w-[var(--radix-select-trigger-width)]">
+                  <SelectItem value="All">All</SelectItem>
+                  {moduleCountsArray.map((m, i) => (
+                    <SelectItem key={i} value={m.module}>
+                      {m.module}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-            <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "asc" | "desc")}>
-              <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md  hover:bg-gray-100">
-                <SelectValue placeholder="Sort" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="desc">Decreasing</SelectItem>
-                <SelectItem value="asc">Increasing</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="w-[130px] max-[400px]:w-[115px] max-[400px]:text-sm max-[400px]:h-6 max-[400px]:mt-4">
+              <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "asc" | "desc")}>
+                <SelectTrigger className="w-full h-7 text-xs border-gray-200 shadow-sm px-2 rounded-l-md hover:bg-gray-100">
+                  <SelectValue placeholder="Sort" />
+                </SelectTrigger>
+                <SelectContent className="w-[var(--radix-select-trigger-width)]">
+                  <SelectItem value="desc">Decreasing</SelectItem>
+                  <SelectItem value="asc">Increasing</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </CardHeader>

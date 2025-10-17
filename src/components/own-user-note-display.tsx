@@ -38,7 +38,7 @@ export const UserOwnNote = (currentUserInfo) => {
         setNotes(allUserOwned);
       })
       .catch((err) => console.error("Error fetching owned notes:", err))
-      .finally(()=>{isLoading(false)})
+      .finally(() => { isLoading(false) })
   }, []);
   const filteredNotes = notes.filter((note) => {
     const matchesSearch =
@@ -48,9 +48,11 @@ export const UserOwnNote = (currentUserInfo) => {
     const matchesFilter = activeFilter === "All" || note.type === activeFilter
     return matchesSearch && matchesFilter
   })
-  if(loading){
-    return(<div className="flex justify-center"><Spinner variant={'default'}/></div>)
+  if (loading) {
+    return (<div className="flex justify-center"><Spinner variant={'default'} /></div>)
   }
+  console.log(filteredNotes)
+
   return (
     <main className="w-full">
       <section className="w-full mb-6 pt-4 pb-4">
@@ -79,7 +81,6 @@ export const UserOwnNote = (currentUserInfo) => {
           </Select>
         </div>
       </section>
-
       <section className="w-full text-sm font-light">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr">
           {filteredNotes.map((listing) => (
@@ -89,20 +90,12 @@ export const UserOwnNote = (currentUserInfo) => {
                 className="block h-full"
               >
                 <Card className="h-full flex flex-col p-5 rounded-md transition-shadow duration-300 hover:shadow-xl">
-                  <CardHeader className="flex items-stretch gap-4 p-0">
+                  <CardHeader className="flex items-stretch gap-4 p-0 font-semibold">
+                    {listing.originalName}
                     <div className="flex-1 flex flex-col justify-center gap-1">
-                      <div className="flex">
-                        <p className="flex-1 font-medium">
-                          {user.fullName ?? "Unknown user"}
-                        </p>
-
+                      <div className="flex justify-end">
                         <p className="text-xs text-muted-foreground">
                           {formatRelativeMonthYear(listing.createdAt)}
-                        </p>
-                      </div>
-                      <div className="flex">
-                        <p className="text-xs text-muted-foreground">
-                          Year {user.yearOfStudy ?? "Unknown year"} {user.major ?? "Unknown major"}
                         </p>
                       </div>
                     </div>
@@ -110,7 +103,6 @@ export const UserOwnNote = (currentUserInfo) => {
 
                   {/* grow to push footer to bottom */}
                   <CardContent className="space-y-2 p-0 pb-3 flex-1">
-                    <h3 className="font-semibold">{listing.originalName}</h3>
                     <p className="text-sm line-clamp-2">{listing.description}</p>
                     <div className="flex flex-wrap text-xs text-muted-foreground gap-y-2">
                       {listing.tags?.map((tag, i) => (

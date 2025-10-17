@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 const navigationItems = [
     { name: "Explore", href: "/explore" },
-    { name: "Upload", href: "/upload" },
+    { name: "Create", href: "/create" },
     { name: "Dashboard", href: "/dashboardSeller" },
     { name: "Forum", href: "/forum" }
 
@@ -144,7 +144,7 @@ const navbar = () => {
                             <span className="font-bold text-xl pr-12 ">OnlyNotes</span>
                         </a>
                         {navigationItems.map((item) => {
-                            if ((item.name === "Dashboard" || item.name === "Upload") && !amplifyUser) {
+                            if ((item.name === "Dashboard" || item.name === "") && !amplifyUser) {
                                 return null; // hide dashboard when user not logged in
                             }
 

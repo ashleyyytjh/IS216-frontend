@@ -39,6 +39,8 @@ import ForumPage from "./pages/ForumLayout";
 import ForumPageLayout from "./pages/ForumLayout";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ForumHome from "./pages/ForumHome";
+import Create from "./pages/Create";
+import Compose from "./pages/Compose";
 
 function App() {
     return (
@@ -54,8 +56,10 @@ function App() {
               <Route path="/dashboardSeller" element={<DashboardSeller/>}/>
               <Route path="/refund/:id" element={<Refund/>}/>
               <Route path ="/accountCreation" element={<AccountCreation/>}/>
+              <Route path="/create" element={<Create />} />
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/upload/:id" element={<UploadStatus/>}/>
+              <Route path="/compose" element={<Compose />} />
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/orderdetails/:id" element={<OrderDetails />} />
               <Route path="/writeNotes" element={<EditPage/>} />

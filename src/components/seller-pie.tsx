@@ -5,7 +5,6 @@ import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "rec
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -23,14 +22,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useMediaQuery } from "usehooks-ts";
+import { formatCount } from "./utils"
 type ChartBarNotesProps = {
   moduleCountsArray: { module: string; count: number }[]
-}
-
-const formatCount = (value: number) => {
-  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`
-  if (value >= 1_000) return `${Math.round(value / 1_000)}K`
-  return `${value}`
 }
 
 const chartConfig = {
@@ -85,7 +79,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
   }, [chartData])
 
 
-  const onSmallScreen = useMediaQuery("(max-width: 400px)");
+  const onSmallScreen = useMediaQuery("(max-width: 400px)"); //smallscreen
   return (
     <Card className="min-h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
       <CardHeader className="pb-2">
@@ -94,12 +88,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
             Amount of Notes Sold
           </CardTitle>
 
-          <div   className="
-    flex flex-col sm:flex-row
-    sm:justify-end sm:items-center
-    gap-2 sm:gap-3
-    w-full sm:w-auto
-  ">
+          <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <Select value={moduleFilter} onValueChange={setModuleFilter}>
               <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
                 <SelectValue placeholder="Module" />
@@ -127,11 +116,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="
-    relative flex-1 flex items-center justify-center
-    h-[380px] sm:h-[380px] xs:h-[300px] max-[400px]:h-[250px]
-    px-2 pt-4 sm:px-6 sm:pt-6
-  ">
+      <CardContent className="relative flex-1 flex items-center justify-center h-[380px] sm:h-[380px] xs:h-[300px] max-[400px]:h-[250px] px-2 pt-4 sm:px-6 sm:pt-6">
         {isLoading ? (
           <SpinItem />
         ) : isEmpty ? (
@@ -139,11 +124,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="
-      relative aspect-auto
-      h-[250px] sm:h-[250px] xs:h-[200px] max-[400px]:h-[160px]
-      w-full transition-opacity duration-700
-    "
+            className="relative aspect-auto h-[250px] sm:h-[250px] xs:h-[200px] max-[400px]:h-[160px] w-full transition-opacity duration-700"
           >
             <BarChart layout="vertical" data={chartData} margin={{ right: 40, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -160,13 +141,6 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                   offset: -10,
                   dy: 10
                 }}
-
-              //                 label={{
-              //   value: "Amount of notes sold",
-              //   position: "outsideBottom",
-              //   dy: 20,
-              //   textAnchor: "middle",
-              // }}
               />
               <YAxis
                 dataKey="module"
@@ -185,7 +159,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
               <ChartTooltip
                 cursor={false}
                 labelFormatter={(label) => `Module: ${label}`}
-                formatter={(value: any, _name: any, item: any) => [
+                formatter={(value: any, name: any, item: any) => [
                   chartConfig[item.dataKey]?.label,
                   formatCount(Number(value)),
                 ]}
@@ -199,7 +173,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                 animationDuration={800}
                 animationEasing="ease-in-out"
               >
-                {chartData.map((_entry, index) => (
+                {chartData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={
@@ -210,7 +184,6 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                   />
                 ))}
                 <LabelList
-
                   dataKey="count"
                   position="right"
                   className="fill-gray-700"

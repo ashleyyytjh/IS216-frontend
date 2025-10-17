@@ -33,28 +33,48 @@ export function ScatterVisual() {
   const [correlation, setCorrelation] = useState(0)
   const [noteFilter, setNoteFilter] = useState("All");
 
-  // fetch all orders
   useEffect(() => {
     getOrders()
       .then((r) => setAllOrders(r))
       .catch((e) => console.error(e))
   }, [])
 
-  // fetch user-owned notes
   useEffect(() => {
     getUserOwned()
       .then((res) => {
         setUserOrder(res)
-        console.log("User Owned Notes:", res)
       })
       .catch((err) => console.error(err))
   }, [])
 
+  const hrefMover = (data: any) => {
+    if (data && data.id) {
+      window.location.href = `/listings/${data.id}`;
+    }
+  }
+  const showTooltip = ({active, payload})=>{
+    if (active && payload && payload.length) {
+      const { note, price, module, salesCount, revenue } = payload[0].payload
+      return (
+        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-md text-sm">
+          <p className="font-semibold text-gray-900">
+            {note} - {module}
+          </p>
+          <p className="text-gray-600">Price: ${price.toFixed(2)}</p>
+          <p className="text-gray-600">Sales: {salesCount}</p>
+          <p className="text-gray-600">Revenue: ${revenue.toFixed(2)}</p>
+        </div>
+      )
+    } else {
+      return null
+    }
+  }
   const isSmallScreen = useMediaQuery("(max-width: 400px)");
   useEffect(() => {
     if (userOrders.length > 0 && allOrders.length > 0) {
       const aggregated = userOrders
         .map((note) => {
+          //mapping to only get succeded ones.
           const noteOrders = allOrders.filter((order) => order.note_id === note.id && order.status == "succeeded")
           if (noteOrders.length === 0) return null
 
@@ -69,8 +89,7 @@ export function ScatterVisual() {
             salesCount,
             revenue,
           }
-        })
-        .filter(Boolean)
+        }).filter(Boolean)
       const prices = aggregated.map(n => n?.price).filter((v): v is number => v !== undefined);
       const revenues = aggregated.map(n => n?.revenue).filter((v): v is number => v !== undefined);
       const correlation = correl(prices, revenues);
@@ -78,10 +97,8 @@ export function ScatterVisual() {
       setIsLoading(false)
       setCorrelation(correlation)
       setIsEmpty(aggregated.length === 0)
-      console.log("Aggregated Orders:", aggregated)
     }
   }, [userOrders, allOrders])
-  console.log(matchedOrders)
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (matchedOrders.length === 0) {
@@ -92,9 +109,7 @@ export function ScatterVisual() {
     return () => clearTimeout(timeout)
   }, [matchedOrders])
 
-  const filteredData = noteFilter === "All"
-    ? matchedOrders
-    : matchedOrders.filter((n) => n.note === noteFilter);
+  const filteredData = noteFilter === "All" ? matchedOrders : matchedOrders.filter((n) => n.note === noteFilter);
   return (
     <Card className="min-h-[400px] shadow-md hover:shadow-lg">
       <CardHeader>
@@ -112,9 +127,7 @@ export function ScatterVisual() {
             ))}
           </SelectContent>
         </Select>
-        {isLoading ? (
-          <></>
-        ) : isEmpty ? (
+        {isLoading || isEmpty ? (
           <></>
         ) : (
           (() => {
@@ -148,11 +161,7 @@ export function ScatterVisual() {
 
 
       </CardHeader>
-      <CardContent className="
-      relative flex-1 flex items-center justify-start sm:justify-center
-      h-[380px] sm:h-[380px] max-[640px]:h-[280px] max-[400px]:h-[250px]
-      px-2 pt-4 sm:px-6 sm:pt-6
-    ">
+      <CardContent className="relative flex-1 flex items-center justify-start sm:justify-center h-[380px] sm:h-[380px] max-[640px]:h-[280px] max-[400px]:h-[250px] px-2 pt-4 sm:px-6 sm:pt-6">
         {isLoading ? (
           <SpinItem />
         ) : isEmpty ? (
@@ -161,11 +170,7 @@ export function ScatterVisual() {
           </div>
 
         ) : (
-          <div className="
-      w-full
-      h-[380px] sm:h-[380px]
-      max-[640px]:h-[280px] max-[400px]:h-[250px]
-    ">
+          <div className="w-full h-[380px] sm:h-[380px] max-[640px]:h-[280px] max-[400px]:h-[250px]">
             <ResponsiveContainer width="100%" height="100%" className="align-content-center ml-auto mr-auto justify-start sm:justify-center">
               <ScatterChart
                 margin={
@@ -223,41 +228,18 @@ export function ScatterVisual() {
                   stroke="#0D9488"
                   strokeWidth={1.5}
                   shape="circle"
-                  onClick={(data) => {
-                    if (data && data.id) {
-                      window.location.href = `/listings/${data.id}`;
-                    }
-                  }}
+                  onClick={(data) => { hrefMover(data) }}
                   style={{ cursor: "pointer" }}
                 >
                 </Scatter>
-
                 <Tooltip
                   cursor={{ strokeDasharray: "3 3" }}
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const { note, price, module, salesCount, revenue } = payload[0].payload
-                      return (
-                        <div className="bg-white border border-gray-200 rounded-md p-3 shadow-md text-sm">
-                          <p className="font-semibold text-gray-900">
-                            {note} - {module}
-                          </p>
-                          <p className="text-gray-600">Price: ${price.toFixed(2)}</p>
-                          <p className="text-gray-600">Sales: {salesCount}</p>
-                          <p className="text-gray-600">Revenue: ${revenue.toFixed(2)}</p>
-                        </div>
-                      )
-                    }
-                    return null
-                  }}
+                  content={({ active, payload }) => showTooltip({ active, payload })}
                 />
               </ScatterChart>
             </ResponsiveContainer>
-
           </div>
-
         )}
-
       </CardContent>
     </Card>
   )

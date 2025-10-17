@@ -11,22 +11,19 @@ import { Badge } from "@/components/ui/badge"
 
 import { Link, useLocation, useNavigate } from "react-router-dom"
 
-const UserActivityListing = ({ note, onDownload }) => {
+const UserActivityListing = ({ note }) => {
   const navigate = useNavigate();
   const location = useLocation()
 
   const isSellerDashboard = location.pathname.includes("dashboardSeller")
   const n = note.note ? { ...note, ...note.note } : note
-  console.log(n)
-
 
   const formatCurrency = (num: number) =>
     (num / 100).toLocaleString("en-SG", { style: "currency", currency: "SGD" })
 
-  
+
   return (
     <>
-      {/* make card fill and stack so footer sits at bottom */}
       <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer relative overflow-hidden">
         <CardHeader className="pr-6 md:pr-24">
           <div className="flex flex-col">
@@ -56,7 +53,6 @@ const UserActivityListing = ({ note, onDownload }) => {
           </CardDescription>
         </CardHeader>
 
-        {/* grow to consume remaining space for equal heights */}
         <CardContent className="space-y-4 flex-1">
           {!n?.buyer_id && (
             <div className="flex items-center gap-2">
@@ -68,8 +64,8 @@ const UserActivityListing = ({ note, onDownload }) => {
           )}
 
           <p className="text-gray-600 text-sm leading-relaxed hidden sm:block">
-  {n.description}
-</p>
+            {n.description}
+          </p>
 
           {n?.userFullName && (
             <div className="flex flex-wrap gap-1">
@@ -105,48 +101,40 @@ const UserActivityListing = ({ note, onDownload }) => {
           </div>
         </CardContent>
 
-<CardFooter
-  className="
-    flex flex-col sm:flex-row justify-between items-start sm:items-center
-    pt-4 border-t gap-2
-  "
->
-  {/* Price on the left */}
-  <span className="text-2xl font-bold text-black-600">
-    {formatCurrency(n.price)}
-  </span>
+        <CardFooter
+          className="flex flex-col sm:flex-row justify-between items-start sm:items-center pt-4 border-t gap-2"
+        >
+          <span className="text-2xl font-bold text-black-600">
+            {formatCurrency(n.price)}
+          </span>
 
-  {/* Buttons group */}
-  {n?.buyer_id && (
-    <div
-      className="
-        flex flex-col gap-1.5 sm:flex-row sm:gap-2
-        sm:ml-auto sm:justify-end w-full sm:w-auto
-      "
-    >
-      {
-        isSellerDashboard ? (
-                <Button
-        className="w-full sm:w-auto mt-2 sm:mt-0"
-        onClick={() => navigate(`/orderdetails/${n.id}`)}
-      >
-        <p className="text-sm">Order Details</p>
-      </Button>
-        ) : (
-          <></>
-        )
-      }
+          {n?.buyer_id && (
+            <div
+              className="flex flex-col gap-1.5 sm:flex-row sm:gap-2 sm:ml-auto sm:justify-end w-full sm:w-auto"
+            >
+              {
+                isSellerDashboard ? (
+                  <Button
+                    className="w-full sm:w-auto mt-2 sm:mt-0"
+                    onClick={() => navigate(`/orderdetails/${n.id}`)}
+                  >
+                    <p className="text-sm">Order Details</p>
+                  </Button>
+                ) : (
+                  <></>
+                )
+              }
 
 
-      <Button
-        className="w-full sm:w-auto mt-2 sm:mt-0"
-        onClick={() => navigate(`/listings/${n.note_id}`)}
-      >
-        <p className="text-sm">Note Details</p>
-      </Button>
-    </div>
-  )}
-</CardFooter>
+              <Button
+                className="w-full sm:w-auto mt-2 sm:mt-0"
+                onClick={() => navigate(`/listings/${n.note_id}`)}
+              >
+                <p className="text-sm">Note Details</p>
+              </Button>
+            </div>
+          )}
+        </CardFooter>
       </Card>
     </>
 

@@ -1,4 +1,3 @@
-import { AppSidebar } from "@/components/app-sidebar";
 import { DataTable } from "@/components/data-table";
 import { SectionCards } from "@/components/section-cards";
 import { SiteHeader } from "@/components/site-header";
@@ -16,7 +15,6 @@ import { GetNotesRes } from "@/types/requests/notes";
 export default function DashboardSeller() {
   const [animate, setAnimate] = useState(false);
 
-  // shared state
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [loadInfo, setLoadInfo] = useState(true);
@@ -49,6 +47,7 @@ export default function DashboardSeller() {
 
     getOrders()
       .then((orders) => {
+        //processing
         const uniqueNoteIds = [...new Set(orders.map((o) => o.note_id))];
         return Promise.all(
           uniqueNoteIds.map((id) =>
@@ -89,6 +88,7 @@ export default function DashboardSeller() {
           }
         });
 
+        //Testing Data for us to mess with.
         //dummy additions (optional)
         // moduleCountMap.set("CS101", (moduleCountMap.get("CS101") || 0) + 100)
         // moduleCountMap.set("IS216", (moduleCountMap.get("IS216") || 0) + 90)
@@ -101,6 +101,7 @@ export default function DashboardSeller() {
 
         // moduleRevenueMap.set("CS103", (moduleRevenueMap.get("CS103") || 0) + 500000 / 100)
         // moduleRevenueMap.set("IS217", (moduleRevenueMap.get("IS217") || 0) + 30000 / 100)
+
         const arr = Array.from(moduleCountMap.entries())
           .map(([module, count]) => ({ module, count }))
           .sort((a, b) => b.count - a.count);
@@ -119,13 +120,6 @@ export default function DashboardSeller() {
       .catch((err) => console.error("Error fetching sales:", err));
   }, [currentUser]);
 
-  getUserOwned()
-    .then((resp) => {
-      console.log(resp);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
 
   return (
     <div
@@ -143,10 +137,11 @@ export default function DashboardSeller() {
           } as React.CSSProperties
         }
       >
-        <SidebarInset className="mt-5">
+        <SidebarInset className="mt-5 overflow-visible relative z-[30]">
           <SiteHeader />
           <div className="flex flex-1 flex-col">
             <div className="@container/main flex flex-1 flex-col gap-2">
+            {/* 3 card layout */}
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
                 <SectionCards
                   loadInfo={loadInfo}
@@ -156,18 +151,15 @@ export default function DashboardSeller() {
                 />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 lg:px-6 w-full items-stretch">
                   <div className="w-full">
-                    {/* This is the left bar chart */}
                     <ChartPieInteractive moduleCountsArray={moduleCountsArray} />
                   </div>
                   <div className="w-full">
-                    {/* This is the right bar chart */}
                     <ChartBarLabel moduleRevenueArray={moduleRevenueArray} />
                   </div>
                 </div>
 
                 <div className="flex flex-col">
                   <div className="w-[100%] lg:w-[100%] px-6">
-                    {/* Scatter Plot */}
                     <ScatterVisual />
                   </div>
                 </div>

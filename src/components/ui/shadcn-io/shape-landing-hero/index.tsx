@@ -249,7 +249,6 @@ export function HeroGeometric() {
   React.useEffect(() => {
     setReady(!!boundsRef.current);
   }, [boundsRef]);
-  
 
   return (
     <div

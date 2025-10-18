@@ -2,13 +2,13 @@
 import { Outlet, useParams } from "react-router-dom";
 import ForumSidebar from "@/components/forum/ForumSideBar";
 
-const ForumPageLayout: React.FC = () => {
+const ForumPageLayout = () => {
   const { noteId } = useParams<{ noteId: string }>();
   console.log({ noteId });
   return (
-    <div className="flex h-dvh ">
+    <div className="flex ">
       <ForumSidebar selectedId={noteId} />
-      <main className="flex flex-col justify-center h-full items-center flex-1 p-4">
+      <main className="flex flex-col justify-center h-full items-center w-full ">
         <Outlet />
       </main>
     </div>

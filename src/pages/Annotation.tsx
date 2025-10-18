@@ -1,9 +1,6 @@
+import * as pdfjsLib from 'pdfjs-dist';
 
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert";
+
 
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -16,7 +13,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { User } from '@/types/types';
 import { toast } from 'sonner';
 import { getUser } from '@/services/UserService';
-import { getNotesById } from '@/services/NotesService';
+import { downloadNotes, getNotesById } from '@/services/NotesService';
 import { GetNotesRes } from '@/types/requests/notes';
 import { courseGradient } from '@/utils/colors';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +23,8 @@ import SpinItem from "@/components/spinner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils_stepper";
-import { fa } from "zod/v4/locales";
+import samplePdf from '@/assets/LP-Model-Documentation.pdf';
+
 
 // --- Types ---
 interface Annotation {
@@ -34,8 +32,8 @@ interface Annotation {
     note_id:string;
     selected_text: string;
     comment: string;
-    start_offset: number;
-    end_offset: number;
+    start_offset: number ;
+    end_offset: number ;
     author_name: string;
     author_id: string;
     created_at: string;
@@ -45,9 +43,11 @@ interface Annotation {
     depth: number;
     imageUrl?: string;
 }
-
-
-const NOTE_CONTENT = "The Solar System is the gravitationally bound system of the Sun and the objects that orbit it. It formed 4.6 billion years ago from the gravitational collapse of a giant interstellar molecular cloud. The vast majority of the system's mass is in the Sun, with most of the remaining mass contained in the planet Jupiter. The four inner terrestrial planets—Mercury, Venus, Earth and Mars—are composed primarily of rock and metal.";
+import { Document, Page } from 'react-pdf';
+import PDFViewer from '@/components/listing/PDFViewer';
+import ForumPdfViewer from '@/components/forum/ForumPdfViewer';
+import { FilterOption, ForumFilterButton } from '@/components/forum/ForumFIlterButton';
+let NOTE_CONTENT = "The Solar System is the gravitationally bound system of the Sun and the objects that orbit it. It formed 4.6 billion years ago from the gravitational collapse of a giant interstellar molecular cloud. The vast majority of the system's mass is in the Sun, with most of the remaining mass contained in the planet Jupiter. The four inner terrestrial planets—Mercury, Venus, Earth and Mars—are composed primarily of rock and metal.";
 
 export default function AnnotationComponent() {
     const contentRef = useRef<HTMLDivElement>(null);
@@ -61,11 +61,17 @@ export default function AnnotationComponent() {
     const [hoveredAnnotation, setHoveredAnnotation] = useState<string | null>(null);
     const [nestedAnnotations, setNestedAnnotations] = useState<Annotation[]>([]);
     const [deleteTarget, setDeleteTarget] = useState<Annotation | null>(null);
+    const [fileData, setFileData] = useState<Uint8Array | null>(null);
 
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [replyInputs, setReplyInputs] = useState<{[key: string]: string}>({});
     const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
+    const [activeFilter, setActiveFilter] = useState<FilterOption>("all");
+
+    const handleFilterChange = (newFilter: FilterOption) => {
+        setActiveFilter(newFilter);
+    };
    
     useEffect(() => {
         const fetchData = async () => {
@@ -79,12 +85,24 @@ export default function AnnotationComponent() {
                 return;
             };
             const data = await getNotesById(noteId); //68b98faba389fd1819c78c17
-            if (!data || data.purchased == false) {
-                navigate('/home');
-                toast.error('Error getting notes, please try again')
+            console.log('note data', data)
+            if (!data) {
+                navigate('/forum');
+                toast.error('No such note exists, please try again')
                 return;
             }
+
+            //check if user has purchased, if not check if user is the owner of the notes
+            if (data.purchased === false && data.userId !== userFetch.sub) {
+                navigate('/home');
+                toast.error('Please purchase notes to view this content')
+                return;
+            }
+
+            // await fetchPdf(noteId);
+
             setNote(data);
+            // console.log(data);
             const d = await getAnnotationsByNoteId(noteId!);
             const commentTree = buildCommentTree(d);
             setNestedAnnotations(commentTree);
@@ -95,6 +113,36 @@ export default function AnnotationComponent() {
   
         console.log('loading status', loading)
     },[noteId]);
+
+    const [paragraphs, setParagraphs] = useState<string[]>([]);
+
+    const fetchPdf = async (noteId: string) => {
+    // const notepdf = await downloadNotes(noteId);
+        const res = await fetch(samplePdf);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const arrayBuffer = await res.arrayBuffer();
+
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let allText = '';
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items
+            .map(item => ('str' in item ? item.str : ''))
+            .join(' ');
+            allText += pageText + '\n\n';
+        }
+
+    // Split into paragraphs and filter out empty strings
+    const paras = allText
+        .trim()
+        .split(/\n{2,}/g)
+        .filter(p => p.length > 0);
+        console.log(paras);
+        // Assign the array of paragraphs to NOTE_CONTENT
+        NOTE_CONTENT = paras.join('\n\n');  
+    };
 
     const buildCommentTree = (comments: Annotation[]): Annotation[] => {
         const commentMap: { [key: string]: Annotation & { replies: Annotation[] } } = {};
@@ -122,43 +170,43 @@ export default function AnnotationComponent() {
 
     // Handle text selection
     const handleTextSelection = () => {
-        const selection = window.getSelection();
-        if (!selection || selection.rangeCount === 0) return;
+            const selection = window.getSelection();
+            if (!selection || selection.rangeCount === 0) return;
 
-        const selectedText = selection.toString().trim();
-        if (selectedText.length < 3) {
-        setShowCommentForm(false);
-        return;
-        }
+            const selectedText = selection.toString().trim();
+            if (selectedText.length < 3) {
+                setShowCommentForm(false);
+                return;
+            }
 
-        const range = selection.getRangeAt(0);
-        const contentElement = contentRef.current;
-        
-        if (contentElement && contentElement.contains(range.commonAncestorContainer)) {
-        // Get plain text and calculate position
-        const fullText = contentElement.textContent || '';
-        const beforeText = fullText.substring(0, fullText.indexOf(selectedText));
-        const startOffset = beforeText.length;
-        const endOffset = startOffset + selectedText.length;
+            const range = selection.getRangeAt(0);
+            const contentElement = contentRef.current;
+            
+            if (contentElement && contentElement.contains(range.commonAncestorContainer)) {
 
-        setSelectedText(selectedText);
-        setSelectionRange({ start: startOffset, end: endOffset });
-        setShowCommentForm(true);
-        setCommentInput("");
+            // Get plain text and calculate position
+            const fullText = contentElement.textContent || '';
+            const beforeText = fullText.substring(0, fullText.indexOf(selectedText));
+            const startOffset = beforeText.length;
+            const endOffset = startOffset + selectedText.length;
+
+            setSelectedText(selectedText);
+            setSelectionRange({ start: startOffset, end: endOffset });
+            setShowCommentForm(true);
+            setCommentInput("");
+            console.log('sel', { selectedText, startOffset, endOffset });
         }
     };
 
-    // Handle comment submission
-    const handleCommentSubmit = async () => {
-        if (!selectedText || !commentInput.trim() || !selectionRange) return;
-
-        const newAnnotation: Annotation = {
+    const handleCommentSubmitNoQuote = async () => {
+        if (!commentInput.trim() ) return;
+        const newAnnotation = {
             id: `annotation-${Date.now()}`,
             note_id: note!.id,
-            selected_text: selectedText,
+            selected_text: "",
             comment: commentInput.trim(),
-            start_offset: selectionRange.start,
-            end_offset: selectionRange.end,
+            start_offset: null ,
+            end_offset: null,
             author_name: user!.username,
             author_id: user!.sub!,
             created_at: new Date().toISOString(),
@@ -187,8 +235,46 @@ export default function AnnotationComponent() {
         } catch (error) {
             toast.error('Failed to add comment. Please try again.');
         }
+    };
 
-     
+    // Handle comment submission
+    const handleCommentSubmit = async () => {
+        if (!selectedText || !commentInput.trim() || !selectionRange) return;
+        const newAnnotation: Annotation = {
+            id: `annotation-${Date.now()}`,
+            note_id: note!.id,
+            selected_text: selectedText,
+            comment: commentInput.trim(),
+            start_offset: selectionRange.start ,
+            end_offset: selectionRange.end ,
+            author_name: user!.username,
+            author_id: user!.sub!,
+            created_at: new Date().toISOString(),
+            imageUrl: user?.imageUrl,
+            parent_id: null,
+            replies: [], // Initialize empty replies array
+            depth: 0,
+        };
+
+        try {
+            const data  = await createAnnotation(newAnnotation);
+            if (data) {
+                toast.success('Comment added successfully');
+                console.log('data is', data)
+                setNestedAnnotations(prev => [
+                { ...data, replies: [], thread_id: data.id},
+                    ...prev,
+                ]);
+                // Reset form
+                setShowCommentForm(false);
+                setSelectedText("");
+                setSelectionRange(null);
+                setCommentInput("");
+                window.getSelection()?.removeAllRanges();
+            } 
+        } catch (error) {
+            toast.error('Failed to add comment. Please try again.');
+        }
     };
 
     // Cancel comment form
@@ -201,7 +287,7 @@ export default function AnnotationComponent() {
     };
 
   // Replies
-    const handleReplySubmit = async (parentId: string) => {
+    const handleReplySubmit = async (parentId: string, depth:number) => {
         const replyText = replyInputs[parentId];
         if (!replyText || !replyText.trim()) return;
 
@@ -219,9 +305,8 @@ export default function AnnotationComponent() {
             parent_id: parentId,
             imageUrl: user!.imageUrl,
             replies: [],
-            depth: nestedAnnotations.find(ann => ann.id === parentId)?.depth! + 1 || 1 
+            depth: depth+1 || 0
         };  
-
         try {       
             const data  = await createAnnotation(newReply);
             if (data) {
@@ -353,7 +438,15 @@ export default function AnnotationComponent() {
         if (!deleteTarget) return;
         await handleDeleteFunction(deleteTarget);   
     };
+
     const CommentItem =  ({ annotation, depth, handleDelete, note }) => (
+               <motion.div
+                            key={annotation.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                        >
+
         <div className={`${depth > 0 ? 'ml-6 border-l border-gray-200 pl-3' : ''}`}>
         <div 
             className={cn(
@@ -459,8 +552,13 @@ export default function AnnotationComponent() {
                         setReplyInputs(prev => ({ ...prev, [annotation.id]: e.target.value }))
                         }
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleReplySubmit(annotation.id); }
-                            else if (e.key === 'Escape') { setReplyingTo(null); }
+                            if (e.key === 'Enter' && !e.shiftKey) { 
+                                e.preventDefault(); 
+                                handleReplySubmit(annotation.id, annotation.depth);
+                            }
+                            else if (e.key === 'Escape') {
+                                 setReplyingTo(null);
+                        }
                         }}
                         autoFocus
                     />
@@ -468,7 +566,7 @@ export default function AnnotationComponent() {
                         <Button 
                             size="sm" 
                             className="h-7 px-2 text-xs" 
-                            onClick={() => handleReplySubmit(annotation.id)}
+                            onClick={() => handleReplySubmit(annotation.id, annotation.depth)}
                             disabled={!replyInputs[annotation.id]?.trim()}
                         >
                         Reply
@@ -494,122 +592,183 @@ export default function AnnotationComponent() {
                 <CommentItem key={reply.id} annotation={reply} depth={depth + 1} note={note} handleDelete={handleDelete} />
             ))}
         </div>
+        </motion.div>
+
     );
 
-
+    const viewPdf=() => {
+        return (
+            <ForumPdfViewer id={noteId!}  />
+        )
+    }
+    console.log(nestedAnnotations.length)
 
 
   return (
-    (note && !loading) ? ( <div className="bg-background  text-foreground min-h-screen p-4 sm:p-8">
-      <div className="max-w-4xl mx-auto h-full">
+    (note && !loading) ? ( 
+    <div className="bg-background w-full text-foreground min-h-screen h-full p-4 sm:p-8">
         <header className="mb-6 space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">{note.title}</h1>
-                <Badge
-                    className="text-md font-normal  rounded-full border-none bg-linear-to-r text-white uppercase"
-                    style={{ background: note.module ? courseGradient(note.module): "black" }}
-                    >
-                {note.module ?? "General"} 
-                </Badge>
-            <p className="text-md text-muted-foreground">
-               {note.description}
-            </p>
+                <span className='flex flex-row space-x-4'>
+                    <h1 className="text-3xl font-bold tracking-tight">{note.title}</h1>
+                    <Badge
+                        className="text-md font-normal  rounded-full border-none bg-linear-to-r text-white uppercase"
+                        style={{ background: note.module ? courseGradient(note.module): "black" }}
+                        >
+                    {note.module ?? "General"} 
+                    </Badge>
+                </span>
+              
+                <p className="text-md text-muted-foreground">
+                {note.description}
+                </p>
         </header>
 
-        <Card className="mb-2">
-          <CardContent className="">
-            <div 
-              ref={contentRef}
-              className="text-md leading-relaxed select-text cursor-text"
-              onMouseUp={handleTextSelection}
-            >
-              {renderContent()}
-            </div>
-          </CardContent>
-          
-        </Card>
-        <p className="text-sm text-muted-foreground mb-8 italic">
-                Select text to add comments • Hover over quotes to highlight referenced text
-        </p>
+      <div className="w-full flex flex-col justify-center items-center space-x-3">
+        <section className=" space-y-2  w-5/6  pb-8 ">
+            {/* <header className="mb-6 space-y-2">
+                <h1 className="text-3xl font-bold tracking-tight">{note.title}</h1>
+                    <Badge
+                        className="text-md font-normal  rounded-full border-none bg-linear-to-r text-white uppercase"
+                        style={{ background: note.module ? courseGradient(note.module): "black" }}
+                        >
+                    {note.module ?? "General"} 
+                    </Badge>
+                <p className="text-md text-muted-foreground">
+                {note.description}
+                </p>
+            </header> */}
 
-        {/* Comment Form */}
-        {showCommentForm && (
-          <Card className="mb-8 bg-primary-foreground">
-            <CardHeader>
-              <p className="text-sm text-muted-foreground">Add a comment for:</p>
-              <blockquote className="border-l-4 border-blue-500 pl-4 italic mt-1 text-gray-700">
-                "{selectedText}"
-              </blockquote>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Input
-                  type="text"
-                  placeholder="Type your comment or suggestion..."
-                  value={commentInput}
-                  onChange={(e) => setCommentInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      handleCommentSubmit();
-                    } else if (e.key === 'Escape') {
-                      handleCancel();
+            {/* <Card className="mb-2 "> */}
+                {/* <CardContent className=""> */}
+                    <div 
+                        ref={contentRef}
+                        className="text-md leading-relaxed select-text cursor-text  w-full"
+                        onMouseUp={handleTextSelection}
+                    >
+                    { 
+                    viewPdf()
+                        // renderContent()
                     }
-                  }}
-                  autoFocus
-                />
-                <div className="flex gap-2">
-                  <Button onClick={handleCommentSubmit} disabled={!commentInput.trim()} className="!text-sm">
-                    Submit
-                  </Button>
-                  <Button variant="outline" onClick={handleCancel} className="!text-sm">
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                    </div>
+                {/* </CardContent> */}
+            {/* </Card> */}
 
+                {/* <p className="text-sm text-muted-foreground mb-8 italic">
+                    Select text to add comments • Hover over quotes to highlight referenced text
+                </p> */}
+
+                {/* Comment Form Just for Notes type, we allow highlighting */}
+                {showCommentForm && note.type === "notes" && (
+                    <Card className="bg-primary-foreground">
+                        <CardHeader>
+                            <p className="text-sm text-muted-foreground">Add a comment for:</p>
+                            <blockquote className="border-l-4 border-blue-500 pl-4 italic mt-1 text-gray-700">
+                                "{selectedText}"
+                            </blockquote>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-3">
+                                <Input
+                                type="text"
+                                placeholder="Type your comment or suggestion..."
+                                value={commentInput}
+                                onChange={(e) => setCommentInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleCommentSubmit();
+                                    } else if (e.key === 'Escape') {
+                                    handleCancel();
+                                    }
+                                }}
+                                autoFocus
+                                />
+                                <div className="flex gap-2">
+                                <Button onClick={handleCommentSubmit} disabled={!commentInput.trim()} className="!text-sm">
+                                    Submit
+                                </Button>
+                                <Button variant="outline" onClick={handleCancel} className="!text-sm">
+                                    Cancel
+                                </Button>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+              
+        </section>
         {/* Discussion Section with Nested Comments */}
-        <section >
+        <section className="w-5/6 overflow-y-auto">
             <h2 className="text-xl font-semibold tracking-tight mb-4 flex items-center">
                 <MessageSquare className="mr-3 h-6 w-6 text-muted-foreground" />
                 Discussion ({nestedAnnotations.length})
             </h2>
-            <ScrollArea className=" h-64 sm:h-96 lg:h-128 xl:h-160 relative">
+            <ForumFilterButton onFilterChange={handleFilterChange} />
+            {/* comments for types that are not notes! */}
+               {note.type !== "composeNotes" && (
+                    <Card className=" bg-primary-foreground mb-4">
+                        {/* <CardHeader>
+                        <p className="text-sm text-muted-foreground">Add a comment</p>
+                        </CardHeader> */}
+                        <CardContent>
+                        <div className="space-y-3">
+                            <Input
+                            type="text"
+                            placeholder="Type your comment or suggestion..."
+                            value={commentInput}
+                            onChange={(e) => setCommentInput(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleCommentSubmit();
+                                } else if (e.key === 'Escape') {
+                                    handleCancel();
+                                }
+                            }}
+                            autoFocus
+                            />
+                            <div className="flex gap-2">
+                            <Button onClick={handleCommentSubmitNoQuote} disabled={!commentInput.trim()} className="!text-sm">
+                                Submit
+                            </Button>
+                            <Button variant="outline" onClick={handleCancel} className="!text-sm">
+                                Cancel
+                            </Button>
+                            </div>
+                        </div>
+                        </CardContent>
+                    </Card>
+                )}
+
+            <ScrollArea className='h-78'>
                 <div>
                     {nestedAnnotations.map((annotation) => (
-                        <motion.div
-                        key={annotation.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        // viewport={{ once: true }} // Animation triggers only once
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                        >
                         <CommentItem
                             annotation={annotation}
                             depth={0}
                             handleDelete={handleDeleteFunction}
                             note={note}
                         />
-                        </motion.div>
-                    ))}
-
+                    ))} 
                     {nestedAnnotations.length === 0 && (
                         <div className="text-center py-12 text-muted-foreground">
-                        {/* Empty state content */}
                         </div>
                     )}
                 </div>
-                {nestedAnnotations.length > 3 && (
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 pointer-events-none animate-bounce">
-                    <span className="text-xs text-muted-foreground">Scroll for more</span>
-                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                )}
+                {
+                    (nestedAnnotations.reduce((count, annotation) => {
+                        return count + 1 + (annotation.replies ? annotation.replies.length : 0);
+                    }, 0)) > 2 && (
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 pointer-events-none animate-bounce">
+                        <span className="text-xs text-muted-foreground">Scroll for more</span>
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                    )
+                }
             </ScrollArea>
               
-            </section>
+        </section>
+
       </div>
     </div>
     ) : ( 

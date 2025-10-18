@@ -5,38 +5,30 @@ import { Card } from "../ui/card";
 import { Slider } from "../ui/slider";
 import { ChevronLeft, ChevronRight, RotateCw, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useSidebar } from "../ui/sidebar";
-import { downloadNotes } from "@/services/NotesService";
 import { toast } from "sonner";
 import { LineShadowText } from "../ui/shadcn-io/line-shadow-text";
 import 'react-pdf/dist/Page/TextLayer.css';
+import samplePdf from '@/assets/LP-Model-Documentation.pdf';
+import { downloadNotes } from "@/services/NotesService";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url
 ).toString();
 
-export default function PDFViewer({ id, purchased }: { id: string, purchased: boolean }) {
+export default function ForumPdfViewer({ id }: { id: string}) {
   const [fileData, setFileData] = useState<Uint8Array | null>(null);
   const file = useMemo(
     () => (fileData ? { data: fileData } : undefined),
     [fileData]
   );
+
   const [width, setWidth] = useState(0);
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(0);
   const [pageScale, setPageScale] = useState(1.0);
-  const [initialScale, setInitialScale] = useState(1.0);
-  const [baseHeight, setBaseHeight] = useState<number | null>(null);
+  const [pageDimensions, setPageDimensions] = useState<Record<number, { width: number; height: number }>>({});
   const ref = useRef<HTMLDivElement>(null);
-  const { state } = useSidebar();
-
-  const visiblePages = useMemo(() => {
-    if (!numPages) return 0;
-    if (purchased) return numPages;
-    if (numPages < 4) return 1;
-    return Math.floor(numPages / 4);
-  }, [numPages, purchased])
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
@@ -48,29 +40,50 @@ export default function PDFViewer({ id, purchased }: { id: string, purchased: bo
   }
 
   function resetPageScale() {
-    const random = Math.random() * (0.0001 - 0.00001) + 0.00001;
-    setPageScale(1.0 + random);
+    setPageScale(1.0);
   }
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await downloadNotes(id);
-        const res = await fetch(data.url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const blob = await res.blob();
-        const arrayBuffer = await blob.arrayBuffer();
-        setFileData(new Uint8Array(arrayBuffer));
-      } catch (err) {
-        toast.error("There was an error loading the file.", { description: String(err), dismissible: true, richColors: true })
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   const loadPdf = async () => {
+  //     try {
+  //       const response = await fetch(samplePdf);
 
-  useEffect(() => {
-    resetPageScale()
-  }, [state])
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
 
+  //       const arrayBuffer = await response.arrayBuffer();
+  //       const uint8Array = new Uint8Array(arrayBuffer);
+  //       setFileData(uint8Array);
+
+  //     } catch (e) {
+  //       console.error('Error loading PDF:', e);
+  //       toast.error("There was an error loading the file.", { 
+  //         description: String(e), 
+  //         dismissible: true, 
+  //         richColors: true 
+  //       });
+  //     }
+  //   };
+
+  //   loadPdf();
+  // }, []); 
+    useEffect(() => {
+      (async () => {
+        try {
+          const data = await downloadNotes(id);
+          const res = await fetch(data.url);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const blob = await res.blob();
+          const arrayBuffer = await blob.arrayBuffer();
+          setFileData(new Uint8Array(arrayBuffer));
+        } catch (err) {
+          toast.error("There was an error loading the file.", { description: String(err), dismissible: true, richColors: true })
+        }
+      })();
+    }, []);
+
+  // Update width when container resizes
   useEffect(() => {
     const updateWidth = () => {
       if (!ref.current) return;
@@ -87,6 +100,20 @@ export default function PDFViewer({ id, purchased }: { id: string, purchased: bo
       window.removeEventListener("resize", updateWidth);
     };
   }, []);
+
+  // Calculate the scale and height for the current page based on container width
+  const { scale, height } = useMemo(() => {
+    const currentPageDimensions = pageDimensions[pageNumber];
+    
+    if (!width || !currentPageDimensions) {
+      return { scale: 1, height: null };
+    }
+
+    const scaleToFit = width / currentPageDimensions.width;
+    const calculatedHeight = currentPageDimensions.height * scaleToFit;
+
+    return { scale: scaleToFit * pageScale, height: calculatedHeight };
+  }, [width, pageNumber, pageDimensions, pageScale]);
 
   return (
     <Card className="flex flex-col items-center justify-center w-full pt-0 gap-0">
@@ -109,7 +136,6 @@ export default function PDFViewer({ id, purchased }: { id: string, purchased: bo
             onClick={() =>
               setPageNumber((prev) => Math.min(prev + 1, numPages))
             }
-            disabled={pageNumber >= visiblePages}
           >
             <ChevronRight />
           </Button>
@@ -121,9 +147,9 @@ export default function PDFViewer({ id, purchased }: { id: string, purchased: bo
               "pointer-events-none cursor-default select-none hidden md:flex"
             )}
           >
-            <ZoomIn />
+            {/* <ZoomIn /> */}
           </div>
-          <Slider
+          {/* <Slider
             value={[pageScale*100]}
             min={50}
             max={200}
@@ -138,8 +164,8 @@ export default function PDFViewer({ id, purchased }: { id: string, purchased: bo
             )}
           >
             {Math.round(pageScale * 100)}%
-          </div>
-          <Button
+          </div> */}
+          {/* <Button
             size="sm"
             variant="outline"
             className="cursor-pointer"
@@ -147,7 +173,7 @@ export default function PDFViewer({ id, purchased }: { id: string, purchased: bo
           >
             <RotateCw className="h-full" />
             Reset
-          </Button>
+          </Button> */}
         </div>
       </div>
 
@@ -155,7 +181,7 @@ export default function PDFViewer({ id, purchased }: { id: string, purchased: bo
         ref={ref}
         className="relative w-full overflow-auto bg-muted border-y flex justify-center"
         style={{
-          height: baseHeight ? `${baseHeight}px` : "auto",
+          height: height ? `${height}px` : "auto",
         }}
       >
         <Document
@@ -167,16 +193,18 @@ export default function PDFViewer({ id, purchased }: { id: string, purchased: bo
         >
           {width > 0 && (
             <Page
+              key={`page-${pageNumber}-${width}`}
               className="block"
               pageNumber={pageNumber}
-              scale={initialScale * pageScale}
+            //   scale={scale}
+              width={width}
               onLoadSuccess={({ originalWidth, originalHeight }: any) => {
-                if (width && originalWidth) {
-                  const scaleToFit = width / originalWidth;
-                  setInitialScale(scaleToFit);
-                  if (!baseHeight) {
-                    setBaseHeight(originalHeight * scaleToFit);
-                  }
+                // Only store dimensions if we haven't already for this page
+                if (originalWidth && originalHeight && !pageDimensions[pageNumber]) {
+                  setPageDimensions(prev => ({
+                    ...prev,
+                    [pageNumber]: { width: originalWidth, height: originalHeight }
+                  }));
                 }
               }}
               renderAnnotationLayer={false}
@@ -184,9 +212,11 @@ export default function PDFViewer({ id, purchased }: { id: string, purchased: bo
               onMouseUp={() => {
                 const sel = window.getSelection();
                 if (sel && sel.toString().trim()) {
-                  // compute bounding rects via sel.getRangeAt(0).getClientRects()
-                  // onSelect(pageNumber, sel.toString(), sel.getRangeAt(0));
-                  console.log('hehe', { pageNumber, text: sel.toString(), rects: sel.getRangeAt(0).getClientRects() });
+                  console.log('highlight detected', { 
+                    pageNumber, 
+                    text: sel.toString(), 
+                    rects: sel.getRangeAt(0).getClientRects() 
+                  });
                   sel.removeAllRanges();
                 }
               }}

@@ -379,7 +379,7 @@ export default function Upload() {
         </CardFooter>
       </Card>
 
-      <section className="mt-10 flex flex-col items-center justify-center text-center space-y-4">
+      {/* <section className="mt-10 flex flex-col items-center justify-center text-center space-y-4">
   <h3 className="text-lg font-semibold">Prefer to write your notes directly?</h3>
   <p className="text-muted-foreground text-sm max-w-md">
     Instead of uploading a file, you can use our built-in editor to create and publish notes online.
@@ -391,7 +391,7 @@ export default function Upload() {
     <Pencil className="w-4 h-4" />
     Start Writing
   </Button>
-</section>
+</section> */}
     </main>
   );
 }

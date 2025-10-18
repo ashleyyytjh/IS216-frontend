@@ -39,6 +39,7 @@ import ForumPage from "./pages/ForumLayout";
 import ForumPageLayout from "./pages/ForumLayout";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ForumHome from "./pages/ForumHome";
+import PdfAnnotator from "./pages/Sample";
 
 function App() {
     return (
@@ -60,7 +61,7 @@ function App() {
               <Route path="/orderdetails/:id" element={<OrderDetails />} />
               <Route path="/writeNotes" element={<EditPage/>} />
               <Route path="/editNote/:id" element={<EditPage/>} />
-              
+              <Route path="/sample/:noteId" element={<PdfAnnotator/>}/>
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>
                     <Route path="/test" element={<LoginPage />} />
@@ -72,16 +73,12 @@ function App() {
                       <Route index element={<ForumHome />} />
                       <Route path=":noteId" element={<AnnotationComponent />} />
                     </Route>
-
-
               </Route>
           </Route>
           {/* Listing required custom footer layout */}
           <Route element={<ListingLayout />}>
             <Route path="/listings/:id" element={<Listing />} /></Route>
-          <Route path="*" element={<Error />} />
-          <Route path="*" element={<Error/>}/>
-
+            <Route path="*" element={<Error />} />
         </Routes>
       </>
     )

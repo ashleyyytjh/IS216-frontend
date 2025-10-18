@@ -4,9 +4,9 @@ import { ContainerTextFlip } from "../ui/container-text-flip";
 export default function Hero() {
   return (
     <section className="h-full w-full overflow-hidden">
-      <div className="container border-t border-b border-dashed mx-auto">
+      <div className="container  mx-auto">
 
-        <div className="relative flex w-full max-w-6xl flex-col justify-start border-l border-r border-t-0 border-dashed px-5 py-12 md:items-center md:justify-center lg:mx-auto">
+        <div className="relative flex w-full max-w-6xl flex-col justify-start px-5 py-12 md:items-center md:justify-center lg:mx-auto">
           <p className="text-muted-foreground flex items-center gap-3 text-sm">
             <span className="inline-block size-2 rounded bg-green-500" />
             NEW Notes Coming Soon

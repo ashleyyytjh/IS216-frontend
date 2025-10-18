@@ -1,16 +1,9 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Award, Wallet, Search, Sparkles, Star, GraduationCap, ArrowRight, UploadCloud, CheckCircle, DollarSign, Store, UserIcon } from "lucide-react";
-import { Button } from "@/components/ui/button"; // Assuming you have a Button component from shadcn/ui
-import BackgroundNebula from '@/components/Background';
-import TestimonialCard from '@/components/home/TestimonialCard';
-import NoteCard from '@/components/home/NoteCard';
+import { BookOpen, Award, Wallet, Search, Sparkles, Star, GraduationCap, ArrowRight, UploadCloud, CheckCircle, DollarSign, Store, UserIcon, Circle } from "lucide-react";
+
 import { useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { mockCourses } from '@/assets/data';
-import HowItWorksStep from '@/components/home/Steps';
-import StepsComponent from '@/components/home/Steps';
 import KeyPoints from '@/components/home/KeyPoints';
 import ExploreSubject from '@/components/home/ExploreSubject';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -67,76 +60,35 @@ export default function ImprovedHomepage() {
   // --- Animation Transformations ---
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.4]);
-
+  
+  const heroY = useTransform(scrollYProgress, [0, 0.3], ["0px", "100px"])
   // Animate the content section to slide up as the hero fades out
   const contentY = useTransform(scrollYProgress, [0, 1], ["10vh", "0vh"]);
   const navigate = useNavigate();
 
+
+  
   return (
     <div ref={targetRef} className="relative w-full overflow-y-hidden">
-
       {/* The Sticky Hero Section */}
-    
-
-      <div className="h-screen w-full sticky top-0 flex flex-col items-center justify-center">
-
-        <motion.div
-          style={{ opacity: heroOpacity, scale: heroScale }}
-          initial={{ scale: 0.2, opacity: 0 }}
-          animate={{ scale: [0.2, 1], opacity: 1 }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
-          className="text-center w-full"
-        > {
-            isLoggedIn ?
-              <>
-             <HeroGeometric
-                  badge={user?.username}
-                  title1="OnlyNotes"
-                  description="The pinnacle of student-curated knowledge. Ace your exams with notes from the best."
-
-                />
-
-               <div className="mt-8 flex justify-center gap-4 absolute top-2/3 right-1/2 translate-1/2  z-40">
-                  <Button size={isMobile ? 'sm' : 'lg'} onClick={() => navigate('/explore')}>
-                    Browse <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                  <Button size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => navigate('/create')}>
-                    Sell Notes
-                  </Button>
-                </div>
+      <div className="h-screen w-full sticky  flex flex-col items-center justify-center">
+          <>
+             <HeroGeometric />
+              <motion.div
+                  style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
+                  initial={{ scale: 0.2, opacity: 0 }}
+                  animate={{ scale: [0.2, 1], opacity: 1 }}
+                  transition={{ duration: 0.6, ease: 'easeInOut' }}
+                > 
+                <LandingText userName={user?.username || "Welcome Student!"} />
+              </motion.div>
               </>
-              :
-              <>
-                <HeroGeometric
-                  badge='Welcome Student!'
-                  title1="OnlyNotes"
-                  description="The pinnacle of student-curated knowledge. Ace your exams with notes from the best."
-
-                />
-                {/* <h1 className="text-5xl md:text-6xl 2xl:text-8xl font-bold tracking-tighter">
-                  OnlyNotes
-                </h1>
-                <p className="mt-4 max-w-xl mx-auto text-md md:text-xl text-slate-600 ">
-                  The pinnacle of student-curated knowledge. Ace your exams with notes from the best.
-                </p> */}
-                <div className="mt-8 flex justify-center gap-4 absolute top-2/3 right-1/2 translate-1/2  z-40">
-                  <Button size={isMobile ? 'sm' : 'lg'} onClick={() => navigate('/explore')}>
-                    Browse <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                  <Button size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => navigate('/create')}>
-                    Sell Notes
-                  </Button>
-                </div>
-              </>
-          }
-
-        </motion.div>
       </div>
 
 
       {/* Scrollable Content */}
-      <motion.div style={{ y: contentY }} className="relative z-10 w-full bg-slate-50 dark:bg-gray-900 rounded-t-3xl l">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 py-20 md:py-32 space-y-28 md:space-y-40">
+      <motion.div style={{ y: contentY }} className="">
+        <div className="max-w-7xl mx-auto px-6 md:px-8  md:py-32 space-y-28 md:space-y-40">
           <KeyPoints />
           <div className='space-y-4'>
             <UserTypeToggle changeSelection={onChangeSelection} selection={stepSelection} />
@@ -170,6 +122,8 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
+import StepsComponent from '@/components/home/Steps';
+import LandingText from '@/components/home/LandingText';
 
 interface Props {
   selection: String

@@ -230,13 +230,7 @@ type HeroGeometricProps = {
   className?: string;
 };
 
-export function HeroGeometric({
-  badge = "yourstudio.dev",
-  title1 = "Elevate Your Digital Vision",
-  title2 = "Crafting Exceptional Websites",
-  description = "Thoughtful design, crisp engineering, and interfaces that feel effortless.",
-  className,
-}: HeroGeometricProps) {
+export function HeroGeometric() {
   const fadeUpVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: (i: number) => ({
@@ -255,11 +249,12 @@ export function HeroGeometric({
   React.useEffect(() => {
     setReady(!!boundsRef.current);
   }, [boundsRef]);
+  
   return (
     <div
       className={cn(
-        "relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white",
-        className
+        "absolute min-h-screen w-full flex items-center justify-center overflow-hidden bg-white",
+        // className
       )}
     >
       {/* background: ultra subtle grid to give depth on white */}
@@ -334,7 +329,7 @@ export function HeroGeometric({
         />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 md:px-6 w-auto">
+      {/* <div className="relative z-10 container mx-auto px-4 md:px-6 w-auto">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
             custom={0}
@@ -355,7 +350,6 @@ export function HeroGeometric({
                 {title1}
               </span>
               <br />
-              {/* monochrome “transition” gradient—still only black/white family */}
 
             </h1>
           </motion.div>
@@ -366,7 +360,7 @@ export function HeroGeometric({
             </p>
           </motion.div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

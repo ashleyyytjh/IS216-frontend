@@ -168,5 +168,51 @@
 }
 
 .fade-in {
+  clip-path: polygon(0% 0%,100% 0%,100% 100%, 0% 100%, 0% 0%);
   animation: fadeIn 1s ease-out forwards;
 }
+.paperfold-animate {
+  position: relative;
+  perspective: 800px;
+  transition: clip-path 0.5s ease;
+}
+
+.paperfold-animate::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 0;
+  height: 0;
+  top: 0;
+  left: 0;
+
+  transform-origin: top left;
+  transform: rotateX(0deg) rotateY(0deg);
+
+  background-color: rgb(245, 245, 244);
+  border-bottom-right-radius: 10px;
+  box-shadow: 0.5px 0.5px 0px 0cqh rgb(219, 219, 219);
+
+ 
+  transition:
+    transform 1s ease,
+    width 0.2s ease,
+    height 0.2s ease,
+    top 0.2s ease,
+    left 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.paperfold-animate:hover::before {
+  width: 16.5%;
+  height: 11%;
+  top: 0.5px;
+  left: 1.0px;
+  transform: rotateX(14deg) rotateY(2.5deg);
+}
+
+.paperfold-animate:hover {
+  clip-path: polygon(17.8% 0.2%,100% 0%,100% 100%, 0% 100%, 0% 11.5%);
+}
+
+

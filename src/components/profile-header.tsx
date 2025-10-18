@@ -10,9 +10,9 @@ function ProfileHeader(currentUser) {
             <div className="text-center md:text-left">
                 <Avatar className="w-20 h-20 inline-block md:ml-0 mr-0">
                     <AvatarImage src={currentUser.imageUrl} />
-                      <AvatarFallback>
-    <User className="w-8 h-8 text-gray-500" />
-  </AvatarFallback>
+                    <AvatarFallback>
+                        <User className="w-8 h-8 text-gray-500" />
+                    </AvatarFallback>
                 </Avatar>
             </div>
 

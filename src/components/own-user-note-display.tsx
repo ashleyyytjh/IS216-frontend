@@ -19,14 +19,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 export const UserOwnNote = (currentUserInfo) => {
   const user = currentUserInfo?.currentUserInfo ?? {}
   const [notes, setNotes] = useState<NoteListing[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [loading, isLoading] = useState(true)
+  const [searchQuery, setSearch] = useState("")
   const [activeFilter, setActiveFilter] = useState("All")
 
   useEffect(() => {
     getUserOwned()
       .then(async (resp) => {
-        const withPending = await Promise.all(
+        const allUserOwned = await Promise.all(
           resp.map(async (r) => {
             const a = await getNotesById(r.id);
             return {
@@ -35,10 +35,10 @@ export const UserOwnNote = (currentUserInfo) => {
             };
           })
         );
-        setNotes(withPending);
+        setNotes(allUserOwned);
       })
       .catch((err) => console.error("Error fetching owned notes:", err))
-      .finally(() => setLoading(false));
+      .finally(() => { isLoading(false) })
   }, []);
   const filteredNotes = notes.filter((note) => {
     const matchesSearch =
@@ -48,13 +48,10 @@ export const UserOwnNote = (currentUserInfo) => {
     const matchesFilter = activeFilter === "All" || note.type === activeFilter
     return matchesSearch && matchesFilter
   })
-
-  if (loading)
-    return (
-      <div className="flex justify-center w-full">
-        <Spinner variant="default" />
-      </div>
-    )
+  if (loading) {
+    return (<div className="flex justify-center"><Spinner variant={'default'} /></div>)
+  }
+  console.log(filteredNotes)
 
   return (
     <main className="w-full">
@@ -64,27 +61,26 @@ export const UserOwnNote = (currentUserInfo) => {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               type="search"
               placeholder="Search for notes..."
-              className="w-full pl-9 bg-muted border-none text-foreground/80 focus:bg-white focus:text-foreground transition-colors flex-1"
+              className="pl-9 bg-gray-100 text-gray-500 focus:bg-white focus:text-black transition-colors w-full"
             />
           </div>
           <Select value={activeFilter} onValueChange={(v) => setActiveFilter(v)}>
-            <SelectTrigger className="w-[80px] sm:w-[80px] md:w-[80px]">
-              <SelectValue placeholder="Type of note" />
+            <SelectTrigger className="w-[150px] sm:w-[80px] md:w-[170px]">
+              <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All">All</SelectItem>
               <SelectItem value="notes">Notes</SelectItem>
               <SelectItem value="cheatsheet">Cheatsheets</SelectItem>
-              <SelectItem value="Answer Key">Answer Key</SelectItem>
+              <SelectItem value="Answerkey">Answer Key</SelectItem>
               <SelectItem value="knowledge">Knowledge</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </section>
-
       <section className="w-full text-sm font-light">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr">
           {filteredNotes.map((listing) => (
@@ -94,20 +90,12 @@ export const UserOwnNote = (currentUserInfo) => {
                 className="block h-full"
               >
                 <Card className="h-full flex flex-col p-5 rounded-md transition-shadow duration-300 hover:shadow-xl">
-                  <CardHeader className="flex items-stretch gap-4 p-0">
+                  <CardHeader className="flex items-stretch gap-4 p-0 font-semibold">
+                    {listing.originalName}
                     <div className="flex-1 flex flex-col justify-center gap-1">
-                      <div className="flex">
-                        <p className="flex-1 font-medium">
-                          {user.fullName ?? "Unknown user"}
-                        </p>
-
+                      <div className="flex justify-end">
                         <p className="text-xs text-muted-foreground">
                           {formatRelativeMonthYear(listing.createdAt)}
-                        </p>
-                      </div>
-                      <div className="flex">
-                        <p className="text-xs text-muted-foreground">
-                          Year {user.yearOfStudy ?? "Unknown year"} {user.major ?? "Unknown major"}
                         </p>
                       </div>
                     </div>
@@ -115,7 +103,6 @@ export const UserOwnNote = (currentUserInfo) => {
 
                   {/* grow to push footer to bottom */}
                   <CardContent className="space-y-2 p-0 pb-3 flex-1">
-                    <h3 className="font-semibold">{listing.originalName}</h3>
                     <p className="text-sm line-clamp-2">{listing.description}</p>
                     <div className="flex flex-wrap text-xs text-muted-foreground gap-y-2">
                       {listing.tags?.map((tag, i) => (
@@ -174,3 +161,4 @@ export const UserOwnNote = (currentUserInfo) => {
     </main>
   )
 }
+

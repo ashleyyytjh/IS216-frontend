@@ -19,10 +19,7 @@ function DashboardBuyer(currentUser) {
     useEffect(() => {
         getOrders()
             .then((resp) => {
-                console.log(resp)
-                const fil = resp //.filter((r)=>{ return r.status == "succeeded"})
-                console.log(fil)
-                setOrders(fil)
+                setOrders(resp)
             })
             .catch((err) => {
                 console.error("Error fetching orders:", err)
@@ -34,8 +31,9 @@ function DashboardBuyer(currentUser) {
     const [totalSpent, setTotalSpent] = useState(0);
 
     useEffect(() => {
-        if (!orders) return;
-
+        if (!orders){
+            return;
+        }
         if (orders.length === 0) {
             setHashMap({});
             setTotalCount(0);

@@ -37,6 +37,7 @@ export default function ImprovedHomepage() {
   const [user, setUser] = useState<User | null>(null);
   const [stepSelection, setStepSelection] = useState<String>('buyer');
   const isMobile = useIsMobile();
+  
   useEffect(() => {
     window.history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
@@ -88,8 +89,6 @@ export default function ImprovedHomepage() {
         > {
             isLoggedIn ?
               <>
-
-
              <HeroGeometric
                   badge={user?.username}
                   title1="OnlyNotes"
@@ -101,7 +100,7 @@ export default function ImprovedHomepage() {
                   <Button size={isMobile ? 'sm' : 'lg'} onClick={() => navigate('/explore')}>
                     Browse <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                  <Button size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => navigate('/upload')}>
+                  <Button size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => navigate('/create')}>
                     Sell Notes
                   </Button>
                 </div>
@@ -124,7 +123,7 @@ export default function ImprovedHomepage() {
                   <Button size={isMobile ? 'sm' : 'lg'} onClick={() => navigate('/explore')}>
                     Browse <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                  <Button size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => navigate('/upload')}>
+                  <Button size={isMobile ? 'sm' : 'lg'} variant="outline" onClick={() => navigate('/create')}>
                     Sell Notes
                   </Button>
                 </div>

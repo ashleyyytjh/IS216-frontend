@@ -105,46 +105,40 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
             Top Revenue-Generating Modules
           </CardTitle>
 
-          <div className="
-    flex flex-col sm:flex-row
-    sm:justify-end sm:items-center
-    gap-2 sm:gap-3
-    w-full sm:w-auto
-  ">
-            <Select value={moduleFilter} onValueChange={setModuleFilter}>
-              <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
-                <SelectValue placeholder="Module" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All</SelectItem>
-                {moduleRevenueArray.map((m, i) => (
-                  <SelectItem key={i} value={m.module}>
-                    {m.module}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-1 sm:gap-1 w-full sm:w-auto">
+            <div className="w-[130px] max-[400px]:w-[100px] max-[400px]:text-sm max-[400px]:h-6">
+              <Select value={moduleFilter} onValueChange={setModuleFilter}>
+                <SelectTrigger className="w-full h-7 text-xs border-gray-200 shadow-sm px-2 rounded-l-md hover:bg-gray-100">
+                  <SelectValue placeholder="Module" />
+                </SelectTrigger>
+                <SelectContent className="w-[var(--radix-select-trigger-width)]">
+                  <SelectItem value="All">All</SelectItem>
+                  {moduleRevenueArray.map((m, i) => (
+                    <SelectItem key={i} value={m.module}>
+                      {m.module}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-            {/* Sort Filter */}
-            <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "asc" | "desc")}>
-              <SelectTrigger className="w-[130px] h-7 text-xs border-gray-200 shadow-sm px-2 rounded-md hover:bg-gray-100">
-                <SelectValue placeholder="Sort" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="desc">Decreasing</SelectItem>
-                <SelectItem value="asc">Increasing</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="w-[130px] max-[400px]:w-[115px] max-[400px]:text-sm max-[400px]:h-6 max-[400px]:mt-4">
+              <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "asc" | "desc")}>
+                <SelectTrigger className="w-full h-7 text-xs border-gray-200 shadow-sm px-2 rounded-l-md hover:bg-gray-100">
+                  <SelectValue placeholder="Sort" />
+                </SelectTrigger>
+                <SelectContent className="w-[var(--radix-select-trigger-width)]">
+                  <SelectItem value="desc">Decreasing</SelectItem>
+                  <SelectItem value="asc">Increasing</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </CardHeader>
 
 
-      <CardContent className="
-    relative flex-1 flex items-center justify-center
-    h-[380px] sm:h-[380px] xs:h-[300px] max-[400px]:h-[250px]
-    px-2 pt-4 sm:px-6 sm:pt-6 space-y-3 sm:space-y-4
-  ">
+      <CardContent className="relative flex-1 flex items-center justify-center h-[380px] sm:h-[380px] xs:h-[300px] max-[400px]:h-[250px] px-2 pt-4 sm:px-6 sm:pt-6 space-y-3 sm:space-y-4">
         {isLoading ? (
           <SpinItem />
         ) : isEmpty ? (
@@ -152,12 +146,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="
-    relative aspect-auto
-    h-[250px] sm:h-[250px] xs:h-[200px] max-[400px]:h-[160px]
-    w-full transition-opacity duration-700
-  "
-          >
+            className="relative aspect-auto h-[250px] sm:h-[250px] xs:h-[200px] max-[400px]:h-[160px] w-full transition-opacity duration-700">
             <BarChart data={chartData} style={{ overflow: "hidden" }}>
               <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" opacity={0.8} />
               <XAxis
@@ -177,8 +166,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                 tickFormatter={(val) => formatCurrency(Number(val))}
                 tick={{ fill: "#6B7280", fontSize: smallSize ? 11 : 13, fontWeight: 400 }}
                 label={{
-                  value: "Revenue ($)",
-                  angle: -90,
+                  value: "Revenue ($)", angle: -90,
                   position: "insideLeft",
                   dx: -6,
                   style: { textAnchor: "middle" },
@@ -189,7 +177,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
               <ChartTooltip
                 cursor={false}
                 labelFormatter={(label) => `Module: ${label}`}
-                formatter={(value: any, _name: any, item: any) => [
+                formatter={(value: any, name: any, item: any) => [
                   chartConfig[item.dataKey]?.label,
                   formatCurrency(Number(value)),
                 ]}
@@ -204,7 +192,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                 animationDuration={800}
                 animationEasing="ease-in-out"
               >
-                {chartData.map((_entry, index) => (
+                {chartData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={
@@ -226,13 +214,10 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                     const x = Number(props.x ?? 0)
                     const y = Number(props.y ?? 0)
                     const width = Number(props.width ?? 0)
-                    const height = Number(props.height ?? 0)
                     const value = Number(props.value ?? 0)
 
-                    const labelY = y - 6        // label sits slightly above the bar
-                    const chartTop = 0          // top of chart coordinate space
-
-                    // 🔒 hide label if it would overflow above chart
+                    const labelY = y - 6
+                    const chartTop = 0
                     if (labelY < chartTop) return null
 
                     return (
@@ -249,10 +234,8 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                       </text>
                     )
                   }}
-
                   fontSize={overlapBP ? 8 : 12}
                   formatter={(val: number) => formatCurrency(val)}
-
                 />
               </Bar>
             </BarChart>

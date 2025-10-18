@@ -18,8 +18,11 @@ import { getAvatarFallback } from "@/utils/util";
 
 export default function ListingCard({ data }: { data: SearchNotesItem }) {
   return (
-    <Link to={`/listings/${data.id}`} className="h-full hover:scale-101 transition">
-      <Card className="h-full flex flex-col p-4 rounded-md">
+    <Link to={`/listings/${data.id}`} className="h-full hover:scale-101 transition  relative ">
+      <Card className="h-full flex flex-col p-4 rounded-md paperfold-animate" style={{
+                  background:
+                    "repeating-linear-gradient(0deg, rgba(0,0,0,0.04), rgba(0,0,0,0.01) 1px, transparent 1px, transparent 20px), repeating-linear-gradient(90deg, rgba(0,0,0,0.0001), rgba(0,0,0,0.01) 1px, transparent 1px, transparent 20px)",
+                }}>
         <CardHeader className="flex items-stretch gap-4 p-0 md:flex-row sm:flex-row flex-col relative">
           <Avatar className="h-12 w-12 rounded-md overflow-hidden">
             <AvatarImage src={data.userImageUrl} className="object-cover" />

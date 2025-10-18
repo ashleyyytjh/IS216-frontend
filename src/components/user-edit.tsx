@@ -3,7 +3,7 @@ import { Button } from "./ui/button"
 import { Label } from "@/components/ui/label"
 import BadgeClosableDemo from "./removable-badge"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
-import { Plus, Pencil, Camera, User } from "lucide-react"
+import { Plus, Pencil, User } from "lucide-react"
 import { useState, useEffect } from "react"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { updateUser } from "@/services/UserService"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
+//Form to ensure validation.
 const formSchema = z.object({
   username: z.string().min(0, "Username must be filled."),
   email: z.string().email("Invalid email address"),
@@ -29,20 +30,23 @@ function UserEdit(currentUser) {
   const [curModsState, setCurMods] = useState(() => curMods)
   const [userMod, setUserMod] = useState("")
   const [previewImage, setPreviewImage] = useState(currentUser["imageUrl"] || "")
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   const addNewMod = () => {
-    if (userMod.trim() === "") return
-    setCurMods((prev) => [...prev, userMod])
-    setUserMod("")
+    if (userMod.trim() === "") {
+      return;
+    } else {
+      setCurMods((prev) => [...prev, userMod])
+      setUserMod("")
+    }
+
   }
 
   const removeModule = (moduleName: string) => {
     setCurMods((prev) => prev.filter((m) => m !== moduleName))
   }
 
-  const handleInputChange = (event) => setUserMod(event.target.value)
-
+  const handleInputChange = (event) =>{setUserMod(event.target.value)}
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -67,7 +71,6 @@ function UserEdit(currentUser) {
     newValues['major'] = values['major']
     newValues['modules'] = values['newCourse']
 
-    // keep your existing updateUser
     updateUser(newValues)
       .then((response) => {
         toast.success("Successfully updated your account details!")
@@ -100,45 +103,16 @@ function UserEdit(currentUser) {
       <Form {...form}>
         <form className="space-y-8" onSubmit={handleSubmit(onSubmit, onInvalid)}>
           <div className="flex justify-center ml-auto mr-auto">
-            <div className="relative w-24 h-24">
+            <div className="w-24 h-24">
               <Avatar className="w-24 h-24">
-                  {previewImage ? (
-    <AvatarImage src={previewImage} alt="User avatar" />
-  ) : (
-    <AvatarFallback>
-      <User className="w-8 h-8 text-gray-500" />
-    </AvatarFallback>
-  )}
+                {previewImage ? (
+                  <AvatarImage src={previewImage} />
+                ) : (
+                  <AvatarFallback>
+                    <User className="w-8 h-8 text-gray-500" />
+                  </AvatarFallback>
+                )}
               </Avatar>
-
-              <label
-                htmlFor="avatar-upload"
-                className="absolute bottom-1 right-1 flex items-center justify-center
-                    w-8 h-8 rounded-full bg-black/70 text-white cursor-pointer
-                    hover:bg-black transition"
-              >
-                <Camera className="w-4 h-4" />
-              </label>
-
-              <input
-                id="avatar-upload"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) {
-                    const file = e.target.files[0]
-                    setSelectedFile(file)
-
-                    // show preview immediately
-                    const reader = new FileReader()
-                    reader.onload = () => {
-                      setPreviewImage(reader.result as string)
-                    }
-                    reader.readAsDataURL(file)
-                  }
-                }}
-              />
             </div>
           </div>
 
@@ -177,7 +151,6 @@ function UserEdit(currentUser) {
               </div>
             </div>
 
-            {/* Major */}
             <div className="grid gap-2 w-full">
               <FormField
                 control={form.control}
@@ -194,7 +167,6 @@ function UserEdit(currentUser) {
               />
             </div>
 
-            {/* Modules */}
             <div className="grid gap-2 w-full">
               <Label>Modules Taken</Label>
               <div className="p-4 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50/50 min-h-[80px]">
@@ -221,12 +193,6 @@ function UserEdit(currentUser) {
                   value={userMod}
                   onChange={handleInputChange}
                   placeholder="Add your modules here"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault()
-                      addNewMod()
-                    }
-                  }}
                 />
                 <Button type="button" onClick={addNewMod}>
                   <Plus />
@@ -236,9 +202,8 @@ function UserEdit(currentUser) {
           </CardContent>
 
           <CardFooter className="flex justify-end">
-            <Button type="submit" disabled={isSubmitting} className="text-lg">
-              <span className="text-sm">{isSubmitting ? "Updating..." : "Update Profile"}</span>
-              <Pencil className="w-3 h-3 ml-2" />
+            <Button type="submit" className="!text-sm">
+              Update Profile
             </Button>
           </CardFooter>
         </form>

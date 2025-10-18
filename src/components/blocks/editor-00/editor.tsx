@@ -30,7 +30,7 @@ import { ToolbarPlugin } from "@/components/editor/plugins/toolbar/toolbar-plugi
 import { editorTheme } from "@/components/editor/themes/editor-theme"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ClearFormattingToolbarPlugin } from "@/components/editor/plugins/toolbar/clear-formatting-toolbar-plugin"
-import { FontFamilyToolbarPlugin } from "@/components/editor/plugins/toolbar/font-family-toolbar-plugin"
+// import { FontFamilyToolbarPlugin } from "@/components/editor/plugins/toolbar/font-family-toolbar-plugin"
 import { HistoryToolbarPlugin } from "@/components/editor/plugins/toolbar/history-toolbar-plugin"
 import { FontSizeToolbarPlugin } from "@/components/editor/plugins/toolbar/font-size-toolbar-plugin"
 import { FontFormatToolbarPlugin } from "@/components/editor/plugins/toolbar/font-format-toolbar-plugin"
@@ -58,8 +58,27 @@ import { InsertTable } from "@/components/editor/plugins/toolbar/block-insert/in
 // import { FontColorToolbarPlugin } from "@/components/editor/plugins/toolbar/font-color-toolbar-plugin"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { ElementFormatToolbarPlugin } from "@/components/editor/plugins/toolbar/element-format-toolbar-plugin"
-import { SlashCommandPlugin } from "@/components/editor/plugins/slash-command-plugin"
+// import { SlashCommandPlugin } from "@/components/editor/plugins/slash-command-plugin"
+import { ContextMenuPlugin } from "@/components/editor/plugins/context-menu-plugin"
+import { CodeHighlightNode, CodeNode } from "@lexical/code"
+import { CodeActionMenuPlugin } from "@/components/editor/plugins/code-action-menu-plugin"
+import { CodeHighlightPlugin } from "@/components/editor/plugins/code-highlight-plugin"
+import { FormatCodeBlock } from "@/components/editor/plugins/toolbar/block-format/format-code-block"
+import { CodeLanguageToolbarPlugin } from "@/components/editor/plugins/toolbar/code-language-toolbar-plugin"
 
+import { ComponentPickerMenuPlugin } from "@/components/editor/plugins/component-picker-menu-plugin"
+import { AlignmentPickerPlugin } from "@/components/editor/plugins/picker/alignment-picker-plugin"
+import { HeadingPickerPlugin } from "@/components/editor/plugins/picker/heading-picker-plugin"
+import { ParagraphPickerPlugin } from "@/components/editor/plugins/picker/paragraph-picker-plugin"
+import { QuotePickerPlugin } from "@/components/editor/plugins/picker/quote-picker-plugin"
+import { CodePickerPlugin } from "@/components/editor/plugins/picker/code-picker-plugin"
+import { BulletedListPickerPlugin } from "@/components/editor/plugins/picker/bulleted-list-picker-plugin"
+import { NumberedListPickerPlugin } from "@/components/editor/plugins/picker/numbered-list-picker-plugin"
+import { DraggableBlockPlugin } from "@/components/editor/plugins/draggable-block-plugin"
+import { CheckListPickerPlugin } from "@/components/editor/plugins/picker/check-list-picker-plugin"
+import { TablePickerPlugin } from "@/components/editor/plugins/picker/table-picker-plugin"
+import { ImportExportPlugin } from "@/components/editor/plugins/actions/import-export-plugin"
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin"
 
 type EditorProps = {
   editorSerializedState?: SerializedEditorState
@@ -82,6 +101,8 @@ const editorConfig: InitialConfigType = {
     TableNode,
     TableRowNode,
     TableCellNode,
+    CodeNode,
+    CodeHighlightNode,
   ],
   onError: (error: Error) => {
     console.error(error)
@@ -151,9 +172,11 @@ export function Plugins() {
               <FormatNumberedList />
               <FormatBulletedList />
               <FormatCheckList />
+              <FormatCodeBlock />
               <FormatQuote />
             </BlockFormatDropDown>
-            <FontFamilyToolbarPlugin />
+            {blockType === "code" ? <CodeLanguageToolbarPlugin /> : <></>}
+            {/* <FontFamilyToolbarPlugin /> */}
              <FontSizeToolbarPlugin />
              <FontFormatToolbarPlugin />
              <SubSuperToolbarPlugin />
@@ -187,8 +210,9 @@ export function Plugins() {
           }
           ErrorBoundary={LexicalErrorBoundary}
         />
-        <SlashCommandPlugin anchorElem={floatingAnchorElem} />
+        {/* <SlashCommandPlugin anchorElem={floatingAnchorElem} /> */}
         {/* undo/redo buttons wont work if i enable commands need to fix */}
+        <ContextMenuPlugin />
         <ListPlugin />
         <CheckListPlugin />
         <ClickableLinkPlugin />
@@ -202,6 +226,29 @@ export function Plugins() {
          {/* <ImagesPlugin /> */}
         <TablePlugin />
         <HistoryPlugin />
+        <CodeActionMenuPlugin anchorElem={floatingAnchorElem} />
+        <CodeHighlightPlugin />
+
+        <ComponentPickerMenuPlugin
+          baseOptions={[
+            ParagraphPickerPlugin(),
+            HeadingPickerPlugin({ n: 1 }),
+            HeadingPickerPlugin({ n: 2 }),
+            HeadingPickerPlugin({ n: 3 }),
+            TablePickerPlugin(),
+            BulletedListPickerPlugin(),
+            NumberedListPickerPlugin(),
+            CheckListPickerPlugin(),
+            CodePickerPlugin(),
+            QuotePickerPlugin(),
+            AlignmentPickerPlugin({ alignment: "left" }),
+            AlignmentPickerPlugin({ alignment: "right" }),
+            AlignmentPickerPlugin({ alignment: "center" }),
+            AlignmentPickerPlugin({ alignment: "justify" }),
+            
+          ]}
+        />
+        <DraggableBlockPlugin anchorElem={floatingAnchorElem}/>
         {/* rest of the plugins */}
       </div>
       <ActionsPlugin>
@@ -215,7 +262,10 @@ export function Plugins() {
             {/* right side action buttons */}
             <>
               {/* <ImportExportPlugin /> */}
-              <ExportPdfPlugin />
+              <ImportExportPlugin />
+              {/* <ExportPdfPlugin /> */}
+              {/* not working can only export text that's typed tables etc dont work */}
+              {/* <MarkdownShortcutPlugin /> */}
               <EditModeTogglePlugin />
               <ClearEditorActionPlugin />
               <ClearEditorPlugin />

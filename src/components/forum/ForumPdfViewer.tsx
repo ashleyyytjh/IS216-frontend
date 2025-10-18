@@ -16,7 +16,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
-export default function ForumPdfViewer({ id }: { id: string}) {
+export default function ForumPdfViewer({ id, pageHandler }: { id: string, pageHandler: (page: number) => void }) {
   const [fileData, setFileData] = useState<Uint8Array | null>(null);
   const file = useMemo(
     () => (fileData ? { data: fileData } : undefined),
@@ -43,36 +43,11 @@ export default function ForumPdfViewer({ id }: { id: string}) {
     setPageScale(1.0);
   }
 
-  // useEffect(() => {
-  //   const loadPdf = async () => {
-  //     try {
-  //       const response = await fetch(samplePdf);
-
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-
-  //       const arrayBuffer = await response.arrayBuffer();
-  //       const uint8Array = new Uint8Array(arrayBuffer);
-  //       setFileData(uint8Array);
-
-  //     } catch (e) {
-  //       console.error('Error loading PDF:', e);
-  //       toast.error("There was an error loading the file.", { 
-  //         description: String(e), 
-  //         dismissible: true, 
-  //         richColors: true 
-  //       });
-  //     }
-  //   };
-
-  //   loadPdf();
-  // }, []); 
     useEffect(() => {
       (async () => {
         try {
-          const data = await downloadNotes(id);
-          const res = await fetch(data.url);
+          // const data = await downloadNotes(id);
+          const res = await fetch(samplePdf);
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const blob = await res.blob();
           const arrayBuffer = await blob.arrayBuffer();
@@ -116,13 +91,17 @@ export default function ForumPdfViewer({ id }: { id: string}) {
   }, [width, pageNumber, pageDimensions, pageScale]);
 
   return (
-    <Card className="flex flex-col items-center justify-center w-full pt-0 gap-0">
+    <Card className="flex flex-col items-center justify-center w-9/10 pt-0 gap-0">
       <div className="w-full flex items-center justify-between p-2">
         <div className="flex items-center w-fit">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+            onClick={() => {
+              pageHandler(Math.max(pageNumber - 1, 1));
+
+              setPageNumber((prev) => Math.max(prev - 1, 1))
+            }}
             disabled={pageNumber <= 1}
           >
             <ChevronLeft />
@@ -133,9 +112,10 @@ export default function ForumPdfViewer({ id }: { id: string}) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() =>
-              setPageNumber((prev) => Math.min(prev + 1, numPages))
-            }
+            onClick={() => {
+              pageHandler(Math.min(pageNumber + 1, numPages));
+              setPageNumber((prev) => Math.min(prev + 1, numPages));
+            }}
           >
             <ChevronRight />
           </Button>

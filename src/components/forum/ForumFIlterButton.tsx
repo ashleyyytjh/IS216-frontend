@@ -1,48 +1,39 @@
-import * as React from "react";
-import { ListFilter } from "lucide-react";
+"use client"
 
-import { Button } from "@/components/ui/button";
+import { Filter } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuRadioGroup,
-    DropdownMenuRadioItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useState } from "react"
 
-  export type FilterOption = "all" | "page";
+export function ForumFilterButton({ onFilterChange }) {
+  const [selected, setSelected] = useState("all");
 
-  interface DiscussionFilterProps {
-    onFilterChange: (filter: FilterOption) => void;
+  const handleSelect = (value: "all" | "page") => {
+    setSelected(value)
+    onFilterChange(value)
   }
 
-export function ForumFilterButton({ onFilterChange }: DiscussionFilterProps) {
-    const [filter, setFilter] = React.useState<FilterOption>("all");
-
-    const handleValueChange = (value: string) => {
-      const newFilter = value as FilterOption;
-      setFilter(newFilter);
-      onFilterChange(newFilter);
-    };
-
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline">
-            <ListFilter className="mr-2 h-4 w-4" />
-            Filter Discussions
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup value={filter} onValueChange={handleValueChange}>
-            <DropdownMenuRadioItem value="all">All Discussions</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="page">This Page</DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    );
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">
+          <Filter className="h-4 w-4" />
+          Filter by {selected === "all" ? "All" : "Page"}
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => handleSelect("all")}>
+          All
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleSelect("page")}>
+          Page
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }

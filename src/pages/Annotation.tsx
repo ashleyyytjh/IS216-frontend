@@ -42,11 +42,14 @@ interface Annotation {
     replies: Annotation[]; 
     depth: number;
     imageUrl?: string;
+    page:number
 }
+
 import { Document, Page } from 'react-pdf';
 import PDFViewer from '@/components/listing/PDFViewer';
 import ForumPdfViewer from '@/components/forum/ForumPdfViewer';
-import { FilterOption, ForumFilterButton } from '@/components/forum/ForumFIlterButton';
+import { ForumFilterButton } from '@/components/forum/ForumFIlterButton';
+
 let NOTE_CONTENT = "The Solar System is the gravitationally bound system of the Sun and the objects that orbit it. It formed 4.6 billion years ago from the gravitational collapse of a giant interstellar molecular cloud. The vast majority of the system's mass is in the Sun, with most of the remaining mass contained in the planet Jupiter. The four inner terrestrial planets—Mercury, Venus, Earth and Mars—are composed primarily of rock and metal.";
 
 export default function AnnotationComponent() {
@@ -62,17 +65,14 @@ export default function AnnotationComponent() {
     const [nestedAnnotations, setNestedAnnotations] = useState<Annotation[]>([]);
     const [deleteTarget, setDeleteTarget] = useState<Annotation | null>(null);
     const [fileData, setFileData] = useState<Uint8Array | null>(null);
-
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [replyInputs, setReplyInputs] = useState<{[key: string]: string}>({});
+    const [filter, setFilter] = useState<"all" | "page">("all");
     const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
-    const [activeFilter, setActiveFilter] = useState<FilterOption>("all");
+    const [originalAnnotations, setOriginalAnnotations] = useState<Annotation[]>([]);
 
-    const handleFilterChange = (newFilter: FilterOption) => {
-        setActiveFilter(newFilter);
-    };
-   
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true)
@@ -99,22 +99,38 @@ export default function AnnotationComponent() {
                 return;
             }
 
-            // await fetchPdf(noteId);
-
             setNote(data);
-            // console.log(data);
-            const d = await getAnnotationsByNoteId(noteId!);
-            const commentTree = buildCommentTree(d);
-            setNestedAnnotations(commentTree);
+            setCurrentPage(1);
+            await fetchAnnotations()
             setLoading(false);  
         }
   
         fetchData();
-  
-        console.log('loading status', loading)
     },[noteId]);
 
-    const [paragraphs, setParagraphs] = useState<string[]>([]);
+    useEffect(() => {
+        fetchAnnotations();
+    },[currentPage, filter]);
+
+    const fetchAnnotations = async () => {
+        if (!noteId) return;
+        let d = await getAnnotationsByNoteId(noteId);
+      
+        let commentTree = buildCommentTree(d);
+        if (filter !== "all") {
+            commentTree = commentTree.filter((ann: Annotation) => ann.page === currentPage);
+        }
+        setOriginalAnnotations(commentTree);
+        setNestedAnnotations(commentTree);
+    };
+
+    const handlePageChange = (pageNumber: number) => {
+        console.log('page changed to', pageNumber);
+        setCurrentPage(pageNumber);
+    }
+
+
+
 
     const fetchPdf = async (noteId: string) => {
     // const notepdf = await downloadNotes(noteId);
@@ -133,15 +149,6 @@ export default function AnnotationComponent() {
             .join(' ');
             allText += pageText + '\n\n';
         }
-
-    // Split into paragraphs and filter out empty strings
-    const paras = allText
-        .trim()
-        .split(/\n{2,}/g)
-        .filter(p => p.length > 0);
-        console.log(paras);
-        // Assign the array of paragraphs to NOTE_CONTENT
-        NOTE_CONTENT = paras.join('\n\n');  
     };
 
     const buildCommentTree = (comments: Annotation[]): Annotation[] => {
@@ -152,13 +159,11 @@ export default function AnnotationComponent() {
         comments.forEach(comment => {
             commentMap[comment.id] = { ...comment, replies: [] };
         });
-        console.log(comments)
-        console.log(commentMap)
         // link replies to their parents
         comments.forEach(comment => {
             if (comment.parent_id !== null) {
                 // add reply to parent
-                console.log('found parent', comment.parent_id, 'for reply', comment.id)
+                // console.log('found parent', comment.parent_id, 'for reply', comment.id)
                 commentMap[comment.parent_id].replies.push(commentMap[comment.id]);
             } else {
                 // root comment
@@ -194,7 +199,6 @@ export default function AnnotationComponent() {
             setSelectionRange({ start: startOffset, end: endOffset });
             setShowCommentForm(true);
             setCommentInput("");
-            console.log('sel', { selectedText, startOffset, endOffset });
         }
     };
 
@@ -214,13 +218,13 @@ export default function AnnotationComponent() {
             parent_id: null,
             replies: [], // Initialize empty replies array
             depth: 0,
+            page: currentPage
         };
-
         try {
             const data  = await createAnnotation(newAnnotation);
             if (data) {
                 toast.success('Comment added successfully');
-                console.log('data is', data)
+                // console.log('data is', data)
                 setNestedAnnotations(prev => [
                 { ...data, replies: [], thread_id: data.id},
                     ...prev,
@@ -254,17 +258,13 @@ export default function AnnotationComponent() {
             parent_id: null,
             replies: [], // Initialize empty replies array
             depth: 0,
+            page: currentPage
         };
 
         try {
             const data  = await createAnnotation(newAnnotation);
             if (data) {
                 toast.success('Comment added successfully');
-                console.log('data is', data)
-                setNestedAnnotations(prev => [
-                { ...data, replies: [], thread_id: data.id},
-                    ...prev,
-                ]);
                 // Reset form
                 setShowCommentForm(false);
                 setSelectedText("");
@@ -305,7 +305,8 @@ export default function AnnotationComponent() {
             parent_id: parentId,
             imageUrl: user!.imageUrl,
             replies: [],
-            depth: depth+1 || 0
+            depth: depth+1 || 0,
+            page: currentPage
         };  
         try {       
             const data  = await createAnnotation(newReply);
@@ -432,7 +433,6 @@ export default function AnnotationComponent() {
         }
     };
 
-    // console.log('target', deleteTarget)
     const handleDialogConfirm = async () => {
         setDeleteTarget(null);                        
         if (!deleteTarget) return;
@@ -440,12 +440,7 @@ export default function AnnotationComponent() {
     };
 
     const CommentItem =  ({ annotation, depth, handleDelete, note }) => (
-               <motion.div
-                            key={annotation.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                        >
+    
 
         <div className={`${depth > 0 ? 'ml-6 border-l border-gray-200 pl-3' : ''}`}>
         <div 
@@ -592,22 +587,21 @@ export default function AnnotationComponent() {
                 <CommentItem key={reply.id} annotation={reply} depth={depth + 1} note={note} handleDelete={handleDelete} />
             ))}
         </div>
-        </motion.div>
+        // </motion.div>
 
     );
 
     const viewPdf=() => {
         return (
-            <ForumPdfViewer id={noteId!}  />
+            <ForumPdfViewer id={noteId!} pageHandler={handlePageChange}  />
         )
     }
-    console.log(nestedAnnotations.length)
 
 
   return (
     (note && !loading) ? ( 
     <div className="bg-background w-full text-foreground min-h-screen h-full p-4 sm:p-8">
-        <header className="mb-6 space-y-2">
+        <header className="mb-6 space-y-2 flex justify-center items-center flex-col">
                 <span className='flex flex-row space-x-4'>
                     <h1 className="text-3xl font-bold tracking-tight">{note.title}</h1>
                     <Badge
@@ -625,34 +619,16 @@ export default function AnnotationComponent() {
 
       <div className="w-full flex flex-col justify-center items-center space-x-3">
         <section className=" space-y-2  w-5/6  pb-8 ">
-            {/* <header className="mb-6 space-y-2">
-                <h1 className="text-3xl font-bold tracking-tight">{note.title}</h1>
-                    <Badge
-                        className="text-md font-normal  rounded-full border-none bg-linear-to-r text-white uppercase"
-                        style={{ background: note.module ? courseGradient(note.module): "black" }}
-                        >
-                    {note.module ?? "General"} 
-                    </Badge>
-                <p className="text-md text-muted-foreground">
-                {note.description}
-                </p>
-            </header> */}
-
-            {/* <Card className="mb-2 "> */}
-                {/* <CardContent className=""> */}
                     <div 
                         ref={contentRef}
                         className="text-md leading-relaxed select-text cursor-text  w-full"
                         onMouseUp={handleTextSelection}
                     >
                     { 
-                    // viewPdf()
-                        renderContent()
+                    viewPdf()
+                        // renderContent()
                     }
                     </div>
-                {/* </CardContent> */}
-            {/* </Card> */}
-
                 {/* <p className="text-sm text-muted-foreground mb-8 italic">
                     Select text to add comments • Hover over quotes to highlight referenced text
                 </p> */}
@@ -695,60 +671,72 @@ export default function AnnotationComponent() {
                         </CardContent>
                     </Card>
                 )}
-              
+            
         </section>
         {/* Discussion Section with Nested Comments */}
         <section className="w-5/6 overflow-y-auto">
+            <section className='flex flex-row  justify-between'>
             <h2 className="text-xl font-semibold tracking-tight mb-4 flex items-center">
                 <MessageSquare className="mr-3 h-6 w-6 text-muted-foreground" />
                 Discussion ({nestedAnnotations.length})
             </h2>
-            <ForumFilterButton onFilterChange={handleFilterChange} />
-            {/* comments for types that are not notes! */}
-               {note.type !== "composeNotes" && (
-                    <Card className=" bg-primary-foreground mb-4">
-                        {/* <CardHeader>
-                        <p className="text-sm text-muted-foreground">Add a comment</p>
-                        </CardHeader> */}
-                        <CardContent>
-                        <div className="space-y-3">
-                            <Input
-                            type="text"
-                            placeholder="Type your comment or suggestion..."
-                            value={commentInput}
-                            onChange={(e) => setCommentInput(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    e.preventDefault();
-                                    handleCommentSubmit();
-                                } else if (e.key === 'Escape') {
-                                    handleCancel();
-                                }
-                            }}
-                            autoFocus
-                            />
-                            <div className="flex gap-2">
-                            <Button onClick={handleCommentSubmitNoQuote} disabled={!commentInput.trim()} className="!text-sm">
-                                Submit
-                            </Button>
-                            <Button variant="outline" onClick={handleCancel} className="!text-sm">
-                                Cancel
-                            </Button>
-                            </div>
+            <ForumFilterButton onFilterChange={async (value) => 
+                setFilter(value)
+            } />
+            </section>
+       
+       {/* comments for types that are not notes! */}
+            {note.type !== "composeNotes" && (
+                <Card className=" bg-primary-foreground mb-10">
+                    {/* <CardHeader>
+                    <p className="text-sm text-muted-foreground">Add a comment</p>
+                    </CardHeader> */}
+                    <CardContent>
+                    <div className="space-y-3">
+                        <Input
+                        type="text"
+                        placeholder="Type your comment or suggestion..."
+                        value={commentInput}
+                        onChange={(e) => setCommentInput(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleCommentSubmit();
+                            } else if (e.key === 'Escape') {
+                                handleCancel();
+                            }
+                        }}
+                        autoFocus
+                        />
+                        <div className="flex gap-2">
+                        <Button onClick={handleCommentSubmitNoQuote} disabled={!commentInput.trim()} className="!text-sm">
+                            Submit
+                        </Button>
+                        <Button variant="outline" onClick={handleCancel} className="!text-sm">
+                            Cancel
+                        </Button>
                         </div>
-                        </CardContent>
-                    </Card>
-                )}
-
-            <ScrollArea className='h-78'>
+                    </div>
+                    </CardContent>
+                </Card>
+            )}
+            <ScrollArea className='h-78 scroll-hidden'>
                 <div>
                     {nestedAnnotations.map((annotation) => (
+                    <motion.div
+                        key={annotation.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                    >
                         <CommentItem
+                            key={annotation.id}
                             annotation={annotation}
                             depth={0}
                             handleDelete={handleDeleteFunction}
                             note={note}
                         />
+                    </motion.div>
                     ))} 
                     {nestedAnnotations.length === 0 && (
                         <div className="text-center py-12 text-muted-foreground">
@@ -766,7 +754,9 @@ export default function AnnotationComponent() {
                     )
                 }
             </ScrollArea>
-              
+
+     
+            
         </section>
 
       </div>

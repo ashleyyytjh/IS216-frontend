@@ -53,11 +53,13 @@ import { ExportPdfPlugin } from "@/components/editor/plugins/toolbar/pdf"
 import { BlockInsertPlugin } from "@/components/editor/plugins/toolbar/block-insert-plugin"
 // import { InsertImage } from "@/components/editor/plugins/toolbar/block-insert/insert-image"
 import { InsertTable } from "@/components/editor/plugins/toolbar/block-insert/insert-table"
-// import { SlashCommandPlugin } from "@/components/editor/plugins/slash-command-plugin"
-import { FontBackgroundToolbarPlugin } from "@/components/editor/plugins/toolbar/font-background-toolbar-plugin"
-import { FontColorToolbarPlugin } from "@/components/editor/plugins/toolbar/font-color-toolbar-plugin"
+
+// import { FontBackgroundToolbarPlugin } from "@/components/editor/plugins/toolbar/font-background-toolbar-plugin"
+// import { FontColorToolbarPlugin } from "@/components/editor/plugins/toolbar/font-color-toolbar-plugin"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { ElementFormatToolbarPlugin } from "@/components/editor/plugins/toolbar/element-format-toolbar-plugin"
+import { SlashCommandPlugin } from "@/components/editor/plugins/slash-command-plugin"
+
 
 type EditorProps = {
   editorSerializedState?: SerializedEditorState
@@ -79,7 +81,7 @@ const editorConfig: InitialConfigType = {
     // ImageNode,
     TableNode,
     TableRowNode,
-    TableCellNode
+    TableCellNode,
   ],
   onError: (error: Error) => {
     console.error(error)
@@ -158,8 +160,8 @@ export function Plugins() {
              <LinkToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
             <ClearFormattingToolbarPlugin />
              <ButtonGroup>
-              <FontColorToolbarPlugin />
-              <FontBackgroundToolbarPlugin />
+              {/* <FontColorToolbarPlugin />
+              <FontBackgroundToolbarPlugin /> */}
              </ButtonGroup>
               <ElementFormatToolbarPlugin />
               <BlockInsertPlugin>
@@ -185,7 +187,7 @@ export function Plugins() {
           }
           ErrorBoundary={LexicalErrorBoundary}
         />
-        {/* <SlashCommandPlugin /> */}
+        <SlashCommandPlugin anchorElem={floatingAnchorElem} />
         {/* undo/redo buttons wont work if i enable commands need to fix */}
         <ListPlugin />
         <CheckListPlugin />

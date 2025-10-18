@@ -646,8 +646,8 @@ export default function AnnotationComponent() {
                         onMouseUp={handleTextSelection}
                     >
                     { 
-                    viewPdf()
-                        // renderContent()
+                    // viewPdf()
+                        renderContent()
                     }
                     </div>
                 {/* </CardContent> */}

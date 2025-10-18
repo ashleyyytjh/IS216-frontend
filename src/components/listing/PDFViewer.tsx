@@ -52,20 +52,20 @@ export default function PDFViewer({ id, purchased }: { id: string, purchased: bo
     setPageScale(1.0 + random);
   }
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await downloadNotes(id);
-        const res = await fetch(data.url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const blob = await res.blob();
-        const arrayBuffer = await blob.arrayBuffer();
-        setFileData(new Uint8Array(arrayBuffer));
-      } catch (err) {
-        toast.error("There was an error loading the file.", { description: String(err), dismissible: true, richColors: true })
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const data = await downloadNotes(id);
+  //       const res = await fetch(data.url);
+  //       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  //       const blob = await res.blob();
+  //       const arrayBuffer = await blob.arrayBuffer();
+  //       setFileData(new Uint8Array(arrayBuffer));
+  //     } catch (err) {
+  //       toast.error("There was an error loading the file.", { description: String(err), dismissible: true, richColors: true })
+  //     }
+  //   })();
+  // }, []);
 
   useEffect(() => {
     resetPageScale()

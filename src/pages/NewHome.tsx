@@ -73,7 +73,7 @@ export default function ImprovedHomepage() {
   const navigate = useNavigate();
 
   return (
-    <div ref={targetRef} className="relative w-full">
+    <div ref={targetRef} className="relative w-full overflow-y-hidden">
 
       {/* The Sticky Hero Section */}
     

@@ -3,7 +3,7 @@ import { ContainerTextFlip } from "../ui/container-text-flip";
 
 export default function Hero() {
   return (
-    <section className="h-full w-screen overflow-hidden">
+    <section className="h-full w-full overflow-hidden">
       <div className="container border-t border-b border-dashed mx-auto">
 
         <div className="relative flex w-full max-w-6xl flex-col justify-start border-l border-r border-t-0 border-dashed px-5 py-12 md:items-center md:justify-center lg:mx-auto">

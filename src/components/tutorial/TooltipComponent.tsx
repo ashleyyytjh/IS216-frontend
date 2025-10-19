@@ -23,7 +23,7 @@ export default function CustomTooltip({
     <Card
       {...tooltipProps}
       className={cn(
-        'relative max-w-80  bg-background/95 animate-in fade-in zoom-in-95 border-0 isolate aspect-video  rounded-xl  shadow-lg ring-1 ring-black/5 gap-5 ',
+        'relative max-h-80 md:w-80  bg-background/95 animate-in fade-in zoom-in-95 border-0 isolate aspect-video  rounded-xl  shadow-lg ring-1 ring-black/5 gap-5 ',
         'p-4 rounded-xl'
       )}
     >

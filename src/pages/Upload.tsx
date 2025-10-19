@@ -408,7 +408,7 @@ export default function Upload() {
           run={run}
           showProgress
           showSkipButton
-          scrollOffset={350}
+          disableScrolling
           continuous
           steps={tourSteps}
           styles={{

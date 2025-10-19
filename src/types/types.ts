@@ -209,3 +209,21 @@ export type GraphData = {
 }
 
 export type TypeOption = { value: string; label: string; count: number }
+
+// For modules page
+export type Category = "Major" | "Core" | "Math" | "Elective" | "GE";
+
+export type Semester = 1 | 2 | 0;
+
+export type Module = {
+  code: string;
+  name: string;
+  category?: Category;
+  categories?: Category[];
+  units?: number;
+  sem?: Semester;
+  prereqs?: string[];
+  notes?: string;
+};
+
+export type ProgramPlan = Record<number, Module[]>;

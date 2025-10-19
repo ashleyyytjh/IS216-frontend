@@ -3,6 +3,7 @@ import FilterBar from "@/components/explore/FilterBar";
 import { TypeOption } from "@/types/types";
 import ListingCard from "@/components/explore/ListingCard";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { searchNotes } from "@/services/NotesService";
 import { ListingProvider, useListing } from "@/components/explore/ListingContext";
 import ListingPagination from "@/components/explore/ListingPagination";
@@ -12,9 +13,10 @@ import { Spinner } from "@/components/ui/shadcn-io/spinner";
 const DEFAULT_PAGE_SIZE = 9
 
 export function ExploreContent() {
-  const { query, type, showPaid, timeFilter, listings, setListings, setOptions, setTotal, page } = useListing()
+  const location = useLocation();
+  const { query, type, showPaid, timeFilter, listings, setListings, setOptions, setTotal, setQuery, page } = useListing()
   const [loading, setLoading] = useState(false);
-  const getListings = async () => {
+  const getListings = async (overrideQuery?: string) => {
     setLoading(true);
     let since = new Date()
     const now = new Date();
@@ -29,9 +31,10 @@ export function ExploreContent() {
       since.setFullYear(now.getFullYear() - 1);
     }
     const params = new URLSearchParams({ limit: `${DEFAULT_PAGE_SIZE}` });
-    if (query.trim() !== "") {
-      params.set("query", query);
-    }
+    
+    const q = (overrideQuery ?? query).trim();
+    if (q !== "") params.set("query", q);
+
     if (type != "") {
       params.set("type", type)
     }
@@ -51,6 +54,15 @@ export function ExploreContent() {
   useEffect(() => {
     getListings()
   }, [type, showPaid, timeFilter, page])
+
+  useEffect(() => {
+    const sp = new URLSearchParams(location.search);
+    const q = sp.get("query");
+     if (q && q !== query) {
+       setQuery(q);
+       getListings(q);
+     }
+    }, [location.search]);
 
   return (
     <main className="px-5 xl:px-0 flex flex-col gap-8 py-10">

@@ -46,6 +46,7 @@ export function UnpublishedNotes() {
   useEffect(() => {
     getOwnedComposeNotes().then((res) => {
       let da = res.data
+      //res.data[0].publish = false;
       if (activeFilter == "true") {
         da = da.filter((d) => d.publish === true)
       } else {
@@ -141,7 +142,15 @@ export function UnpublishedNotes() {
                           <TableCell>{dateFormat(note.createdAt)}</TableCell>
                           <TableCell className="text-foreground">{dateFormat(note.updatedAt)}</TableCell>
                           <TableCell className="text-foreground">{formatPriceSGD(note.price)}</TableCell>
-                          <TableCell className="text-foreground">{note.publish ? ("Published") : ("Not Published")}</TableCell>
+                          <TableCell className="text-foreground">
+                            {
+                              note.publish ? (
+                                <Badge className="bg-emerald-600 hover:bg-emerald-700 py-1 px-3 text-white">Published</Badge>
+                              ) : (
+                                <Badge className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1">Unpublished</Badge>
+                              )
+                            }
+                          </TableCell>
 
 
                           <TableCell className="pr-[2rem]">
@@ -149,10 +158,9 @@ export function UnpublishedNotes() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white border-none px-2 py-1"
+                                className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white border-none px-3 py-1"
                                 onClick={() => { {/*Nav code here*/ } }}
                               >
-                                <File className="h-4 w-4" />
                                 <span className="text-xs font-medium">Details</span>
                               </Button>
 
@@ -161,10 +169,9 @@ export function UnpublishedNotes() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="flex items-center gap-1 bg-slate-800/90 hover:bg-slate-700/90 text-slate-100 border-none px-2 py-1"
+                                    className="flex items-center gap-1 bg-slate-800/90 hover:bg-slate-700/90 text-slate-100 border-none px-3 py-1"
                                     onClick={() => { handleNote(note) }}
                                   >
-                                    <Upload className="h-4 w-4" />
                                     <span className="text-xs font-medium">Upload</span>
                                   </Button>
                                 )
@@ -185,16 +192,26 @@ export function UnpublishedNotes() {
                     console.log(note)
                     return (
                       <Card className="h-full flex flex-col p-5 transition-shadow duration-300 hover:shadow-xl border rounded-lg">
-                        <CardHeader className="flex items-stretch gap-4 p-0 font-semibold">
-                          {note.title}
+                        <CardHeader className="flex items-stretch gap-4 p-0 font-semibold"> 
+                          <div className="pl-0">
+                            {note.title}
+                           
+                            </div>
                           <div className="flex-1 flex flex-col justify-center gap-1">
-                            <div className="flex justify-end">
+                            <div className="flex justify-end items-center h-6 gap-x-2">
+                              {
+                                note.publish ? (
+                                  <Badge className="!text-xs bg-emerald-600 hover:bg-emerald-700 py-1 px-3 text-white">Published</Badge>
+                                ) : (
+                                  <Badge className="!text-xs bg-gray-600 hover:bg-gray-700 py-1 px-3 text-white">Drafts</Badge>
+                                )
+                              }
+                              
                               <p className="text-xs text-muted-foreground">
                                 {formatRelativeMonthYear(note.updatedAt)}
                               </p>
                             </div>
                           </div>
-
                         </CardHeader>
 
                         <CardContent className="space-y-2 p-0 pb-3 flex-1">
@@ -224,6 +241,7 @@ export function UnpublishedNotes() {
                             >
                               {note.module}
                             </Badge>
+
                             <Separator orientation="vertical" />
                             <span className="font-mono flex items-center">
                               {formatPriceSGD(note.price)}
@@ -232,6 +250,8 @@ export function UnpublishedNotes() {
                           </div>
 
                         </CardFooter>
+                        {/*  py-1 px-3 text-white */}
+
                         <CardFooter className="justify-between gap-x-2 pl-0 pr-0">
 
                           {/* Change routings below. */}
@@ -239,8 +259,8 @@ export function UnpublishedNotes() {
                             size="sm"
                             className={`flex items-center gap-1 border-none px-2 py-1 
     ${note.publish ? "w-[100%]" : "w-[50%]"} 
-    bg-slate-800/90 hover:bg-slate-700/90 text-slate-100`}
-                            onClick={() => { console.log('must nav to edit.') }}
+    bg-slate-900 hover:bg-slate-800 text-white`}
+                            onClick={() => { handleNote(note) }}
                           >
                             <span className="text-xs font-medium">Note Details</span>
                           </Button>
@@ -249,11 +269,14 @@ export function UnpublishedNotes() {
                             !note.publish && (
                               <Button
                                 size="sm"
-                                className="flex items-center gap-1 border-none px-2 py-1 w-[50%] bg-slate-900 hover:bg-slate-800 text-white"
-                                onClick={() => { handleNote(note) }}
+                                className={`flex items-center gap-1 border-none px-2 py-1 
+    ${note.publish ? "w-[100%]" : "w-[50%]"} 
+    bg-slate-800/90 hover:bg-slate-700/90 text-slate-100`}
+                                onClick={() => { console.log('must nav to edit.') }}
                               >
                                 <span className="text-xs font-medium">Upload</span>
                               </Button>
+
                             )
                           }
                         </CardFooter>

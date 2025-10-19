@@ -249,7 +249,7 @@ export function HeroGeometric() {
   React.useEffect(() => {
     setReady(!!boundsRef.current);
   }, [boundsRef]);
-  
+
   return (
     <div
       className={cn(
@@ -268,6 +268,8 @@ export function HeroGeometric() {
 
       <div className="absolute inset-0 overflow-hidden" ref={boundsRef}>
         {/* Notebook */}
+        {ready ? (
+          <>
         <ElegantShape
           variant="notebook"
           rings={7}
@@ -327,6 +329,8 @@ export function HeroGeometric() {
           className="left-[20%] md:left-[25%] top-[5%] md:top-[10%]"
           boundsRef={boundsRef}
         />
+        </>
+        ) : ""}
       </div>
 
       {/* <div className="relative z-10 container mx-auto px-4 md:px-6 w-auto">

@@ -81,51 +81,53 @@ export function TagInput({
   };
 
   return (
-    <Tags className="w-full">
-      <TagsTrigger className="w-max-[350px]">
-        {value.map((id) => (
-          <TagsValue key={id} onRemove={() => handleRemove(id)}>
-            {id}
-          </TagsValue>
-        ))}
-      </TagsTrigger>
-      <TagsContent className="mt-2">
-        <TagsInput
-          className="placeholder:font-light"
-          value={inputValue}
-          onValueChange={setInputValue}
-          placeholder="Type and press Enter..."
-          onKeyDown={handleKeyDown}
-        />
-        <TagsList>
-          <TagsEmpty>
-            <button
+    <div id="">
+      <Tags className="w-full">
+        <TagsTrigger className="w-max-[350px]">
+          {value.map((id) => (
+            <TagsValue key={id} onRemove={() => handleRemove(id)}>
+              {id}
+            </TagsValue>
+          ))}
+        </TagsTrigger>
+        <TagsContent className="mt-2">
+          <TagsInput
+            className="placeholder:font-light"
+            value={inputValue}
+            onValueChange={setInputValue}
+            placeholder="Type and press Enter..."
+            onKeyDown={handleKeyDown}
+          />
+          <TagsList>
+            <TagsEmpty>
+              <button
 
-              type="button"
-              onClick={handleCreateTag}
-              className="mx-auto flex cursor-pointer items-center gap-2"
+                type="button"
+                onClick={handleCreateTag}
+                className="mx-auto flex cursor-pointer items-center gap-2"
 
-            >
-              <PlusIcon size={14} className="text-muted-foreground" />
-              Create tag: {inputValue}
-            </button>
-          </TagsEmpty>
-          {value.length > 0 && (
-            <TagsGroup>
-              {value.map((tag) => (
-                <TagsItem key={tag} onSelect={handleSelect} value={tag}>
-                  {tag}
-                  <CheckIcon
-                    size={14}
-                    className="text-muted-foreground opacity-70"
-                  />
-                </TagsItem>
-              ))}
-            </TagsGroup>
-          )}
-        </TagsList>
-      </TagsContent>
-    </Tags>
+              >
+                <PlusIcon size={14} className="text-muted-foreground" />
+                Create tag: {inputValue}
+              </button>
+            </TagsEmpty>
+            {value.length > 0 && (
+              <TagsGroup>
+                {value.map((tag) => (
+                  <TagsItem key={tag} onSelect={handleSelect} value={tag}>
+                    {tag}
+                    <CheckIcon
+                      size={14}
+                      className="text-muted-foreground opacity-70"
+                    />
+                  </TagsItem>
+                ))}
+              </TagsGroup>
+            )}
+          </TagsList>
+        </TagsContent>
+      </Tags>
+    </div>
   );
 }
 
@@ -173,7 +175,7 @@ export default function StepDetails({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" id="details-step-1">
       <Button size="sm" onClick={smartFillFromFileName}>
         <Sparkles className="w-4 h-4 mr-2" />
         Autofill
@@ -195,7 +197,7 @@ export default function StepDetails({
           name="title"
           render={({ field }) => (
             <FormItem className="col-span-2 md:col-span-1">
-              <FormLabel className="flex items-center gap-2">Title</FormLabel>
+              <FormLabel className="flex items-center gap-2">Title *</FormLabel>
               <FormControl>
                 <Input
                   placeholder="e.g., CS425 Word Embeddings Notes"
@@ -220,6 +222,7 @@ export default function StepDetails({
               </FormLabel>
               <FormControl>
                 <Input
+                id="details-step-2"
                   className="placeholder:font-light"
                   placeholder="cs12345"
                   {...field}
@@ -238,7 +241,7 @@ export default function StepDetails({
           name="description"
           render={({ field }) => (
             <FormItem className="col-span-2">
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Description *</FormLabel>
               <FormControl>
                 <Textarea
                   className="placeholder:font-light"
@@ -255,18 +258,19 @@ export default function StepDetails({
           )}
         />
 
+       
         <FormField
           control={methods.control}
           name="tags"
           render={({ field }) => (
-            <FormItem className="col-span-2 md:col-span-1">
+            <FormItem className="col-span-2 md:col-span-1" id="details-step-3">
               <FormLabel className="flex items-center gap-2">
                 <TagIcon className="w-4 h-4" />
                 Tags
               </FormLabel>
-              <FormControl>
+              <FormControl >
                 <TagInput
-
+                  
                   value={field.value || []}
                   onChange={(tags) => {
                     field.onChange(tags);
@@ -314,7 +318,7 @@ export default function StepDetails({
           control={methods.control}
           name="priceCents"
           render={({ field }) => (
-            <FormItem className="col-span-2 md:col-span-1">
+            <FormItem className="col-span-2 md:col-span-1" id="details-step-4">
               <FormLabel className="flex items-center gap-2 font-semibold">
                 Price (SGD)
               </FormLabel>

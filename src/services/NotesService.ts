@@ -79,19 +79,8 @@ export const getOwnedComposeNotes = async () => {
 }
 
 export const uploadComposedNote = async (composeID: any) => {
-  console.log(localStorage)
-  const usrname = localStorage['CognitoIdentityServiceProvider.4anai145bklc4s1io0b46rjct1.LastAuthUser'];
-  const key = `CognitoIdentityServiceProvider.4anai145bklc4s1io0b46rjct1.${usrname}.accessToken`;
-  const k = localStorage[key];
-  console.log(k)
   const response = await axiosInstance.patch(`/notes/compose/${composeID}/publish`,
     { publish: true },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${k}`, 
-      }
-    }
   );
   return response;
 }

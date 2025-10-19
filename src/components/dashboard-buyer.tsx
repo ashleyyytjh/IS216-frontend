@@ -11,6 +11,7 @@ import { getOrders } from "@/services/OrdersService";
 import { getComposeNoteById, getNotesById } from "@/services/NotesService";
 import React from "react";
 import { Spinner } from "./ui/shadcn-io/spinner";
+import { ReactTyped } from "react-typed";
 
 function DashboardBuyer(currentUser) {
     console.log(currentUser['current']['current'])
@@ -52,9 +53,9 @@ function DashboardBuyer(currentUser) {
                 getNotesById(o.note_id)
                     .catch(() => null) 
                     .then(async (res) => {
-                        // let note = res;
+                        let note = res;
 
-                        // // if normal note is null, fetching composed note
+                        // if normal note is null, fetching composed note
                         // if (!note) {
                         //     const resp = await getComposeNoteById(o.note_id).catch(() => null);
                         //     note = resp?.data
@@ -100,14 +101,14 @@ function DashboardBuyer(currentUser) {
                                 <Spinner variant="default" />
                             </CardContent>
                         ) : totalCount === 0 ? (
-                            <CardContent>
-                                <h1 className="text-foreground text-xl font-extrabold">0</h1>
-                                <p className="text-sm font-light text-foreground">No notes purchased yet.</p>
+                            <CardContent className="flex flex-col">
+                                <ReactTyped className="text-foreground text-xl font-extrabold" strings={['0']} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                                <ReactTyped className="text-sm font-light text-foreground" strings={['No notes purchased yet.']} typeSpeed={50} backSpeed={100} showCursor={false}/>
                             </CardContent>
                         ) : (
-                            <CardContent>
-                                <h1 className="text-foreground text-xl font-extrabold">{totalCount}</h1>
-                                <p className="text-sm font-light text-foreground">Notes purchased.</p>
+                            <CardContent className="flex flex-col">
+                                 <ReactTyped className="text-foreground text-xl font-extrabold" strings={[`${totalCount}`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                                <ReactTyped className="text-sm font-light text-foreground" strings={['Notes purchased.']} typeSpeed={50} backSpeed={100} showCursor={false}/>
                             </CardContent>
                         )
                     }
@@ -125,14 +126,14 @@ function DashboardBuyer(currentUser) {
                                 <Spinner variant="default" />
                             </CardContent>
                         ) : totalSpent === 0 ? (
-                            <CardContent>
-                                <h1 className="text-foreground text-xl font-extrabold">$0</h1>
-                                <p className="text-sm font-light text-foreground">No spending yet.</p>
+                            <CardContent className="flex flex-col">
+                                <ReactTyped className="text-foreground text-xl font-extrabold" strings={[`$0`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                                <ReactTyped className="text-sm font-light text-foreground" strings={['No spending yet.']} typeSpeed={50} backSpeed={100} showCursor={false}/>
                             </CardContent>
                         ) : (
-                            <CardContent>
-                                <h1 className="text-foreground text-xl font-extrabold">${Number(totalSpent / 100).toFixed(2)}</h1>
-                                <p className="text-sm font-light text-foreground">Spent in Onlynotes.</p>
+                            <CardContent className="flex flex-col">
+                                <ReactTyped className="text-foreground text-xl font-extrabold" strings={[`${Number(totalSpent/100).toFixed(2)}`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                                <ReactTyped className="text-sm font-light text-foreground" strings={['Spent in Onlynotes']} typeSpeed={50} backSpeed={100} showCursor={false}/>
                             </CardContent>
                         )
                     }
@@ -150,15 +151,16 @@ function DashboardBuyer(currentUser) {
                                 <Spinner variant="default" />
                             </CardContent>
                         ) : !topModule || topModule.count === 0 ? (
-                            <CardContent>
-                                <h1 className="text-xl font-extrabold text-foreground">None</h1>
-                                <p className="text-sm font-light text-foreground">No purchases yet.</p>
+                            <CardContent className="flex flex-col">
+                                <ReactTyped className="text-foreground text-xl font-extrabold" strings={[`None`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                                <ReactTyped className="text-sm font-light text-foreground" strings={['No purchases yet']} typeSpeed={50} backSpeed={100} showCursor={false}/>
                             </CardContent>
                         ) : (
-                            <CardContent>
-                                <h1 className="text-xl font-extrabold text-foreground">{topModule.module.toUpperCase()}</h1>
-                                <p className="text-sm font-light text-foreground">Purchased {topModule.count} times.</p>
+                            <CardContent className="flex flex-col">
+                                <ReactTyped className="text-foreground text-xl font-extrabold" strings={[`${topModule.module.toUpperCase()}`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                                <ReactTyped className="text-sm font-light text-foreground" strings={[`Purchased ${topModule.count} times.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
                             </CardContent>
+
                         )
                     }
 

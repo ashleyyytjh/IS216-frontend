@@ -191,7 +191,8 @@ export function UnpublishedNotes() {
                   rawData.map((note) => {
                     console.log(note)
                     return (
-                      <Card className="h-full flex flex-col p-5 transition-shadow duration-300 hover:shadow-xl border rounded-lg">
+                      <Card className="h-full flex flex-col p-5 transition-shadow duration-300 hover:shadow-xl border rounded-lg"
+                      >
                         <CardHeader className="flex items-stretch gap-4 p-0 font-semibold"> 
                           <div className="pl-0">
                             {note.title}
@@ -260,7 +261,7 @@ export function UnpublishedNotes() {
                             className={`flex items-center gap-1 border-none px-2 py-1 
     ${note.publish ? "w-[100%]" : "w-[50%]"} 
     bg-slate-900 hover:bg-slate-800 text-white`}
-                            onClick={() => { handleNote(note) }}
+                            onClick={() => { console.log('must nav to edit') }}
                           >
                             <span className="text-xs font-medium">Note Details</span>
                           </Button>
@@ -272,7 +273,7 @@ export function UnpublishedNotes() {
                                 className={`flex items-center gap-1 border-none px-2 py-1 
     ${note.publish ? "w-[100%]" : "w-[50%]"} 
     bg-slate-800/90 hover:bg-slate-700/90 text-slate-100`}
-                                onClick={() => { console.log('must nav to edit.') }}
+                                onClick={() => { handleNote(note)}}
                               >
                                 <span className="text-xs font-medium">Upload</span>
                               </Button>

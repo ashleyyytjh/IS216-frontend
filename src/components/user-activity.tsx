@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/pagination"
 import { Input } from "@/components/ui/input"
 import { getUserOrderByUserId } from "@/services/OrdersService"
-import { getNotesById } from "@/services/NotesService"
+import { getComposeNoteById, getNotesById } from "@/services/NotesService"
 import SpinItem from "./spinner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
@@ -33,9 +33,18 @@ function UserActivity(currentUser) {
                 const succeededOrders = rawOrders
                 const enrichedOrders = await Promise.all(
                     succeededOrders.map(async (order) => {
-                        console.log("note_id passed to getNotesById:", order.note_id)
-                        const note = await getNotesById(order.note_id)
-                        return { ...order, note }
+                        let note : any = null;
+                        try {
+                            note = await getNotesById(order.note_id);
+                        } catch (err) {
+                            console.warn(`getNotesById failed ${order.note_id}, shd be composed`);
+                            try {
+                                note = await getComposeNoteById(order.note_id);
+                            } catch (err2) {
+                                console.error(`Both note fetches failed.`);
+                            }
+                        }
+                        return { ...order, note };
                     })
                 )
                 setOrders(enrichedOrders)
@@ -59,10 +68,10 @@ function UserActivity(currentUser) {
     //Get seller name?
     const [statusFilter, setStatusFilter] = useState("All");
     const filteredNotes = orders.filter(note => {
-        
+
         const query = searchQuery.toLowerCase()
         const matchesSearch =
-            
+
             note?.['note']?.['tags']?.[0]?.toLowerCase()?.includes(query) ||
             note.note.description.toLowerCase().includes(query) ||
             note.note.module.toLowerCase().includes(query)
@@ -72,7 +81,7 @@ function UserActivity(currentUser) {
     const pagesNeeded = Math.ceil(filteredNotes.length / notesPerPage)
     const startIndex = (currentPage - 1) * notesPerPage
     const endIndex = startIndex + notesPerPage
-    const currentNotes = filteredNotes.slice(startIndex, endIndex) 
+    const currentNotes = filteredNotes.slice(startIndex, endIndex)
 
 
     useEffect(() => {

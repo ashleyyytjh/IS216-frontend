@@ -10,6 +10,7 @@ import {
 import { Frown, NotebookText, ThumbsDown, ThumbsUp } from "lucide-react"
 import SpinItem from "./spinner"
 import { useEffect, useState } from "react"
+import {ReactTyped} from 'react-typed';
 
 type SectionCardsProps = {
   loadInfo: boolean
@@ -71,8 +72,11 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               className={`absolute text-xl font-normal tabular-nums transition-all text-foreground duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
                 }`}
             >
+              
+                <ReactTyped
+                strings={[`$${String(Number(formatNumber(totalSales)).toFixed(2))}`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
 
-              ${Number(formatNumber(totalSales)).toFixed(2)}
+              
             </CardTitle>
           </div>
           <CardAction />
@@ -90,11 +94,16 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
             )
           ) : totalSales <= 100 ? (
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500 transition-all duration-500 ease-in-out">
-              Earnings have not been great. <IconTrendingDown className="size-4" />
+              <ReactTyped
+                strings={[`Earnings have not been great.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+              <IconTrendingDown className="size-4" />
             </div>
           ) : (
             <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b] transition-all duration-500 ease-in-out">
-              Keep it going! <IconTrendingUp className="size-4" />
+              <ReactTyped
+                strings={[`Keep it going!`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+            
+              <IconTrendingUp className="size-4" />
             </div>
           )}
         </CardFooter>
@@ -118,7 +127,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               className={`absolute text-xl font-normal tabular-nums transition-all duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
                 }`}
             >
-              {totalNoteCount} note sold.
+              <ReactTyped strings={[`${totalNoteCount} note sold.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
             </CardTitle>
           </div>
           <CardAction />
@@ -132,16 +141,20 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               </div>
             ) : (
               <div className="line-clamp-1 flex gap-2 font-medium text-gray-500">
-                Loading your total notes sold
+                Loading your total notes sold...
               </div>
             )
           ) : totalNoteCount <= 5 ? (
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500">
-              You can do better! <Frown className="size-4" />
+              <ReactTyped
+                strings={[`You can do better!`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+               <Frown className="size-4" />
             </div>
           ) : (
             <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">
-              More notes for the community! <ThumbsUp className="size-4" />
+              <ReactTyped
+                strings={[`More notes for the community!`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+               <ThumbsUp className="size-4" />
             </div>
           )}
 
@@ -165,9 +178,10 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               className={`absolute text-xl font-normal tabular-nums transition-all duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
                 }`}
             >
-              {topModule?.module
+              <ReactTyped strings={[`${topModule?.module
                 ? topModule.module
-                : "-"}
+                : "-"}`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+              
             </CardTitle>
           </div>
           <CardAction />
@@ -181,7 +195,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               </div>
             ) : (
               <div className="line-clamp-1 flex gap-2 font-medium text-gray-500">
-                Loading your most popular note
+                Loading your most popular note...
               </div>
             )
           ) : topModule ? (
@@ -189,11 +203,13 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               {
                 topModule.count > 1 ?(
                   <>
-                  {topModule.count} notes of {topModule.module} sold. <NotebookText className="size-4" />
+                  <ReactTyped strings={[`${topModule.count} notes of ${topModule.module} sold.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                  <NotebookText className="size-4" />
                   </>
                 ):(
                   <>
-                  {topModule.count} note of {topModule.module} sold. <NotebookText className="size-4" /></>
+                  <ReactTyped strings={[`${topModule.count} note of ${topModule.module} sold.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                  <NotebookText className="size-4" /></>
                 )
               }
               

@@ -16,6 +16,8 @@ import { Input } from "./ui/input"
 import { Link } from "react-router-dom"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
+
+
 export const UserOwnNote = (currentUserInfo) => {
   const user = currentUserInfo?.currentUserInfo ?? {}
   const [notes, setNotes] = useState<NoteListing[]>([])
@@ -81,15 +83,18 @@ export const UserOwnNote = (currentUserInfo) => {
           </Select>
         </div>
       </section>
+
       <section className="w-full text-sm font-light">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr">
           {filteredNotes.map((listing) => (
             <div key={listing.id} className="h-full">
+
               <Link
                 to={`/listings/${(listing as any).note_id || listing.id}`}
                 className="block h-full"
               >
-                <Card className="h-full flex flex-col p-5 rounded-md transition-shadow duration-300 hover:shadow-xl">
+                <Card className="h-full flex flex-col p-5 rounded-md transition-shadow duration-300 hover:shadow-xl"
+                >
                   <CardHeader className="flex items-stretch gap-4 p-0 font-semibold">
                     {listing.originalName}
                     <div className="flex-1 flex flex-col justify-center gap-1">

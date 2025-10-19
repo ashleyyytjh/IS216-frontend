@@ -11,7 +11,6 @@ import { getOrders } from "@/services/OrdersService";
 import { getComposeNoteById, getNotesById, getUserOwned } from "@/services/NotesService";
 import { ScatterVisual } from "@/components/scatter-chart";
 import { GetNotesRes } from "@/types/requests/notes";
-import { a } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
 
 export default function DashboardSeller() {
   const [animate, setAnimate] = useState(false);

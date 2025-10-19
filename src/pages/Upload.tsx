@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useForm, FormProvider, FieldError } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { getUploadSteps } from "@/components/tutorial/stepsForUpload";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -45,14 +45,21 @@ import { confirmUpload, createNotes } from "@/services/NotesService";
 import { toast } from "sonner";
 import { useIsSmall } from "@/utils/util";
 import { useNavigate } from "react-router-dom";
-
+import Joyride, { CallBackProps, STATUS } from "react-joyride";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import CustomTooltip from "@/components/tutorial/TooltipComponent";
+import CustomTooltipUpload from "@/components/tutorial/TooltipComponentUpload";
 
 export default function Upload() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [file, setFile] = useState<File | null>(null);
   const [state, setState] = useState<UploadState>({ stage: "pending" });
-
+  const [run, setRun] = useState(false);
   const totalSteps = 4;
   const isSmall = useIsSmall();
 
@@ -202,10 +209,30 @@ export default function Upload() {
 
   const allDone = state.stage === "done";
   const isPublishing = step === 4 && !allDone;
+  const handleClickStart = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+
+    setRun(true)
+  };
+
+  const handleJoyrideCallback = (data: CallBackProps) => {
+    const { status, type } = data;
+    const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
+
+    if (finishedStatuses.includes(status)) {
+      setRun(false);
+    }
+
+  };
+
+  const tourSteps = useMemo(
+    () => getUploadSteps(file, state.stage, step),
+    [file, state.stage, step]
+  );
 
   return (
     <main className="min-h-screen py-5 container w-[90%] sm:w-[85%] md:w-[80%] ml-auto mr-auto">
-      <Card className="mx-auto w-full max-w-4xl">
+      <Card className="mx-auto w-full max-w-4xl relative">
         <CardHeader>
           <CardTitle>Upload Notes</CardTitle>
           <CardDescription className="font-light">
@@ -228,28 +255,25 @@ export default function Upload() {
               >
                 <div>
                   <StepperNav
-                    className={`${
-                      isSmall
-                        ? "flex-col space-y-8"
-                        : "flex-row justify-between items-start"
-                    } relative`}
+                    className={`${isSmall
+                      ? "flex-col space-y-8"
+                      : "flex-row justify-between items-start"
+                      } relative`}
                   >
                     {stepsMeta.map((s, idx) => (
                       <StepperItem
                         key={s.id}
                         step={s.id}
-                        className={`relative group/step cursor-pointer ${
-                          isSmall
-                            ? "flex-row items-center"
-                            : "flex-col items-center text-center"
-                        } ${isSmall ? "w-full" : "flex-1"}`}
+                        className={`relative group/step cursor-pointer ${isSmall
+                          ? "flex-row items-center"
+                          : "flex-col items-center text-center"
+                          } ${isSmall ? "w-full" : "flex-1"}`}
                       >
                         <StepperTrigger
-                          className={`flex gap-4 transition-all duration-300 hover:scale-105 ${
-                            isSmall
-                              ? "flex-row items-center text-left w-full"
-                              : "flex-col items-center text-center"
-                          }`}
+                          className={`flex gap-4 transition-all duration-300 hover:scale-105 ${isSmall
+                            ? "flex-row items-center text-left w-full"
+                            : "flex-col items-center text-center"
+                            }`}
                         >
                           <div className="relative">
                             <StepperIndicator
@@ -267,11 +291,10 @@ export default function Upload() {
 
                           <div className={`transition-all duration-300`}>
                             <StepperTitle
-                              className={`font-medium text-sm transition-colors ${
-                                step === s.id
-                                  ? "text-black"
-                                  : "text-muted-foreground"
-                              }`}
+                              className={`font-medium text-sm transition-colors ${step === s.id
+                                ? "text-black"
+                                : "text-muted-foreground"
+                                }`}
                             >
                               {s.title}
                             </StepperTitle>
@@ -361,6 +384,7 @@ export default function Upload() {
             <div className="flex gap-2">
               {step < 4 ? step < 3 ? (
                 <Button
+                  id="next-button"
                   variant="outline"
                   size="sm"
                   onClick={next}
@@ -370,13 +394,40 @@ export default function Upload() {
                   Next <ChevronRight />
                 </Button>
               ) : (
-                <Button onClick={next} size="sm" className="!text-sm">
+                <Button onClick={next} size="sm" className="!text-sm" id="publish-button">
                   Publish
                 </Button>
               ) : <></>}
             </div>
           </div>
         </CardFooter>
+
+        <Joyride
+          tooltipComponent={CustomTooltipUpload}
+          callback={handleJoyrideCallback}
+          run={run}
+          showProgress
+          showSkipButton
+          scrollOffset={350}
+          continuous
+          steps={tourSteps}
+          styles={{
+            options: {
+              zIndex: 10,
+            },
+          }}></Joyride>
+        <div className="absolute top-3 right-3">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span>
+                <Button variant="outline" className="size-8 w-auto" onClick={handleClickStart}><span className="text-[10px]">Help</span></Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Click this button for guide!</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </Card>
 
       {/* <section className="mt-10 flex flex-col items-center justify-center text-center space-y-4">

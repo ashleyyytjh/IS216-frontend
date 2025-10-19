@@ -14,7 +14,7 @@ export default function StepReview({ file }: StepReviewProps) {
   const item = watch();
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4" id="review-summary">
       <div className="grid grid-cols-12 gap-4 [&>div]:col-span-full [&>div]:md:col-span-6 [&_h5]:font-medium [&_span]:text-muted-foreground">
         <div>
           <h5>Title</h5>

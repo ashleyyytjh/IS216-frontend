@@ -18,8 +18,9 @@ export default function StepUpload({
   return (
     <section className="space-y-3">
       <Label className="font-medium text-gray-700">File</Label>
-      <div className="relative">
+      <div className="relative" id="upload-dropzone">
         <Dropzone
+          
           multiple={false}
           maxFiles={1}
           onDrop={onDrop}
@@ -42,6 +43,7 @@ export default function StepUpload({
             }}
             aria-label="Remove file"
             className="absolute top-3 right-3 text-red-500 hover:text-red-700 hover:bg-red-50 z-10 transition-all duration-200"
+            
           >
             <Trash2 className="w-4 h-4" />
           </Button>

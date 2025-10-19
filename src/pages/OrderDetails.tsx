@@ -3,18 +3,17 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, HelpCircle, FileText } from "lucide-react";
+import { ArrowLeft, FileText } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { getOrders } from "@/services/OrdersService";
 import { getNotesById } from "@/services/NotesService";
 
 /* ---------------- Types ---------------- */
-
 type ApiOrder = {
   id: string | number;
   note_id?: string | number;
-  price?: number;           // in cents
+  price?: number;
   createdAt?: string;
 };
 
@@ -23,7 +22,7 @@ type OrderItem = {
   module?: string;
   sku: string;
   qty: number;
-  price: number;            // dollars
+  price: number;
 };
 
 type OrderVM = {
@@ -34,20 +33,14 @@ type OrderVM = {
 };
 
 /* ---------------- Utils ---------------- */
-
 const money = (n: number) =>
   (n ?? 0).toLocaleString("en-SG", { style: "currency", currency: "SGD" });
-
 const fromCents = (c?: number) => (c ?? 0) / 100;
-
-/* ---------------- Mapping ---------------- */
 
 function toVM(api: ApiOrder, note?: any): OrderVM {
   const id = String(api.id);
-  const title =
-    note?.originalName ?? note?.title ?? `Note ${api.note_id ?? ""}`;
-  const module: string | undefined =
-    note?.moduleCode || note?.module || note?.course || undefined;
+  const title = note?.originalName ?? note?.title ?? `Note ${api.note_id ?? ""}`;
+  const module: string | undefined = note?.moduleCode || note?.module || note?.course || undefined;
   const price = fromCents(api.price);
   const placedAt = api.createdAt ?? note?.createdAt ?? undefined;
 
@@ -66,7 +59,6 @@ function toVM(api: ApiOrder, note?: any): OrderVM {
 }
 
 /* ---------------- Page ---------------- */
-
 export default function OrderDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -77,14 +69,11 @@ export default function OrderDetails() {
   const [error, setError] = React.useState<string | null>(null);
   const ord = location.state?.order;
 
-  // Fast path (navigated from orders table with state)
   React.useEffect(() => {
     if (!ord) return;
     (async () => {
       try {
-        const note = ord.note_id
-          ? await getNotesById(String(ord.note_id)).catch(() => null)
-          : null;
+        const note = ord.note_id ? await getNotesById(String(ord.note_id)).catch(() => null) : null;
         setVm(toVM(ord, note || undefined));
       } catch (e: any) {
         setError(e?.message ?? "Failed to prepare order");
@@ -94,7 +83,6 @@ export default function OrderDetails() {
     })();
   }, [location.state?.order]);
 
-  // Fallback (deep link / refresh)
   React.useEffect(() => {
     if (vm || !id) return;
     (async () => {
@@ -103,9 +91,7 @@ export default function OrderDetails() {
         const all: ApiOrder[] = await getOrders();
         const found = all.find((o) => String(o.id) === String(id));
         if (!found) throw new Error("Order not found");
-        const note = found.note_id
-          ? await getNotesById(String(found.note_id)).catch(() => null)
-          : null;
+        const note = found.note_id ? await getNotesById(String(found.note_id)).catch(() => null) : null;
         setVm(toVM(found, note || undefined));
       } catch (e: any) {
         setError(e?.message ?? "Failed to load order");
@@ -117,11 +103,7 @@ export default function OrderDetails() {
 
   if (loading)
     return (
-      <div className="flex justify-center p-10">
-        <div className="animate-pulse rounded-xl border px-4 py-3 text-sm text-muted-foreground bg-muted/30">
-          Loading order…
-        </div>
-      </div>
+      <div className="flex justify-center p-10 text-neutral-600">Loading order…</div>
     );
 
   if (error)
@@ -130,7 +112,7 @@ export default function OrderDetails() {
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="mr-2 size-4" /> Back
         </Button>
-        <p className="mt-3 text-red-600">Error: {error}</p>
+        <p className="mt-3 text-red-600">{error}</p>
       </div>
     );
 
@@ -144,139 +126,128 @@ export default function OrderDetails() {
       </div>
     );
 
+  /* ---------------- Motion ---------------- */
+  const fadeUp = { hidden: { opacity: 0, y: 6 }, show: { opacity: 1, y: 0, transition: { duration: 0.22 } } };
+
   return (
-    <TooltipProvider>
-      {/* container: comfy on mobile, centered on desktop */}
-      <div className="mx-auto w-full px-4 sm:px-6 md:px-8 py-8 sm:py-10 container w-[95%] sm:w-[85%] lg:w-[80%]">
-        <Card className="shadow-lg border bg-background">
+    <div className="bg-white min-h-[80vh] flex flex-col items-center justify-start">
+      <motion.div
+        className="w-full max-w-6xl px-6 pt-12 pb-8"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25 }}
+      >
+        <Card className="rounded-3xl border border-neutral-200 bg-white shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)] p-6 md:p-10 mb-8">
           {/* Header */}
-          <CardHeader className="pb-3 sm:pb-4 border-b">
-            <div className="flex flex-col gap-3 sm:gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate(-1)}
-                    className="w-fit"
-                  >
-                    <ArrowLeft className="mr-2 size-4" /> Back
-                  </Button>
-                  <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">
-                    Order #{vm.id}
-                  </h1>
-                </div>
-
-                {/* Actions reflow to full-width on mobile */}
-                <div className="flex flex-col xs:flex-row sm:flex-row gap-2 w-full sm:w-auto">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      {/* <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                        <HelpCircle className="mr-2 size-4" />
-                        Get help
-                      </Button> */}
-                    </TooltipTrigger>
-                    <TooltipContent>Chat with support about this order.</TooltipContent>
-                  </Tooltip>
-
-                  {/* <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
-                    <Link to={`/refund/${vm.id}`} state={{ order: vm }}>
-                      Request refund
-                    </Link>
-                  </Button> */}
-                </div>
-              </div>
-
-              {/* Placed on */}
-              <div className="text-sm text-muted-foreground">
-                {vm.placedAt ? (
-                  <>Placed on {new Date(vm.placedAt).toLocaleString()}</>
-                ) : (
-                  "—"
-                )}
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className="p-4 sm:p-6 space-y-6">
-            {/* Summary tiles */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
-              <div className="rounded-lg border bg-background p-4">
-                <div className="text-muted-foreground">Transaction ID</div>
-                <div className="mt-0.5 font-medium break-all">{vm.id}</div>
-              </div>
-              <div className="rounded-lg border bg-background p-4">
-                <div className="text-muted-foreground">Items</div>
-                <div className="mt-0.5 font-medium">{vm.items.length}</div>
-              </div>
-              <div className="rounded-lg border bg-background p-4">
-                <div className="text-muted-foreground">Total</div>
-                <div className="mt-0.5 font-semibold">{money(vm.total)}</div>
-              </div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate(-1)}
+                className="rounded-full text-neutral-700 hover:bg-neutral-100"
+              >
+                <ArrowLeft className="mr-2 size-4" />
+                Back
+              </Button>
+              <h1 className="text-3xl font-semibold tracking-tight text-neutral-900">
+                Order #{vm.id}
+              </h1>
             </div>
 
-            <Separator />
+            <div className="rounded-full border border-neutral-300 bg-white px-4 py-1.5 text-sm shadow-sm">
+              Total: <span className="font-semibold">{money(vm.total)}</span>
+            </div>
+          </div>
 
-            {/* Items */}
-            <div className="grid gap-4 sm:gap-6">
-              {vm.items.map((it, idx) => {
-                const to = `/listings/${encodeURIComponent(it.sku)}`;
-                return (
-                  <div
-                    key={idx}
-                    className="rounded-xl border bg-background p-4 sm:p-5 hover:shadow-md transition-all"
-                  >
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4">
-                      <div className="space-y-1 md:space-y-1.5">
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
-                          <FileText className="size-4" />
-                          <span className="truncate max-w-[80vw] sm:max-w-none">
-                            {it.module ?? "—"}
-                          </span>
-                        </div>
-                        <div className="text-base sm:text-lg leading-snug break-words">
-                          {it.title}
-                        </div>
-                        <div className="text-[11px] sm:text-xs text-muted-foreground break-words">
-                          ID: {it.sku}
-                        </div>
-                      </div>
+          <div className="text-sm text-neutral-500 mb-8">
+            Placed on{" "}
+            <span className="font-medium text-neutral-800">
+              {vm.placedAt}
+            </span>
+          </div>
 
-                      <div className="text-right md:min-w-[160px]">
-                        <div className="text-base sm:text-lg font-medium">{money(it.price)}</div>
-                        <div className="text-[11px] sm:text-xs text-muted-foreground">Qty {it.qty}</div>
-                      </div>
+          {/* Summary */}
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+          >
+            {[
+              { label: "TRANSACTION ID", value: vm.id },
+              { label: "ITEMS", value: vm.items.length },
+              { label: "TOTAL", value: money(vm.total) },
+            ].map((t, i) => (
+              <div
+                key={t.label}
+                className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm"
+              >
+                <div className="text-[11px] uppercase tracking-wide text-neutral-500">
+                  {t.label}
+                </div>
+                <div
+                  className={`mt-1 ${
+                    i === 2 ? "font-semibold" : "font-medium"
+                  } text-lg`}
+                >
+                  {t.value}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+
+          <Separator className="bg-neutral-200 mb-6" />
+
+          {/* Items */}
+          {vm.items.map((it, idx) => {
+            const to = `/listings/${encodeURIComponent(it.sku)}`;
+            return (
+              <motion.div
+                key={idx}
+                variants={fadeUp}
+                initial="hidden"
+                animate="show"
+                className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm hover:shadow-md transition-all mb-4"
+              >
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2 text-xs text-neutral-500 mb-1">
+                      <FileText className="size-4" />
+                      {it.module && (
+                        <span className="rounded-full border border-neutral-300 bg-white px-2 py-0.5 text-[11px]">
+                          {it.module}
+                        </span>
+                      )}
                     </div>
-
-                    <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                      <div className="text-xs sm:text-sm text-muted-foreground">
-                        <span>View details:</span>
-                        <Link
-                          to={to}
-                          className="ml-1 underline underline-offset-2"
-                        >
-                          Open Note
-                        </Link>
-                      </div>
-
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="gap-2 w-full sm:w-auto"
-                      >
-                        <Link to={to} aria-label={`Open ${it.title}`}>
-                          <span>Open note</span>
-                        </Link>
-                      </Button>
+                    <div className="text-lg font-medium text-neutral-900">
+                      {it.title}
                     </div>
+                    <div className="text-xs text-neutral-500">ID: {it.sku}</div>
                   </div>
-                );
-              })}
-            </div>
-          </CardContent>
+
+                  <div className="text-right">
+                    <div className="text-lg font-semibold text-neutral-900">
+                      {money(it.price)}
+                    </div>
+                    <div className="text-xs text-neutral-500">Qty {it.qty}</div>
+                  </div>
+                </div>
+
+                <div className="mt-5 flex justify-end">
+                  <Button
+                    asChild
+                    size="sm"
+                    className="rounded-lg bg-black text-white hover:bg-neutral-800 px-6 py-2 text-sm font-medium shadow-sm"
+                  >
+                    <Link to={to}>Open note</Link>
+                  </Button>
+                </div>
+              </motion.div>
+            );
+          })}
         </Card>
-      </div>
-    </TooltipProvider>
+      </motion.div>
+    </div>
   );
 }

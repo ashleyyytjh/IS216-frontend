@@ -12,6 +12,7 @@ const BadgeClosableDemo = (props) => {
   if (!isActive) return null
 
   return (
+    //Removeable badge allows us to use btn with badge.
     <Badge className='h-7'>
       {currentModCode.toUpperCase()}
       <button

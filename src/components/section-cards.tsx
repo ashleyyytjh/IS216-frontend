@@ -55,7 +55,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
   }, [loadInfo])
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-3 @5xl/main:grid-cols-3 mb-5">
-      <Card className=" bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
+      <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
           <CardDescription className="text-foreground text-lg font-bold">Total Revenue</CardDescription>
           <div className="relative h-8 flex">
@@ -72,14 +72,11 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               className={`absolute text-xl font-normal tabular-nums transition-all text-foreground duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
                 }`}
             >
-              
                 <ReactTyped
                 strings={[`$${String(Number(formatNumber(totalSales)).toFixed(2))}`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
-
-              
             </CardTitle>
           </div>
-          <CardAction />
+          <CardAction/>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           {loadInfo ? (

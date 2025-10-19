@@ -33,9 +33,10 @@ export function OrderReceived({
     )
   }, [orders, searchQuery])
 
-  const startIndex = (currentPage - 1) * itemsPerPage
+  //pagination stuff
+  const startIndex = (currentPage - 1) * itemsPerPage //next few pages the start.
   const endIndex = startIndex + itemsPerPage
-  const currentItems = filteredOrders.slice(startIndex, endIndex)
+  const currentItems = filteredOrders.slice(startIndex, endIndex) //slice to get the actual item
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage))
 
   return (

@@ -88,7 +88,6 @@ export const UserOwnNote = (currentUserInfo) => {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr">
           {filteredNotes.map((listing) => (
             <div key={listing.id} className="h-full">
-
               <Link
                 to={`/listings/${(listing as any).note_id || listing.id}`}
                 className="block h-full"
@@ -106,7 +105,6 @@ export const UserOwnNote = (currentUserInfo) => {
                     </div>
                   </CardHeader>
 
-                  {/* grow to push footer to bottom */}
                   <CardContent className="space-y-2 p-0 pb-3 flex-1">
                     <p className="text-sm line-clamp-2">{listing.description}</p>
                     <div className="flex flex-wrap text-xs text-muted-foreground gap-y-2">

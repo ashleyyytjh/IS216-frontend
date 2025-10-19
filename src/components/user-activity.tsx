@@ -87,6 +87,7 @@ function UserActivity(currentUser) {
     useEffect(() => {
         setCurrentPage(1)
     }, [searchQuery, statusFilter])
+    
     if (loading) return <div className="flex justify-center items-center w-full h-64"> <SpinItem /></div>
     if (!orders.length) return <div className="flex justify-center items-center w-full h-64"> <p className="text-gray-500">No orders found.</p></div>
 

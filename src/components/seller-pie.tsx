@@ -40,7 +40,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
   const [isEmpty, setIsEmpty] = useState(false)
   const [topMod, setTopMod] = useState<{ module: string; count: number } | null>(null)
   const [moduleFilter, setModuleFilter] = useState("All")
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
+  const [sortOrder, setSortOrder] = useState("desc")
 
   useEffect(() => {
     if (moduleCountsArray.length === 0) {

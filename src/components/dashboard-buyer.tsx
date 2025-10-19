@@ -46,6 +46,7 @@ function DashboardBuyer(currentUser) {
         let map: Record<string, number> = {};
         let count = 0;
         let spent = 0;
+        let missingNotes: string[] = [];
 
         const promises = orders
             .filter(o => o.buyer_id === currentUser.current.current.sub)
@@ -54,6 +55,8 @@ function DashboardBuyer(currentUser) {
                     .catch(() => null) 
                     .then(async (res) => {
                         let note = res;
+                        console.log(note)
+                        
 
                         // if normal note is null, fetching composed note
                         // if (!note) {

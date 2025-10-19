@@ -1,4 +1,3 @@
-import React, { useState } from "react"
 import {
   Card,
   CardContent,
@@ -9,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 
 const UserActivityListing = ({ note }) => {
   const navigate = useNavigate();
@@ -125,7 +124,6 @@ const UserActivityListing = ({ note }) => {
                   <></>
                 )
               }
-
 
               <Button
               size="sm"

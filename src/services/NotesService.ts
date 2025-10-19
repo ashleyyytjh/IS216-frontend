@@ -1,6 +1,6 @@
 import { CreateNotesReq, CreateNotesRes, DownloadNotesRes, GetNotesRes, GetUploadStatusRes, SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
 import axiosInstance from "./AxiosInstance";
-import { isAxiosError } from "axios";
+import axios, { isAxiosError } from "axios";
 // Unprotected routes
 // notesRouter.get("/search", SearchNotes)
 // notesRouter.get("/:id", GetNotesById)
@@ -14,48 +14,48 @@ import { isAxiosError } from "axios";
 
 
 export const searchNotes = async (queryParams: URLSearchParams): Promise<SearchNotesRes> => {
-    const response = await axiosInstance.get('/notes/search', { params: queryParams });
-    const data = SearchNotesRes.parse(response.data)
-    return data;
+  const response = await axiosInstance.get('/notes/search', { params: queryParams });
+  const data = SearchNotesRes.parse(response.data)
+  return data;
 }
 
-export const getNotesById = async(id: string) => {
-    try {
-        const response = await axiosInstance.get(`/notes/${id}`);
-        return response.data as GetNotesRes;
-    } catch (err) {
-        return undefined
-    }
+export const getNotesById = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`/notes/${id}`);
+    return response.data as GetNotesRes;
+  } catch (err) {
+    return undefined
+  }
 }
 
 export const createNotes = async (noteData: CreateNotesReq) => {
   console.log("creating note with data:", noteData)
-    const response = await axiosInstance.post('/notes', noteData);
-    return response.data as CreateNotesRes;
+  const response = await axiosInstance.post('/notes', noteData);
+  return response.data as CreateNotesRes;
 }
 
 export const confirmUpload = async (noteId: string) => {
-    const response = await axiosInstance.patch(`/notes/${noteId}/confirm-upload`);
-    return { ok: response.status == 200, status: response.statusText };
+  const response = await axiosInstance.patch(`/notes/${noteId}/confirm-upload`);
+  return { ok: response.status == 200, status: response.statusText };
 }
 
 //notes that the user uploaded
-export const getUserOwned = async() => {
-    const response = await axiosInstance.get(`/notes/owned`)
-    console.log(response.data)
-    return response.data
+export const getUserOwned = async () => {
+  const response = await axiosInstance.get(`/notes/owned`)
+  console.log(response.data)
+  return response.data
 }
 
-export const getUserDoneNotes = async() => {
-    const response = await axiosInstance.get(`/notes/done`)
-    return response.data
-  
+export const getUserDoneNotes = async () => {
+  const response = await axiosInstance.get(`/notes/done`)
+  return response.data
+
 }
 
 //dont touch this first
 export const downloadNotes = async (noteId: string) => {
-    const response = await axiosInstance.get(`/notes/${noteId}/download`);
-    return response.data;
+  const response = await axiosInstance.get(`/notes/${noteId}/download`);
+  return response.data;
 }
 
 export const getUploadStatus = async (id: string) => {
@@ -69,4 +69,31 @@ export const getUploadStatus = async (id: string) => {
     }
     throw err;
   }
+}
+
+
+export const getOwnedComposeNotes = async () => {
+  const response = await axiosInstance.get(`/notes/compose/owned`);
+  return response;
+}
+export const getComposedNoteById = async(composeID)=>{
+  return await axiosInstance.get(`notes/compose/${composeID}`);
+}
+//undone
+export const uploadComposedNote = async (composeID: any) => {
+  console.log(localStorage)
+  const usrname = localStorage['CognitoIdentityServiceProvider.4anai145bklc4s1io0b46rjct1.LastAuthUser'];
+  const key = `CognitoIdentityServiceProvider.4anai145bklc4s1io0b46rjct1.${usrname}.accessToken`;
+  const k = localStorage[key];
+  console.log(k)
+  const response = await axiosInstance.patch(`/compose/${composeID}/publish`,
+    { publish: true },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${k}`, 
+      }
+    }
+  );
+  return response;
 }

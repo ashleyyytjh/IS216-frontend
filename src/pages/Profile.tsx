@@ -26,8 +26,8 @@ const Profile = () => {
     return <div className="flex justify-center items-center w-full h-64"> <SpinItem /></div>
   }
   if (!currentUser) {
-    return <div className="flex justify-center item-center text-center mt-100 mb-100 container">
-      <h1 className="text-3xl text-gray-600">No User Data found</h1></div>
+    return <div className="flex justify-center item-center text-center mt-100 mb-100 w-full">
+      <h1 className="text-3xl text-muted-foreground">No User Data found.</h1></div>
 
   }
   return (

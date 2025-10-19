@@ -118,7 +118,7 @@ export function DataTable(props: CurrentUserProp) {
             value="unpublished"
             className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300"
           >
-            Unpublished Notes
+            Written Notes
           </TabsTrigger>
         </TabsList>
       </div>

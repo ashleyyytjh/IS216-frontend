@@ -45,10 +45,13 @@ export default function DashboardSeller() {
   useEffect(() => {
     if (!currentUser) return;
 
+    //we get everything from orders.
     getOrders()
       .then((orders) => {
         //processing
         const uniqueNoteIds = [...new Set(orders.map((o) => o.note_id))];
+
+        //changes here. we would need to getcomposenotebyid too
         return Promise.all(
           uniqueNoteIds.map((id) =>
             getNotesById(String(id)).catch((err) => {
@@ -57,6 +60,8 @@ export default function DashboardSeller() {
             })
           )
         ).then((notes) => ({ orders, notes }));
+
+        
       })
       .then(({ orders, notes }) => {
         const noteMap = new Map(
@@ -119,6 +124,9 @@ export default function DashboardSeller() {
       })
       .catch((err) => console.error("Error fetching sales:", err));
   }, [currentUser]);
+
+  console.log(moduleCountsArray)
+  console.log(moduleRevenueArray)
 
 
   return (

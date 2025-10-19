@@ -155,25 +155,40 @@ export function UnpublishedNotes() {
 
                           <TableCell className="pr-[2rem]">
                             <div className="flex items-center justify-start gap-x-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white border-none px-3 py-1"
-                                onClick={() => { {/*Nav code here*/ } }}
-                              >
-                                <span className="text-xs font-medium">Details</span>
-                              </Button>
+                              {
+                                note.publish && (
+                                  <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white border-none px-3 py-1"
+                                      onClick={() => { {/*Nav code here*/ } }}
+                                    >
+                                      <span className="text-xs font-medium">Details</span>
+                                    </Button>
+                                )
+                              }
 
                               {
                                 !note.publish && (
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="flex items-center gap-1 bg-slate-800/90 hover:bg-slate-700/90 text-slate-100 border-none px-3 py-1"
-                                    onClick={() => { handleNote(note) }}
-                                  >
-                                    <span className="text-xs font-medium">Upload</span>
-                                  </Button>
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white border-none px-3 py-1"
+                                      onClick={() => { {/*Nav code here*/ } }}
+                                    >
+                                      <span className="text-xs font-medium">Edit</span>
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="flex items-center gap-1 bg-slate-800/90 hover:bg-slate-700/90 text-slate-100 border-none px-3 py-1"
+                                      onClick={() => { handleNote(note) }}
+                                    >
+                                      <span className="text-xs font-medium">Upload</span>
+                                    </Button>
+                                  </>
+
                                 )
                               }
 
@@ -193,11 +208,11 @@ export function UnpublishedNotes() {
                     return (
                       <Card className="h-full flex flex-col p-5 transition-shadow duration-300 hover:shadow-xl border rounded-lg"
                       >
-                        <CardHeader className="flex items-stretch gap-4 p-0 font-semibold"> 
+                        <CardHeader className="flex items-stretch gap-4 p-0 font-semibold">
                           <div className="pl-0">
                             {note.title}
-                           
-                            </div>
+
+                          </div>
                           <div className="flex-1 flex flex-col justify-center gap-1">
                             <div className="flex justify-end items-center h-6 gap-x-2">
                               {
@@ -207,7 +222,7 @@ export function UnpublishedNotes() {
                                   <Badge className="!text-xs bg-gray-600 hover:bg-gray-700 py-1 px-3 text-white">Drafts</Badge>
                                 )
                               }
-                              
+
                               <p className="text-xs text-muted-foreground">
                                 {formatRelativeMonthYear(note.updatedAt)}
                               </p>
@@ -256,27 +271,43 @@ export function UnpublishedNotes() {
                         <CardFooter className="justify-between gap-x-2 pl-0 pr-0">
 
                           {/* Change routings below. */}
-                          <Button
-                            size="sm"
-                            className={`flex items-center gap-1 border-none px-2 py-1 
-    ${note.publish ? "w-[100%]" : "w-[50%]"} 
-    bg-slate-900 hover:bg-slate-800 text-white`}
-                            onClick={() => { console.log('must nav to edit') }}
-                          >
-                            <span className="text-xs font-medium">Note Details</span>
-                          </Button>
-
                           {
-                            !note.publish && (
+                            note.publish && (
                               <Button
                                 size="sm"
                                 className={`flex items-center gap-1 border-none px-2 py-1 
     ${note.publish ? "w-[100%]" : "w-[50%]"} 
-    bg-slate-800/90 hover:bg-slate-700/90 text-slate-100`}
-                                onClick={() => { handleNote(note)}}
+    bg-slate-900 hover:bg-slate-800 text-white`}
+                                onClick={() => { console.log('must nav to edit') }}
                               >
-                                <span className="text-xs font-medium">Upload</span>
+                                <span className="text-xs font-medium">Details</span>
                               </Button>
+                            )
+                          }
+
+                          {
+                            !note.publish && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  className={`flex items-center gap-1 border-none px-2 py-1 
+    ${note.publish ? "w-[100%]" : "w-[50%]"} 
+    bg-slate-900 hover:bg-slate-800 text-white`}
+                                  onClick={() => { console.log('must nav to edit') }}
+                                >
+                                  <span className="text-xs font-medium">Edit Note</span>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  className={`flex items-center gap-1 border-none px-2 py-1 
+    ${note.publish ? "w-[100%]" : "w-[50%]"} 
+    bg-slate-800/90 hover:bg-slate-700/90 text-slate-100`}
+                                  onClick={() => { handleNote(note) }}
+                                >
+                                  <span className="text-xs font-medium">Upload</span>
+                                </Button>
+                              </>
+
 
                             )
                           }

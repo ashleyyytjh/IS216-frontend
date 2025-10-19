@@ -111,3 +111,7 @@ function returnErr(err: any) {
   }
   return { status: err, ok: false, data: null }
 }
+
+// export function getBatchHeadComposedNotes(id:[]){
+//   const res = 'getBatchHeadComposeNotes'
+// }

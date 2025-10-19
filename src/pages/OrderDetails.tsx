@@ -147,7 +147,7 @@ export default function OrderDetails() {
   return (
     <TooltipProvider>
       {/* container: comfy on mobile, centered on desktop */}
-      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8 py-8 sm:py-10">
+      <div className="mx-auto w-full px-4 sm:px-6 md:px-8 py-8 sm:py-10 container w-[95%] sm:w-[85%] lg:w-[80%]">
         <Card className="shadow-lg border bg-background">
           {/* Header */}
           <CardHeader className="pb-3 sm:pb-4 border-b">
@@ -171,19 +171,19 @@ export default function OrderDetails() {
                 <div className="flex flex-col xs:flex-row sm:flex-row gap-2 w-full sm:w-auto">
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                      {/* <Button variant="outline" size="sm" className="w-full sm:w-auto">
                         <HelpCircle className="mr-2 size-4" />
                         Get help
-                      </Button>
+                      </Button> */}
                     </TooltipTrigger>
                     <TooltipContent>Chat with support about this order.</TooltipContent>
                   </Tooltip>
 
-                  <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
+                  {/* <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
                     <Link to={`/refund/${vm.id}`} state={{ order: vm }}>
                       Request refund
                     </Link>
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
 
@@ -238,7 +238,7 @@ export default function OrderDetails() {
                           {it.title}
                         </div>
                         <div className="text-[11px] sm:text-xs text-muted-foreground break-words">
-                          SKU: {it.sku}
+                          ID: {it.sku}
                         </div>
                       </div>
 
@@ -255,7 +255,7 @@ export default function OrderDetails() {
                           to={to}
                           className="ml-1 underline underline-offset-2"
                         >
-                          open note
+                          Open Note
                         </Link>
                       </div>
 

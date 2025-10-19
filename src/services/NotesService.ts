@@ -77,16 +77,17 @@ export const getOwnedComposeNotes = async () => {
   return response;
 }
 export const getComposedNoteById = async(composeID)=>{
-  return await axiosInstance.get(`notes/compose/${composeID}`);
+  const res = await axiosInstance.get(`/notes/compose/${composeID}`);
+  return res.data;
 }
-//undone
+
 export const uploadComposedNote = async (composeID: any) => {
   console.log(localStorage)
   const usrname = localStorage['CognitoIdentityServiceProvider.4anai145bklc4s1io0b46rjct1.LastAuthUser'];
   const key = `CognitoIdentityServiceProvider.4anai145bklc4s1io0b46rjct1.${usrname}.accessToken`;
   const k = localStorage[key];
   console.log(k)
-  const response = await axiosInstance.patch(`/compose/${composeID}/publish`,
+  const response = await axiosInstance.patch(`/notes/compose/${composeID}/publish`,
     { publish: true },
     {
       headers: {

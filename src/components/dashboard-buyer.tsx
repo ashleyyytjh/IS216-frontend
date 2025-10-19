@@ -8,7 +8,7 @@ import {
 import UserTabs from "./user-tabs";
 import { useEffect, useState } from "react";
 import { getOrders } from "@/services/OrdersService";
-import { getNotesById } from "@/services/NotesService";
+import { getComposedNoteById, getNotesById } from "@/services/NotesService";
 import React from "react";
 import { Spinner } from "./ui/shadcn-io/spinner";
 
@@ -31,7 +31,7 @@ function DashboardBuyer(currentUser) {
     const [totalSpent, setTotalSpent] = useState(0);
 
     useEffect(() => {
-        if (!orders){
+        if (!orders) {
             return;
         }
         if (orders.length === 0) {
@@ -49,11 +49,23 @@ function DashboardBuyer(currentUser) {
         const promises = orders
             .filter(o => o.buyer_id === currentUser.current.current.sub)
             .map(o =>
-                getNotesById(o.note_id).then(res => {
-                    map[res?.module ?? "Others"] = (map[res?.module ?? "Others"] || 0) + 1;
-                    count += 1;
-                    spent += o.price;
-                })
+                getNotesById(o.note_id)
+                    .catch(() => null) 
+                    .then(async (res) => {
+                        let note = res;
+
+                        // if normal note is null, fetching composed note
+                        if (!note) {
+                            note = await getComposedNoteById(o.note_id).catch(() => null);
+                        }
+
+                        if (!note) return;
+
+                        const mod = note.module ?? "Others";
+                        map[mod] = (map[mod] || 0) + 1;
+                        count += 1;
+                        spent += o.price;
+                    })
             );
 
         Promise.all(promises).then(() => {
@@ -118,7 +130,7 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : (
                             <CardContent>
-                                <h1 className="text-foreground text-xl font-extrabold">${Number(totalSpent/100).toFixed(2)}</h1>
+                                <h1 className="text-foreground text-xl font-extrabold">${Number(totalSpent / 100).toFixed(2)}</h1>
                                 <p className="text-sm font-light text-foreground">Spent in Onlynotes.</p>
                             </CardContent>
                         )

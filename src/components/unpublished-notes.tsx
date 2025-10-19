@@ -29,7 +29,7 @@ export function UnpublishedNotes() {
   const [rawData, setRawData] = useState<any>([])
   const [isLoading, setIsLoading] = useState(true)
   const [currentUpload, setCurrentUploadId] = useState<any>("")
-  const [activeFilter, setActiveFilter] = useState<any>();
+  const [activeFilter, setActiveFilter] = useState<any>("all");
 
   //remove.
   const handleNote = (note: any) => {
@@ -68,7 +68,7 @@ export function UnpublishedNotes() {
       console.error(err)
     })
   }, [searchQuery, currentUpload, activeFilter]);
-  
+
   return (
     isLoading ? (
       <div className="flex justify-center mt-2">
@@ -90,7 +90,7 @@ export function UnpublishedNotes() {
 
           <Select value={activeFilter} onValueChange={setActiveFilter}>
             <SelectTrigger className="w-[150px] sm:w-[120px] md:w-[170px]">
-              <SelectValue placeholder="Type" />
+              <SelectValue placeholder="All" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
@@ -115,11 +115,13 @@ export function UnpublishedNotes() {
                       <TableHead>Created at</TableHead>
                       <TableHead>Updated at</TableHead>
                       <TableHead>Price</TableHead>
+                      <TableHead>Status</TableHead>
                       <TableHead className="pr-[2rem]">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {rawData.map((note) => {
+                      console.log(note)
                       return (
                         <TableRow>
                           <TableCell className="pl-[2rem]">{note.title}</TableCell>
@@ -139,6 +141,7 @@ export function UnpublishedNotes() {
                           <TableCell>{dateFormat(note.createdAt)}</TableCell>
                           <TableCell className="text-foreground">{dateFormat(note.updatedAt)}</TableCell>
                           <TableCell className="text-foreground">{formatPriceSGD(note.price)}</TableCell>
+                          <TableCell className="text-foreground">{note.publish ? ("Published") : ("Not Published")}</TableCell>
 
 
                           <TableCell className="pr-[2rem]">
@@ -147,23 +150,25 @@ export function UnpublishedNotes() {
                                 size="sm"
                                 variant="outline"
                                 className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white border-none px-2 py-1"
-                                onClick={() => { handleNote(note) }}
+                                onClick={() => { {/*Nav code here*/ } }}
                               >
                                 <File className="h-4 w-4" />
                                 <span className="text-xs font-medium">Details</span>
                               </Button>
 
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="flex items-center gap-1 bg-slate-800/90 hover:bg-slate-700/90 text-slate-100 border-none px-2 py-1"
-                                onClick={() => { handleNote(note) }}
-                              >
-                                <Upload className="h-4 w-4" />
-                                <span className="text-xs font-medium">Upload</span>
-                              </Button>
-
-
+                              {
+                                !note.publish && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="flex items-center gap-1 bg-slate-800/90 hover:bg-slate-700/90 text-slate-100 border-none px-2 py-1"
+                                    onClick={() => { handleNote(note) }}
+                                  >
+                                    <Upload className="h-4 w-4" />
+                                    <span className="text-xs font-medium">Upload</span>
+                                  </Button>
+                                )
+                              }
 
                             </div>
                           </TableCell>
@@ -232,18 +237,25 @@ export function UnpublishedNotes() {
                           {/* Change routings below. */}
                           <Button
                             size="sm"
-                            className="flex items-center gap-1 border-none px-2 py-1 w-[50%] bg-slate-800/90 hover:bg-slate-700/90 text-slate-100"
+                            className={`flex items-center gap-1 border-none px-2 py-1 
+    ${note.publish ? "w-[100%]" : "w-[50%]"} 
+    bg-slate-800/90 hover:bg-slate-700/90 text-slate-100`}
                             onClick={() => { console.log('must nav to edit.') }}
                           >
                             <span className="text-xs font-medium">Note Details</span>
                           </Button>
-                          <Button
-                            size="sm"
-                            className="flex items-center gap-1 border-none px-2 py-1 w-[50%] bg-slate-900 hover:bg-slate-800 text-white"
-                            onClick={() => { handleNote(note) }}
-                          >
-                            <span className="text-xs font-medium">Upload</span>
-                          </Button>
+
+                          {
+                            !note.publish && (
+                              <Button
+                                size="sm"
+                                className="flex items-center gap-1 border-none px-2 py-1 w-[50%] bg-slate-900 hover:bg-slate-800 text-white"
+                                onClick={() => { handleNote(note) }}
+                              >
+                                <span className="text-xs font-medium">Upload</span>
+                              </Button>
+                            )
+                          }
                         </CardFooter>
                       </Card>
                     )

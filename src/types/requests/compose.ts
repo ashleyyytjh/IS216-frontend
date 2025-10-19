@@ -12,9 +12,9 @@ const lexicalContentSchema = z.object({
 
 export const CreateComposeNotesReq = z.object({
   title: z.string().min(1),
-  description: z.string(),
+  description: z.string().min(1),
   module: z.string().optional(),
-  tags: z.array(z.string()).min(0),
+  tags: z.array(z.string()).min(1),
   publish: z.boolean().default(false),
   price: z.number().nonnegative(),
   content: lexicalContentSchema

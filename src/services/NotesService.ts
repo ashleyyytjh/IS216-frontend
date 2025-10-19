@@ -1,6 +1,7 @@
 import { CreateNotesReq, CreateNotesRes, DownloadNotesRes, GetNotesRes, GetUploadStatusRes, SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
 import axiosInstance from "./AxiosInstance";
-import axios, { isAxiosError } from "axios";
+import { isAxiosError } from "axios";
+import { CreateComposeNotesReq, CreateComposeNotesRes, GetComposeNotesRes } from "@/types/requests/compose";
 // Unprotected routes
 // notesRouter.get("/search", SearchNotes)
 // notesRouter.get("/:id", GetNotesById)
@@ -76,10 +77,6 @@ export const getOwnedComposeNotes = async () => {
   const response = await axiosInstance.get(`/notes/compose/owned`);
   return response;
 }
-export const getComposedNoteById = async(composeID)=>{
-  const res = await axiosInstance.get(`/notes/compose/${composeID}`);
-  return res.data;
-}
 
 export const uploadComposedNote = async (composeID: any) => {
   console.log(localStorage)
@@ -97,4 +94,31 @@ export const uploadComposedNote = async (composeID: any) => {
     }
   );
   return response;
+}
+
+export const createComposeNotes = async(payload: CreateComposeNotesReq) => {
+  try {
+    const res = await axiosInstance.post("/notes/compose", payload)
+    const data = CreateComposeNotesRes.parse(res.data)
+    return { status: res.statusText, ok: true, data: data }
+  } catch (err) {
+    return returnErr(err)
+  }
+}
+
+export const getComposeNoteById = async(id: string) => {
+  try {
+    const res = await axiosInstance.get(`/notes/compose/${id}`)
+    const data = GetComposeNotesRes.parse(res.data)
+    return { status: res.statusText, ok: true, data: data }
+  } catch (err) {
+    return returnErr(err)
+  }
+}
+
+function returnErr(err: any) {
+  if (isAxiosError(err)) {
+    return { status: err.message, ok: false, data: null }
+  }
+  return { status: err, ok: false, data: null }
 }

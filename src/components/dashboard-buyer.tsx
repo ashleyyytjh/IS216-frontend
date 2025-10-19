@@ -8,7 +8,7 @@ import {
 import UserTabs from "./user-tabs";
 import { useEffect, useState } from "react";
 import { getOrders } from "@/services/OrdersService";
-import { getComposedNoteById, getNotesById } from "@/services/NotesService";
+import { getComposeNoteById, getNotesById } from "@/services/NotesService";
 import React from "react";
 import { Spinner } from "./ui/shadcn-io/spinner";
 
@@ -52,19 +52,20 @@ function DashboardBuyer(currentUser) {
                 getNotesById(o.note_id)
                     .catch(() => null) 
                     .then(async (res) => {
-                        let note = res;
+                        // let note = res;
 
-                        // if normal note is null, fetching composed note
-                        if (!note) {
-                            note = await getComposedNoteById(o.note_id).catch(() => null);
-                        }
+                        // // if normal note is null, fetching composed note
+                        // if (!note) {
+                        //     const resp = await getComposeNoteById(o.note_id).catch(() => null);
+                        //     note = resp?.data
+                        // }
 
-                        if (!note) return;
+                        // if (!note) return;
 
-                        const mod = note.module ?? "Others";
-                        map[mod] = (map[mod] || 0) + 1;
-                        count += 1;
-                        spent += o.price;
+                        // const mod = note.module ?? "Others";
+                        // map[mod] = (map[mod] || 0) + 1;
+                        // count += 1;
+                        // spent += o.price;
                     })
             );
 

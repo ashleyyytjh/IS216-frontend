@@ -7,102 +7,13 @@ import { Controller, useForm } from "react-hook-form";
 import { CreateComposeNotesReq } from "@/types/requests/compose";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import TagsCreator from "@/components/compose/TagsCreator";
+import { createComposeNotes } from "@/services/NotesService";
+import { toast } from "sonner";
 
-const initialValue = {
-  root: {
-    children: [
-      {
-        children: [
-          {
-            detail: 0,
-            format: 0,
-            mode: "normal",
-            style: "",
-            text: "Hello World 🚀",
-            type: "text",
-            version: 1,
-          },
-        ],
-        direction: "ltr",
-        format: "",
-        indent: 0,
-        type: "paragraph",
-        version: 1,
-      },
-    ],
-    direction: "ltr",
-    format: "",
-    indent: 0,
-    type: "root",
-    version: 1,
-  },
-} as unknown as SerializedEditorState;
-
-// interface CreateComposeNotesReq {
-//   userId: string
-//   title: string
-//   tags: string[]
-//   publish: boolean
-//   price: number
-//   content: unknown
-//   module?: string | undefined
-// }
-
-// const mockNote: CreateComposeNotesReq = {
-//   userId: "mock-user-123",
-//   title: "Introduction to Machine Learning",
-//   tags: ["ai", "machine-learning", "lecture-notes"],
-//   publish: true,
-//   price: 5.0,
-//   content: {
-//     root: {
-//       type: "root",
-//       version: 1,
-//       children: [
-//         {
-//           type: "paragraph",
-//           version: 1,
-//           children: [
-//             {
-//               type: "text",
-//               text: "Machine learning is a subset of artificial intelligence focused on enabling systems to learn from data and improve over time without explicit programming.",
-//               detail: 0,
-//               format: 0,
-//               mode: "normal",
-//               style: "",
-//               version: 1,
-//             },
-//           ],
-//         },
-//       ],
-//     },
-//   },
-//   module: "IS216",
-// }
-
-type LexicalContent = {
-  root: {
-    type: string;
-    version: number;
-    [k: string]: any;
-  };
-};
-
-export default function EditorDemo() {
+export default function Compose() {
   const [editorState, setEditorState] = useState<SerializedEditorState>();
-
-  // (typeof mockNote !== "undefined" && mockNote?.content) ?? initialValue
-
-  const [title, setTitle] = useState<string>();
-
-  // (typeof mockNote !== "undefined" && mockNote?.title?.trim()) || "Untitled Note"
-  const [saving, setSaving] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(CreateComposeNotesReq),
@@ -122,8 +33,7 @@ export default function EditorDemo() {
     },
   });
 
-  const onSubmit = (values: CreateComposeNotesReq) => {
-    console.log("editor");
+  const onSubmit = async (values: CreateComposeNotesReq) => {
     if (!editorState) {
       console.error("Editor content missing");
       return;
@@ -134,7 +44,12 @@ export default function EditorDemo() {
     };
 
     const payload = { ...values, content };
-    console.log("Final payload:", payload);
+    const resp = await createComposeNotes(payload)
+    if (!resp.ok) {
+      toast.error(resp.status)
+      return
+    }
+    toast.success(`Compose note created: ${resp.data?.noteId}`)
   };
 
   return (
@@ -151,16 +66,11 @@ export default function EditorDemo() {
                   <Field data-invalid={fieldState.invalid}>
                     <Input
                       {...field}
-                      className="!text-4xl !font-medium px-0 border-0 ring-0 shadow-none focus-visible:!border-0 focus-visible:!ring-0"
+                      className="!text-4xl !font-bold px-0 border-0 ring-0 shadow-none focus-visible:!border-0 focus-visible:!ring-0"
                       id={field.name}
                       placeholder="New Note"
                       autoComplete="off"
                     />
-                    {form.formState.errors.description && (
-                      <FieldError>
-                        {form.formState.errors.description.message}
-                      </FieldError>
-                    )}
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -183,11 +93,6 @@ export default function EditorDemo() {
                       placeholder="Enter a description"
                       autoComplete="off"
                     />
-                    {form.formState.errors.description && (
-                      <FieldError>
-                        {form.formState.errors.description.message}
-                      </FieldError>
-                    )}
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -203,12 +108,10 @@ export default function EditorDemo() {
               render={({ field, fieldState }) => (
                 <FieldGroup>
                   <Field data-invalid={fieldState.invalid}>
-                    <TagsCreator tags={field.value} setTags={field.onChange} />
-                    {form.formState.errors.description && (
-                      <FieldError>
-                        {form.formState.errors.description.message}
-                      </FieldError>
-                    )}
+                    <TagsCreator
+                      tags={field.value ?? []}
+                      setTags={field.onChange}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -217,6 +120,8 @@ export default function EditorDemo() {
               )}
             />
           </FieldGroup>
+
+          {/* Editor */}
           <Editor
             editorSerializedState={editorState}
             onSerializedChange={(value) => setEditorState(value)}

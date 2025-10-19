@@ -43,6 +43,7 @@ import PdfAnnotator from "./pages/Sample";
 import Create from "./pages/Create";
 import Compose from "./pages/Compose";
 import Modules from "./pages/Modules";
+import UserArticle from "./pages/UserArticle";
 
 function App() {
     return (
@@ -60,6 +61,7 @@ function App() {
               <Route path="/create" element={<Create />} />
               <Route path="/upload" element={<Upload/>}/>
               <Route path="/upload/:id" element={<UploadStatus/>}/>
+              <Route path="/article/:id" element={<UserArticle />}/>
               <Route path="/compose" element={<Compose />} />
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/orderdetails/:id" element={<OrderDetails />} />

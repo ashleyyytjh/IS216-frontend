@@ -1,7 +1,5 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { SerializedEditorState } from "lexical";
-
-import { Editor } from "@/components/blocks/editor-00/editor";
 import { Input } from "@/components/ui/input";
 import { Controller, useForm } from "react-hook-form";
 import { CreateComposeNotesReq } from "@/types/requests/compose";
@@ -11,9 +9,16 @@ import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import TagsCreator from "@/components/compose/TagsCreator";
 import { createComposeNotes } from "@/services/NotesService";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+const Editor = lazy(() =>
+  import("@/components/blocks/editor-00/editor").then((module) => ({
+    default: module.Editor,
+  }))
+);
 
 export default function Compose() {
   const [editorState, setEditorState] = useState<SerializedEditorState>();
+  const navigate = useNavigate()
 
   const form = useForm({
     resolver: zodResolver(CreateComposeNotesReq),
@@ -44,12 +49,13 @@ export default function Compose() {
     };
 
     const payload = { ...values, content };
-    const resp = await createComposeNotes(payload)
-    if (!resp.ok) {
-      toast.error(resp.status)
-      return
+    const resp = await createComposeNotes(payload);
+    if (!resp.ok || !resp.data) {
+      toast.error(resp.status);
+      return;
     }
-    toast.success(`Compose note created: ${resp.data?.noteId}`)
+    toast.success(`Compose note created: ${resp.data.noteId}`);
+    navigate(`/article/${resp.data.noteId}`)
   };
 
   return (
@@ -122,10 +128,12 @@ export default function Compose() {
           </FieldGroup>
 
           {/* Editor */}
-          <Editor
-            editorSerializedState={editorState}
-            onSerializedChange={(value) => setEditorState(value)}
-          />
+          <Suspense>
+            <Editor
+              editorSerializedState={editorState}
+              onSerializedChange={(value) => setEditorState(value)}
+            />
+          </Suspense>
           <Button type="submit">Submit</Button>
         </form>
       </div>

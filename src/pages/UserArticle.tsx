@@ -39,11 +39,12 @@ export default function UserArticle() {
 
   return (
     <div>
-      <section className="max-w-5xl mx-auto px-4 py-12">
+      <section className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold">{data.title}</h1>
+        <h3 className="italic text-muted-foreground font-light my-2">{data.description}</h3>
 
         {/* User Info */}
-        <div className="flex gap-4 my-2 items-center">
+        <div className="flex gap-4 my-2 items-center my-2">
           <Avatar className="overflow-hidden">
             <AvatarImage src={data.userImageUrl} className="object-cover" />
             <AvatarFallback>

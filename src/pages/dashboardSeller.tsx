@@ -8,7 +8,7 @@ import "aos/dist/aos.css";
 import { useEffect, useState } from "react";
 import { getUser } from "@/services/UserService";
 import { getOrders } from "@/services/OrdersService";
-import { getComposedNoteById, getNotesById, getUserOwned } from "@/services/NotesService";
+import { getComposeNoteById, getNotesById, getUserOwned } from "@/services/NotesService";
 import { ScatterVisual } from "@/components/scatter-chart";
 import { GetNotesRes } from "@/types/requests/notes";
 import { a } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
@@ -63,7 +63,9 @@ export default function DashboardSeller() {
           ),
           Promise.all(
             uniqueNoteIds.map((id) =>
-              getComposedNoteById(String(id)).catch((err) => {
+              getComposeNoteById(String(id)).then((resp) => {
+                return resp.data
+              }).catch((err) => {
                 console.error("Failed fetching composed note", id, err);
                 return null;
               })
@@ -74,7 +76,7 @@ export default function DashboardSeller() {
       })
       .then(({ orders, notes, composedNotes }) => {
         const all = [... (notes ?? []), ...(composedNotes ?? [])].filter(n => Boolean(n))
-        const noteMap = new Map(all.map((n) => [n.id, n]));
+        const noteMap = new Map(all.map((n) => [n?.id, n]));
         let total = 0;
         let totalCnt = 0;
         const moduleCountMap = new Map<string, number>();

@@ -114,7 +114,7 @@ export function Editor({
   onSerializedChange,
 }: EditorProps) {
   return (
-    <div className="bg-background w-[90%] mx-auto overflow-hidden rounded-lg border">
+    <div className="bg-background mx-auto overflow-hidden rounded-lg border">
       <LexicalComposer
         initialConfig={{
           ...editorConfig,
@@ -203,7 +203,7 @@ export function Plugins() {
               <div className="" ref={onRef}>
                 <ContentEditable
                   placeholder={placeholder}
-                  className="ContentEditable__root relative block h-72 min-h-72 min-h-full overflow-auto px-8 py-4 focus:outline-none"
+                  className="ContentEditable__root relative block h-72 min-h-full overflow-auto px-8 py-4 focus:outline-none"
                 />
               </div>
             </div>

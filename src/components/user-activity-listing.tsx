@@ -127,7 +127,7 @@ const UserActivityListing = ({ note }) => {
 
               <Button
               size="sm"
-                className="flex items-center gap-1 border-none px-2 py-1 w-[50%] bg-slate-800/90 hover:bg-slate-700/90 text-slate-100"
+                className="flex items-center gap-1 border-none px-2 py-1 w-auto bg-slate-800/90 hover:bg-slate-700/90 text-slate-100"
                 onClick={() => navigate(`/listings/${n.note_id}`)}
               >
                 <span className="text-xs font-medium">Note Details</span>

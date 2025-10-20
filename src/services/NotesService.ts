@@ -78,9 +78,9 @@ export const getOwnedComposeNotes = async () => {
   return response;
 }
 
-export const uploadComposedNote = async (composeID: any) => {
+export const uploadComposedNote = async (composeID: any, curState:any) => {
   const response = await axiosInstance.patch(`/notes/compose/${composeID}/publish`,
-    { publish: true },
+  { publish: curState },
   );
   return response;
 }
@@ -111,7 +111,20 @@ function returnErr(err: any) {
   }
   return { status: err, ok: false, data: null }
 }
+//not deleting.
+export const deleteComposeNote =(composeID:any) =>{
+  console.log(composeID)
+  const res = axiosInstance.delete(`/notes/compose/${composeID}`)
+  return res;
+}
 
-// export function getBatchHeadComposedNotes(id:[]){
-//   const res = 'getBatchHeadComposeNotes'
-// }
+export const getComposeBatch = async (noteIds:any)=>{
+  const response = await axiosInstance.post("/notes/compose/batch-head",
+    {notes: noteIds}
+  );
+}
+
+export const deleteUploadedNote = async (id:any)=>{
+  const response = await axiosInstance.delete(`/notes/${id}`);
+  return response
+}

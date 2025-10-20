@@ -9,13 +9,14 @@ import { Separator } from "./ui/separator"
 import { formatPriceSGD } from "@/utils/currency"
 import { Button } from "./ui/button"
 import { Search, ChevronDown } from "lucide-react"
-import { getNotesById, getUserOwned } from "@/services/NotesService"
+import { deleteUploadedNote, getNotesById, getUserOwned } from "@/services/NotesService"
 import { NoteListing } from "@/types/types"
 import { Spinner } from "./ui/shadcn-io/spinner"
 import { Input } from "./ui/input"
 import { Link } from "react-router-dom"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
-
+import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 
 
 export const UserOwnNote = (currentUserInfo) => {
@@ -24,7 +25,7 @@ export const UserOwnNote = (currentUserInfo) => {
   const [loading, isLoading] = useState(true)
   const [searchQuery, setSearch] = useState("")
   const [activeFilter, setActiveFilter] = useState("All")
-
+  const navigate = useNavigate();
   useEffect(() => {
     getUserOwned()
       .then(async (resp) => {
@@ -54,6 +55,14 @@ export const UserOwnNote = (currentUserInfo) => {
     return (<div className="flex justify-center"><Spinner variant={'default'} /></div>)
   }
   console.log(filteredNotes)
+
+  const deleteNote = (id) =>{
+    deleteUploadedNote(id).then((res)=>{
+      toast.success('Note deleted successfully')
+    }).catch(err=>
+      toast.error('Note unable to delete')
+    )
+  }
 
   return (
     <main className="w-full">
@@ -88,8 +97,9 @@ export const UserOwnNote = (currentUserInfo) => {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr">
           {filteredNotes.map((listing) => (
             <div key={listing.id} className="h-full">
-              <Link
-                to={`/listings/${(listing as any).note_id || listing.id}`}
+             
+              <div
+               
                 className="block h-full"
               >
                 <Card className="h-full flex flex-col p-5 rounded-md transition-shadow duration-300 hover:shadow-xl"
@@ -148,10 +158,16 @@ export const UserOwnNote = (currentUserInfo) => {
                       )}
 
                     </div>
+
+                  </CardFooter>
+                   {/* to={`/listings/${(listing as any).note_id || listing.id}`}*/}
+                  <CardFooter className="flex flex-row-reverse justify-between gap-x-2 pl-0 pr-0">
+                    <Button size ="sm" className="w-[48%]" onClick={()=>{navigate(`/listings/${(listing as any).note_id || listing.id}`)}}>Details</Button>
+                    <Button size= "sm" className="bg-red-400 hover:bg-red-500 w-[48%] px-2 py-1 border-none gap-1 items-center" onClick={()=>{deleteNote(`${(listing as any).note_id || listing.id}`)}}>Delete</Button>
                   </CardFooter>
                 </Card>
 
-              </Link>
+              </div>
             </div>
           ))}
           {filteredNotes.length === 0 && (

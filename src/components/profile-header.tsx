@@ -5,6 +5,7 @@ import { Card } from "./ui/card";
 import { Calendar, Mail, User } from 'lucide-react';
 function ProfileHeader(currentUser) {
     currentUser = currentUser['current']
+    console.log(localStorage)
     return (
         <Card className="flex flex-col md:flex-row mt-4 ml-8 mr-8 pl-8 pr-8 relative transition-all duration-300 hover:shadow-lg">
             <div className="text-center md:text-left">

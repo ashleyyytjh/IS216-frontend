@@ -19,7 +19,7 @@ export const updateUser = async (userData: any) => {
     const response = await axiosInstance.patch(`/users`, userData);
     return response.data;
 }
-// export const updateUserImage = async()
+
 export const updateUserImage = async() =>{
     const response = await axiosInstance.post(`/photo/update`)
 }

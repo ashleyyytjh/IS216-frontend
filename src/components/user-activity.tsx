@@ -67,14 +67,15 @@ function UserActivity(currentUser) {
     //Get price - done
     //Get seller name?
     const [statusFilter, setStatusFilter] = useState("All");
+    console.log(orders)
     const filteredNotes = orders.filter(note => {
 
         const query = searchQuery.toLowerCase()
         const matchesSearch =
 
             note?.['note']?.['tags']?.[0]?.toLowerCase()?.includes(query) ||
-            note.note.description.toLowerCase().includes(query) ||
-            note.note.module.toLowerCase().includes(query)
+            note?.note?.description.toLowerCase().includes(query) ||
+            note?.note?.module.toLowerCase().includes(query)
         const matchedQuery = statusFilter == "All" || note.status.toLowerCase() === statusFilter.toLowerCase();
         return matchesSearch && matchedQuery;
     })

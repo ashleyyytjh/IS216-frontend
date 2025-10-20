@@ -30,13 +30,16 @@ export const UserOwnNote = (currentUserInfo) => {
   useEffect(() => {
     getUserOwned()
       .then(async (resp) => {
+        console.log(resp)
         const allUserOwned = await Promise.all(
           resp.map(async (r) => {
             const a = await getNotesById(r.id);
+            console.log(a)
             return {
               ...r,
               pending: a?.graph.edges.length === 0,
             };
+            
           })
         );
         setNotes(allUserOwned);

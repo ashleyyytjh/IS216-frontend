@@ -1,191 +1,234 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Menu } from "lucide-react"
-import { Link } from 'react-router-dom';
-import { getCurrentUser, signOut } from 'aws-amplify/auth';
-import type { User } from "@/types/types"
-import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import { Link } from "react-router-dom";
+import { getCurrentUser, signOut } from "aws-amplify/auth";
+import type { User } from "@/types/types";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { getUser } from "@/services/UserService";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./dropdown-menu";
+import { getAvatarFallback } from "@/utils/util";
 
 const navigationItems = [
-    { name: "Explore", href: "/explore" },
-    { name: "Create", href: "/create" },
-    { name: "Dashboard", href: "/dashboardSeller" },
-    { name: "Forum", href: "/forum" }
-
-]
+  { name: "Explore", href: "/explore" },
+  { name: "Create", href: "/create" },
+  { name: "Dashboard", href: "/dashboardSeller" },
+  { name: "Forum", href: "/forum" },
+];
 
 const navbar = () => {
-    const [isOpen, setIsOpen] = useState(false)
-    const [user, setUser] = useState<User | null>(null); // Initialize user state as null
-    const [amplifyUser, setAmplifyUser] = useState<User | null>(null);
-    const navigate = useNavigate();
-    useEffect(() => {
-        const checkUser = async () => {
-            let isAmplifyUser: any;
-            try {
-                isAmplifyUser = await getCurrentUser(); // 2. Assign the value
-                setAmplifyUser(isAmplifyUser);
-            } catch (error) {
-            }
-        };
-        checkUser();
-    }, []);
-
-    const handleSignOut = async () => {
-        try {
-            await signOut();
-            // setUser(null);
-            setAmplifyUser(null);
-            localStorage.clear();
-            toast.success('Successfully signed out');
-
-            setTimeout(() => {
-                window.location.href = '/home';
-            }, 500)
-
-        } catch (error) {
-            console.log('error signing out: ', error);
-        }
+  const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null); // Initialize user state as null
+  const [image, setImage] = useState<string>("");
+  const [amplifyUser, setAmplifyUser] = useState<User | null>(null);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const checkUser = async () => {
+      let isAmplifyUser: any;
+      try {
+        isAmplifyUser = await getCurrentUser(); // 2. Assign the value
+        setAmplifyUser(isAmplifyUser);
+        const resp = await getUser();
+        setImage(String(resp.imageUrl));
+        setUser(resp as User);
+      } catch (error) {}
     };
-    return (
-        <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto px-4">
-                <div className="flex h-16 items-center justify-between">
+    checkUser();
+  }, []);
 
-                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                        <SheetTrigger asChild className="md:hidden">
-                            <Button variant="ghost" size="icon" className="pl-18">
-                                <Menu className="h-6 w-6" />
-                                <div className="flex items-center space-x-2">
-                                    <div className="h-7 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                        <span className="text-primary-foreground font-bold text-sm">ON</span>
-                                    </div>
-                                    <span className="font-bold text-xl">Onlynotes</span>
-                                </div>
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // setUser(null);
+      setAmplifyUser(null);
+      localStorage.clear();
+      toast.success("Successfully signed out");
 
-
-                            </Button>
-
-                        </SheetTrigger>
-
-                        <SheetContent side="left" className="w-[300px] sm:w-[400px] pl-3">
-                            <SheetTitle className="pt-5 pl-3">
-                                <a href="/home" className="flex items-center space-x-2">
-                                    <div className="h-7 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                        <span className="text-primary-foreground font-bold text-sm">ON</span>
-                                    </div>
-                                    <span className="font-bold text-xl">Onlynotes</span>
-                                </a>
-
-                            </SheetTitle>
-                            <div className="flex flex-col space-y-4 mt-8 pl-2">
-                                {navigationItems.map((item) => {
-                                    if ((item.name === "Dashboard" || item.name === "Upload") && !amplifyUser) {
-                                        return null; // hide dashboard when user not logged in
-                                    } else {
-                                        return (
-                                            <a
-                                                key={item.name}
-                                                href={item.href}
-                                                className="text-foreground hover:text-primary transition-colors duration-200 font-medium text-lg py-2"
-                                                onClick={() => setIsOpen(false)}
-                                            >
-                                                {item.name}
-                                            </a>
-                                        )
-                                    }
-
-                                })
-
-                                }
-
-                                {!amplifyUser ? (
-                                    <a
-                                        href="/login"
-                                        className="text-foreground hover:text-primary font-medium text-lg py-2 md:hidden"
-                                        onClick={() => setIsOpen(false)}
-                                    >
-                                        Login
-                                    </a>
-                                ) : (
-                                    <>
-                                        <a
-                                            href="/profile"
-                                            className="text-foreground hover:text-primary font-medium text-lg py-2 md:hidden"
-                                            onClick={() => setIsOpen(false)}
-                                        >
-                                            Profile
-                                        </a>
-                                        <a
-                                            onClick={() => {
-                                                handleSignOut()
-                                                setIsOpen(false)
-                                            }}
-                                            className="text-destructive hover:text-primary font-medium text-lg py-2 md:hidden"
-                                        >
-                                            Sign Out
-                                        </a>
-                                    </>
-                                )}
-                            </div>
-                        </SheetContent>
-                    </Sheet>
-
-                    {/* The code here is for the main nav bar. text align might go here. */}
-                    <div className="hidden md:flex flex-1 items-center space-x-8 text-[#0f172b] text-center mr-auto ml-auto">
-                        <a href="/home" className="flex items-center space-x-2">
-                            <div className="h-7 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                <span className="text-primary-foreground text-sm px">ON</span>
-                            </div>
-                            <span className="font-bold text-xl pr-12 ">OnlyNotes</span>
-                        </a>
-                        {navigationItems.map((item) => {
-                            if ((item.name === "Dashboard" || item.name === "") && !amplifyUser) {
-                                return null; // hide dashboard when user not logged in
-                            }
-
-                            return (
-                                <a
-                                    key={item.name}
-                                    href={item.href}
-                                    className="hover:border-b-2 border-primary hover:text-foreground transition-colors duration-200 font-medium text-sm "
-                                >
-                                    {item.name}
-                                </a>
-                            );
-                        })}
-                    </div>
-                    <div className="hidden md:block">
-                        {!amplifyUser ? (
-                            <Button>
-                                <Link className="text-sm" to="/login">Login</Link>
-                            </Button>
-                        ) : (
-                            <div className="flex items-center space-x-4">
-                                <Button
-                                    size={"sm"}
-                                >
-                                    <Link className="text-sm" to="/profile">Profile</Link>
-                                </Button>
-                                <Button size={"sm"} onClick={handleSignOut}>
-                                    <p className="text-sm">
-                                        Sign out
-                                    </p>
-                                </Button>
-                            </div>
-                        )}
-                    </div>
-
-
-
+      setTimeout(() => {
+        window.location.href = "/home";
+      }, 500);
+    } catch (error) {
+      console.log("error signing out: ", error);
+    }
+  };
+  return (
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon" className="pl-18">
+                <Menu className="h-6 w-6" />
+                <div className="flex items-center space-x-2">
+                  <div className="h-7 w-8 rounded-lg bg-primary flex items-center justify-center">
+                    <span className="text-primary-foreground font-bold text-sm">
+                      ON
+                    </span>
+                  </div>
+                  <span className="font-bold text-xl">Onlynotes</span>
                 </div>
-            </div>
-        </nav>
-    )
-}
+              </Button>
+            </SheetTrigger>
+
+            <SheetContent side="left" className="w-[300px] sm:w-[400px] pl-3">
+              <SheetTitle className="pt-5 pl-3">
+                <a href="/home" className="flex items-center space-x-2">
+                  <div className="h-7 w-8 rounded-lg bg-primary flex items-center justify-center">
+                    <span className="text-primary-foreground font-bold text-sm">
+                      ON
+                    </span>
+                  </div>
+                  <span className="font-bold text-xl">Onlynotes</span>
+                </a>
+              </SheetTitle>
+              <div className="flex flex-col space-y-4 mt-8 pl-2">
+                {navigationItems.map((item) => {
+                  if (
+                    (item.name === "Dashboard" || item.name === "Upload") &&
+                    !amplifyUser
+                  ) {
+                    return null; // hide dashboard when user not logged in
+                  } else {
+                    return (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        className="text-foreground hover:text-primary transition-colors duration-200 font-medium text-lg py-2"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {item.name}
+                      </a>
+                    );
+                  }
+                })}
+
+                {!amplifyUser ? (
+                  <a
+                    href="/login"
+                    className="text-foreground hover:text-primary font-medium text-lg py-2 md:hidden"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Login
+                  </a>
+                ) : (
+                  <>
+                    <a
+                      href="/profile"
+                      className="text-foreground hover:text-primary font-medium text-lg py-2 md:hidden"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Profile
+                    </a>
+                    <a
+                      onClick={() => {
+                        handleSignOut();
+                        setIsOpen(false);
+                      }}
+                      className="text-destructive hover:text-primary font-medium text-lg py-2 md:hidden"
+                    >
+                      Sign Out
+                    </a>
+                  </>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          {/* The code here is for the main nav bar. text align might go here. */}
+          <div className="hidden md:flex flex-1 items-center space-x-8 text-[#0f172b] text-center mr-auto ml-auto">
+            <a href="/home" className="flex items-center space-x-2">
+              <div className="h-7 w-8 rounded-lg bg-primary flex items-center justify-center">
+                <span className="text-primary-foreground text-sm px">ON</span>
+              </div>
+              <span className="font-bold text-xl pr-12 ">OnlyNotes</span>
+            </a>
+            {navigationItems.map((item) => {
+              if (
+                (item.name === "Dashboard" || item.name === "") &&
+                !amplifyUser
+              ) {
+                return null; // hide dashboard when user not logged in
+              }
+
+              return (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="hover:border-b-2 border-primary hover:text-foreground transition-colors duration-200 font-medium text-sm "
+                >
+                  {item.name}
+                </a>
+              );
+            })}
+          </div>
+          <div className="hidden md:block">
+            {!amplifyUser ? (
+              <Button>
+                <Link className="text-sm" to="/login">
+                  Login
+                </Link>
+              </Button>
+            ) : (
+              <div className="flex items-center">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="rounded-full focus-visible:ring-2 focus-visible:ring-ring">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={image} alt="@joel" />
+                        <AvatarFallback>
+                          {getAvatarFallback(user?.fullName ?? "")}
+                        </AvatarFallback>
+                      </Avatar>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>
+                      <h3>{user?.fullName}</h3>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="py-0">
+                      <Button variant="link" asChild className="p-0">
+                        <Link className="text-sm" to="/profile">
+                          Profile
+                        </Link>
+                      </Button>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="py-0">
+                      <Button
+                        size="sm"
+                        variant="link"
+                        className="!font-medium p-0"
+                        onClick={handleSignOut}
+                      >
+                        Sign out
+                      </Button>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
 
 export default navbar;

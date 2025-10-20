@@ -122,6 +122,12 @@ export const getComposeBatch = async (noteIds:any)=>{
   const response = await axiosInstance.post("/notes/compose/batch-head",
     {notes: noteIds}
   );
+  return response.data;
+}
+
+export const getUploadBatch = async(noteId:any)=>{
+  return await axiosInstance.post("/notes/batch-head", {notes:noteId});
+
 }
 
 export const deleteUploadedNote = async (id:any)=>{

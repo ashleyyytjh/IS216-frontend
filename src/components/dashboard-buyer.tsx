@@ -8,7 +8,7 @@ import {
 import UserTabs from "./user-tabs";
 import { useEffect, useState } from "react";
 import { getOrders } from "@/services/OrdersService";
-import { getComposeNoteById, getNotesById } from "@/services/NotesService";
+import { getComposeBatch, getComposeNoteById, getNotesById, getUploadBatch } from "@/services/NotesService";
 import React from "react";
 import { Spinner } from "./ui/shadcn-io/spinner";
 import { ReactTyped } from "react-typed";
@@ -28,17 +28,20 @@ function DashboardBuyer(currentUser) {
 
     }, [])
     const [hashMap, setHashMap] = useState<Record<string, number>>({});
-    const [totalCount, setTotalCount] = useState(0);
-    const [totalSpent, setTotalSpent] = useState(0);
+    const [totalUploadedNotesByMod, setTotalUploadedNotesByMod] = useState([]);
+    const [totalComposeNoteByMod, setTotalComposeNoteByMod] = useState([]);
+    const [normalNoteTotal, setNormalNoteStat] = useState(0);
+    const [composeNoteTotal, setComposeNoteStat] = useState(0);
+    const [totalNote, setTotalNote] = useState(0);
 
     useEffect(() => {
         if (!orders) {
             return;
         }
         if (orders.length === 0) {
-            setHashMap({});
-            setTotalCount(0);
-            setTotalSpent(0);
+            // setHashMap({});
+            // setTotalCount(0);
+            // setTotalSpent(0);
             setLoading(false);
             return;
         }
@@ -47,37 +50,44 @@ function DashboardBuyer(currentUser) {
         let count = 0;
         let spent = 0;
         let missingNotes: string[] = [];
-        //cont more debugging
-        const promises = orders
-            .filter(o => o.buyer_id === currentUser.current.current.sub)
-            .map(o =>
-                getNotesById(o.note_id)
-                    .then(async (res) => {
-                        let note = res;
-                        if (!note) {
-                            const alt = await getComposeNoteById(o.note_id);
-                            note = alt?.data as any;
-                        }
-                        const mod = note?.module ?? "Others";
-                        map[mod] = (map[mod] || 0) + 1;
-                        count += 1;
-                        spent += o.price;
-                    }).catch((err) => {
-                        missingNotes.push(o.note_id)
-                        console.log(missingNotes)
-                    }
-                    )
-            );
 
-        Promise.all(promises).then(() => {
-            setHashMap(map);
-            setTotalCount(count);
-            setTotalSpent(spent);
-            setLoading(false)
-        });
+        //cont more debugging
+        const userOrders = orders.filter(o => o.buyer_id == currentUser.current.current.sub)
+        console.log(userOrders)
+        let uniqueNoteIds = userOrders.map((o) => o.note_id);
+        console.log(uniqueNoteIds) // allnote id.
+        setTotalNote(uniqueNoteIds.length)
+        getUploadBatch(uniqueNoteIds).then((res) => {
+            setTotalUploadedNotesByMod(res.data)
+            let totalSum = res.data.reduce((sum, a) => sum + (a.price ?? 0), 0);
+            setNormalNoteStat(totalSum)
+        }).catch((e) => console.log(e))
+
+        getComposeBatch(uniqueNoteIds).then((res) => {
+            let totalSum = res.reduce((sum, a) => sum + (a.price ?? 0), 0);
+            setTotalComposeNoteByMod(res)
+            setComposeNoteStat(totalSum)
+        }).catch((e) => console.log(e))
+
+
+        setLoading(false)
+
     }, [orders, currentUser]);
 
+    useEffect(() => {
+        const mergedList = [...totalComposeNoteByMod, ...totalUploadedNotesByMod];
+        if (mergedList.length === 0) return;
 
+        const hash: Record<string, number> = {};
+        mergedList.forEach((a: any) => {
+            const mod = a.module?.toUpperCase() ?? "UNKNOWN";
+            hash[mod] = (hash[mod] || 0) + 1;
+        });
+
+        setHashMap(hash);
+    }, [totalComposeNoteByMod, totalUploadedNotesByMod]);
+
+    console.log(normalNoteTotal, composeNoteTotal)
     console.log(hashMap)
 
     const topModule = React.useMemo(() => {
@@ -102,14 +112,14 @@ function DashboardBuyer(currentUser) {
                             <CardContent>
                                 <Spinner variant="default" />
                             </CardContent>
-                        ) : totalCount === 0 ? (
+                        ) : totalNote === 0 ? (
                             <CardContent className="flex flex-col">
                                 <ReactTyped className="text-foreground text-xl font-medium" strings={['0']} typeSpeed={50} backSpeed={100} showCursor={false} />
                                 <ReactTyped className="text-sm font-light text-foreground" strings={['No notes purchased yet.']} typeSpeed={50} backSpeed={100} showCursor={false} />
                             </CardContent>
                         ) : (
                             <CardContent className="flex flex-col">
-                                <ReactTyped className="text-foreground text-xl font-medium" strings={[`${totalCount}`]} typeSpeed={50} backSpeed={100} showCursor={false} />
+                                <ReactTyped className="text-foreground text-xl font-medium" strings={[`${totalNote}`]} typeSpeed={50} backSpeed={100} showCursor={false} />
                                 <ReactTyped className="text-sm font-light text-foreground" strings={['Notes purchased.']} typeSpeed={50} backSpeed={100} showCursor={false} />
                             </CardContent>
                         )
@@ -127,14 +137,14 @@ function DashboardBuyer(currentUser) {
                             <CardContent>
                                 <Spinner variant="default" />
                             </CardContent>
-                        ) : totalSpent === 0 ? (
+                        ) : (normalNoteTotal + composeNoteTotal) === 0 ? (
                             <CardContent className="flex flex-col">
                                 <ReactTyped className="text-foreground text-xl font-medium" strings={[`$0`]} typeSpeed={50} backSpeed={100} showCursor={false} />
                                 <ReactTyped className="text-sm font-light text-foreground" strings={['No spending yet.']} typeSpeed={50} backSpeed={100} showCursor={false} />
                             </CardContent>
                         ) : (
                             <CardContent className="flex flex-col">
-                                <ReactTyped className="text-foreground text-xl font-medium" strings={[`$${Number(totalSpent / 100).toFixed(2)}`]} typeSpeed={50} backSpeed={100} showCursor={false} />
+                                <ReactTyped className="text-foreground text-xl font-medium" strings={[`$${Number((normalNoteTotal + composeNoteTotal) / 100).toFixed(2)}`]} typeSpeed={50} backSpeed={100} showCursor={false} />
                                 <ReactTyped className="text-sm font-light text-foreground" strings={['Spent in Onlynotes']} typeSpeed={50} backSpeed={100} showCursor={false} />
                             </CardContent>
                         )

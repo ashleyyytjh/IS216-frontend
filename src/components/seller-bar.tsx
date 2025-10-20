@@ -45,6 +45,7 @@ const chartConfig = {
 }
 
 export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
+  //for responsive sizing.
   const smallSize = useMediaQuery("(max-width: 400px)");
   const overlapBP = useMediaQuery("(max-width: 419px)");
   type CustomLabelProps = {
@@ -144,11 +145,13 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
         ) : isEmpty ? (
           <p className="text-gray-500 text-sm">No data found.</p>
         ) : (
+          //contain within.
           <ChartContainer
             config={chartConfig}
             className="relative aspect-auto h-[250px] sm:h-[250px] xs:h-[200px] max-[400px]:h-[160px] w-full transition-opacity duration-700">
-            <BarChart data={chartData} style={{ overflow: "hidden" }}>
+            <BarChart data={chartData} style={{ overflow: "hidden" }}> {/*bar chart code*/}
               <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" opacity={0.8} />
+              {/* X axis dets. */}
               <XAxis
                 dataKey="module"
                 tickLine={false}
@@ -158,6 +161,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                 label={{ value: "Module Code", position: "insideBottom", offset: -4 }}
                 tick={{ fill: "#6B7280", fontSize: smallSize ? 9 : 13, fontWeight: 400 }}
               />
+              {/* y axis dets */}
               <YAxis
                 tickLine={false}
                 axisLine={false}
@@ -174,6 +178,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                 }}
 
               />
+              {/* tooltip dets */}
               <ChartTooltip
                 cursor={false}
                 labelFormatter={(label) => `Module: ${label}`}
@@ -183,6 +188,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                 ]}
                 content={<ChartTooltipContent hideIndicator />}
               />
+              {/* actual bar data with mapping */}
               <Bar
                 dataKey="revenue"
                 fill="var(--chart-1)"
@@ -202,6 +208,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                     }
                   />
                 ))}
+                {/* labels off the list. custom way of setting text due to responsive designs. */}
                 <LabelList
                   dataKey="revenue"
                   position="top"

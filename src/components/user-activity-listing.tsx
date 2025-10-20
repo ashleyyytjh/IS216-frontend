@@ -13,14 +13,10 @@ import { useLocation, useNavigate } from "react-router-dom"
 const UserActivityListing = ({ note }) => {
   const navigate = useNavigate();
   const location = useLocation()
-
   const isSellerDashboard = location.pathname.includes("dashboardSeller")
   const n = note.note ? { ...note, ...note.note } : note
-
   const formatCurrency = (num: number) =>
     (num / 100).toLocaleString("en-SG", { style: "currency", currency: "SGD" })
-
-
   return (
     <>
       <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer relative overflow-hidden">

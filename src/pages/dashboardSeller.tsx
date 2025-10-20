@@ -45,56 +45,47 @@ export default function DashboardSeller() {
   useEffect(() => {
     if (!currentUser) return;
 
-    //we get everything from orders.
     getOrders()
       .then((orders) => {
-        let uniqueNoteIds = [...new Set(orders.map((o) => o.note_id))];
-        //changes here. we would need to getcomposenotebyid too
-        //we get the results from uniquenoteid to one array and another array.
-        return Promise.all([
-          Promise.all(
-            uniqueNoteIds.map((id) =>
-              getNotesById(String(id)).catch((err) => {
-                console.error("Failed fetching note", id, err);
-                return null;
-              })
-            )
-          ),
-          Promise.all(
-            uniqueNoteIds.map((id) =>
-              getComposeNoteById(String(id)).then((resp) => {
-                return resp.data
-              }).catch((err) => {
-                console.error("Failed fetching composed note", id, err);
-                return null;
-              })
-            )
-          ),
-        ])
-          .then(([notes, composedNotes]) => ({ orders, notes, composedNotes }));
+        const uniqueNoteIds = [...new Set(orders.map((o) => o.note_id))];
+        uniqueNoteIds.push("68f4960f3759a500af338860")
+        return Promise.all(
+          uniqueNoteIds.map(async (id) => {
+            const normal = await getNotesById(String(id)).catch(() => null);
+            if (normal) return { ...normal, _type: "normal" }; 
+
+            const composed = await getComposeNoteById(String(id))
+              .then((resp) => ({ ...resp.data, _type: "composed" }))
+              .catch(() => null);
+
+            return composed; 
+          })
+        ).then((allNotes) => ({ orders, allNotes }));
       })
-      .then(({ orders, notes, composedNotes }) => {
-        const all = [... (notes ?? []), ...(composedNotes ?? [])].filter(n => Boolean(n))
-        const noteMap = new Map(all.map((n) => [n?.id, n]));
+      .then(({ orders, allNotes }) => {
+        const validNotes = allNotes.filter((n) => n);
+        const noteMap = new Map(validNotes.map((n) => [n?.id, n]));
+
         let total = 0;
         let totalCnt = 0;
         const moduleCountMap = new Map<string, number>();
         const moduleRevenueMap = new Map<string, number>();
 
         orders.forEach((order) => {
-          console.log(order)
           const note = noteMap.get(order.note_id);
-          if (note && note.userId === currentUser.sub) {
-            if (order.status == "succeeded") {
-              total += Number(order.price) / 100;
-              totalCnt += 1;
-              const mod = note.module?.toUpperCase() || "Unknown";
-              moduleCountMap.set(mod, (moduleCountMap.get(mod) || 0) + 1);
-              moduleRevenueMap.set(
-                mod,
-                (moduleRevenueMap.get(mod) || 0) + Number(order.price) / 100
-              );
-            }
+
+          if (note && note.userId === currentUser.sub && order.status === "succeeded") {
+            total += Number(order.price) / 100;
+            totalCnt += 1;
+
+            const mod = note.module?.toUpperCase() || "UNKNOWN";
+            moduleCountMap.set(mod, (moduleCountMap.get(mod) || 0) + 1);
+            moduleRevenueMap.set(
+              mod,
+              (moduleRevenueMap.get(mod) || 0) + Number(order.price) / 100
+            );
+
+            console.log(`[${note._type}] Added note ${note.id} (${mod})`);
           }
         });
 
@@ -107,11 +98,11 @@ export default function DashboardSeller() {
           .sort((a, b) => b.revenue - a.revenue);
 
         setModuleCountsArray(arr);
-        setLoadInfo(false);
         setModuleRevenueArray(revenueArr);
         setTotalSales(total);
         setTotalNoteCount(totalCnt);
         setTopModule(arr[0] || null);
+        setLoadInfo(false);
       })
       .catch((err) => console.error("Error fetching sales:", err));
   }, [currentUser]);

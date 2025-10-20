@@ -22,7 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useMediaQuery } from "usehooks-ts"
 
 
-
+//Code for scatter plot.
 export function ScatterVisual() {
   const [userOrders, setUserOrder] = useState<any[]>([])
   const [allOrders, setAllOrders] = useState<any[]>([])
@@ -47,11 +47,14 @@ export function ScatterVisual() {
       .catch((err) => console.error(err))
   }, [])
 
+  //navigation code for scatter plot clicking.
   const hrefMover = (data: any) => {
     if (data && data.id) {
       window.location.href = `/listings/${data.id}`;
     }
   }
+
+  //custom tooltip code for scatter and allows for clicks.
   const showTooltip = ({active, payload})=>{
     if (active && payload && payload.length) {
       const { note, price, module, salesCount, revenue } = payload[0].payload
@@ -69,7 +72,7 @@ export function ScatterVisual() {
       return null
     }
   }
-  const isSmallScreen = useMediaQuery("(max-width: 400px)");
+  const isSmallScreen = useMediaQuery("(max-width: 400px)"); // smallscreen checks for responsiveness below.
   useEffect(() => {
     if (userOrders.length > 0 && allOrders.length > 0) {
       const aggregated = userOrders
@@ -90,8 +93,11 @@ export function ScatterVisual() {
             revenue,
           }
         }).filter(Boolean)
+      //remove falsy values like 0 etc.
       const prices = aggregated.map(n => n?.price).filter((v): v is number => v !== undefined);
       const revenues = aggregated.map(n => n?.revenue).filter((v): v is number => v !== undefined);
+
+      //correlation to get insights from the charts.
       const correlation = correl(prices, revenues);
       setMatchedOrders(aggregated)
       setIsLoading(false)
@@ -176,9 +182,11 @@ export function ScatterVisual() {
 
         ) : (
           <div className="w-full h-[380px] sm:h-[380px] max-[640px]:h-[280px] max-[400px]:h-[250px]">
+            {/* Abit different here. previously, theres X Y axis but now, there is Z axis for scatter. */}
             <ResponsiveContainer width="100%" height="100%" className="align-content-center ml-auto mr-auto justify-start sm:justify-center">
               <ScatterChart
                 margin={
+                  //responsive check.
                   isSmallScreen
                     ? { top: 15, right: 10, bottom: 25, left: 10 }
                     : { top: 20, right: 30, bottom: 20, left: 20 }

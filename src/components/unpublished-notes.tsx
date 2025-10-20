@@ -24,6 +24,7 @@ import { toast } from "sonner"
 import { Spinner } from "./ui/shadcn-io/spinner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { Switch } from "@/components/ui/switch";
+import { useNavigate } from "react-router-dom"
 
 export function UnpublishedNotes() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -40,6 +41,7 @@ export function UnpublishedNotes() {
         n.id === id ? { ...n, publish: newValue } : n
       )
     )
+    //publish the note (unhide feature)
     uploadComposedNote(id, newValue).then((res) => {
       console.log(res)
       newValue ? (toast.success('Note has been published successfully')) : (toast.success('Note has been hidden successfully'))
@@ -49,6 +51,8 @@ export function UnpublishedNotes() {
     })
   }
   console.log(localStorage)
+
+  //deleting method.for now would not work as think DB is blocking it.
   async function deleteNote(composeID: any) {
     setRawData((prevRes) =>
       prevRes.filter((n) =>
@@ -65,6 +69,7 @@ export function UnpublishedNotes() {
   }
 
   useEffect(() => {
+    //filtering.
     getOwnedComposeNotes().then((res) => {
       let da = res.data
       console.log(da)
@@ -90,6 +95,7 @@ export function UnpublishedNotes() {
       console.error(err)
     })
   }, [searchQuery, currentUpload, activeFilter]);
+  const navigate = useNavigate();
 
   return (
     isLoading ? (
@@ -174,7 +180,8 @@ export function UnpublishedNotes() {
                                     className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white border-none px-3 py-1"
                                     onClick={() => { {/*Nav code here*/ } }}
                                   >
-                                    <span className="text-xs font-medium">Details</span>
+                                    
+                                    <span className="text-xs font-medium" onClick={() => { navigate(`/article/${note.id}`) }}>Details</span>
                                   </Button>
                                 )
                               }
@@ -216,6 +223,7 @@ export function UnpublishedNotes() {
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr mt-10 lg:hidden">
                 {
                   rawData.map((note) => {
+                    console.log(note)
                     return (
                       <Card className="h-full flex flex-col p-5 transition-shadow duration-300 hover:shadow-xl border rounded-lg"
                       >
@@ -263,7 +271,7 @@ export function UnpublishedNotes() {
                               className="text-sm font-normal rounded-full border-none text-white uppercase"
                               style={{ background: courseGradient(note.module ?? "") }}
                             >
-                              {note.module}
+                              {note.module || "GENERAL"}
                             </Badge>
 
                             <Separator orientation="vertical" />
@@ -288,7 +296,7 @@ export function UnpublishedNotes() {
                                 size="sm"
                                 className={`flex items-center gap-1 border-none px-2 py-1 w-[50%]
       bg-slate-900 hover:bg-slate-800 text-white`}
-                                onClick={() => { console.log('must nav to edit') }}
+                                onClick={() => { navigate(`/article/${note.id}`) }}
                               >
                                 <span className="text-xs font-medium">Details</span>
                               </Button>

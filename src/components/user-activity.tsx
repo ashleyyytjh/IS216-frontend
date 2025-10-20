@@ -29,6 +29,7 @@ function UserActivity(currentUser) {
         if (!usrID) return
         async function fetchOrders() {
             try {
+                //might have to tweak this portion if notes are free (dont need to find them.)
                 const rawOrders = await getUserOrderByUserId(usrID)
                 const succeededOrders = rawOrders
                 const enrichedOrders = await Promise.all(

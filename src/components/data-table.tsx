@@ -45,69 +45,80 @@ export function DataTable(props: CurrentUserProp) {
   const [view, setView] = useState<"past-performance" | "outline" | "disputes">("past-performance")
 
 
-useEffect(() => {
-  async function fetchOwnedNotes() {
-    try {
-      const [normalRaw, composedRaw] = await Promise.all([
-        getUserOwned(),
-        getOwnedComposeNotes(),
-      ]);
+  useEffect(() => {
+    async function fetchOwnedNotes() {
+      try {
+        const [normalRaw, composedRaw] = await Promise.all([
+          getUserOwned(),
+          getOwnedComposeNotes(),
+        ]);
 
-      const normalNotes = Array.isArray(normalRaw)
-        ? normalRaw
-        : normalRaw?.data ?? [];
-      const composedNotes = Array.isArray(composedRaw)
-        ? composedRaw
-        : composedRaw?.data ?? [];
+        const normalNotes = Array.isArray(normalRaw)
+          ? normalRaw
+          : normalRaw?.data ?? [];
+        const composedNotes = Array.isArray(composedRaw)
+          ? composedRaw
+          : composedRaw?.data ?? [];
 
-      const allOwned = [
-        ...normalNotes.map((n) => ({ ...n, noteType: "normal" })),
-        ...composedNotes.map((n) => ({ ...n, noteType: "composed" })),
-      ];
+        const allOwned = [
+          ...normalNotes.map((n) => ({ ...n, noteType: "normal" })),
+          ...composedNotes.map((n) => ({ ...n, noteType: "composed" })),
+        ];
 
-      const idToData: OwnedMap = {};
-      allOwned.forEach((item: any) => {
-        idToData[item.id] = {
-          module: item.module,
-          noteType: item.noteType,       
-          originalName: item.originalName,
-          description: item.description,
-        };
-      });
+        const idToData: OwnedMap = {};
+        allOwned.forEach((item: any) => {
+          idToData[item.id] = {
+            module: item.module,
+            noteType: item.noteType,
+            originalName: item.title,
+            description: item.description,
+          };
+        });
 
-      setOwnedID(idToData);
-    } catch (err) {
+        setOwnedID(idToData);
+      } catch (err) {
+      }
     }
-  }
 
-  fetchOwnedNotes();
-}, [props]);
+    fetchOwnedNotes();
+  }, [props]);
 
-useEffect(() => {
-  getOrders()
-    .then((resp: any[] = []) => {
-      let userOrder = resp.filter(
-        (item: any) =>
-          Object.keys(ownedID).includes(item.note_id) &&
-          item.status === "succeeded"
-      );
-      userOrder = userOrder.map((i: any) => ({
-        ...i,
-        userFullName: props.currentUser?.userFullName ?? "Unknown User",
-        module: ownedID[i.note_id]?.module,
-        noteType: ownedID[i.note_id]?.noteType, 
-        originalName: ownedID[i.note_id]?.originalName,
-        description: ownedID[i.note_id]?.description,
-      }));
+  useEffect(() => {
+    getOrders()
+      .then((resp: any[] = []) => {
+      //         resp.push({
+      //   id: 109,
+      //   buyer_id: "594a352c-2081-706e-b679-00b936e6b8f9",
+      //   note_id: "68f4c9c51a5692f5bcbead5b", 
+      //   price: 100,
+      //   status: "succeeded",
+      //   stripe_transaction_id: "pi_test_12345"
+      // });
+        let userOrder = resp.filter(
+          (item: any) =>
+            Object.keys(ownedID).includes(item.note_id) &&
+            item.status === "succeeded"
+        );
+        resp.push()
+        console.log(userOrder)
+        userOrder = userOrder.map((i: any) => ({
+          
+          ...i,
+          userFullName: props.currentUser?.userFullName ?? "Unknown User",
+          module: ownedID[i.note_id]?.module,
+          noteType: ownedID[i.note_id]?.noteType,
+          originalName: ownedID[i.note_id]?.originalName,
+          description: ownedID[i.note_id]?.description,
+        }));
 
-      setAllOrders([...userOrder]);
-    })
-    .catch((e) => {
-      console.error("Error fetching orders:", e);
-    });
-}, [props, ownedID]);
+        setAllOrders([...userOrder]);
+      })
+      .catch((e) => {
+        console.error("Error fetching orders:", e);
+      });
+  }, [props, ownedID]);
 
-console.log(orders)
+  console.log(orders)
 
   return (
     <Tabs

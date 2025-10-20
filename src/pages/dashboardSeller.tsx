@@ -59,6 +59,12 @@ export default function DashboardSeller() {
         const orders = Array.isArray(ordersRaw)
           ? ordersRaw
           : ordersRaw?.data ?? [];
+        //"68f46033d4eca64133084d5d"
+
+
+        console.log(orders, 'line6')
+        //dataset will only work for 3 cards, 2 bars.
+
 
         const allNotes = [...ownedNotes, ...ownedComposed];
         const noteMap = new Map(allNotes.map((n) => [n.id, n]));

@@ -17,12 +17,13 @@ const UserActivityListing = ({ note }) => {
   const n = note.note ? { ...note, ...note.note } : note
   const formatCurrency = (num: number) =>
     (num / 100).toLocaleString("en-SG", { style: "currency", currency: "SGD" })
+  console.log(n.noteType)
   return (
     <>
       <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer relative overflow-hidden">
         <CardHeader className="pr-6 md:pr-24">
           <div className="flex flex-col">
-            <span className="text-sm sm:text-lg font-semibold break-words">{n.originalName}</span>
+            <span className="text-sm sm:text-lg font-semibold break-words">{n.originalName || n.title}</span>
 
             {n?.module && (
               <Badge
@@ -44,7 +45,7 @@ const UserActivityListing = ({ note }) => {
             </CardDescription>
           )}
           <CardDescription className="text-sm">
-            Type : {n.type?.charAt(0).toUpperCase() + n.type?.slice(1)}
+            Type : {n.noteType?.charAt(0).toUpperCase() + n.noteType?.slice(1)}
           </CardDescription>
         </CardHeader>
 
@@ -120,14 +121,27 @@ const UserActivityListing = ({ note }) => {
                   <></>
                 )
               }
-
-              <Button
+              
+              {
+                n.noteType == "normal" ? (
+                  <Button
               size="sm"
                 className="flex items-center gap-1 border-none px-2 py-1 w-auto bg-slate-800/90 hover:bg-slate-700/90 text-slate-100"
                 onClick={() => navigate(`/listings/${n.note_id}`)}
               >
                 <span className="text-xs font-medium">Note Details</span>
               </Button>
+                ) : (
+                  <Button
+              size="sm"
+                className="flex items-center gap-1 border-none px-2 py-1 w-auto bg-slate-800/90 hover:bg-slate-700/90 text-slate-100"
+                onClick={() => navigate(`/article/${n.note_id}`)}
+              >
+                <span className="text-xs font-medium">Note Details</span>
+              </Button>
+                )
+              }
+              
             </div>
           )}
         </CardFooter>

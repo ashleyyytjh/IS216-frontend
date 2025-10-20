@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/pagination"
 import { Input } from "@/components/ui/input"
 import { getUserOrderByUserId } from "@/services/OrdersService"
-import { getComposeNoteById, getNotesById } from "@/services/NotesService"
+import { getComposeNoteById, getNotesById, getSingleCompose } from "@/services/NotesService"
 import SpinItem from "./spinner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
@@ -30,27 +30,44 @@ function UserActivity(currentUser) {
         async function fetchOrders() {
             try {
                 //might have to tweak this portion if notes are free (dont need to find them.)
+                //BUGGED OUT.
                 const rawOrders = await getUserOrderByUserId(usrID)
+                // rawOrders.push({
+                //     buyer_id: `${usrID}`,
+                //     id: 109,
+                //     note_id: "68f4c9c51a5692f5bcbead5b",
+                //     price: 100,
+                //     status: "succeeded",
+                //     stripe_transaction_id: "pi_3SI0K93X5OiOA0YE1G7ztLfM",
+                // })
                 const succeededOrders = rawOrders
                 const enrichedOrders = await Promise.all(
                     succeededOrders.map(async (order) => {
                         let note: any = null;
                         try {
-                            note = await getNotesById(order.note_id);
-                            if (note == undefined) {
-                                console.warn(`getNotesById failed ${order.note_id}, shd be composed`);
-                                try {
-                                    note = await getComposeNoteById(order.note_id);
-                                } catch (err2) {
-                                    console.error(`Both note fetches failed.`);
+                            const normal = await getNotesById(order.note_id);
+                            if (normal !== undefined && normal !== null) {
+                                note = normal
+                                note.noteType = "normal";
+                                ;
+                            } else {
+                                console.warn(`Normal note not found (${order.note_id}), trying composed...`);
+                                const composedResp = await getSingleCompose(String(order.note_id));
+                                console.log(composedResp)
+                                if (composedResp?.data) {
+
+                                    note = composedResp?.data;
+                                    note.noteType = "composed"
+                                } else {
+                                    note = null
                                 }
                             }
                         } catch (err) {
-                            console.log('some issues with fetching.')
                         }
                         return { ...order, note };
                     })
                 )
+                console.log(enrichedOrders)
                 setOrders(enrichedOrders)
             } catch (err) {
                 console.error("Error fetching userOrders:", err)
@@ -73,13 +90,11 @@ function UserActivity(currentUser) {
     const [statusFilter, setStatusFilter] = useState("All");
     console.log(orders)
     const filteredNotes = orders.filter(note => {
-
+        console.log(note)
         const query = searchQuery.toLowerCase()
         const matchesSearch =
-
-            note?.['note']?.['tags']?.[0]?.toLowerCase()?.includes(query) ||
-            note?.note?.description.toLowerCase().includes(query) ||
-            note?.note?.module.toLowerCase().includes(query)
+            //missing some code.
+            note?.['note']?.['tags']?.[0]?.toLowerCase()?.includes(query)
         const matchedQuery = statusFilter == "All" || note.status.toLowerCase() === statusFilter.toLowerCase();
         return matchesSearch && matchedQuery;
     })
@@ -87,6 +102,8 @@ function UserActivity(currentUser) {
     const startIndex = (currentPage - 1) * notesPerPage
     const endIndex = startIndex + notesPerPage
     const currentNotes = filteredNotes.slice(startIndex, endIndex)
+
+    console.log(currentNotes)
 
 
     useEffect(() => {
@@ -116,7 +133,7 @@ function UserActivity(currentUser) {
                             <SelectItem value="All">All</SelectItem>
                             <SelectItem value="created">Created</SelectItem>
                             <SelectItem value="processing">Processing</SelectItem>
-                            <SelectItem value="success">Success</SelectItem>
+                            <SelectItem value="succeeded">Success</SelectItem>
                             <SelectItem value="failure">Failure</SelectItem>
                         </SelectContent>
                     </Select>

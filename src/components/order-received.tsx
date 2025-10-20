@@ -56,7 +56,7 @@ export function OrderReceived({
           <Select
             value={String(itemsPerPage)}
             onValueChange={(v) => setItemPerPage(Number(v))}
-            
+
           >
             <SelectTrigger className="w-[150px] sm:w-[80px] md:w-[170px]">
               <SelectValue placeholder="View rows per page" />

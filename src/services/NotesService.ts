@@ -134,3 +134,8 @@ export const deleteUploadedNote = async (id:any)=>{
   const response = await axiosInstance.delete(`/notes/${id}`);
   return response
 }
+
+export const getSingleCompose =(id:any)=>{
+   const res = axiosInstance.get(`/notes/compose/${id}`)
+   return res
+}

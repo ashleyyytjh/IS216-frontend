@@ -35,58 +35,65 @@ export function ScatterVisual() {
 
 
   //all orders
-useEffect(() => {
-  async function fetchData() {
-    try {
-      const [normalNotesRaw, composedNotesRaw, ordersRaw] = await Promise.all([
-        getUserOwned(),
-        getOwnedComposeNotes(),
-        getOrders(),
-      ]);
-      const normalNotes = Array.isArray(normalNotesRaw)
-        ? normalNotesRaw
-        : normalNotesRaw?.data ?? [];
-      const composedNotes = Array.isArray(composedNotesRaw)
-        ? composedNotesRaw
-        : composedNotesRaw?.data ?? [];
-      const orders = Array.isArray(ordersRaw)
-        ? ordersRaw
-        : ordersRaw?.data ?? [];
-
-      const allUserNotes = [
-        ...normalNotes.map((n) => ({ ...n, type: "normal" })),
-        ...composedNotes.map((n) => ({ ...n, type: "composed" })),
-      ];
-
-      console.log("normal:", normalNotes.length);
-      console.log("composed:", composedNotes.length);
-      console.log("total:", orders.length);
-      setUserNote(allUserNotes);
-      setAllOrders(orders);
-    } catch (err) {
-      console.error("❌ Error fetching scatter data:", err);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [normalNotesRaw, composedNotesRaw, ordersRaw] = await Promise.all([
+          getUserOwned(),
+          getOwnedComposeNotes(),
+          getOrders(),
+        ]);
+        //desanitise. if normalnoteraw is not arr, ref data, else empty arr
+        const normalNotes = Array.isArray(normalNotesRaw)
+          ? normalNotesRaw
+          : normalNotesRaw?.data ?? [];
+        const composedNotes = Array.isArray(composedNotesRaw)
+          ? composedNotesRaw
+          : composedNotesRaw?.data ?? [];
+        const orders = Array.isArray(ordersRaw)
+          ? ordersRaw
+          : ordersRaw?.data ?? [];
+        const allUserNotes = [
+          ...normalNotes.map((n) => ({ ...n, type: "normal" })),
+          ...composedNotes.map((n) => ({ ...n, type: "composed" })),
+        ];
+        //works here. but due to collision, if you put same price, will not really show.
+        // orders.push({
+        //     buyer_id: "594a352c-2081-706e-b679-00b936e6b8f9",
+        //     id: 109,
+        //     note_id: "68f4c9c51a5692f5bcbead5b",
+        //     price: 1,
+        //     status: "succeeded",
+        //     stripe_transaction_id: "pi_3SI0K93X5OiOA0YE1G7ztLfM",
+        //   })
+        console.log("normal:", normalNotes.length);
+        console.log("composed:", composedNotes.length);
+        console.log("total:", orders.length);
+        setUserNote(allUserNotes);
+        setAllOrders(orders);
+      } catch (err) {
+      }
     }
-  }
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
-console.log(userNotes, 'l74')
-console.log(allOrders, '75')
+  console.log(userNotes, 'l74')
+  console.log(allOrders, '75')
 
   //navigation code for scatter plot clicking.
   const hrefMover = (data: any) => {
     console.log(data)
-    if(data && data.id && data.payload.type == "normal"){
+    if (data && data.id && data.payload.type == "normal") {
       window.location.href = `/listings/${data.id}`;
     }
-    else{
+    else {
       window.location.href = `/article/${data.id}`;
     }
   }
 
   //custom tooltip code for scatter and allows for clicks.
-  const showTooltip = ({active, payload})=>{
+  const showTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const { note, price, module, salesCount, revenue } = payload[0].payload
       return (
@@ -106,8 +113,10 @@ console.log(allOrders, '75')
   const isSmallScreen = useMediaQuery("(max-width: 400px)"); // smallscreen checks for responsiveness below.
   useEffect(() => {
     if (userNotes.length > 0 && allOrders.length > 0) {
+
       const aggregated = userNotes
         .map((note) => {
+
           //mapping to only get succeded ones.
           const noteOrders = allOrders.filter((order) => order.note_id === note.id && order.status == "succeeded")
           if (noteOrders.length === 0) return null
@@ -153,52 +162,52 @@ console.log(allOrders, '75')
       <CardHeader>
         <CardTitle>Price vs Sales Count of Note</CardTitle>
         <div className="w-[130px] max-[400px]:w-[115px] max-[400px]:text-sm max-[400px]:h-6">
-                <Select value={noteFilter} onValueChange={setNoteFilter}>
-          <SelectTrigger className="w-[180px] h-8 text-xs border-gray-200 shadow-sm">
-            <SelectValue placeholder="Select Note" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All Notes</SelectItem>
-            {matchedOrders.map((n, i) => (
-              <SelectItem key={i} value={n.note}>
-                {n.note}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Select value={noteFilter} onValueChange={setNoteFilter}>
+            <SelectTrigger className="w-[180px] h-8 text-xs border-gray-200 shadow-sm">
+              <SelectValue placeholder="Select Note" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All Notes</SelectItem>
+              {matchedOrders.map((n, i) => (
+                <SelectItem key={i} value={n.note}>
+                  {n.note}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="max-[400px]:mt-5">
-                    {isLoading || isEmpty ? (
-          <></>
-        ) : (
-          (() => {
-            if (correlation > 0.5) {
-              return (
-                <CardDescription className="text-green-600">
-                  <strong>Overall Insights: </strong>Higher-priced notes tend to earn <strong>more revenue</strong>.
-                </CardDescription>
-              );
-            } else if (correlation > 0.1) {
-              return (
-                <CardDescription className="text-green-500">
-                  <strong>Overall Insights: </strong>Slight positive relationship — pricier notes may perform a bit better.
-                </CardDescription>
-              );
-            } else if (correlation < -0.1) {
-              return (
-                <CardDescription className="text-red-500">
-                  <strong>Overall Insights: </strong>Higher prices might reduce total sales — consider optimizing pricing.
-                </CardDescription>
-              );
-            } else {
-              return (
-                <CardDescription className="text-gray-500">
-                  <strong>Overall Insights: </strong>No clear relationship between price and revenue.
-                </CardDescription>
-              );
-            }
-          })()
-        )}
+          {isLoading || isEmpty ? (
+            <></>
+          ) : (
+            (() => {
+              if (correlation > 0.5) {
+                return (
+                  <CardDescription className="text-green-600">
+                    <strong>Overall Insights: </strong>Higher-priced notes tend to earn <strong>more revenue</strong>.
+                  </CardDescription>
+                );
+              } else if (correlation > 0.1) {
+                return (
+                  <CardDescription className="text-green-500">
+                    <strong>Overall Insights: </strong>Slight positive relationship — pricier notes may perform a bit better.
+                  </CardDescription>
+                );
+              } else if (correlation < -0.1) {
+                return (
+                  <CardDescription className="text-red-500">
+                    <strong>Overall Insights: </strong>Higher prices might reduce total sales — consider optimizing pricing.
+                  </CardDescription>
+                );
+              } else {
+                return (
+                  <CardDescription className="text-gray-500">
+                    <strong>Overall Insights: </strong>No clear relationship between price and revenue.
+                  </CardDescription>
+                );
+              }
+            })()
+          )}
         </div>
 
 
@@ -273,7 +282,7 @@ console.log(allOrders, '75')
                   stroke="#0D9488"
                   strokeWidth={1.5}
                   shape="circle"
-                  onClick={(data) => { hrefMover(data)}}
+                  onClick={(data) => { hrefMover(data) }}
                   style={{ cursor: "pointer" }}
                 >
                 </Scatter>

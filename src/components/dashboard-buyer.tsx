@@ -50,6 +50,7 @@ function DashboardBuyer(currentUser) {
         let count = 0;
         let spent = 0;
         let missingNotes: string[] = [];
+        //TODO
 
         //cont more debugging
         const userOrders = orders.filter(o => o.buyer_id == currentUser.current.current.sub)

@@ -13,7 +13,7 @@ import {
   Cell,
 } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { getUserOwned } from "@/services/NotesService"
+import { getOwnedComposeNotes, getUserOwned } from "@/services/NotesService"
 import { useEffect, useState } from "react"
 import { getOrders } from "@/services/OrdersService"
 import SpinItem from "./spinner"
@@ -24,7 +24,7 @@ import { useMediaQuery } from "usehooks-ts"
 
 //Code for scatter plot.
 export function ScatterVisual() {
-  const [userOrders, setUserOrder] = useState<any[]>([])
+  const [userNotes, setUserNote] = useState<any[]>([])
   const [allOrders, setAllOrders] = useState<any[]>([])
   const [matchedOrders, setMatchedOrders] = useState<any[]>([])
 
@@ -33,24 +33,55 @@ export function ScatterVisual() {
   const [correlation, setCorrelation] = useState(0)
   const [noteFilter, setNoteFilter] = useState("All");
 
-  useEffect(() => {
-    getOrders()
-      .then((r) => setAllOrders(r))
-      .catch((e) => console.error(e))
-  }, [])
 
-  useEffect(() => {
-    getUserOwned()
-      .then((res) => {
-        setUserOrder(res)
-      })
-      .catch((err) => console.error(err))
-  }, [])
+  //all orders
+useEffect(() => {
+  async function fetchData() {
+    try {
+      const [normalNotesRaw, composedNotesRaw, ordersRaw] = await Promise.all([
+        getUserOwned(),
+        getOwnedComposeNotes(),
+        getOrders(),
+      ]);
+      const normalNotes = Array.isArray(normalNotesRaw)
+        ? normalNotesRaw
+        : normalNotesRaw?.data ?? [];
+      const composedNotes = Array.isArray(composedNotesRaw)
+        ? composedNotesRaw
+        : composedNotesRaw?.data ?? [];
+      const orders = Array.isArray(ordersRaw)
+        ? ordersRaw
+        : ordersRaw?.data ?? [];
+
+      const allUserNotes = [
+        ...normalNotes.map((n) => ({ ...n, type: "normal" })),
+        ...composedNotes.map((n) => ({ ...n, type: "composed" })),
+      ];
+
+      console.log("normal:", normalNotes.length);
+      console.log("composed:", composedNotes.length);
+      console.log("total:", orders.length);
+      setUserNote(allUserNotes);
+      setAllOrders(orders);
+    } catch (err) {
+      console.error("❌ Error fetching scatter data:", err);
+    }
+  }
+
+  fetchData();
+}, []);
+
+console.log(userNotes, 'l74')
+console.log(allOrders, '75')
 
   //navigation code for scatter plot clicking.
   const hrefMover = (data: any) => {
-    if (data && data.id) {
+    console.log(data)
+    if(data && data.id && data.payload.type == "normal"){
       window.location.href = `/listings/${data.id}`;
+    }
+    else{
+      window.location.href = `/article/${data.id}`;
     }
   }
 
@@ -74,8 +105,8 @@ export function ScatterVisual() {
   }
   const isSmallScreen = useMediaQuery("(max-width: 400px)"); // smallscreen checks for responsiveness below.
   useEffect(() => {
-    if (userOrders.length > 0 && allOrders.length > 0) {
-      const aggregated = userOrders
+    if (userNotes.length > 0 && allOrders.length > 0) {
+      const aggregated = userNotes
         .map((note) => {
           //mapping to only get succeded ones.
           const noteOrders = allOrders.filter((order) => order.note_id === note.id && order.status == "succeeded")
@@ -91,6 +122,7 @@ export function ScatterVisual() {
             price: Number(note.price) / 100,
             salesCount,
             revenue,
+            type: note.type,
           }
         }).filter(Boolean)
       //remove falsy values like 0 etc.
@@ -104,7 +136,7 @@ export function ScatterVisual() {
       setCorrelation(correlation)
       setIsEmpty(aggregated.length === 0)
     }
-  }, [userOrders, allOrders])
+  }, [userNotes, allOrders])
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (matchedOrders.length === 0) {
@@ -241,7 +273,7 @@ export function ScatterVisual() {
                   stroke="#0D9488"
                   strokeWidth={1.5}
                   shape="circle"
-                  onClick={(data) => { hrefMover(data) }}
+                  onClick={(data) => { hrefMover(data)}}
                   style={{ cursor: "pointer" }}
                 >
                 </Scatter>

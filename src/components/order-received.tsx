@@ -106,7 +106,7 @@ export function OrderReceived({
                     {o?.status.charAt(0).toUpperCase() + o?.status.slice(1)}
                   </Badge>
                 </TableCell>
-                <TableCell>{stringFormat(o["type"])}</TableCell>
+                <TableCell>{stringFormat(o["noteType"])}</TableCell>
               </TableRow>
             ))}
             {filteredOrders.length === 0 && (

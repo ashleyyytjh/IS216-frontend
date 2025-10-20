@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/tabs"
 import { useEffect, useMemo, useState } from "react"
 import { UserOwnNote } from "./own-user-note-display"
-import { getUserOwned } from "@/services/NotesService"
+import { getOwnedComposeNotes, getUserOwned } from "@/services/NotesService"
 import { getOrders } from "@/services/OrdersService"
 import { UnpublishedNotes } from "./unpublished-notes"
 import { OrderReceived } from "./order-received"
@@ -34,60 +34,80 @@ type CurrentUserProp = {
 }
 type OwnedMap = Record<
   string,
-  { module: string; type: string; originalName: string; description: string }
+  { module: string; noteType: string; originalName: string; description: string }
 >
 
 export function DataTable(props: CurrentUserProp) {
   const navigate = useNavigate()
-
-
 
   const [ownedID, setOwnedID] = useState<OwnedMap>({})
   const [orders, setAllOrders] = useState<any[]>([])
   const [view, setView] = useState<"past-performance" | "outline" | "disputes">("past-performance")
 
 
-  useEffect(() => {
-    getUserOwned()
-      .then((resp: any[]) => {
-        const idToData: OwnedMap = {}
-        resp?.forEach((item: any) => {
-          idToData[item.id] = {
-            module: item.module,
-            type: item.type,
-            originalName: item.originalName,
-            description: item.description,
-          }
-        })
-        setOwnedID(idToData)
-      })
-      .catch(console.error)
-  }, [props])
+useEffect(() => {
+  async function fetchOwnedNotes() {
+    try {
+      const [normalRaw, composedRaw] = await Promise.all([
+        getUserOwned(),
+        getOwnedComposeNotes(),
+      ]);
 
-  useEffect(() => {
-    getOrders()
-      .then((resp: any[] = []) => {
-        let userOrder = resp.filter((item: any) =>
-          Object.keys(ownedID).includes(item.note_id)
-          &&
+      const normalNotes = Array.isArray(normalRaw)
+        ? normalRaw
+        : normalRaw?.data ?? [];
+      const composedNotes = Array.isArray(composedRaw)
+        ? composedRaw
+        : composedRaw?.data ?? [];
+
+      const allOwned = [
+        ...normalNotes.map((n) => ({ ...n, noteType: "normal" })),
+        ...composedNotes.map((n) => ({ ...n, noteType: "composed" })),
+      ];
+
+      const idToData: OwnedMap = {};
+      allOwned.forEach((item: any) => {
+        idToData[item.id] = {
+          module: item.module,
+          noteType: item.noteType,       
+          originalName: item.originalName,
+          description: item.description,
+        };
+      });
+
+      setOwnedID(idToData);
+    } catch (err) {
+    }
+  }
+
+  fetchOwnedNotes();
+}, [props]);
+
+useEffect(() => {
+  getOrders()
+    .then((resp: any[] = []) => {
+      let userOrder = resp.filter(
+        (item: any) =>
+          Object.keys(ownedID).includes(item.note_id) &&
           item.status === "succeeded"
-        )
+      );
+      userOrder = userOrder.map((i: any) => ({
+        ...i,
+        userFullName: props.currentUser?.userFullName ?? "Unknown User",
+        module: ownedID[i.note_id]?.module,
+        noteType: ownedID[i.note_id]?.noteType, 
+        originalName: ownedID[i.note_id]?.originalName,
+        description: ownedID[i.note_id]?.description,
+      }));
 
-        userOrder = userOrder.map((i: any) => ({
-          ...i,
-          userFullName: props.currentUser?.userFullName ?? "Unknown User",
-          module: ownedID[i.note_id]?.module,
-          type: ownedID[i.note_id]?.type,
-          originalName: ownedID[i.note_id]?.originalName,
-          description: ownedID[i.note_id]?.description,
-        }))
+      setAllOrders([...userOrder]);
+    })
+    .catch((e) => {
+      console.error("Error fetching orders:", e);
+    });
+}, [props, ownedID]);
 
-
-        setAllOrders([...userOrder])
-      })
-      .catch((e) => {
-      })
-  }, [props, ownedID])
+console.log(orders)
 
   return (
     <Tabs

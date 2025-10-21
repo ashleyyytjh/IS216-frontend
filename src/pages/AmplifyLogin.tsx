@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { User } from '@/types/types';
 import SpinItem from '@/components/spinner';
+import PageLoader from '@/components/PageLoader';
 
 const components = {
   Header() {
@@ -124,8 +125,7 @@ export const RedirectOnLogin = ({ user }) => {
 
    return (
     <>
-      <div className="flex justify-center flex-col items-center w-full h-64"> <SpinItem/> Logging in...</div>
-
+      <PageLoader text="Logging you in..." />
     </>
   );
 };

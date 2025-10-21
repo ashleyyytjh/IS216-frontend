@@ -24,31 +24,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils_stepper";
 import samplePdf from '@/assets/LP-Model-Documentation.pdf';
-
-
-// --- Types ---
-interface Annotation {
-    id: string;
-    note_id:string;
-    selected_text: string;
-    comment: string;
-    start_offset: number ;
-    end_offset: number ;
-    author_name: string;
-    author_id: string;
-    created_at: string;
-    thread_id?: string; 
-    parent_id: string | null; 
-    replies: Annotation[]; 
-    depth: number;
-    imageUrl?: string;
-    page:number
-}
-
-import { Document, Page } from 'react-pdf';
-import PDFViewer from '@/components/listing/PDFViewer';
+import { Annotation } from '@/types/types';
 import ForumPdfViewer from '@/components/forum/ForumPdfViewer';
 import { ForumFilterButton } from '@/components/forum/ForumFIlterButton';
+
 
 let NOTE_CONTENT = "The Solar System is the gravitationally bound system of the Sun and the objects that orbit it. It formed 4.6 billion years ago from the gravitational collapse of a giant interstellar molecular cloud. The vast majority of the system's mass is in the Sun, with most of the remaining mass contained in the planet Jupiter. The four inner terrestrial planets—Mercury, Venus, Earth and Mars—are composed primarily of rock and metal.";
 
@@ -58,7 +37,6 @@ export default function AnnotationComponent() {
     const [user, setUser] = useState<User>();
     const [note, setNote] = useState<GetNotesRes>();
     const [selectedText, setSelectedText] = useState<string>("");
-    const [selectionRange, setSelectionRange] = useState<{start: number, end: number} | null>(null);
     const [commentInput, setCommentInput] = useState<string>("");
     const [showCommentForm, setShowCommentForm] = useState<boolean>(false);
     const [hoveredAnnotation, setHoveredAnnotation] = useState<string | null>(null);
@@ -72,6 +50,15 @@ export default function AnnotationComponent() {
     const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     const [originalAnnotations, setOriginalAnnotations] = useState<Annotation[]>([]);
+    const [pdfSelectionRange, setPdfSelectionRange] = useState< {x: number, y: number, width: number, height: number}[] | null>(null);
+    const [userHighlights, setUserHighlights] = useState<Record<number, any[]>>({});
+    const [pageOffset, setPageOffset] = useState({ left: 0, top: 0 });
+    const [currentScale, setCurrentScale] = useState<number>(1.0);
+
+    useEffect(() => {
+        console.log('Scale changed in Annotation:', currentScale);
+    }, [currentScale]);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -79,13 +66,11 @@ export default function AnnotationComponent() {
             const userFetch = await getUser();
             setUser(userFetch);
             if (!noteId) {
-                // console.log('no id');
                 navigate('/home');
                 toast.error('Error loading page, please try again')
                 return;
             };
-            const data = await getNotesById(noteId); //68b98faba389fd1819c78c17
-            console.log('note data', data)
+            const data = await getNotesById(noteId); 
             if (!data) {
                 navigate('/forum');
                 toast.error('No such note exists, please try again')
@@ -120,6 +105,7 @@ export default function AnnotationComponent() {
         if (filter !== "all") {
             commentTree = commentTree.filter((ann: Annotation) => ann.page === currentPage);
         }
+        console.log('fetched annotations', commentTree);
         setOriginalAnnotations(commentTree);
         setNestedAnnotations(commentTree);
     };
@@ -128,9 +114,6 @@ export default function AnnotationComponent() {
         console.log('page changed to', pageNumber);
         setCurrentPage(pageNumber);
     }
-
-
-
 
     const fetchPdf = async (noteId: string) => {
     // const notepdf = await downloadNotes(noteId);
@@ -173,34 +156,48 @@ export default function AnnotationComponent() {
             return rootComments;
     };
 
-    // Handle text selection
-    const handleTextSelection = () => {
-            const selection = window.getSelection();
-            if (!selection || selection.rangeCount === 0) return;
 
-            const selectedText = selection.toString().trim();
-            if (selectedText.length < 3) {
-                setShowCommentForm(false);
-                return;
-            }
 
+        // Handle text selection
+    const handleTextSelection = (scale:number) => {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) return;
+        setUserHighlights({});
+        const selectedText = selection.toString().trim();
+        if (selectedText.length < 3) {
+            setShowCommentForm(false);
+            return;
+        }     
+
+        if (selection && selection.toString().trim()) {
             const range = selection.getRangeAt(0);
             const contentElement = contentRef.current;
-            
-            if (contentElement && contentElement.contains(range.commonAncestorContainer)) {
+            if (!contentElement) return;
 
-            // Get plain text and calculate position
-            const fullText = contentElement.textContent || '';
-            const beforeText = fullText.substring(0, fullText.indexOf(selectedText));
-            const startOffset = beforeText.length;
-            const endOffset = startOffset + selectedText.length;
+            const containerRect = contentElement.getBoundingClientRect();
 
+            // Convert to PDF-relative coordinates
+                // Normalize coordinates by dividing by current scale
+            const rects = Array.from(range.getClientRects()).map(r => ({
+                x: (r.x - pageOffset.left) / scale,
+                y: (r.y - pageOffset.top) / scale,
+                width: r.width / scale,
+                height: r.height / scale,
+            }));
+
+            setUserHighlights(prev => ({
+                ...prev,
+                [currentPage]: [...(prev[currentPage] || []), { rects, text: selection.toString() }],
+            }));
+
+            selection.removeAllRanges(); 
             setSelectedText(selectedText);
-            setSelectionRange({ start: startOffset, end: endOffset });
             setShowCommentForm(true);
             setCommentInput("");
+            setPdfSelectionRange(rects); 
         }
     };
+
 
     const handleCommentSubmitNoQuote = async () => {
         if (!commentInput.trim() ) return;
@@ -232,7 +229,6 @@ export default function AnnotationComponent() {
                 // Reset form
                 setShowCommentForm(false);
                 setSelectedText("");
-                setSelectionRange(null);
                 setCommentInput("");
                 window.getSelection()?.removeAllRanges();
             } 
@@ -243,14 +239,13 @@ export default function AnnotationComponent() {
 
     // Handle comment submission
     const handleCommentSubmit = async () => {
-        if (!selectedText || !commentInput.trim() || !selectionRange) return;
+        if (!selectedText || !commentInput.trim() || !pdfSelectionRange) return;
         const newAnnotation: Annotation = {
             id: `annotation-${Date.now()}`,
             note_id: note!.id,
             selected_text: selectedText,
             comment: commentInput.trim(),
-            start_offset: selectionRange.start ,
-            end_offset: selectionRange.end ,
+            rects: pdfSelectionRange,
             author_name: user!.username,
             author_id: user!.sub!,
             created_at: new Date().toISOString(),
@@ -265,24 +260,29 @@ export default function AnnotationComponent() {
             const data  = await createAnnotation(newAnnotation);
             if (data) {
                 toast.success('Comment added successfully');
-                // Reset form
-                setShowCommentForm(false);
-                setSelectedText("");
-                setSelectionRange(null);
-                setCommentInput("");
-                window.getSelection()?.removeAllRanges();
+                fetchAnnotations();
+
+        
             } 
         } catch (error) {
             toast.error('Failed to add comment. Please try again.');
         }
+        // Reset form
+        setShowCommentForm(false);
+        setSelectedText("");
+        setCommentInput("");
+        window.getSelection()?.removeAllRanges();
+        setPdfSelectionRange(null);
+        setUserHighlights({});
+
     };
 
     // Cancel comment form
     const handleCancel = () => {
         setShowCommentForm(false);
         setSelectedText("");
-        setSelectionRange(null);
         setCommentInput("");
+        setUserHighlights({}); // discard the highlight
         window.getSelection()?.removeAllRanges();
     };
 
@@ -296,8 +296,7 @@ export default function AnnotationComponent() {
             selected_text: "", // Replies don't have selected text
             note_id: note!.id,
             comment: replyText.trim(),
-            start_offset: 0,
-            end_offset: 0,
+            rects: pdfSelectionRange,
             author_name: user!.username,
             author_id: user!.sub!,
             thread_id: parentId,
@@ -313,19 +312,19 @@ export default function AnnotationComponent() {
             if (data) {
                 data.replies =[];
                 toast.success('Comment added successfully');
-
-                setNestedAnnotations(prev => prev.map(annotation => {
-                    if (annotation.id === parentId) {
-                        return {
-                            ...annotation,
-                            replies: [data, ...annotation.replies]
-                        };
-                }
-                return {
-                    ...annotation,
-                    replies: addReplyToNested(annotation.replies, parentId, data)
-                };
-                }));
+                fetchAnnotations()
+                // setNestedAnnotations(prev => prev.map(annotation => {
+                //     if (annotation.id === parentId) {
+                //         return {
+                //             ...annotation,
+                //             replies: [data, ...annotation.replies]
+                //         };
+                // }
+                // return {
+                //     ...annotation,
+                //     replies: addReplyToNested(annotation.replies, parentId, data)
+                // };
+                // }));
             }
     } catch (error) {
             toast.error(`${error}`);
@@ -351,56 +350,56 @@ export default function AnnotationComponent() {
     };
 
     // Scroll to annotation position when hovering
-    const scrollToAnnotation = (annotation: Annotation) => {
-            const contentElement = contentRef.current;
-            if (!contentElement) return;
+    // const scrollToAnnotation = (annotation: Annotation) => {
+    //         const contentElement = contentRef.current;
+    //         if (!contentElement) return;
 
-            // Create a temporary range to get the position
-            const range = document.createRange();
-            const textNode = contentElement.firstChild;
+    //         // Create a temporary range to get the position
+    //         const range = document.createRange();
+    //         const textNode = contentElement.firstChild;
             
-            if (textNode && textNode.nodeType === Node.TEXT_NODE) {
-            try {
-                range.setStart(textNode, annotation.start_offset);
-                range.setEnd(textNode, annotation.end_offset);
+    //         if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+    //         try {
+    //             range.setStart(textNode, annotation.start_offset);
+    //             range.setEnd(textNode, annotation.end_offset);
 
-                // Get the position and scroll to it
-                const rect = range.getBoundingClientRect();
-                const elementRect = contentElement.getBoundingClientRect();
+    //             // Get the position and scroll to it
+    //             const rect = range.getBoundingClientRect();
+    //             const elementRect = contentElement.getBoundingClientRect();
                 
-                // Scroll to center the highlighted text
-                contentElement.scrollTop += rect.top - elementRect.top - elementRect.height / 2;
-            } catch (e) {
-                console.log('Could not scroll to annotation position');
-            }
-            }
-    };
+    //             // Scroll to center the highlighted text
+    //             contentElement.scrollTop += rect.top - elementRect.top - elementRect.height / 2;
+    //         } catch (e) {
+    //             console.log('Could not scroll to annotation position');
+    //         }
+    //         }
+    // };
 
-    // Render content with conditional highlighting
-    const renderContent = () => {
-            if (!hoveredAnnotation) {
-                return NOTE_CONTENT;
-            }
+    // // Render content with conditional highlighting
+    // const renderContent = () => {
+    //         if (!hoveredAnnotation) {
+    //             return NOTE_CONTENT;
+    //         }
 
-            // Find the hovered annotation
-            const annotation = nestedAnnotations.find(ann => ann.id === hoveredAnnotation);
-            if (!annotation) return NOTE_CONTENT;
+    //         // Find the hovered annotation
+    //         const annotation = nestedAnnotations.find(ann => ann.id === hoveredAnnotation);
+    //         if (!annotation) return NOTE_CONTENT;
 
-            // Split text and highlight the relevant part
-            const beforeText = NOTE_CONTENT.substring(0, annotation.start_offset);
-            const highlightedText = NOTE_CONTENT.substring(annotation.start_offset, annotation.end_offset);
-            const afterText = NOTE_CONTENT.substring(annotation.end_offset);
+    //         // Split text and highlight the relevant part
+    //         const beforeText = NOTE_CONTENT.substring(0, annotation.start_offset);
+    //         const highlightedText = NOTE_CONTENT.substring(annotation.start_offset, annotation.end_offset);
+    //         const afterText = NOTE_CONTENT.substring(annotation.end_offset);
 
-            return (
-            <>
-                {beforeText}
-                    <mark className="bg-yellow-300 px-0.5 py-0.5 rounded animate-pulse">
-                        {highlightedText}
-                    </mark>
-                {afterText}
-            </>
-            );
-    };
+    //         return (
+    //         <>
+    //             {beforeText}
+    //                 <mark className="bg-yellow-300 px-0.5 py-0.5 rounded animate-pulse">
+    //                     {highlightedText}
+    //                 </mark>
+    //             {afterText}
+    //         </>
+    //         );
+    // };
 
     // Deletion of comments and their replies
     const removeCommentFromTree = (comments: Annotation[], idToDelete: string): Annotation[] => {
@@ -487,7 +486,7 @@ export default function AnnotationComponent() {
                 {annotation.selected_text && (
                     <div 
                     className="text-xs text-muted-foreground bg-gray-50 p-2 rounded cursor-pointer hover:bg-yellow-50 transition-colors group mb-2 border-l-2 border-gray-300"
-                    onMouseEnter={() => { setHoveredAnnotation(annotation.id); scrollToAnnotation(annotation); }}
+                    onMouseEnter={() => { setHoveredAnnotation(annotation.id) }}
                     onMouseLeave={() => setHoveredAnnotation(null)}
                     >
                     <span className="italic group-hover:text-gray-700 line-clamp-2">
@@ -593,10 +592,18 @@ export default function AnnotationComponent() {
 
     const viewPdf=() => {
         return (
-            <ForumPdfViewer id={noteId!} pageHandler={handlePageChange}  />
+            <ForumPdfViewer 
+                id={noteId!} 
+                pageHandler={handlePageChange} 
+                handleTextSelection={handleTextSelection} 
+                userHighlights={userHighlights}
+                annotations={nestedAnnotations}
+                selectedAnnotationId={hoveredAnnotation!}
+                onPageOffsetChange={setPageOffset} 
+                onScaleChange={setCurrentScale}  
+            />
         )
     }
-
 
   return (
     (note && !loading) ? ( 
@@ -618,23 +625,18 @@ export default function AnnotationComponent() {
         </header>
 
       <div className="w-full flex flex-col justify-center items-center space-x-3">
-        <section className=" space-y-2  w-5/6  pb-8 ">
-                    <div 
-                        ref={contentRef}
-                        className="text-md leading-relaxed select-text cursor-text  w-full"
-                        onMouseUp={handleTextSelection}
+        <section className=" space-y-2 w-5/6  pb-8 ">
+                <div ref={contentRef}
+                    className=" text-md leading-relaxed select-text cursor-text w-full flex items-center justify-center flex-col"
                     >
-                    { 
-                    viewPdf()
-                        // renderContent()
-                    }
-                    </div>
-                {/* <p className="text-sm text-muted-foreground mb-8 italic">
+                    { viewPdf() }
+          
+                </div>
+                <p className="text-sm text-muted-foreground mb-8 italic">
                     Select text to add comments • Hover over quotes to highlight referenced text
-                </p> */}
+                </p>
 
-                {/* Comment Form Just for Notes type, we allow highlighting */}
-                {showCommentForm && note.type === "notes" && (
+                {showCommentForm && (
                     <Card className="bg-primary-foreground">
                         <CardHeader>
                             <p className="text-sm text-muted-foreground">Add a comment for:</p>
@@ -643,7 +645,7 @@ export default function AnnotationComponent() {
                             </blockquote>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                                 <Input
                                 type="text"
                                 placeholder="Type your comment or suggestion..."
@@ -686,11 +688,9 @@ export default function AnnotationComponent() {
             </section>
        
        {/* comments for types that are not notes! */}
-            {note.type !== "composeNotes" && (
+            {/* {note.type !== "composeNotes" && (
                 <Card className=" bg-primary-foreground mb-10">
-                    {/* <CardHeader>
-                    <p className="text-sm text-muted-foreground">Add a comment</p>
-                    </CardHeader> */}
+                
                     <CardContent>
                     <div className="space-y-3">
                         <Input
@@ -719,7 +719,7 @@ export default function AnnotationComponent() {
                     </div>
                     </CardContent>
                 </Card>
-            )}
+            )} */}
             <ScrollArea className='h-78 scroll-hidden'>
                 <div>
                     {nestedAnnotations.map((annotation) => (

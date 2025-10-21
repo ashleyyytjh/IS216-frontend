@@ -57,7 +57,23 @@ export type Note = {
     module: string;
     createdAt: string;
 } 
-
+// --- Types ---
+export interface Annotation {
+    id: string;
+    note_id:string;
+    selected_text: string;
+    comment: string;
+    author_name: string;
+    author_id: string;
+    created_at: string;
+    thread_id?: string; 
+    parent_id: string | null; 
+    replies: Annotation[]; 
+    depth: number;
+    imageUrl?: string;
+    page:number
+    rects: any;
+}
 
 //temp data to display.
 export const myNotes: Note[] = 

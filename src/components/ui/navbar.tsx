@@ -190,7 +190,7 @@ const navbar = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="rounded-full focus-visible:ring-2 focus-visible:ring-ring">
-                      <Avatar className="h-8 w-8">
+                      <Avatar className="h-10 w-10">
                         <AvatarImage src={image} alt="@joel" />
                         <AvatarFallback>
                           {getAvatarFallback(user?.fullName ?? "")}

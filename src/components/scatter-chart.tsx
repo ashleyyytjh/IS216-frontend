@@ -59,13 +59,13 @@ export function ScatterVisual() {
         ];
         //works here. but due to collision, if you put same price, will not really show.
         // orders.push({
-        //     buyer_id: "594a352c-2081-706e-b679-00b936e6b8f9",
-        //     id: 109,
-        //     note_id: "68f4c9c51a5692f5bcbead5b",
-        //     price: 1,
-        //     status: "succeeded",
-        //     stripe_transaction_id: "pi_3SI0K93X5OiOA0YE1G7ztLfM",
-        //   })
+        //   buyer_id: "594a352c-2081-706e-b679-00b936e6b8f9",
+        //   id: 109,
+        //   note_id: "68f46033d4eca64133084d5d",
+        //   price: 1,
+        //   status: "succeeded",
+        //   stripe_transaction_id: "pi_3SI0K93X5OiOA0YE1G7ztLfM",
+        // })
         console.log("normal:", normalNotes.length);
         console.log("composed:", composedNotes.length);
         console.log("total:", orders.length);
@@ -134,13 +134,30 @@ export function ScatterVisual() {
             type: note.type,
           }
         }).filter(Boolean)
+
       //remove falsy values like 0 etc.
+
+      //allows scatter to show visible changes like if two notes are the same price, it shows visually different
+      //better for ux.
+      const jittered = aggregated.map((point:any, i, arr) => {
+        const duplicates = arr.filter(
+          (p:any) => p.price === point?.price && p.salesCount === point?.salesCount
+        );
+
+        if (duplicates.length > 1) {
+          const index = duplicates.findIndex((p) => p?.id === point?.id);
+          return { ...point, price: point.price + index * 0.05 };
+        }
+
+        return point;
+      });
       const prices = aggregated.map(n => n?.price).filter((v): v is number => v !== undefined);
       const revenues = aggregated.map(n => n?.revenue).filter((v): v is number => v !== undefined);
 
       //correlation to get insights from the charts.
       const correlation = correl(prices, revenues);
-      setMatchedOrders(aggregated)
+      console.log(correlation)
+      setMatchedOrders(jittered)
       setIsLoading(false)
       setCorrelation(correlation)
       setIsEmpty(aggregated.length === 0)

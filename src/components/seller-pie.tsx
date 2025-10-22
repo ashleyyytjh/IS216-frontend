@@ -35,7 +35,7 @@ const chartConfig = {
 }
 
 export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
-  console.log(moduleCountsArray)
+  console.log(moduleCountsArray) //getting from data preprocessing from parent.
   const [isLoading, setIsLoading] = useState(true)
   const [isEmpty, setIsEmpty] = useState(false)
   const [topMod, setTopMod] = useState<{ module: string; count: number } | null>(null)
@@ -43,6 +43,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
   const [sortOrder, setSortOrder] = useState("desc")
 
   useEffect(() => {
+    //checking if after 3 secodn data not here yet, then I'll set as something wrong.
     if (moduleCountsArray.length === 0) {
       const timeout = setTimeout(() => {
         setIsLoading(false)
@@ -56,6 +57,8 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
   }, [moduleCountsArray])
 
 
+  //computing and sorting of data like according to asc/desc or the filtering by selectrtrigger.
+  //always returns top 5 for chart data to prevent cluttering.
   const chartData = useMemo(() => {
     if (!moduleCountsArray || moduleCountsArray.length === 0) return []
     let filtered = [...moduleCountsArray]
@@ -69,6 +72,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
     return filtered.slice(0, 5)
   }, [moduleCountsArray, moduleFilter, sortOrder])
 
+  //get stat of top mod by preprocessing.
   useEffect(() => {
     if (chartData.length > 0) {
       const top = chartData[0]
@@ -79,7 +83,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
   }, [chartData])
 
 
-  const onSmallScreen = useMediaQuery("(max-width: 400px)"); //smallscreen
+  const onSmallScreen = useMediaQuery("(max-width: 400px)"); //smallscreen using mediaquery hooks.
   return (
     <Card className="min-h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
       <CardHeader className="pb-2">
@@ -131,7 +135,8 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
             className="relative aspect-auto h-[250px] sm:h-[250px] xs:h-[200px] max-[400px]:h-[160px] w-full transition-opacity duration-700"
           >
             <BarChart layout="vertical" data={chartData} margin={{ right: 40, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" /> {/* show grid on the bars. */}
+              {/* Axis lines formatting like ticks, axis etc. label to offset and dy. */}
               <XAxis
                 type="number"
                 tickLine={false}
@@ -146,6 +151,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                   dy: 10
                 }}
               />
+              {/* For y axis. */}
               <YAxis
                 dataKey="module"
                 type="category"
@@ -160,6 +166,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                   style: { textAnchor: "middle" },
                 }}
               />
+              {/* Shows the tool tip of our barchart when we hover. */}
               <ChartTooltip
                 cursor={false}
                 labelFormatter={(label) => `Module: ${label}`}
@@ -169,6 +176,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                 ]}
                 content={<ChartTooltipContent hideIndicator />}
               />
+              {/* Actual bar values. mapping by chartData */}
               <Bar
                 dataKey="count"
                 radius={[0, 8, 8, 0]}
@@ -187,6 +195,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                     }
                   />
                 ))}
+                {/* Your labels like cs102, cs103, 104 */}
                 <LabelList
                   dataKey="count"
                   position="right"

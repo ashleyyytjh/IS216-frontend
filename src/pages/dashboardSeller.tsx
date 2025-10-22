@@ -8,7 +8,7 @@ import "aos/dist/aos.css";
 import { useEffect, useState } from "react";
 import { getUser } from "@/services/UserService";
 import { getOrders } from "@/services/OrdersService";
-import { getComposeNoteById, getNotesById, getUserOwned } from "@/services/NotesService";
+import { getComposeNoteById, getNotesById, getOwnedComposeNotes, getUserOwned } from "@/services/NotesService";
 import { ScatterVisual } from "@/components/scatter-chart";
 import { GetNotesRes } from "@/types/requests/notes";
 
@@ -30,7 +30,6 @@ export default function DashboardSeller() {
   const [moduleRevenueArray, setModuleRevenueArray] = useState<
     { module: string; revenue: number }[]
   >([]);
-  //total sales count is calling from API.
   useEffect(() => {
     setAnimate(true);
   }, []);
@@ -45,75 +44,69 @@ export default function DashboardSeller() {
   useEffect(() => {
     if (!currentUser) return;
 
-    //we get everything from orders.
-    getOrders()
-      .then((orders) => {
-        let uniqueNoteIds = [...new Set(orders.map((o) => o.note_id))];
-        //changes here. we would need to getcomposenotebyid too
-        //we get the results from uniquenoteid to one array and another array.
-        return Promise.all([
-          Promise.all(
-            uniqueNoteIds.map((id) =>
-              getNotesById(String(id)).catch((err) => {
-                console.error("Failed fetching note", id, err);
-                return null;
-              })
-            )
-          ),
-          Promise.all(
-            uniqueNoteIds.map((id) =>
-              getComposeNoteById(String(id)).then((resp) => {
-                return resp.data
-              }).catch((err) => {
-                console.error("Failed fetching composed note", id, err);
-                return null;
-              })
-            )
-          ),
-        ])
-          .then(([notes, composedNotes]) => ({ orders, notes, composedNotes }));
-      })
-      .then(({ orders, notes, composedNotes }) => {
-        const all = [... (notes ?? []), ...(composedNotes ?? [])].filter(n => Boolean(n))
-        const noteMap = new Map(all.map((n) => [n?.id, n]));
-        let total = 0;
-        let totalCnt = 0;
+    Promise.all([
+      getUserOwned(),
+      getOwnedComposeNotes(),
+      getOrders(),
+    ])
+      .then(([ownedNotesRaw, ownedComposedRaw, ordersRaw]) => {
+        const ownedNotes = Array.isArray(ownedNotesRaw)
+          ? ownedNotesRaw
+          : ownedNotesRaw?.data ?? [];
+        const ownedComposed = Array.isArray(ownedComposedRaw)
+          ? ownedComposedRaw
+          : ownedComposedRaw?.data ?? [];
+        const orders = Array.isArray(ordersRaw)
+          ? ordersRaw
+          : ordersRaw?.data ?? [];
+        //"68f46033d4eca64133084d5d"
+
+
+        console.log(orders, 'line6')
+        //dataset will only work for 3 cards, 2 bars.
+
+
+        const allNotes = [...ownedNotes, ...ownedComposed];
+        const noteMap = new Map(allNotes.map((n) => [n.id, n]));
+        const enrichedOrders = orders
+          .map((order) => {
+            const note = noteMap.get(order.note_id);
+            return note ? { ...order, note } : null;
+          })
+          .filter(Boolean);
+        const successfulOrders = enrichedOrders.filter(
+          (o) => o.status === "succeeded"
+        );
         const moduleCountMap = new Map<string, number>();
         const moduleRevenueMap = new Map<string, number>();
-
-        orders.forEach((order) => {
-          console.log(order)
-          const note = noteMap.get(order.note_id);
-          if (note && note.userId === currentUser.sub) {
-            if (order.status == "succeeded") {
-              total += Number(order.price) / 100;
-              totalCnt += 1;
-              const mod = note.module?.toUpperCase() || "Unknown";
-              moduleCountMap.set(mod, (moduleCountMap.get(mod) || 0) + 1);
-              moduleRevenueMap.set(
-                mod,
-                (moduleRevenueMap.get(mod) || 0) + Number(order.price) / 100
-              );
-            }
-          }
+        successfulOrders.forEach((order) => {
+          const mod = order.note.module?.toUpperCase() || "UNKNOWN";
+          const price = Number(order.price) / 100;
+          moduleCountMap.set(mod, (moduleCountMap.get(mod) || 0) + 1);
+          moduleRevenueMap.set(mod, (moduleRevenueMap.get(mod) || 0) + price);
         });
 
-        const arr = Array.from(moduleCountMap.entries())
+        const moduleCountsArray = Array.from(moduleCountMap.entries())
           .map(([module, count]) => ({ module, count }))
           .sort((a, b) => b.count - a.count);
 
-        const revenueArr = Array.from(moduleRevenueMap.entries())
+        const moduleRevenueArray = Array.from(moduleRevenueMap.entries())
           .map(([module, revenue]) => ({ module, revenue }))
           .sort((a, b) => b.revenue - a.revenue);
 
-        setModuleCountsArray(arr);
+        const totalSales = moduleRevenueArray.reduce((sum, m) => sum + m.revenue, 0);
+        const totalNoteCount = moduleCountsArray.reduce((sum, m) => sum + m.count, 0);
+        const topModule = moduleCountsArray[0] || null;
+        setModuleCountsArray(moduleCountsArray);
+        setModuleRevenueArray(moduleRevenueArray);
+        setTotalSales(totalSales);
+        setTotalNoteCount(totalNoteCount);
+        setTopModule(topModule);
         setLoadInfo(false);
-        setModuleRevenueArray(revenueArr);
-        setTotalSales(total);
-        setTotalNoteCount(totalCnt);
-        setTopModule(arr[0] || null);
       })
-      .catch((err) => console.error("Error fetching sales:", err));
+      .catch((err) => {
+        console.error("Error building dashboard data:", err);
+      });
   }, [currentUser]);
 
   console.log(moduleCountsArray)

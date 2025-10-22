@@ -19,10 +19,12 @@ import { CardContent, CardFooter, CardHeader } from "./ui/card"
 import { courseGradient } from "@/utils/colors"
 import { formatRelativeMonthYear } from "@/utils/dates"
 import { Separator } from "./ui/separator"
-import { getOwnedComposeNotes, uploadComposedNote } from "@/services/NotesService"
+import { deleteComposeNote, getOwnedComposeNotes, uploadComposedNote } from "@/services/NotesService"
 import { toast } from "sonner"
 import { Spinner } from "./ui/shadcn-io/spinner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+import { Switch } from "@/components/ui/switch";
+import { useNavigate } from "react-router-dom"
 
 export function UnpublishedNotes() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -31,22 +33,46 @@ export function UnpublishedNotes() {
   const [currentUpload, setCurrentUploadId] = useState<any>("")
   const [activeFilter, setActiveFilter] = useState<any>("all");
 
-  //remove.
-  const handleNote = (note: any) => {
-    setCurrentUploadId(note.id);
-    console.log(note.id)
-    uploadComposedNote(note.id).then((response) => {
-      toast.success('Note published.')
-      console.log(response)
+
+  function updateNote(id, newValue) {
+    //UI trigger
+    setRawData((prevRes) =>
+      prevRes.map((n) =>
+        n.id === id ? { ...n, publish: newValue } : n
+      )
+    )
+    //publish the note (unhide feature)
+    uploadComposedNote(id, newValue).then((res) => {
+      console.log(res)
+      newValue ? (toast.success('Note has been published successfully')) : (toast.success('Note has been hidden successfully'))
+
     }).catch((err) => {
-      toast.error("Failure. Note did not get published.")
-      console.error(err)
+      toast.error('Note operation failed.')
     })
   }
+  console.log(localStorage)
+
+  //deleting method.for now would not work as think DB is blocking it.
+  async function deleteNote(composeID: any) {
+    setRawData((prevRes) =>
+      prevRes.filter((n) =>
+        n.id != composeID
+      )
+    )
+    try {
+      const response = await deleteComposeNote(composeID)
+      console.log(response)
+      toast.success('Note deleted successfully')
+    } catch (err) {
+      toast.error('Note deletion failed.')
+    }
+  }
+
   useEffect(() => {
+    //filtering.
     getOwnedComposeNotes().then((res) => {
       let da = res.data
-      //res.data[0].publish = false;
+      console.log(da)
       if (activeFilter == "true") {
         da = da.filter((d) => d.publish === true)
       } else {
@@ -69,6 +95,7 @@ export function UnpublishedNotes() {
       console.error(err)
     })
   }, [searchQuery, currentUpload, activeFilter]);
+  const navigate = useNavigate();
 
   return (
     isLoading ? (
@@ -113,42 +140,41 @@ export function UnpublishedNotes() {
                       <TableHead className="pl-[2rem]">Note Title</TableHead>
                       <TableHead>Module Code</TableHead>
                       <TableHead>Tags</TableHead>
-                      <TableHead>Created at</TableHead>
                       <TableHead>Updated at</TableHead>
                       <TableHead>Price</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="pr-[2rem]">Action</TableHead>
+                      <TableHead>Details</TableHead>
+                      <TableHead>Remove</TableHead>
+                      <TableHead className="pr-[2rem]">Publish</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {rawData.map((note) => {
-                      console.log(note)
+                      console.log(note.module)
                       return (
                         <TableRow>
                           <TableCell className="pl-[2rem]">{note.title}</TableCell>
-                          <TableCell>{note.module}</TableCell>
+                          <TableCell>{
+                          note.module == "" ? (
+                            <>GENERAL</>
+                          ) : (note.module)
+                          }</TableCell>
                           <TableCell>
                             <div className="flex gap-x-2 gap-y-2 flex-row flex-wrap">
-                              {
-                                note.tags.map((tag) => {
-                                  return (
-                                    <Badge className="px-3 py-1">{stringFormat(tag)}</Badge>
-                                  )
-                                })
-                              }
+                              {note.tags.map((tag, id) =>
+                                id <= 2 && (
+                                  <Badge key={tag} className="px-3 py-1">
+                                    {stringFormat(tag)}
+                                  </Badge>
+                                )
+                              )}
                             </div>
 
                           </TableCell>
-                          <TableCell>{dateFormat(note.createdAt)}</TableCell>
                           <TableCell className="text-foreground">{dateFormat(note.updatedAt)}</TableCell>
-                          <TableCell className="text-foreground">{formatPriceSGD(note.price)}</TableCell>
                           <TableCell className="text-foreground">
                             {
-                              note.publish ? (
-                                <Badge className="bg-emerald-600 hover:bg-emerald-700 py-1 px-3 text-white">Published</Badge>
-                              ) : (
-                                <Badge className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1">Unpublished</Badge>
-                              )
+                              
+                            formatPriceSGD(note.price)
                             }
                           </TableCell>
 
@@ -158,13 +184,14 @@ export function UnpublishedNotes() {
                               {
                                 note.publish && (
                                   <Button
-                                      size="sm"
-                                      variant="outline"
-                                      className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white border-none px-3 py-1"
-                                      onClick={() => { {/*Nav code here*/ } }}
-                                    >
-                                      <span className="text-xs font-medium">Details</span>
-                                    </Button>
+                                    size="sm"
+                                    variant="outline"
+                                    className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white border-none px-3 py-1"
+                                    onClick={() => { {/*Nav code here*/ } }}
+                                  >
+                                    
+                                    <span className="text-xs font-medium" onClick={() => { navigate(`/article/${note.id}`) }}>Details</span>
+                                  </Button>
                                 )
                               }
 
@@ -179,20 +206,21 @@ export function UnpublishedNotes() {
                                     >
                                       <span className="text-xs font-medium">Edit</span>
                                     </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      className="flex items-center gap-1 bg-slate-800/90 hover:bg-slate-700/90 text-slate-100 border-none px-3 py-1"
-                                      onClick={() => { handleNote(note) }}
-                                    >
-                                      <span className="text-xs font-medium">Upload</span>
-                                    </Button>
                                   </>
 
                                 )
                               }
 
                             </div>
+                          </TableCell>
+                          <TableCell>
+                            <Button className="!text-xs px-3 py-1 bg-red-400 hover:bg-red-600" onClick={() => { deleteNote(note.id) }}>Delete</Button>
+                          </TableCell>
+                          <TableCell>
+                            <Switch
+                              checked={note.publish}
+                              onCheckedChange={(value) => updateNote(note.id, value)}
+                            >Publish</Switch>
                           </TableCell>
                         </TableRow>
                       )
@@ -215,17 +243,14 @@ export function UnpublishedNotes() {
                           </div>
                           <div className="flex-1 flex flex-col justify-center gap-1">
                             <div className="flex justify-end items-center h-6 gap-x-2">
-                              {
-                                note.publish ? (
-                                  <Badge className="!text-xs bg-emerald-600 hover:bg-emerald-700 py-1 px-3 text-white">Published</Badge>
-                                ) : (
-                                  <Badge className="!text-xs bg-gray-600 hover:bg-gray-700 py-1 px-3 text-white">Drafts</Badge>
-                                )
-                              }
-
+                              
                               <p className="text-xs text-muted-foreground">
                                 {formatRelativeMonthYear(note.updatedAt)}
                               </p>
+                              <Switch
+                                checked={note.publish}
+                                onCheckedChange={(value) => updateNote(note.id, value)}
+                              >Publish</Switch>
                             </div>
                           </div>
                         </CardHeader>
@@ -255,12 +280,12 @@ export function UnpublishedNotes() {
                               className="text-sm font-normal rounded-full border-none text-white uppercase"
                               style={{ background: courseGradient(note.module ?? "") }}
                             >
-                              {note.module}
+                              {note.module || "GENERAL"}
                             </Badge>
 
                             <Separator orientation="vertical" />
                             <span className="font-mono flex items-center">
-                              {formatPriceSGD(note.price)}
+                              {formatPriceSGD(note.price) || 0.00}
                             </span>
                             <Separator orientation="vertical" />
                           </div>
@@ -271,14 +296,16 @@ export function UnpublishedNotes() {
                         <CardFooter className="justify-between gap-x-2 pl-0 pr-0">
 
                           {/* Change routings below. */}
+                          <Button size= "sm" className="bg-red-400 hover:bg-red-500 w-[50%] px-2 py-1 border-none gap-1 items-center">
+                            <span className="text-xs font-medium">Delete</span>
+                          </Button>
                           {
                             note.publish && (
                               <Button
                                 size="sm"
-                                className={`flex items-center gap-1 border-none px-2 py-1 
-    ${note.publish ? "w-[100%]" : "w-[50%]"} 
-    bg-slate-900 hover:bg-slate-800 text-white`}
-                                onClick={() => { console.log('must nav to edit') }}
+                                className={`flex items-center gap-1 border-none px-2 py-1 w-[50%]
+      bg-slate-900 hover:bg-slate-800 text-white`}
+                                onClick={() => { navigate(`/article/${note.id}`) }}
                               >
                                 <span className="text-xs font-medium">Details</span>
                               </Button>
@@ -290,21 +317,11 @@ export function UnpublishedNotes() {
                               <>
                                 <Button
                                   size="sm"
-                                  className={`flex items-center gap-1 border-none px-2 py-1 
-    ${note.publish ? "w-[100%]" : "w-[50%]"} 
-    bg-slate-900 hover:bg-slate-800 text-white`}
+                                  className={`flex items-center gap-1 border-none px-2 py-1 w-[50%]
+      bg-slate-900 hover:bg-slate-800 text-white`}
                                   onClick={() => { console.log('must nav to edit') }}
                                 >
                                   <span className="text-xs font-medium">Edit Note</span>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  className={`flex items-center gap-1 border-none px-2 py-1 
-    ${note.publish ? "w-[100%]" : "w-[50%]"} 
-    bg-slate-800/90 hover:bg-slate-700/90 text-slate-100`}
-                                  onClick={() => { handleNote(note) }}
-                                >
-                                  <span className="text-xs font-medium">Upload</span>
                                 </Button>
                               </>
 

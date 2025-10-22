@@ -130,7 +130,7 @@ export default function OrderDetails() {
   const fadeUp = { hidden: { opacity: 0, y: 6 }, show: { opacity: 1, y: 0, transition: { duration: 0.22 } } };
 
   return (
-    <div className="bg-white min-h-[80vh] flex flex-col items-center justify-start">
+    <div className="bg-white min-h-[80vh] ml-auto mr-auto flex flex-col items-center justify-start sm:w-[90%] md:w-[85%] lg:w-[80%]">
       <motion.div
         className="w-full max-w-6xl px-6 pt-12 pb-8"
         initial={{ opacity: 0, y: 10 }}

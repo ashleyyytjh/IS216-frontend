@@ -56,7 +56,7 @@ export function OrderReceived({
           <Select
             value={String(itemsPerPage)}
             onValueChange={(v) => setItemPerPage(Number(v))}
-            
+
           >
             <SelectTrigger className="w-[150px] sm:w-[80px] md:w-[170px]">
               <SelectValue placeholder="View rows per page" />
@@ -106,7 +106,7 @@ export function OrderReceived({
                     {o?.status.charAt(0).toUpperCase() + o?.status.slice(1)}
                   </Badge>
                 </TableCell>
-                <TableCell>{stringFormat(o["type"])}</TableCell>
+                <TableCell>{stringFormat(o["noteType"])}</TableCell>
               </TableRow>
             ))}
             {filteredOrders.length === 0 && (

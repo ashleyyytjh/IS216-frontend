@@ -12,7 +12,7 @@ import {
   Form, FormControl, FormField, FormItem, FormLabel, FormMessage
 } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { updateUser } from "@/services/UserService"
+import { callPresigned, confirmUserImage, updateUser, updateUserImage } from "@/services/UserService"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
 //Form to ensure validation.
@@ -45,8 +45,8 @@ function UserEdit(currentUser) {
     setCurMods((prev) => prev.filter((m) => m !== moduleName))
   }
 
-  const handleInputChange = (event) =>{setUserMod(event.target.value)}
-  
+  const handleInputChange = (event) => { setUserMod(event.target.value) }
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -63,24 +63,6 @@ function UserEdit(currentUser) {
     formState: { isSubmitting, isSubmitSuccessful, errors },
   } = form
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    values.newCourse = curModsState
-
-    let newValues = {}
-    newValues['fullName'] = values['username']
-    newValues['major'] = values['major']
-    newValues['modules'] = values['newCourse']
-
-    updateUser(newValues)
-      .then((response) => {
-        toast.success("Successfully updated your account details!")
-        console.log(response)
-      })
-      .catch((err) => {
-        toast.error("Unable to do so now. Please try again.")
-        console.error(err)
-      })
-  }
 
   const onInvalid = (errors: any) => {
     toast.error("Please fix the highlighted fields")
@@ -91,6 +73,60 @@ function UserEdit(currentUser) {
       console.log('ok')
     }
   }, [isSubmitSuccessful])
+
+
+  const [selectedFile, setSelectedFile] = useState<any>()
+  const fileChanging = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file.");
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    console.log(previewUrl)
+    setPreviewImage(previewUrl);
+    setSelectedFile(file);
+  };
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    values.newCourse = curModsState
+
+    let newValues = {}
+    newValues['fullName'] = values['username']
+    newValues['major'] = values['major']
+    newValues['modules'] = values['newCourse']
+
+    updateUser(newValues)
+      .then((response) => {
+        if (!selectedFile) {
+          toast.success("Successfully updated your account details!")
+        } else {
+          updateUserImage(selectedFile.type).then(async (url) => {
+            let presigned = url.uploadUrl;
+            callPresigned(String(presigned), selectedFile).then((r) => {
+              let uploadRes = r;
+              if (!uploadRes) { toast.error('Unable to upload your image.') }
+              confirmUserImage().then((response) => {
+                toast.success('Successfully updated your account details!')
+              }).catch((err) => {
+                toast.error('Something went wrong somewhere.')
+              })
+
+            })
+
+
+          })
+        }
+      })
+      .catch((err) => {
+        toast.error("Unable to do so now. Please try again.")
+        console.error(err)
+      })
+  }
+
 
   return (
     <Card className="hover:shadow-xl transition-all duration-300 pl-4 pr-4">
@@ -103,16 +139,34 @@ function UserEdit(currentUser) {
       <Form {...form}>
         <form className="space-y-8" onSubmit={handleSubmit(onSubmit, onInvalid)}>
           <div className="flex justify-center ml-auto mr-auto">
-            <div className="w-24 h-24">
-              <Avatar className="w-24 h-24">
+            <div className="relative w-28 h-28">
+              <Avatar className="w-28 h-28 border-2 border-gray-200">
                 {previewImage ? (
                   <AvatarImage src={previewImage} />
                 ) : (
                   <AvatarFallback>
-                    <User className="w-8 h-8 text-gray-500" />
+                    <User className="w-10 h-10 text-gray-500" />
                   </AvatarFallback>
                 )}
               </Avatar>
+
+              <input
+                type="file"
+                accept="image/*"
+                id="avatarUpload"
+                className="hidden"
+                onChange={fileChanging}
+              />
+
+              <Button
+                type="button"
+                size="icon"
+                variant="secondary"
+                onClick={() => document.getElementById("avatarUpload")?.click()}
+                className="absolute bottom-0 right-0 rounded-full w-8 h-8 shadow-md hover:shadow-lg border bg-white text-gray-800"
+              >
+                <Pencil className="w-4 h-4" />
+              </Button>
             </div>
           </div>
 

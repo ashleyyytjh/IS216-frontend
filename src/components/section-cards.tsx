@@ -72,6 +72,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               className={`absolute text-xl font-normal tabular-nums transition-all text-foreground duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
                 }`}
             >
+              {/* ReactTyped - react wrapper around typed.js lib. Provides with props, hooks, cleanups. Adding one more string make you type back and a new one.*/}
                 <ReactTyped
                 strings={[`$${String(Number(formatNumber(totalSales)).toFixed(2))}`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
             </CardTitle>

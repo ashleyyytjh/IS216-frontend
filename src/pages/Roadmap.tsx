@@ -4,8 +4,13 @@ import Legend from "@/components/modules/Legend";
 import Toolbar from "@/components/modules/Toolbar";
 import YearColumn from "@/components/modules/YearColumn";
 import { FlowProvider, useFlow } from "@/components/modules/FlowContext";
+import { useEffect } from "react";
 
-function ModulesContent() {
+function Roadmap() {
+    useEffect(() => {
+      window.history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+    }, []);
   const { compact, filteredPlan } = useFlow();
 
   const accents = [
@@ -52,10 +57,10 @@ function ModulesContent() {
   );
 }
 
-export default function Modules() {
+export default function RoadmapPage() {
   return (
     <FlowProvider>
-      <ModulesContent />
+      <Roadmap />
     </FlowProvider>
   );
 }

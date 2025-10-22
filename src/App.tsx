@@ -42,8 +42,9 @@ import ForumHome from "./pages/ForumHome";
 import PdfAnnotator from "./pages/Sample";
 import Create from "./pages/Create";
 import Compose from "./pages/Compose";
-import Modules from "./pages/Modules";
+import Modules from "./pages/Roadmap";
 import UserArticle from "./pages/UserArticle";
+import RoadmapPage from "./pages/Roadmap";
 
 function App() {
     return (
@@ -67,8 +68,7 @@ function App() {
               <Route path="/orderdetails/:id" element={<OrderDetails />} />
               <Route path="/writeNotes" element={<EditPage/>} />
               <Route path="/editNote/:id" element={<EditPage/>} />
-              <Route path="/sample/:noteId" element={<PdfAnnotator/>}/>
-              <Route path="/modules" element={<Modules/>}/>
+              <Route path="/roadmap" element={<RoadmapPage/>}/>
               {/* Protected Routes */}
               <Route element={<ProtectedRoute/>}>
                     <Route path="/test" element={<LoginPage />} />

@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import { BookOpen, Award, Wallet, Search, Sparkles, Star, GraduationCap, ArrowRight, UploadCloud, CheckCircle, DollarSign, Store, UserIcon, Circle } from "lucide-react";
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import {  Store} from "lucide-react";
 
 import { useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -88,14 +88,14 @@ export default function ImprovedHomepage() {
 
       {/* Scrollable Content */}
       <motion.div style={{ y: contentY }} className="">
-        <div className="max-w-7xl mx-auto px-6 md:px-8  md:py-32 space-y-28 md:space-y-40">
+        <div className="max-w-7xl  mx-auto px-6 md:px-8  md:py-32 space-y-28 md:space-y-40">
           <KeyPoints />
           <div className='space-y-4'>
             <UserTypeToggle changeSelection={onChangeSelection} selection={stepSelection} />
             <StepsComponent option={stepSelection} />
           </div>
 
-
+          <Roadmap />        
           <RecommendationsHub
             isLoggedIn={isLoggedIn}
             profile={
@@ -124,6 +124,7 @@ import {
 import { cn } from "@/lib/utils";
 import StepsComponent from '@/components/home/Steps';
 import LandingText from '@/components/home/LandingText';
+import Roadmap from '@/components/home/RoadmapSection';
 
 interface Props {
   selection: String

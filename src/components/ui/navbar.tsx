@@ -26,31 +26,38 @@ import {
 } from "./dropdown-menu";
 import { getAvatarFallback } from "@/utils/util";
 
-const navigationItems = [
+const userNavigationItems = [
   { name: "Explore", href: "/explore" },
   { name: "Create", href: "/create" },
   { name: "Dashboard", href: "/dashboardSeller" },
   { name: "Forum", href: "/forum" },
+  { name: "Roadmap", href: "/roadmap" },
 ];
+const guestNavigationItems = [
+  { name: "Explore", href: "/explore" },
+  { name: "Roadmap", href: "/roadmap" },
 
+];
 const navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null); // Initialize user state as null
   const [image, setImage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
   const [amplifyUser, setAmplifyUser] = useState<User | null>(null);
   const navigate = useNavigate();
+  
   useEffect(() => {
-    const checkUser = async () => {
-      let isAmplifyUser: any;
+    const fetchUserData = async () => {
       try {
-        isAmplifyUser = await getCurrentUser(); // 2. Assign the value
-        setAmplifyUser(isAmplifyUser);
-        const resp = await getUser();
-        setImage(String(resp.imageUrl));
+        const [amplifyUser, resp] = await Promise.all([getCurrentUser(), getUser()]);
+        setAmplifyUser(amplifyUser);
         setUser(resp as User);
-      } catch (error) {}
+        setImage(resp.imageUrl);
+      } catch {}
     };
-    checkUser();
+    fetchUserData();
+    setLoading(false);
+
   }, []);
 
   const handleSignOut = async () => {
@@ -69,6 +76,7 @@ const navbar = () => {
     }
   };
   return (
+    loading ? <div></div> :
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
@@ -99,13 +107,7 @@ const navbar = () => {
                 </a>
               </SheetTitle>
               <div className="flex flex-col space-y-4 mt-8 pl-2">
-                {navigationItems.map((item) => {
-                  if (
-                    (item.name === "Dashboard" || item.name === "Upload") &&
-                    !amplifyUser
-                  ) {
-                    return null; // hide dashboard when user not logged in
-                  } else {
+                {(amplifyUser ? userNavigationItems : guestNavigationItems).map((item) => {
                     return (
                       <a
                         key={item.name}
@@ -116,7 +118,6 @@ const navbar = () => {
                         {item.name}
                       </a>
                     );
-                  }
                 })}
 
                 {!amplifyUser ? (
@@ -159,14 +160,7 @@ const navbar = () => {
               </div>
               <span className="font-bold text-xl pr-12 ">OnlyNotes</span>
             </a>
-            {navigationItems.map((item) => {
-              if (
-                (item.name === "Dashboard" || item.name === "") &&
-                !amplifyUser
-              ) {
-                return null; // hide dashboard when user not logged in
-              }
-
+            {(amplifyUser ? userNavigationItems : guestNavigationItems).map((item) => {
               return (
                 <a
                   key={item.name}
@@ -190,8 +184,15 @@ const navbar = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="rounded-full focus-visible:ring-2 focus-visible:ring-ring">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={image} alt="@joel" />
+                      
+                      <Avatar className="h-10 w-10 shrink-0 overflow-hidden">
+                        {/* <AvatarImage
+                          src={image}
+                          alt={user?.fullName ?? "User"}
+                          loading="lazy"
+                          className="object-cover opacity-0 transition-opacity duration-700"
+                          onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
+                        /> */}
                         <AvatarFallback>
                           {getAvatarFallback(user?.fullName ?? "")}
                         </AvatarFallback>

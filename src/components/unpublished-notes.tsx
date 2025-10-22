@@ -149,11 +149,15 @@ export function UnpublishedNotes() {
                   </TableHeader>
                   <TableBody>
                     {rawData.map((note) => {
-                      console.log(note.id)
+                      console.log(note.module)
                       return (
                         <TableRow>
                           <TableCell className="pl-[2rem]">{note.title}</TableCell>
-                          <TableCell>{note.module}</TableCell>
+                          <TableCell>{
+                          note.module == "" ? (
+                            <>GENERAL</>
+                          ) : (note.module)
+                          }</TableCell>
                           <TableCell>
                             <div className="flex gap-x-2 gap-y-2 flex-row flex-wrap">
                               {note.tags.map((tag, id) =>
@@ -167,7 +171,12 @@ export function UnpublishedNotes() {
 
                           </TableCell>
                           <TableCell className="text-foreground">{dateFormat(note.updatedAt)}</TableCell>
-                          <TableCell className="text-foreground">{formatPriceSGD(note.price)}</TableCell>
+                          <TableCell className="text-foreground">
+                            {
+                              
+                            formatPriceSGD(note.price)
+                            }
+                          </TableCell>
 
 
                           <TableCell className="pr-[2rem]">
@@ -276,7 +285,7 @@ export function UnpublishedNotes() {
 
                             <Separator orientation="vertical" />
                             <span className="font-mono flex items-center">
-                              {formatPriceSGD(note.price)}
+                              {formatPriceSGD(note.price) || 0.00}
                             </span>
                             <Separator orientation="vertical" />
                           </div>

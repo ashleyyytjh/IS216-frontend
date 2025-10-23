@@ -45,7 +45,7 @@ export default function DegreePicker() {
           onClick={() => setOpen((v) => !v)}
           className="mx-auto flex w-full items-center justify-center gap-2 rounded-full border bg-card px-4 py-2 font-medium shadow-sm hover:bg-accent/40"
         >
-          <span className="text-xl sm:text-2xl">{current.name}</span>
+          <span className="text-sm">{current.name}</span>
           <svg
             className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
             viewBox="0 0 20 20"

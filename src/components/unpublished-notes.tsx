@@ -54,13 +54,14 @@ export function UnpublishedNotes() {
 
   //deleting method.for now would not work as think DB is blocking it.
   async function deleteNote(composeID: any) {
-    setRawData((prevRes) =>
+
+    try {
+      const response = await deleteComposeNote(composeID)
+          setRawData((prevRes) =>
       prevRes.filter((n) =>
         n.id != composeID
       )
     )
-    try {
-      const response = await deleteComposeNote(composeID)
       console.log(response)
       toast.success('Note deleted successfully')
     } catch (err) {
@@ -297,7 +298,7 @@ export function UnpublishedNotes() {
 
                           {/* Change routings below. */}
                           <Button size= "sm" className="bg-red-400 hover:bg-red-500 w-[50%] px-2 py-1 border-none gap-1 items-center">
-                            <span className="text-xs font-medium">Delete</span>
+                            <span className="text-xs font-medium" onClick={()=>{deleteNote(note.id)}}>Delete</span>
                           </Button>
                           {
                             note.publish && (

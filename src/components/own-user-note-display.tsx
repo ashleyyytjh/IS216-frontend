@@ -61,7 +61,9 @@ export const UserOwnNote = (currentUserInfo) => {
   console.log(filteredNotes)
 
   const deleteNote = (id) => {
+    setNotes(prev => prev.filter(n => n.id !== id));
     deleteUploadedNote(id).then((res) => {
+      
       toast.success('Note deleted successfully')
     }).catch(err =>
       toast.error('Note unable to delete')

@@ -122,7 +122,7 @@ function UserEdit(currentUser) {
         }
       })
       .catch((err) => {
-        toast.error("Unable to do so now. Please try again.")
+        toast.error("Unable to do so now. Please try again and fill in the values properly.")
         console.error(err)
       })
   }

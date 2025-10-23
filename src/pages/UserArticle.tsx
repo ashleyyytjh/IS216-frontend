@@ -6,7 +6,6 @@ import { GetComposeNotesRes } from "@/types/requests/compose";
 import Error from "./ErrorPage";
 import { formatDateString } from "@/utils/dates";
 import { courseGradient } from "@/utils/colors";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { formatPriceSGD } from "@/utils/currency";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

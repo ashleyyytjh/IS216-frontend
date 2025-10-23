@@ -27,7 +27,6 @@ import Welcome from "./pages/Welcome";
 import NewHome from './pages/NewHome'
 import DashboardSeller from "./pages/dashboardSeller";
 import Listing from "./pages/Listing";
-import UserEdit from "./pages/Editor";
 import Payment from "./pages/Payment";
 import { PaymentSuccess } from "./pages/PaymentSuccessful";
 import ListingLayout from "./pages/ListingLayout";
@@ -35,16 +34,16 @@ import AnnotationComponent from "./pages/Annotation";
 import { PaymentUnsuccessful } from "./pages/PaymentUnsuccessful";
 import EditPage from "./pages/Editor";
 import UploadStatus from "./pages/UploadStatus";
-import ForumPage from "./pages/ForumLayout";
+// import ForumPage from "./pages/ForumLayout";
 import ForumPageLayout from "./pages/ForumLayout";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import ForumHome from "./pages/ForumHome";
-import PdfAnnotator from "./pages/Sample";
+// import PdfAnnotator from "./pages/Sample";
 import Create from "./pages/Create";
 import Compose from "./pages/Compose";
-import Modules from "./pages/Roadmap";
+// import Modules from "./pages/Roadmap";
 import UserArticle from "./pages/UserArticle";
 import RoadmapPage from "./pages/Roadmap";
+import ComposeEdit from "./pages/ComposeEdit";
 
 function App() {
     return (
@@ -76,6 +75,7 @@ function App() {
                     <Route path="/payment" element={<Payment />} />
                     <Route path="/paymentSuccess" element={<PaymentSuccess />} />
                     <Route path="/paymentUnsuccessful" element={<PaymentUnsuccessful />} />
+                    <Route path="/compose/edit" element={<ComposeEdit />} />
                     <Route path="/forum" element={<ForumPageLayout />}>
                       <Route index element={<ForumHome />} />
                       <Route path=":noteId" element={<AnnotationComponent />} />

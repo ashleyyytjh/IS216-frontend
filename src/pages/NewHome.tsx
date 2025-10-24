@@ -17,6 +17,8 @@ import { HeroGeometric } from "@/components/ui/shadcn-io/shape-landing-hero";
 import { useState } from 'react';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { User } from '@/types/types';
+import { getUser as getUserApi } from "@/services/UserService"; 
+
 
 export default function ImprovedHomepage() {
   const calendar: CalendarConfig = {
@@ -29,6 +31,8 @@ export default function ImprovedHomepage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [stepSelection, setStepSelection] = useState<String>('buyer');
+  const [userModules, setUserModules] = useState<string[]>([]);
+  const [userMajor, setUserMajor] = useState<string | undefined>(undefined);
   const isMobile = useIsMobile();
   
   useEffect(() => {
@@ -46,7 +50,7 @@ export default function ImprovedHomepage() {
     }
     fetchData();
   }, []);
-
+  
   const onChangeSelection = (value: String) => {
     setStepSelection(value);
   }
@@ -66,7 +70,19 @@ export default function ImprovedHomepage() {
   const contentY = useTransform(scrollYProgress, [0, 1], ["10vh", "0vh"]);
   const navigate = useNavigate();
 
-
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setUserModules([]);
+      setUserMajor(undefined);
+      return;
+    }
+    (async () => {
+        const data = await getUserApi();
+        setUserModules(Array.isArray(data?.modules) ? data.modules : []);
+        setUserMajor(typeof data?.major === "string" ? data.major : undefined);
+   
+    })();
+  }, [isLoggedIn]);
   
   return (
     <div ref={targetRef} className="relative w-full overflow-y-hidden">
@@ -94,13 +110,13 @@ export default function ImprovedHomepage() {
             <UserTypeToggle changeSelection={onChangeSelection} selection={stepSelection} />
             <StepsComponent option={stepSelection} />
           </div>
-
+          
           <Roadmap />        
           <RecommendationsHub
             isLoggedIn={isLoggedIn}
             profile={
               isLoggedIn
-                ? { modules: ["IS216", "CS203"], major: "Information Systems", budgetCents: 500 }
+                ? { modules: userModules, major: userMajor}
                 : undefined
             }
             calendar={calendar}

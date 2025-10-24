@@ -11,12 +11,12 @@ G4 Group 16
 
 | Photo | Full Name | Role / Features Responsible For |
 |:--:|:--|:--|
-| <img src="photos/member1.jpg" width="80"> | Soh De Lin Nicholas | Frontend Developer - Search & Filter UI |
-| <img src="photos/member2.jpg" width="80"> | Darren Ng Yi Jie | Backend Developer - API endpoints |
-| <img src="photos/member3.jpg" width="80"> | Joel Ow | UI/UX Designer - Layout & Color Themes |
-| <img src="photos/member4.jpg" width="80"> | Ashley Toh | Database & Auth - Firebase Integration |
-| <img src="photos/member5.jpg" width="80"> | Sim Jun Zhi Dylan | Database & Auth - Firebase Integration |
-| <img src="photos/member6.jpg" width="80"> | Ashwin | Database & Auth - Firebase Integration |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEJARDDL-bd29e139dd9b-512" width="80"> | Soh De Lin Nicholas | Seller Dashboard, Profile Page |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BCKGBM6E-0cfae05e7807-512" width="80"> | Darren Ng Yi Jie | Note Recommendation System and Upload Notes flow |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BCL1LW4A-bbe1a50348d9-512" width="80"> | Joel Ow | Backend Management, Note listing and Detail listing |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEJA350E-de5aa2257605-512" width="80"> | Ashley Toh | Backend Management, Payments and Forum |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEPZ817G-7c4181505ccd-512" width="80"> | Sim Jun Zhi Dylan | Order details and Composing notes UI |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09B7FWLDM1-58f32e9f653a-512" width="80"> | Ashwin | Overall Styling of Web Application |
 
 > Place all headshot thumbnails in the `/photos` folder (JPEG or PNG).
 
@@ -33,8 +33,8 @@ Further research on competitors shows that Studocu and CourseHero aims to solve 
 ## Web Solution Overview
 
 ### 🎯 Intended Users
-SMU Students who are in need of notes for their modules
-SMU Studens who would want to sell their notes and earn some quick cash.
+- SMU Students who are in need of notes for their modules
+- SMU Studens who would want to sell their notes and earn some quick cash.
 
 ### 💡 What Users Can Do & Benefits
 
@@ -48,19 +48,24 @@ SMU Studens who would want to sell their notes and earn some quick cash.
 | Forum | Buyers can leave comments and question on certain parts of the notes they own for sellers. Sellers can answer these questions. | Creates a form of communication between buyers and sellers after purchasing a certain note for clarification. |
 | Seller Dashboard | Sellers can view key metrics on the notes they sold and their performance.  | Sellers can analyse and know how to improve on their sales. They would know which notes to sell, and at certain price points. |
 | Compose Notes | Rather than uploading notes, sellers can write their own notes within the application and post them as articles for students to view.  | Sellers can create notes on the go, rather than uploading a certain note in their computer. |
-
+| Payment for notes | Students can purchase their notes on the application.  | Allows student to link their card and pay via stripe API. |
 ---
 
 ## Tech Stack
 
 ### 🧱 Tech Stack Overview
 
+#### Frontend
 | Logo | Technology | Purpose / Usage |
 |:--:|:--|:--|
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/react/react.png" width="40"> | **React** | Frontend framework for building dynamic user interfaces |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/tailwind/tailwind.png" width="40"> | **TailwindCSS** | Utility-first CSS framework for styling and responsive layouts |
 | <img src="https://raw.githubusercontent.com/shadcn/ui/main/apps/www/public/og.jpg" width="40"> | **Shadcn/UI** | Pre-built accessible UI components styled with TailwindCSS |
 | <img src="https://vitejs.dev/logo.svg" width="40"> | **Vite** | Lightning-fast development server and build tool |
+
+#### Backend
+| Logo | Technology | Purpose / Usage |
+|:--:|:--|:--|
 | <img src="https://avatars.githubusercontent.com/u/41077760?s=200&v=4" width="40"> | **AWS Amplify** | Hosting and CI/CD for the frontend React app |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/nodejs/nodejs.png" width="40"> | **Node.js** | JavaScript runtime for backend execution |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/typescript/typescript.png" width="40"> | **TypeScript** | Strongly-typed superset of JavaScript for maintainable backend code |
@@ -68,6 +73,10 @@ SMU Studens who would want to sell their notes and earn some quick cash.
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/docker/docker.png" width="40"> | **Docker** | Containerization for backend services |
 | <img src="https://repository-images.githubusercontent.com/100966547/fc3c3680-355c-11eb-9554-8df45a88295b" width="40"> | **AWS Cognito** | User authentication and authorization service |
 | <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUlDqQ4KhvbzAUcyYoAvroy03MDJontu8baA&s" width="40"> | **AWS ECS** | Container orchestration for backend microservices |
+
+#### Data
+| Logo | Technology | Purpose / Usage |
+|:--:|:--|:--|
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/mongodb/mongodb.png" width="40"> | **MongoDB** | NoSQL database for document-oriented data storage |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/supabase/supabase.png" width="40"> | **Supabase** | Postgres-based backend-as-a-service for structured data |
 | <img src="https://user-images.githubusercontent.com/15157491/75435753-6929fc80-594b-11ea-9e19-f78223916862.png" width="40"> | **AWS S3** | Object storage for images, files, and note uploads |
@@ -211,7 +220,9 @@ Perform the following checks before submission:
 
 | Area | Test Description | Expected Outcome |
 |:--|:--|:--|
-| Authentication | Register, Login, Logout | User successfully signs in/out |
+| Authentication | Register | User will be prompted to fill in more details on accountCreation page. Upon filling details, it will redirect user to home page |
+| Authentication | Login | User successfully logins and he will be redirected to homepage. |
+| Authentication | Logout | User successfully signs out, and user state changes (navigation bar will not show the name.) |
 | CRUD Operations | Add, Edit, Delete data | Database updates correctly |
 | Responsiveness | Test on mobile & desktop | Layout adjusts without distortion |
 | Navigation | All menu links functional | Pages route correctly |
@@ -230,7 +241,6 @@ npm run test
 | Issue | Cause | Fix |
 |:--|:--|:--|
 | `Module not found` | Missing dependencies | Run `npm install` again |
-| `Firebase: permission-denied` | Firestore security rules not set | Check rules under Firestore → Rules |
 | `CORS policy error` | Backend not allowing requests | Enable your domain in CORS settings |
 | `.env` variables undefined | Missing `VITE_` prefix | Rename variables to start with `VITE_` |
 | `npm run dev` fails | Node version mismatch | Check Node version (`node -v` ≥ 18) |

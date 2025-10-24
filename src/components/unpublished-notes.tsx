@@ -215,7 +215,7 @@ export function UnpublishedNotes() {
                                       size="sm"
                                       variant="outline"
                                       className="flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white border-none px-3 py-1"
-                                      onClick={() => { {/*Nav code here*/ } }}
+                                      onClick={() => { navigate(`/compose/edit/${note.id}`) }}
                                     >
                                       <span className="text-xs font-medium">Edit</span>
                                     </Button>
@@ -332,7 +332,7 @@ export function UnpublishedNotes() {
                                   size="sm"
                                   className={`flex items-center gap-1 border-none px-2 py-1 w-[50%]
       bg-slate-900 hover:bg-slate-800 text-white`}
-                                  onClick={() => { console.log('must nav to edit') }}
+                                  onClick={() => { navigate(`/compose/edit/${note.id}`) }}
                                 >
                                   <span className="text-xs font-medium">Edit Note</span>
                                 </Button>

@@ -25,6 +25,7 @@ import { Spinner } from "./ui/shadcn-io/spinner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { Switch } from "@/components/ui/switch";
 import { useNavigate } from "react-router-dom"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog"
 
 export function UnpublishedNotes() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -32,6 +33,8 @@ export function UnpublishedNotes() {
   const [isLoading, setIsLoading] = useState(true)
   const [currentUpload, setCurrentUploadId] = useState<any>("")
   const [activeFilter, setActiveFilter] = useState<any>("all");
+    const [currentNoteId, setCurrentNoteId] = useState();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
 
   function updateNote(id, newValue) {
@@ -53,6 +56,12 @@ export function UnpublishedNotes() {
   console.log(localStorage)
 
   //deleting method.for now would not work as think DB is blocking it.
+
+
+  const openDialog = (id: any) => {
+    setCurrentNoteId(id)
+    setDeleteDialogOpen(true)
+  }
   async function deleteNote(composeID: any) {
 
     try {
@@ -98,13 +107,16 @@ export function UnpublishedNotes() {
   }, [searchQuery, currentUpload, activeFilter]);
   const navigate = useNavigate();
 
+  
+
   return (
     isLoading ? (
       <div className="flex justify-center mt-2">
         <Spinner variant={'default'} />
       </div>
     ) : (
-      <div className="w-full relative">
+      <>
+            <div className="w-full relative">
         <div className="flex flex-nowrap overflow-x-auto items-center justify-between gap-3 mt-4 w-full">
           <div className="relative flex-1 min-w-0 opacity-70 focus-within:opacity-100 transition-opacity">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -215,7 +227,7 @@ export function UnpublishedNotes() {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Button className="!text-xs px-3 py-1 bg-red-400 hover:bg-red-600" onClick={() => { deleteNote(note.id) }}>Delete</Button>
+                            <Button className="!text-xs px-3 py-1 bg-red-400 hover:bg-red-600" onClick={() => { openDialog(note.id) }}>Delete</Button>
                           </TableCell>
                           <TableCell>
                             <Switch
@@ -298,7 +310,7 @@ export function UnpublishedNotes() {
 
                           {/* Change routings below. */}
                           <Button size= "sm" className="bg-red-400 hover:bg-red-500 w-[50%] px-2 py-1 border-none gap-1 items-center">
-                            <span className="text-xs font-medium" onClick={()=>{deleteNote(note.id)}}>Delete</span>
+                            <span className="text-xs font-medium" onClick={()=>{openDialog(note.id)}}>Delete</span>
                           </Button>
                           {
                             note.publish && (
@@ -345,6 +357,29 @@ export function UnpublishedNotes() {
         }
 
       </div >
+
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Delete Note
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this note?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel asChild>
+              <Button variant="outline" className="!text-sm">Cancel</Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button variant="destructive" className="!text-sm" onClick={() => { deleteNote(currentNoteId) }}>Delete</Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      </>
+
     )
   )
 }

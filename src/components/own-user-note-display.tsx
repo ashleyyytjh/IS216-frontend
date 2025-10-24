@@ -17,6 +17,7 @@ import { Link } from "react-router-dom"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog"
 
 
 export const UserOwnNote = (currentUserInfo) => {
@@ -25,6 +26,8 @@ export const UserOwnNote = (currentUserInfo) => {
   const [loading, isLoading] = useState(true)
   const [searchQuery, setSearch] = useState("")
   const [activeFilter, setActiveFilter] = useState("All")
+  const [currentNoteId, setCurrentNoteId] = useState();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const navigate = useNavigate();
   //get owned notes. if the graph edges length is 0, it is processing.
   useEffect(() => {
@@ -39,7 +42,7 @@ export const UserOwnNote = (currentUserInfo) => {
               ...r,
               pending: a?.graph.edges.length === 0,
             };
-            
+
           })
         );
         setNotes(allUserOwned);
@@ -58,12 +61,17 @@ export const UserOwnNote = (currentUserInfo) => {
   if (loading) {
     return (<div className="flex justify-center"><Spinner variant={'default'} /></div>)
   }
-  console.log(filteredNotes)
+
+
+  const openDialog = (id: any) => {
+    setCurrentNoteId(id)
+    setDeleteDialogOpen(true)
+  }
 
   const deleteNote = (id) => {
+    setDeleteDialogOpen(false);
     setNotes(prev => prev.filter(n => n.id !== id));
     deleteUploadedNote(id).then((res) => {
-      
       toast.success('Note deleted successfully')
     }).catch(err =>
       toast.error('Note unable to delete')
@@ -167,9 +175,10 @@ export const UserOwnNote = (currentUserInfo) => {
 
                   </CardFooter>
                   {/* to={`/listings/${(listing as any).note_id || listing.id}`}*/}
+                  {/* deleteNote(``) */}
                   <CardFooter className="flex flex-row-reverse justify-between gap-x-2 pl-0 pr-0">
                     <Button size="sm" className="w-[48%]" onClick={() => { navigate(`/listings/${(listing as any).note_id || listing.id}`) }}>Details</Button>
-                    <Button size="sm" className="bg-red-400 hover:bg-red-500 w-[48%] px-2 py-1 border-none gap-1 items-center" onClick={() => { deleteNote(`${(listing as any).note_id || listing.id}`) }}>Delete</Button>
+                    <Button size="sm" className="bg-red-400 hover:bg-red-500 w-[48%] px-2 py-1 border-none gap-1 items-center" onClick={() => { openDialog(`${(listing as any).note_id || listing.id}`) }}>Delete</Button>
                   </CardFooter>
                 </Card>
 
@@ -183,6 +192,27 @@ export const UserOwnNote = (currentUserInfo) => {
           )}
         </div>
       </section>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Delete Note
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this note?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel asChild>
+              <Button variant="outline" className="!text-sm">Cancel</Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button variant="destructive" className="!text-sm" onClick={() => { deleteNote(currentNoteId) }}>Delete</Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
   )
 }

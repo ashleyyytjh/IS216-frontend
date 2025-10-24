@@ -3,7 +3,7 @@
 ---
 
 ## Section & Group Number
-**Example:** G3 Group 10  
+G4 Group 16  
 
 ---
 

@@ -84,7 +84,8 @@ Provide screenshots and captions showing how users interact with your app.
    - Displays the homepage introducing OnlyNotes with options to browse or sell notes, followed by sections highlighting platform benefits, step-by-step guides for buyers and sellers, curated study roadmaps for guidance, and recommended notes.
 
 2. **Register & Login**  
-   <img src="screenshots/search.png" width="600">  
+   <img src="screenshots/register.png" width="600">  
+   <img src="screenshots/login.png" width="600">  
    - Users can register for an account and login.
 
 3. **Note Recommendation System**  

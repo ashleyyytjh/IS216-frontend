@@ -8,7 +8,7 @@ import {
   TagsValue,
 } from "@/components/ui/shadcn-io/tags"
 import { PlusIcon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 type TagsCreatorProps = {
@@ -21,12 +21,11 @@ type TagsCreatorProps = {
  * Accepts a string[] and func for updating that input
  */
 export default function TagsCreator({ tags, setTags }: TagsCreatorProps) {
-  const [selected, setSelected] = useState<string[]>([])
+  const [selected, setSelected] = useState<string[]>(tags)
   const [newTag, setNewTag] = useState<string>("")
 
   const handleRemove = (value: string) => {
     if (!selected.includes(value)) return
-    setSelected((prev) => prev.filter((v) => v !== value))
     setTags(tags.filter((v) => v != value))
     console.log(tags)
   }
@@ -37,6 +36,10 @@ export default function TagsCreator({ tags, setTags }: TagsCreatorProps) {
       handleCreateTag()
     }
   }
+
+  useEffect(() => {
+    setSelected(tags)
+  }, [tags])
 
   const handleCreateTag = () => {
     if (tags.length >= 5) {
@@ -56,8 +59,8 @@ export default function TagsCreator({ tags, setTags }: TagsCreatorProps) {
   };
 
   return (
-    <Tags className="max-w-[300px]">
-      <TagsTrigger>
+    <Tags className="">
+      <TagsTrigger className="p-1" type="button">
         {selected.map((tag) => (
           <TagsValue key={tag} onRemove={() => handleRemove(tag)}>
             {tag}

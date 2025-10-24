@@ -1,7 +1,7 @@
 import { CreateNotesReq, CreateNotesRes, DownloadNotesRes, GetNotesRes, GetUploadStatusRes, SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
 import axiosInstance from "./AxiosInstance";
 import { isAxiosError } from "axios";
-import { CreateComposeNotesReq, CreateComposeNotesRes, GetComposeNotesRes } from "@/types/requests/compose";
+import { CreateComposeNotesReq, CreateComposeNotesRes, GetComposeNotesRes, UpdateComposeNotesReq } from "@/types/requests/compose";
 // Unprotected routes
 // notesRouter.get("/search", SearchNotes)
 // notesRouter.get("/:id", GetNotesById)
@@ -111,6 +111,16 @@ function returnErr(err: any) {
   }
   return { status: err, ok: false, data: null }
 }
+
+export const updateComposeNote = async (id: string, body: UpdateComposeNotesReq) => {
+  try {
+    const res = await axiosInstance.patch(`/notes/compose/${id}`, body)
+    return { status: res.statusText, ok: res.status == 200, data: null }
+  } catch (err) {
+    return returnErr(err)
+  }
+}
+
 //not deleting.
 export const deleteComposeNote =(composeID:any) =>{
   console.log(composeID)

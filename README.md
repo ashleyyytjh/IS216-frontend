@@ -24,13 +24,9 @@ G4 Group 16
 
 ## Business Problem
 
-Describe the **real-world business or community problem** your project addresses.
 The community problem our project aims to address is that we realise the process of purchasing notes in SMU to be a cumbersome process. Currently, a solution that exists is the AskSMU channel in Telegram, in which students can liase with sellers through the Education Resources topic in the channel. However, this would mean offline communication, handling of payments, and sending of files. Such way of notes distribution and purchase is cumbersome. 
 
 Further research on competitors shows that Studocu and CourseHero aims to solve similar issues. However, these notes on AskSMU do not have these notes being listed on the platforms. Upon further research, we realise the lack of incentivisation on the current platforms being a missing gap as to why the notes are not being published. Thus, we aim to build a marketplace that allows SMU students to purchase and sell notes for the community;.
-> *Example:*  
-> Small local businesses struggle to maintain an online presence, limiting visibility to customers.  
-> Our web application helps them list menus, accept feedback, and attract more customers.
 
 ---
 
@@ -39,11 +35,8 @@ Further research on competitors shows that Studocu and CourseHero aims to solve 
 ### 🎯 Intended Users
 SMU Students who are in need of notes for their modules
 SMU Studens who would want to sell their notes and earn some quick cash.
-Identify your target user groups.  
-Examples: small-business owners, caregivers, students, pet adopters, etc.
 
 ### 💡 What Users Can Do & Benefits
-Explain the core features and the benefit each provides.  
 
 | Feature | Description | User Benefit |
 |:--|:--|:--|
@@ -68,20 +61,17 @@ Explain the core features and the benefit each provides.
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/tailwind/tailwind.png" width="40"> | **TailwindCSS** | Utility-first CSS framework for styling and responsive layouts |
 | <img src="https://raw.githubusercontent.com/shadcn/ui/main/apps/www/public/og.jpg" width="40"> | **Shadcn/UI** | Pre-built accessible UI components styled with TailwindCSS |
 | <img src="https://vitejs.dev/logo.svg" width="40"> | **Vite** | Lightning-fast development server and build tool |
-| <img src="https://raw.githubusercontent.com/github/explore/main/topics/aws-amplify/aws-amplify.png" width="40"> | **AWS Amplify** | Hosting and CI/CD for the frontend React app |
+| <img src="https://avatars.githubusercontent.com/u/41077760?s=200&v=4" width="40"> | **AWS Amplify** | Hosting and CI/CD for the frontend React app |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/nodejs/nodejs.png" width="40"> | **Node.js** | JavaScript runtime for backend execution |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/typescript/typescript.png" width="40"> | **TypeScript** | Strongly-typed superset of JavaScript for maintainable backend code |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/express/express.png" width="40"> | **Express.js** | Web framework for building RESTful APIs |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/docker/docker.png" width="40"> | **Docker** | Containerization for backend services |
-| <img src="https://raw.githubusercontent.com/github/explore/main/topics/aws-cognito/aws-cognito.png" width="40"> | **AWS Cognito** | User authentication and authorization service |
-| <img src="https://raw.githubusercontent.com/github/explore/main/topics/aws-ecs/aws-ecs.png" width="40"> | **AWS ECS** | Container orchestration for backend microservices |
+| <img src="https://repository-images.githubusercontent.com/100966547/fc3c3680-355c-11eb-9554-8df45a88295b" width="40"> | **AWS Cognito** | User authentication and authorization service |
+| <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUlDqQ4KhvbzAUcyYoAvroy03MDJontu8baA&s" width="40"> | **AWS ECS** | Container orchestration for backend microservices |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/mongodb/mongodb.png" width="40"> | **MongoDB** | NoSQL database for document-oriented data storage |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/supabase/supabase.png" width="40"> | **Supabase** | Postgres-based backend-as-a-service for structured data |
-| <img src="https://raw.githubusercontent.com/github/explore/main/topics/aws-s3/aws-s3.png" width="40"> | **AWS S3** | Object storage for images, files, and note uploads |
-| <img src="https://raw.githubusercontent.com/github/explore/main/topics/rabbitmq/rabbitmq.png" width="40"> | **RabbitMQ** | Message broker for asynchronous communication between services |
-
-
-> Add or remove technologies depending on your project stack (e.g., Express.js, Supabase, MongoDB Atlas, AWS S3).
+| <img src="https://user-images.githubusercontent.com/15157491/75435753-6929fc80-594b-11ea-9e19-f78223916862.png" width="40"> | **AWS S3** | Object storage for images, files, and note uploads |
+| <img src="https://e7.pngegg.com/pngimages/890/101/png-clipart-rabbitmq-advanced-message-queuing-protocol-message-queue-computer-network-others-miscellaneous-computer-network-thumbnail.png" width="40"> | **RabbitMQ** | Message broker for asynchronous communication between services |
 
 ---
 

@@ -64,10 +64,21 @@ export const UpdateComposeNotesPublishReq = z.object({
 
 export const GetComposeNotesByOwnerRes = z.array(userComposeNote)
 
+export const UpdateComposeNotesReq = z.object({
+  title: z.string(),
+  description: z.string(),
+  module: z.string().nullable().optional(),
+  tags: z.array(z.string()),
+  publish: z.boolean(),
+  price: z.number(),
+  content: lexicalContentSchema,
+})
+
 export type CreateComposeNotesReq = z.infer<typeof CreateComposeNotesReq>
 export type CreateComposeNotesRes = z.infer<typeof CreateComposeNotesRes>
 export type GetComposeNotesReq = z.infer<typeof ComposeNotesParam>
 export type GetComposeNotesRes = z.infer<typeof GetComposeNotesRes>
 export type GetComposeNotesByOwnerRes = z.infer<typeof GetComposeNotesByOwnerRes>
 export type UpdateComposeNotesParam = z.infer<typeof ComposeNotesParam>
-export type UpdateComposeNotesReq = z.infer<typeof UpdateComposeNotesPublishReq>
+export type UpdateComposeNotesPublishReq = z.infer<typeof UpdateComposeNotesPublishReq>
+export type UpdateComposeNotesReq = z.infer<typeof UpdateComposeNotesReq>

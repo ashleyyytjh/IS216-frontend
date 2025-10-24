@@ -18,10 +18,9 @@ export default function UserArticle() {
   );
   const [html, setHtml] = useState<string>("");
 
-  if (!id) return null;
-  const noteId = id;
-
   useEffect(() => {
+    if (!id) return;
+    const noteId = id;
     async function load() {
       const resp = await getComposeNoteById(noteId);
       if (!resp.data) {
@@ -34,16 +33,22 @@ export default function UserArticle() {
       }
     }
     load();
-  }, [noteId]);
+  }, [id]);
+
+  if (!id) {
+    return null
+  }
 
   return (
     <div>
-      <section className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold">{data.title}</h1>
-        <h3 className="italic text-muted-foreground font-light my-2">{data.description}</h3>
+      <section className="max-w-4xl mx-auto px-4 py-12 space-y-10">
+        <div>
+          <h1 className="text-4xl font-bold">{data.title}</h1>
+          <h3 className="text-muted-foreground font-light my-2">{data.description}</h3>
+        </div>
 
         {/* User Info */}
-        <div className="flex gap-4 items-center my-2">
+        <div className="flex gap-4 items-center mt-0">
           <Avatar className="overflow-hidden">
             <AvatarImage src={data.userImageUrl} className="object-cover" />
             <AvatarFallback>
@@ -62,7 +67,7 @@ export default function UserArticle() {
         </div>
 
         {/* Notes Info */}
-        <div className="text-sm grid grid-cols-2 gap-2 w-fit mt-3 mb-10">
+        <div className="text-sm grid grid-cols-2 gap-2 w-fit">
           <p>Date:</p>
           <p className="text-muted-foreground">
             {formatDateString(data.createdAt ?? "")}
@@ -78,6 +83,8 @@ export default function UserArticle() {
               ? data.module
               : "General"}
           </Badge>
+          <p>Tags:</p>
+          {data.tags?.map((tag) => (<Badge>{tag}</Badge>))}
           <p>Price:</p>
           <span className="font-mono flex items-center">
             {formatPriceSGD(data.price ?? 0)}

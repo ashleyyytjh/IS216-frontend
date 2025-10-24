@@ -1,24 +1,28 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { SerializedEditorState } from "lexical";
 import { Input } from "@/components/ui/input";
 import { Controller, useForm } from "react-hook-form";
 import { CreateComposeNotesReq } from "@/types/requests/compose";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldGroup } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import TagsCreator from "@/components/compose/TagsCreator";
-import { createComposeNotes } from "@/services/NotesService";
+import { getComposeNoteById, updateComposeNote } from "@/services/NotesService";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Error from "./ErrorPage";
+import { Skeleton } from "@/components/ui/skeleton";
+import { PriceInput } from "@/components/compose/PriceInput";
 const Editor = lazy(() =>
   import("@/components/blocks/editor-00/editor").then((module) => ({
     default: module.Editor,
   }))
 );
 
-export default function ComposeEdit() {
+export default function Compose() {
+  const { id } = useParams<{ id: string }>();
   const [editorState, setEditorState] = useState<SerializedEditorState>();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const form = useForm({
     resolver: zodResolver(CreateComposeNotesReq),
@@ -38,6 +42,38 @@ export default function ComposeEdit() {
     },
   });
 
+  const { reset } = form;
+
+  useEffect(() => {
+    if (!id) return;
+    const noteId = id;
+    async function load() {
+      const resp = await getComposeNoteById(noteId);
+      if (!resp.data) {
+        return <Error />;
+      }
+      if (resp.data.content) {
+        setEditorState(resp.data.content as SerializedEditorState);
+      }
+      reset({
+        title: resp.data.title ?? "",
+        description: resp.data.description ?? "",
+        tags: resp.data.tags ?? [],
+        price: resp.data.price ?? 0,
+        publish: resp.data.publish ?? false,
+        content: resp.data.content ?? {
+          root: { type: "root", version: 1 },
+        },
+        module: resp.data.module ?? "",
+      });
+    }
+    load();
+  }, [id, reset]);
+
+  if (!id) {
+    return null;
+  }
+
   const onSubmit = async (values: CreateComposeNotesReq) => {
     if (!editorState) {
       console.error("Editor content missing");
@@ -49,19 +85,19 @@ export default function ComposeEdit() {
     };
 
     const payload = { ...values, content };
-    const resp = await createComposeNotes(payload);
-    if (!resp.ok || !resp.data) {
+    const resp = await updateComposeNote(id, payload);
+    if (!resp.ok) {
       toast.error(resp.status);
       return;
     }
-    toast.success(`Compose note created: ${resp.data.noteId}`);
-    navigate(`/article/${resp.data.noteId}`)
+    toast.success(`Compose note updated: ${id}`);
+    navigate(`/article/${id}`);
   };
 
   return (
-    <main className="px-5 xl:px-0 flex flex-col gap-8 py-10 border">
-      <div className="max-w-6xl mx-auto">
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <main className="px-5 xl:px-0 flex flex-col gap-8 py-10">
+      <div className="max-w-6xl mx-auto w-full">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
           <FieldGroup>
             {/* Title */}
             <Controller
@@ -107,33 +143,72 @@ export default function ComposeEdit() {
               )}
             />
 
-            {/* Tags */}
-            <Controller
-              name="tags"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FieldGroup>
-                  <Field data-invalid={fieldState.invalid}>
-                    <TagsCreator
-                      tags={field.value ?? []}
-                      setTags={field.onChange}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                </FieldGroup>
-              )}
-            />
+            <div className="w-full grid grid-cols-3 gap-3">
+              {/* Tags */}
+              <Controller
+                name="tags"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <FieldGroup className="col-span-3 sm:col-span-2 lg:col-span-1">
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Tags</FieldLabel>
+                      <TagsCreator
+                        tags={field.value ?? []}
+                        setTags={field.onChange}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  </FieldGroup>
+                )}
+              />
+
+              {/* Module */}
+              <Controller
+                name="module"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <FieldGroup className="col-span-2 sm:col-span-1">
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Module</FieldLabel>
+                      <Input value={field.value} onChange={field.onChange} />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  </FieldGroup>
+                )}
+              />
+
+              {/* Price */}
+              <Controller
+                name="price"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <FieldGroup className="col-span-1">
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Price</FieldLabel>
+                      <PriceInput field={field} />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  </FieldGroup>
+                )}
+              />
+            </div>
           </FieldGroup>
 
           {/* Editor */}
-          <Suspense>
-            <Editor
-              editorSerializedState={editorState}
-              onSerializedChange={(value) => setEditorState(value)}
-            />
-          </Suspense>
+          {editorState ?
+            <Suspense>
+              <Editor
+                editorSerializedState={editorState}
+                onSerializedChange={(value) => setEditorState(value)}
+              />
+            </Suspense>
+          : (<Skeleton className="h-[24rem]"></Skeleton>)}
           <Button type="submit">Submit</Button>
         </form>
       </div>

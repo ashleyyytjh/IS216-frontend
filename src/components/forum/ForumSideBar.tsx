@@ -114,6 +114,7 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
   const handleSelectNote = (note: GetNotesRes) => {
     navigate(`/forum/${note.id}`);
     setSheetOpen(false); 
+    setDesktopSidebarOpen(false);
   };
 
 const sidebarContent = (

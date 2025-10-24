@@ -127,7 +127,7 @@ export default function ForumPdfViewer({
 
   
   return (
-    <Card className="flex flex-col items-center justify-center w-8/10 outline pt-0 gap-0">
+    <Card className="flex flex-col items-center justify-center w-9/10 outline pt-0 gap-0">
       <div className="w-full flex items-center justify-between p-2">
         <div className="flex items-center w-fit">
           <Button
@@ -241,7 +241,7 @@ export default function ForumPdfViewer({
               annotation.rects.map((r, j) => ( 
                 <div
                   key={`${annotation.id}-${j}`}
-                  className="absolute bg-yellow-300 px-0.5 py-0.5 rounded animate-pulse"
+                  className="absolute bg-yellow-300 opacity-40 px-0.5 py-0.5 rounded animate-pulse"
                   style={{
                     left: `${r.x * scale}px`,
                     top: `${r.y * scale}px`,

@@ -6,7 +6,7 @@ const ForumPageLayout = () => {
   const { noteId } = useParams<{ noteId: string }>();
   console.log({ noteId });
   return (
-    <div className="flex ">
+    <div className="flex relative ">
       <ForumSidebar selectedId={noteId} />
       <main className="flex flex-col justify-center h-full items-center w-full ">
         <Outlet />

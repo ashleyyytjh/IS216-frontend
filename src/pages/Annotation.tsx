@@ -27,13 +27,16 @@ import samplePdf from '@/assets/LP-Model-Documentation.pdf';
 import { Annotation } from '@/types/types';
 import ForumPdfViewer from '@/components/forum/ForumPdfViewer';
 import { ForumFilterButton } from '@/components/forum/ForumFIlterButton';
+import PageLoader from '@/components/PageLoader';
 
 
 let NOTE_CONTENT = "The Solar System is the gravitationally bound system of the Sun and the objects that orbit it. It formed 4.6 billion years ago from the gravitational collapse of a giant interstellar molecular cloud. The vast majority of the system's mass is in the Sun, with most of the remaining mass contained in the planet Jupiter. The four inner terrestrial planets—Mercury, Venus, Earth and Mars—are composed primarily of rock and metal.";
 
 export default function AnnotationComponent() {
-    const contentRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
     const { noteId } = useParams<{ noteId: string }>();
+
+    const contentRef = useRef<HTMLDivElement>(null);
     const [user, setUser] = useState<User>();
     const [note, setNote] = useState<GetNotesRes>();
     const [selectedText, setSelectedText] = useState<string>("");
@@ -48,17 +51,30 @@ export default function AnnotationComponent() {
     const [replyInputs, setReplyInputs] = useState<{[key: string]: string}>({});
     const [filter, setFilter] = useState<"all" | "page">("all");
     const [loading, setLoading] = useState<boolean>(true);
-    const navigate = useNavigate();
     const [originalAnnotations, setOriginalAnnotations] = useState<Annotation[]>([]);
     const [pdfSelectionRange, setPdfSelectionRange] = useState< {x: number, y: number, width: number, height: number}[] | null>(null);
     const [userHighlights, setUserHighlights] = useState<Record<number, any[]>>({});
     const [pageOffset, setPageOffset] = useState({ left: 0, top: 0 });
     const [currentScale, setCurrentScale] = useState<number>(1.0);
 
-    useEffect(() => {
-        console.log('Scale changed in Annotation:', currentScale);
-    }, [currentScale]);
+    //for comment scroll reference
+    const scrollRef = useRef<HTMLDivElement | null>(null);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+    // useEffect(() => {
+    //     console.log('Scale changed in Annotation:', currentScale);
+    // }, [currentScale]);
 
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+
+        const checkOverflow = () => {
+            setIsOverflowing(el.scrollHeight > el.clientHeight);
+        };
+
+        const timeout = setTimeout(checkOverflow, 100);
+        return () => clearTimeout(timeout);
+    }, [nestedAnnotations]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -608,24 +624,28 @@ export default function AnnotationComponent() {
   return (
     (note && !loading) ? ( 
     <div className="bg-background w-full text-foreground min-h-screen h-full p-4 sm:p-8">
-        <header className="mb-6 space-y-2 flex justify-center items-center flex-col">
-                <span className='flex flex-row space-x-4'>
-                    <h1 className="text-3xl font-bold tracking-tight">{note.title}</h1>
-                    <Badge
-                        className="text-md font-normal  rounded-full border-none bg-linear-to-r text-white uppercase"
-                        style={{ background: note.module ? courseGradient(note.module): "black" }}
-                        >
-                    {note.module ?? "General"} 
-                    </Badge>
-                </span>
-              
-                <p className="text-md text-muted-foreground">
+        <header className="mb-6 space-y-2 flex justify-center items-center flex-col text-center">
+            <span className="flex md:flex-row flex-col items-center  md:space-x-4 space-x-0">
+                <h1 className="font-bold tracking-tight text-2xl sm:text-3xl md:text-4xl">
+                    {note.title}
+                </h1>
+                <Badge
+                    className="text-sm sm:text-base md:text-lg font-normal rounded-full border-none text-white uppercase"
+                    style={{
+                        background: note.module ? courseGradient(note.module) : "black",
+                    }}
+                >
+                {note.module ?? "General"}
+                </Badge>
+            </span>
+
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
                 {note.description}
-                </p>
+            </p>
         </header>
 
-      <div className="w-full flex flex-col justify-center items-center space-x-3">
-        <section className=" space-y-2 w-5/6  pb-8 ">
+      <div className="w-full flex md:flex-row flex-col justify-center  space-x-2">
+        <section className=" space-y-2 md:w-4/6 w-full pb-8 ">
                 <div ref={contentRef}
                     className=" text-md leading-relaxed select-text cursor-text w-full flex items-center justify-center flex-col"
                     >
@@ -676,16 +696,64 @@ export default function AnnotationComponent() {
             
         </section>
         {/* Discussion Section with Nested Comments */}
-        <section className="w-5/6 overflow-y-auto">
-            <section className='flex flex-row  justify-between'>
-            <h2 className="text-xl font-semibold tracking-tight mb-4 flex items-center">
-                <MessageSquare className="mr-3 h-6 w-6 text-muted-foreground" />
-                Discussion ({nestedAnnotations.length})
-            </h2>
-            <ForumFilterButton onFilterChange={async (value) => 
-                setFilter(value)
-            } />
+        <section className="md:w-2/6 w-full min-h-screen overflow-y-hidden">
+            <section className='flex flex-col'>
+                <ForumFilterButton onFilterChange={async (value) => 
+                    setFilter(value)
+                } />
+                <h2 className="text-xl pt-6 font-semibold tracking-tight mb-4 flex items-center">
+                    <MessageSquare className="mr-3 h-6 w-6 text-muted-foreground" />
+                    Discussion ({nestedAnnotations.length})
+                </h2>
             </section>
+
+            <ScrollArea ref={scrollRef} className="outline h-3/5 scroll-hidden">
+                <div className="relative pt-2 "  >
+                    {nestedAnnotations.map((annotation) => (
+                        <motion.div
+                            key={annotation.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                        >
+                        <CommentItem
+                            key={annotation.id}
+                            annotation={annotation}
+                            depth={0}
+                            handleDelete={handleDeleteFunction}
+                            note={note}
+                        />
+                        </motion.div>
+                    ))} 
+                    {nestedAnnotations.length === 0 && (
+                        <div className="text-center py-12 text-muted-foreground">
+                        </div>
+                    )}
+                
+                    </div>
+                {isOverflowing && (
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 pointer-events-none animate-bounce">
+                            <span className="text-xs text-muted-foreground">Scroll for more</span>
+                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                    )} 
+            </ScrollArea>
+
+          
+            
+        </section>
+
+      </div>
+    </div>
+    ) : ( 
+        <PageLoader text="Fetching your notes..." />
+    )
+  
+  );
+}
+
+
+
        
        {/* comments for types that are not notes! */}
             {/* {note.type !== "composeNotes" && (
@@ -720,50 +788,3 @@ export default function AnnotationComponent() {
                     </CardContent>
                 </Card>
             )} */}
-            <ScrollArea className='h-78 scroll-hidden'>
-                <div>
-                    {nestedAnnotations.map((annotation) => (
-                    <motion.div
-                        key={annotation.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                    >
-                        <CommentItem
-                            key={annotation.id}
-                            annotation={annotation}
-                            depth={0}
-                            handleDelete={handleDeleteFunction}
-                            note={note}
-                        />
-                    </motion.div>
-                    ))} 
-                    {nestedAnnotations.length === 0 && (
-                        <div className="text-center py-12 text-muted-foreground">
-                        </div>
-                    )}
-                </div>
-                {
-                    (nestedAnnotations.reduce((count, annotation) => {
-                        return count + 1 + (annotation.replies ? annotation.replies.length : 0);
-                    }, 0)) > 2 && (
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 pointer-events-none animate-bounce">
-                        <span className="text-xs text-muted-foreground">Scroll for more</span>
-                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                        </div>
-                    )
-                }
-            </ScrollArea>
-
-     
-            
-        </section>
-
-      </div>
-    </div>
-    ) : ( 
-        <div className="flex justify-center items-center w-full h-screen"> <SpinItem/></div>
-    )
-  
-  );
-}

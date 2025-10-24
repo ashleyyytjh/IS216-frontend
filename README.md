@@ -81,15 +81,40 @@ Provide screenshots and captions showing how users interact with your app.
 
 1. **Landing Page**  
    <img src="screenshots/landing.png" width="600">  
-   - Displays the homepage with navigation options.
+   - Displays the homepage introducing OnlyNotes with options to browse or sell notes, followed by sections highlighting platform benefits, step-by-step guides for buyers and sellers, curated study roadmaps for guidance, and recommended notes.
 
-2. **Search Feature**  
+2. **Register & Login**  
    <img src="screenshots/search.png" width="600">  
-   - Users can browse and filter items by criteria.
+   - Users can register for an account and login.
 
-3. **User Dashboard**  
+3. **Note Recommendation System**  
+   <img src="screenshots/noterecommendation.png" width="600">  
+   - Users can find notes based on modules they have taken and time of the semester
+
+4. **Product Listing**  
+   <img src="screenshots/productlisting.png" width="600">  
+   - Users are able to view notes put up by other users.
+
+5. **Semantic Search**  
+   <img src="screenshots/semanticsearch.png" width="600">  
+   - Quick lookup can be done by user.
+
+6. **Node based knowledge graph**  
+   <img src="screenshots/nodeknowledgegraph.png" width="600">  
+   - Users can view their notes in a graph view showing connected concepts and relationships. 
+
+7. **Forum**  
+   <img src="screenshots/forum.png" width="600">  
+   - Users can communicate with sellers regarding their purchased notes.
+
+8. **Seller Dashboard**  
    <img src="screenshots/dashboard.png" width="600">  
-   - Shows saved data and recent activities.
+   - Users can view key metrics regarding the performance of their notes.
+
+9. **Compose Notes**  
+   <img src="screenshots/compose.png" width="600">  
+   - Users can choose to create and upload their own notes.
+
 
 > Save screenshots inside `/screenshots` with clear filenames.
 
@@ -219,7 +244,7 @@ Each member should contribute 2–3 sentences on their learning and project expe
 > - *Ashley:* Learned to build reusable Vue components and manage state effectively.  
 > - *Ashwin:* Gained experience connecting frontend and backend APIs.  
 > - *Darren:* Improved UI/UX design workflow and collaboration using Figma.  
-> - *Dylan:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
+> - *Dylan:* Gained hands-on experience creating responsive and user-friendly web interfaces, integrating various libraries to enhance functionality and design. The project helped me to understand the overall structure of a full working web application and how frontend components connect with backend logic.  
 > - *Joel:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
 
 As a team, reflect on:

@@ -33,8 +33,8 @@ Further research on competitors shows that Studocu and CourseHero aims to solve 
 ## Web Solution Overview
 
 ### 🎯 Intended Users
-SMU Students who are in need of notes for their modules
-SMU Studens who would want to sell their notes and earn some quick cash.
+- SMU Students who are in need of notes for their modules
+- SMU Studens who would want to sell their notes and earn some quick cash.
 
 ### 💡 What Users Can Do & Benefits
 
@@ -55,12 +55,17 @@ SMU Studens who would want to sell their notes and earn some quick cash.
 
 ### 🧱 Tech Stack Overview
 
+#### Frontend
 | Logo | Technology | Purpose / Usage |
 |:--:|:--|:--|
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/react/react.png" width="40"> | **React** | Frontend framework for building dynamic user interfaces |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/tailwind/tailwind.png" width="40"> | **TailwindCSS** | Utility-first CSS framework for styling and responsive layouts |
 | <img src="https://raw.githubusercontent.com/shadcn/ui/main/apps/www/public/og.jpg" width="40"> | **Shadcn/UI** | Pre-built accessible UI components styled with TailwindCSS |
 | <img src="https://vitejs.dev/logo.svg" width="40"> | **Vite** | Lightning-fast development server and build tool |
+
+#### Backend
+| Logo | Technology | Purpose / Usage |
+|:--:|:--|:--|
 | <img src="https://avatars.githubusercontent.com/u/41077760?s=200&v=4" width="40"> | **AWS Amplify** | Hosting and CI/CD for the frontend React app |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/nodejs/nodejs.png" width="40"> | **Node.js** | JavaScript runtime for backend execution |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/typescript/typescript.png" width="40"> | **TypeScript** | Strongly-typed superset of JavaScript for maintainable backend code |
@@ -68,6 +73,10 @@ SMU Studens who would want to sell their notes and earn some quick cash.
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/docker/docker.png" width="40"> | **Docker** | Containerization for backend services |
 | <img src="https://repository-images.githubusercontent.com/100966547/fc3c3680-355c-11eb-9554-8df45a88295b" width="40"> | **AWS Cognito** | User authentication and authorization service |
 | <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUlDqQ4KhvbzAUcyYoAvroy03MDJontu8baA&s" width="40"> | **AWS ECS** | Container orchestration for backend microservices |
+
+#### Data
+| Logo | Technology | Purpose / Usage |
+|:--:|:--|:--|
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/mongodb/mongodb.png" width="40"> | **MongoDB** | NoSQL database for document-oriented data storage |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/supabase/supabase.png" width="40"> | **Supabase** | Postgres-based backend-as-a-service for structured data |
 | <img src="https://user-images.githubusercontent.com/15157491/75435753-6929fc80-594b-11ea-9e19-f78223916862.png" width="40"> | **AWS S3** | Object storage for images, files, and note uploads |
@@ -211,7 +220,9 @@ Perform the following checks before submission:
 
 | Area | Test Description | Expected Outcome |
 |:--|:--|:--|
-| Authentication | Register, Login, Logout | User successfully signs in/out |
+| Authentication | Register | User will be prompted to fill in more details on accountCreation page. Upon filling details, it will redirect user to home page |
+| Authentication | Login | User successfully logins and he will be redirected to homepage. |
+| Authentication | Logout | User successfully signs out, and user state changes (navigation bar will not show the name.) |
 | CRUD Operations | Add, Edit, Delete data | Database updates correctly |
 | Responsiveness | Test on mobile & desktop | Layout adjusts without distortion |
 | Navigation | All menu links functional | Pages route correctly |

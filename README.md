@@ -15,8 +15,8 @@ G4 Group 16
 | <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BCKGBM6E-0cfae05e7807-512" width="80"> | Darren Ng Yi Jie | Note Recommendation System and Upload Notes flow |
 | <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BCL1LW4A-bbe1a50348d9-512" width="80"> | Joel Ow | Backend Management, Note listing and Detail listing |
 | <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEJA350E-de5aa2257605-512" width="80"> | Ashley Toh | Backend Management, Payments and Forum |
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEPZ817G-7c4181505ccd-512" width="80"> | Sim Jun Zhi Dylan | Order details and Composing notes UI |
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09B7FWLDM1-58f32e9f653a-512" width="80"> | Ashwin | Overall Styling of Web Application |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEPZ817G-7c4181505ccd-512" width="80"> | Sim Jun Zhi Dylan | Order Details and Composing Notes UI |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09B7FWLDM1-58f32e9f653a-512" width="80"> | Ashwin | Overall Styling of Web Application and Roadmap Module Page |
 
 > Place all headshot thumbnails in the `/photos` folder (JPEG or PNG).
 

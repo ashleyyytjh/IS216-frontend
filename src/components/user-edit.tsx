@@ -17,9 +17,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
 //Form to ensure validation.
 const formSchema = z.object({
-  username: z.string().min(0, "Username must be filled."),
+  username: z.string().min(1, "Username must be filled."),
   email: z.string().email("Invalid email address"),
-  major: z.string().min(0, "Major must be filed"),
+  major: z.string().min(1, "Major must be filed"),
   newCourse: z.array(z.string()).optional(),
 })
 
@@ -182,7 +182,7 @@ function UserEdit(currentUser) {
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="transition-all duration-200 min-h-[1.25rem]" />
                     </FormItem>
                   )}
                 />
@@ -198,7 +198,7 @@ function UserEdit(currentUser) {
                       <FormControl>
                         <Input disabled {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="transition-all duration-200 min-h-[1.25rem]" />
                     </FormItem>
                   )}
                 />

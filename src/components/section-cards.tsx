@@ -54,7 +54,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
 
   }, [loadInfo])
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-3 @5xl/main:grid-cols-3 mb-5">
+    <div className="grid grid-cols-3 [@media(max-width:992px)]:grid-cols-1 gap-4 px-4 lg:px-6 mb-5 *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
       <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
           <CardDescription className="text-foreground text-lg font-bold">Total Revenue</CardDescription>
@@ -94,14 +94,11 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500 transition-all duration-500 ease-in-out">
               <ReactTyped
                 strings={[`Earnings have not been great.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
-              <IconTrendingDown className="size-4" />
             </div>
           ) : (
             <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b] transition-all duration-500 ease-in-out">
               <ReactTyped
                 strings={[`Keep it going!`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
-            
-              <IconTrendingUp className="size-4" />
             </div>
           )}
         </CardFooter>
@@ -146,13 +143,11 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500">
               <ReactTyped
                 strings={[`You can do better!`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
-               <Frown className="size-4" />
             </div>
           ) : (
             <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">
               <ReactTyped
                 strings={[`More notes for the community!`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
-               <ThumbsUp className="size-4" />
             </div>
           )}
 
@@ -161,7 +156,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
 
       <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
-          <CardDescription className="text-foreground text-lg font-bold">Most Popular Module</CardDescription>
+          <CardDescription className="text-foreground text-lg font-bold">Popular Module</CardDescription>
           <div className="relative h-8 flex">
             <div className={`absolute transition-opacity duration-700 ${loadInfo ? "opacity-100" : "opacity-0"}`}>
               {
@@ -202,12 +197,11 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
                 topModule.count > 1 ?(
                   <>
                   <ReactTyped strings={[`${topModule.count} notes of ${topModule.module} sold.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
-                  <NotebookText className="size-4" />
                   </>
                 ):(
                   <>
                   <ReactTyped strings={[`${topModule.count} note of ${topModule.module} sold.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
-                  <NotebookText className="size-4" /></>
+                  </>
                 )
               }
               

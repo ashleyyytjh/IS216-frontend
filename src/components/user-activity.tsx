@@ -53,9 +53,7 @@ function UserActivity(currentUser) {
                             } else {
                                 console.warn(`Normal note not found (${order.note_id}), trying composed...`);
                                 const composedResp = await getSingleCompose(String(order.note_id));
-                                console.log(composedResp)
                                 if (composedResp?.data) {
-
                                     note = composedResp?.data;
                                     note.noteType = "composed"
                                 } else {
@@ -67,7 +65,6 @@ function UserActivity(currentUser) {
                         return { ...order, note };
                     })
                 )
-                console.log(enrichedOrders)
                 setOrders(enrichedOrders)
             } catch (err) {
                 console.error("Error fetching userOrders:", err)

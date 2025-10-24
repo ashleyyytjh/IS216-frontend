@@ -112,7 +112,7 @@ const UserActivityListing = ({ note }) => {
                 isSellerDashboard ? (
                   <Button
                   size="sm"
-                    className="flex items-center gap-1 border-none px-2 py-1 w-[50%] bg-slate-900 hover:bg-slate-800 text-white"
+                    className="flex items-center gap-1 border-none px-2 py-1 bg-slate-900 hover:bg-slate-800 text-white"
                     onClick={() => navigate(`/orderdetails/${n.id}`)}
                   >
                     <span className="text-xs font-medium">Order Details</span>

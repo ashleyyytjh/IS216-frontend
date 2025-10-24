@@ -102,10 +102,10 @@ function DashboardBuyer(currentUser) {
 
     return (
         <>
-            <div className="w-full flex flex-col gap-y-5 md:flex-row gap-x-5 mt-4">
-                <Card className="w-[100%] md:w-[70%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
+            <div className="w-full flex flex-col gap-y-5 lg:flex-row gap-x-5 mt-4">
+                <Card className="w-[100%] md:w-[100%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
                     <CardHeader className="justify-between flex flex-row">
-                        <h1 className="font-bold text-foreground">Total purchased notes</h1>
+                        <h1 className="font-bold text-foreground">Total Purchased</h1>
                         <BookOpen />
                     </CardHeader>
                     {
@@ -115,20 +115,20 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : totalNote === 0 ? (
                             <CardContent className="flex flex-col">
-                                <ReactTyped className="text-foreground text-xl font-medium" strings={['0']} typeSpeed={50} backSpeed={100} showCursor={false} />
-                                <ReactTyped className="text-sm font-light text-foreground" strings={['No notes purchased yet.']} typeSpeed={50} backSpeed={100} showCursor={false} />
+                                <p className="text-foreground text-xl font-medium">0</p>
+                                <p className="text-sm font-light text-foreground">No notes purchased yet.</p>
                             </CardContent>
                         ) : (
                             <CardContent className="flex flex-col">
-                                <ReactTyped className="text-foreground text-xl font-medium" strings={[`${totalNote}`]} typeSpeed={50} backSpeed={100} showCursor={false} />
-                                <ReactTyped className="text-sm font-light text-foreground" strings={['Notes purchased.']} typeSpeed={50} backSpeed={100} showCursor={false} />
+                                <p className="text-foreground text-xl font-medium">{totalNote}</p>
+                                <p className="text-sm font-light text-foreground">Notes purchased.</p>
                             </CardContent>
                         )
                     }
 
                 </Card>
 
-                <Card className="w-[100%] md:w-[70%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
+                <Card className="w-[100%] md:w-[100%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row justify-between">
                         <h1 className="font-bold text-foreground">Total Spent</h1>
                         <DollarSign />
@@ -140,20 +140,20 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : (normalNoteTotal + composeNoteTotal) === 0 ? (
                             <CardContent className="flex flex-col">
-                                <ReactTyped className="text-foreground text-xl font-medium" strings={[`$0`]} typeSpeed={50} backSpeed={100} showCursor={false} />
-                                <ReactTyped className="text-sm font-light text-foreground" strings={['No spending yet.']} typeSpeed={50} backSpeed={100} showCursor={false} />
+                                 <p className="text-foreground text-xl font-medium">$0</p>
+                                <p className="text-sm font-light text-foreground">No spending yet.</p>
                             </CardContent>
                         ) : (
                             <CardContent className="flex flex-col">
-                                <ReactTyped className="text-foreground text-xl font-medium" strings={[`$${Number((normalNoteTotal + composeNoteTotal) / 100).toFixed(2)}`]} typeSpeed={50} backSpeed={100} showCursor={false} />
-                                <ReactTyped className="text-sm font-light text-foreground" strings={['Spent in Onlynotes']} typeSpeed={50} backSpeed={100} showCursor={false} />
+                                 <p className="text-foreground text-xl font-medium">${Number((normalNoteTotal + composeNoteTotal) / 100).toFixed(2)}</p>
+                                <p className="text-sm font-light text-foreground">Spent in Onlynotes.</p>
                             </CardContent>
                         )
                     }
 
                 </Card>
 
-                <Card className="w-[100%] md:w-[70%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
+                <Card className="w-[100%] md:w-[100%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
                     <CardHeader className="flex flex-row justify-between">
                         <h1 className="font-bold text-foreground">Favourite Modules</h1>
                         <Heart />
@@ -165,13 +165,13 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : !topModule || topModule.count === 0 ? (
                             <CardContent className="flex flex-col">
-                                <ReactTyped className="text-foreground text-xl font-medium" strings={[`None`]} typeSpeed={50} backSpeed={100} showCursor={false} />
-                                <ReactTyped className="text-sm font-light text-foreground" strings={['No purchases yet']} typeSpeed={50} backSpeed={100} showCursor={false} />
+                                <p className="text-foreground text-xl font-medium">None</p>
+                                <p className="text-sm font-light text-foreground">No purchases yet.</p>
                             </CardContent>
                         ) : (
                             <CardContent className="flex flex-col">
-                                <ReactTyped className="text-foreground text-xl font-medium" strings={[`${topModule.module.toUpperCase()}`]} typeSpeed={50} backSpeed={100} showCursor={false} />
-                                <ReactTyped className="text-sm font-light text-foreground" strings={[`Purchased ${topModule.count} times.`]} typeSpeed={50} backSpeed={100} showCursor={false} />
+                                <p className="text-foreground text-xl font-medium">{topModule.module.toUpperCase()}</p>
+                                <p className="text-sm font-light text-foreground">Purchased {topModule.count} times.</p>
                             </CardContent>
 
                         )

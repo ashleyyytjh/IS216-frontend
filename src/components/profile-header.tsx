@@ -21,13 +21,18 @@ function ProfileHeader(currentUser) {
                 <h1 className="text-3xl font-extrabold mb-3 text-center md:text-left">{currentUser.fullName ?? currentUser.username}</h1>
                 <p className="text-md mb-3">{currentUser.major} Student</p>
                 <div className="flex flex-col gap-y-3">
-                    <div className="flex gap-x-2 items-center flex-wrap">
-                        <Mail />
-                        <p className="text-sm break-words">{currentUser.email}</p>
+                        <div className="flex items-center justify-center lg:justify-start gap-x-2 w-full">
+                            <Mail className="hidden md:inline w-5 h-5 shrink-0 text-gray-700" />
+                            <p className="text-sm text-center lg:text-left break-all">
+                                {currentUser.email}
+                            </p>
                     </div>
-                    <div className="flex gap-x-2 items-center">
-                        <Calendar />
-                        <p className="text-sm">Year {currentUser.yearOfStudy} Student</p>
+
+                        <div className="flex items-center lg:justify-start gap-x-2 w-full [@media(max-width:767px)]:justify-center">
+                            <Calendar className="hidden md:inline w-5 h-5 shrink-0 text-gray-700" />
+                        <p className="text-sm text-center lg:text-left break-all">
+                            Year {currentUser.yearOfStudy} Student
+                        </p>
                     </div>
                 </div>
             </div>

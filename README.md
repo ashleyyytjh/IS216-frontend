@@ -11,10 +11,12 @@
 
 | Photo | Full Name | Role / Features Responsible For |
 |:--:|:--|:--|
-| <img src="photos/member1.jpg" width="80"> | Alice Tan | Frontend Developer - Search & Filter UI |
-| <img src="photos/member2.jpg" width="80"> | Ben Lee | Backend Developer - API endpoints |
-| <img src="photos/member3.jpg" width="80"> | Chloe Lim | UI/UX Designer - Layout & Color Themes |
-| <img src="photos/member4.jpg" width="80"> | David Ong | Database & Auth - Firebase Integration |
+| <img src="photos/member1.jpg" width="80"> | Soh De Lin Nicholas | Frontend Developer - Search & Filter UI |
+| <img src="photos/member2.jpg" width="80"> | Darren Ng Yi Jie | Backend Developer - API endpoints |
+| <img src="photos/member3.jpg" width="80"> | Joel Ow | UI/UX Designer - Layout & Color Themes |
+| <img src="photos/member4.jpg" width="80"> | Ashley Toh | Database & Auth - Firebase Integration |
+| <img src="photos/member5.jpg" width="80"> | Sim Jun Zhi Dylan | Database & Auth - Firebase Integration |
+| <img src="photos/member6.jpg" width="80"> | Ashwin | Database & Auth - Firebase Integration |
 
 > Place all headshot thumbnails in the `/photos` folder (JPEG or PNG).
 
@@ -203,11 +205,12 @@ npm run test
 
 Each member should contribute 2–3 sentences on their learning and project experience.
 
-> **Example Template:**  
-> - *Alice:* Learned to build reusable Vue components and manage state effectively.  
-> - *Ben:* Gained experience connecting frontend and backend APIs.  
-> - *Chloe:* Improved UI/UX design workflow and collaboration using Figma.  
-> - *David:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
+> - *Nicholas:* Learned to build reusable Vue components and manage state effectively. 
+> - *Ashley:* Learned to build reusable Vue components and manage state effectively.  
+> - *Ashwin:* Gained experience connecting frontend and backend APIs.  
+> - *Darren:* Improved UI/UX design workflow and collaboration using Figma.  
+> - *Dylan:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
+> - *Joel:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
 
 As a team, reflect on:
 - Key takeaways from working with real-world frameworks  

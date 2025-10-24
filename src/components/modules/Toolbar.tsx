@@ -5,7 +5,7 @@ export default function Toolbar() {
 
   return (
     <div className="mx-auto max-w-7xl px-5 xl:px-0 mt-4 fade-in">
-      <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 pl-2 sm:pl-3">
           <input
             value={search}
@@ -14,7 +14,7 @@ export default function Toolbar() {
             className="w-full sm:w-80 rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
-        <div className="inline-flex rounded-lg border bg-background p-1 shadow-sm">
+        <div className="inline-flex rounded-lg border bg-background p-1 shadow-sm mx-auto sm:mx-0">
           <button
             aria-pressed={compact}
             onClick={() => setCompact(true)}

@@ -38,10 +38,7 @@ export function FlowProvider({ children }: { children: ReactNode }) {
     const out: ProgramPlan = {};
     Object.entries(plan).forEach(([year, mods]) => {
       out[Number(year)] = mods.filter((m) => {
-        const matchesSearch =
-          !hasSearch ||
-          m.code.toLowerCase().includes(q) ||
-          m.name.toLowerCase().includes(q);
+        const matchesSearch = !hasSearch || m.code.toLowerCase().includes(q) || m.name.toLowerCase().includes(q);
 
         const cats = getModuleCategories(m);
         const matchesCategory =
@@ -70,11 +67,9 @@ export function FlowProvider({ children }: { children: ReactNode }) {
     setSearch,
     degreeKey,
     setDegreeKey,
-
     selectedCategories,
     toggleCategory,
     clearCategories,
-
     plan,
     filteredPlan,
   };

@@ -36,7 +36,7 @@ function Roadmap() {
             }}
           />
           <div className="relative p-4">
-            <div className="flex gap-6 overflow-x-auto pb-4">
+            <div className="flex flex-col sm:flex-row gap-20 sm:gap-6 overflow-visible sm:overflow-x-auto pb-4">
               {Object.keys(filteredPlan)
                 .map((k) => Number(k))
                 .sort((a, b) => a - b)

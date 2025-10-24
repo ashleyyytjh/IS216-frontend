@@ -25,7 +25,9 @@ G4 Group 16
 ## Business Problem
 
 Describe the **real-world business or community problem** your project addresses.
+The community problem our project aims to address is that we realise the process of purchasing notes in SMU to be a cumbersome process. Currently, a solution that exists is the AskSMU channel in Telegram, in which students can liase with sellers through the Education Resources topic in the channel. However, this would mean offline communication, handling of payments, and sending of files. Such way of notes distribution and purchase is cumbersome. 
 
+Further research on competitors shows that Studocu and CourseHero aims to solve similar issues. However, these notes on AskSMU do not have these notes being listed on the platforms. Upon further research, we realise the lack of incentivisation on the current platforms being a missing gap as to why the notes are not being published. Thus, we aim to build a marketplace that allows SMU students to purchase and sell notes for the community;.
 > *Example:*  
 > Small local businesses struggle to maintain an online presence, limiting visibility to customers.  
 > Our web application helps them list menus, accept feedback, and attract more customers.
@@ -35,6 +37,8 @@ Describe the **real-world business or community problem** your project addresses
 ## Web Solution Overview
 
 ### 🎯 Intended Users
+SMU Students who are in need of notes for their modules
+SMU Studens who would want to sell their notes and earn some quick cash.
 Identify your target user groups.  
 Examples: small-business owners, caregivers, students, pet adopters, etc.
 
@@ -44,22 +48,38 @@ Explain the core features and the benefit each provides.
 | Feature | Description | User Benefit |
 |:--|:--|:--|
 | Register & Login | Secure authentication system | Personalized experience and data security |
-| Search & Filter | Find items by category or location | Saves time finding relevant results |
-| Favorites | Bookmark preferred items or places | Quick access to commonly used data |
-| Reviews | Submit ratings and comments | Builds trust and community feedback |
+| Product Listing | View all notes within the web application | Users can view these notes and make a selection based on their wants. |
+| Note Recommendation System | Find notes based on modules you have taken and time of the semester | Allows students to have quick access of the modules they are taking without having to search |
+| Semantic Search | Allows for search based on note content and embeddings generated rather than normal text search | Quick search for notes users would need. |
+| Node based knoweldge graph  | Users can view informaton about their notes in the form of a graph, connecting different concepts and the relation between them as edges | Users can understand the meaning of the notes in a visual manner without much viewing before purchasing |
+| Forum | Buyers can leave comments and question on certain parts of the notes they own for sellers. Sellers can answer these questions. | Creates a form of communication between buyers and sellers after purchasing a certain note for clarification. |
+| Seller Dashboard | Sellers can view key metrics on the notes they sold and their performance.  | Sellers can analyse and know how to improve on their sales. They would know which notes to sell, and at certain price points. |
+| Compose Notes | Rather than uploading notes, sellers can write their own notes within the application and post them as articles for students to view.  | Sellers can create notes on the go, rather than uploading a certain note in their computer. |
 
 ---
 
 ## Tech Stack
 
+### 🧱 Tech Stack Overview
+
 | Logo | Technology | Purpose / Usage |
 |:--:|:--|:--|
-| <img src="https://raw.githubusercontent.com/github/explore/main/topics/html/html.png" width="40"> | **HTML5** | Structure and content |
-| <img src="https://raw.githubusercontent.com/github/explore/main/topics/css/css.png" width="40"> | **CSS3 / Bootstrap** | Styling and responsiveness |
-| <img src="https://raw.githubusercontent.com/github/explore/main/topics/javascript/javascript.png" width="40"> | **JavaScript (ES6)** | Client-side logic and interactivity |
-| <img src="https://vitejs.dev/logo.svg" width="40"> | **Vite** | Development server and build tool |
-| <img src="https://vuejs.org/images/logo.png" width="40"> | **Vue.js 3** | Component-based frontend framework |
-| <img src="https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png" width="40"> | **Firebase** | Authentication and database services |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/react/react.png" width="40"> | **React** | Frontend framework for building dynamic user interfaces |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/tailwind/tailwind.png" width="40"> | **TailwindCSS** | Utility-first CSS framework for styling and responsive layouts |
+| <img src="https://raw.githubusercontent.com/shadcn/ui/main/apps/www/public/og.jpg" width="40"> | **Shadcn/UI** | Pre-built accessible UI components styled with TailwindCSS |
+| <img src="https://vitejs.dev/logo.svg" width="40"> | **Vite** | Lightning-fast development server and build tool |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/aws-amplify/aws-amplify.png" width="40"> | **AWS Amplify** | Hosting and CI/CD for the frontend React app |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/nodejs/nodejs.png" width="40"> | **Node.js** | JavaScript runtime for backend execution |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/typescript/typescript.png" width="40"> | **TypeScript** | Strongly-typed superset of JavaScript for maintainable backend code |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/express/express.png" width="40"> | **Express.js** | Web framework for building RESTful APIs |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/docker/docker.png" width="40"> | **Docker** | Containerization for backend services |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/aws-cognito/aws-cognito.png" width="40"> | **AWS Cognito** | User authentication and authorization service |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/aws-ecs/aws-ecs.png" width="40"> | **AWS ECS** | Container orchestration for backend microservices |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/mongodb/mongodb.png" width="40"> | **MongoDB** | NoSQL database for document-oriented data storage |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/supabase/supabase.png" width="40"> | **Supabase** | Postgres-based backend-as-a-service for structured data |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/aws-s3/aws-s3.png" width="40"> | **AWS S3** | Object storage for images, files, and note uploads |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/rabbitmq/rabbitmq.png" width="40"> | **RabbitMQ** | Message broker for asynchronous communication between services |
+
 
 > Add or remove technologies depending on your project stack (e.g., Express.js, Supabase, MongoDB Atlas, AWS S3).
 
@@ -205,7 +225,7 @@ npm run test
 
 Each member should contribute 2–3 sentences on their learning and project experience.
 
-> - *Nicholas:* Learned to build reusable Vue components and manage state effectively. 
+> - *Nicholas:* Learned to build user-friendly frontend based on components by UI libraries and customisation of these libraries. The experience has allowed me to become stronger in data manipulation to present my data in a logical manner.
 > - *Ashley:* Learned to build reusable Vue components and manage state effectively.  
 > - *Ashwin:* Gained experience connecting frontend and backend APIs.  
 > - *Darren:* Improved UI/UX design workflow and collaboration using Figma.  

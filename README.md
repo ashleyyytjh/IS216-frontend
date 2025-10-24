@@ -98,7 +98,7 @@ Provide screenshots and captions showing how users interact with your app.
 
 5. **Semantic Search**  
    <img src="screenshots/semanticsearch.png" width="600">  
-   - Quick lookup can be done by user.
+   - User can search based on note content and embeddings generated rather than normal text search.
 
 6. **Node based knowledge graph**  
    <img src="screenshots/nodeknowledgegraph.png" width="600">  

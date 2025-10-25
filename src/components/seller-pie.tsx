@@ -85,9 +85,9 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
 
   const onSmallScreen = useMediaQuery("(max-width: 400px)"); //smallscreen using mediaquery hooks.
   return (
-    <Card className="min-h-[400px] flex flex-col shadow-lg transition-all duration-300 hover:!shadow-xl mt-2 mb-10">
+    <Card className="min-h-[400px] flex flex-col transition-all duration-300">
       <CardHeader className="pb-2">
-        <div className="flex flex-wrap items-start justify-between gap-2 sm:gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
           <CardTitle className="text-base font-semibold text-gray-800">
             Amount of Notes Sold by Module
           </CardTitle>

@@ -79,8 +79,8 @@ export const UserOwnNote = (currentUserInfo) => {
   }
 
   return (
-    <main className="w-full">
-      <section className="w-full mb-6 pt-4 pb-4">
+    <main className="w-full space-y-3">
+      <section className="w-full">
         <div className="flex w-full items-center gap-3">
           <div className="relative flex-1 opacity-70 focus-within:opacity-100 transition-opacity">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

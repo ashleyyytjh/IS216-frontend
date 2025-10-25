@@ -40,9 +40,9 @@ export function OrderReceived({
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage))
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 space-y-3">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-row w-full gap-3 mb-10 mt-4 sm:flex-row sm:items-center sm:gap-2">
+        <div className="flex flex-row w-full gap-3 sm:flex-row sm:items-center sm:gap-2">
           <div className="relative flex-1 opacity-70 focus-within:opacity-100 transition-opacity">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input

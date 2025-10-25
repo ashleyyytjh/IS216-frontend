@@ -175,7 +175,7 @@ export function ScatterVisual() {
 
   const filteredData = noteFilter === "All" ? matchedOrders : matchedOrders.filter((n) => n.note === noteFilter);
   return (
-    <Card className="min-h-[400px] shadow-md hover:shadow-lg">
+    <Card className="min-h-[400px]">
       <CardHeader>
         <CardTitle>Price vs Sales Count of Note</CardTitle>
         <div className="w-[130px] max-[400px]:w-[115px] max-[400px]:text-sm max-[400px]:h-6">

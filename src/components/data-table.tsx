@@ -1,5 +1,4 @@
 import { z } from "zod"
-import { useNavigate } from "react-router-dom"
 import { Label } from "@/components/ui/label"
 import {
   Tabs,
@@ -7,7 +6,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { UserOwnNote } from "./own-user-note-display"
 import { getOwnedComposeNotes, getUserOwned } from "@/services/NotesService"
 import { getOrders } from "@/services/OrdersService"
@@ -38,7 +37,6 @@ type OwnedMap = Record<
 >
 
 export function DataTable(props: CurrentUserProp) {
-  const navigate = useNavigate()
 
   const [ownedID, setOwnedID] = useState<OwnedMap>({})
   const [orders, setAllOrders] = useState<any[]>([])
@@ -124,51 +122,51 @@ export function DataTable(props: CurrentUserProp) {
     <Tabs
       value={view}
       onValueChange={(v) => setView(v as typeof view)}
-      className="w-full flex-col justify-start gap-6 mb-10"
+      className="w-full flex-col justify-start gap-6"
     >
-      <div className="flex items-center justify-between px-4 lg:px-6">
+      <div className="flex items-center justify-between">
         <Label htmlFor="view-selector" className="sr-only">
           View
         </Label>
-        <TabsList className="flex flex-col h-auto md:flex-row w-[100%] mb-5 mt-10">
+        <TabsList className="flex flex-col md:flex-row text-sm">
           <TabsTrigger
-            value="past-performance"
-            className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300"
+            value="outline"
+            className="w-full font-semibold px-3 transition-all duration-300"
           >
-            Your Listed Notes
+            Transactions
           </TabsTrigger>
 
           <TabsTrigger
-            value="outline"
-            className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300"
+            value="past-performance"
+            className="w-full font-semibold px-3 transition-all duration-300"
           >
-            Orders You Received
+            Uploaded
           </TabsTrigger>
 
           <TabsTrigger
             value="unpublished"
-            className="w-full font-semibold hover:shadow-lg data-[state=active]:!font-bold data-[state=active]:shadow-xl p-2 transition-all duration-300"
+            className="w-full font-semibold px-3 transition-all duration-300"
           >
-            Written Notes
+            Written
           </TabsTrigger>
         </TabsList>
       </div>
 
       <TabsContent
         value="past-performance"
-        className="flex flex-col px-4 lg:px-6 transition-opacity duration-200"
+        className="flex flex-col transition-opacity duration-200"
       >
         <UserOwnNote currentUserInfo={props.currentUser as any} />
       </TabsContent>
       <TabsContent
         value="outline"
-        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6 transition-opacity duration-200"
+        className="relative flex flex-col gap-4 overflow-auto transition-opacity duration-200"
       >
         <OrderReceived orders={orders}
           formatCurrency={formatCurrency} />
       </TabsContent>
       <TabsContent value="unpublished"
-        className="flex flex-col px-4 lg:px-6 transition-opacity duration-200 relative z-[20] overflow-visible">
+        className="flex flex-col transition-opacity duration-200 relative z-[20] overflow-visible">
         <UnpublishedNotes />
       </TabsContent>
 

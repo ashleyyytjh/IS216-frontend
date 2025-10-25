@@ -1,4 +1,3 @@
-import { title } from 'process';
 import z from 'zod';
 
 // zod-to-openapi requirement to extend zod objects with openapi definitions.
@@ -76,16 +75,13 @@ export const GetNotesRes = z.object({
 
 export const SearchNotesItem = z.object({
 	id: z.string().regex(/^[a-f\d]{24}$/i),
+	noteType: z.string(),
 	userId: z.string(),
 	userFullName: z.string(),
 	userImageUrl: z.string(),
 	userMajor: z.string(),
 	userYear: z.number(),
-	key: z.string(),
 	title: z.string(),
-	originalName: z.string(),
-	mimeType: z.string(),
-	size: z.number(),
     description: z.string(),
 	tags: z.array(z.string().min(1)).max(10).default([]),
 	type: z.string(),

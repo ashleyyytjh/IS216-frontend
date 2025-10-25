@@ -28,6 +28,7 @@ export default function UserArticle() {
       }
       if (resp.data.content) {
         const cleanedHtml = createNoteHTML(resp.data.content);
+        console.log(resp.data)
         setData(resp.data);
         setHtml(cleanedHtml);
       }

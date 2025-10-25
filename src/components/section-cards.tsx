@@ -54,7 +54,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
 
   }, [loadInfo])
   return (
-    <div className="grid grid-cols-3 [@media(max-width:992px)]:grid-cols-1 gap-4 px-4 lg:px-6 mb-5 *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
+    <div className="grid grid-cols-3 [@media(max-width:992px)]:grid-cols-1 gap-4 mb-5 *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
       <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
           <CardDescription className="text-foreground text-lg font-bold">Total Revenue</CardDescription>

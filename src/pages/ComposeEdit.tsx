@@ -85,12 +85,17 @@ export default function Compose() {
     };
 
     const payload = { ...values, content };
+    if (!payload.module || payload.module.trim() === "") {
+      delete payload.module;
+    }
     const resp = await updateComposeNote(id, payload);
     if (!resp.ok) {
       toast.error(resp.status);
       return;
     }
-    toast.success(`Compose note updated: ${id}`);
+    toast.success(`Updated`, {
+      description: `Your note [${id}] was saved.`,
+    });
     navigate(`/article/${id}`);
   };
 
@@ -209,7 +214,7 @@ export default function Compose() {
               />
             </Suspense>
           : (<Skeleton className="h-[24rem]"></Skeleton>)}
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Save</Button>
         </form>
       </div>
     </main>

@@ -10,6 +10,8 @@ const lexicalContentSchema = z.object({
   root: lexicalNodeSchema.catchall(z.any()),
 })
 
+export const NotesType = z.enum(["cheatsheet", "knowledge", "notes", "answerkey"])
+
 export const CreateComposeNotesReq = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
@@ -39,6 +41,7 @@ export const GetComposeNotesRes = z.object({
   title: z.string(),
   description: z.string(),
   module: z.string().nullable().optional(),
+  type: NotesType,
   tags: z.array(z.string()),
   publish: z.boolean(),
   price: z.number(),

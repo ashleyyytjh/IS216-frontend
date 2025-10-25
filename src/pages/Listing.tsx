@@ -4,16 +4,15 @@ import { InfobarTrigger } from "@/components/listing/InfobarTrigger";
 import SuspenseFallback from "@/components/listing/SuspenseFallback";
 import SpinItem from "@/components/spinner";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { downloadNotes, getNotesById } from "@/services/NotesService";
 import { GetNotesRes } from "@/types/requests/notes";
-import { GraphData, NoteListing } from "@/types/types";
 import { DollarSign, Download, Info } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Error from "./ErrorPage";
+import { toast } from "sonner";
 
 const Graph = lazy(() => import("@/components/listing/Graph"));
 const PDFViewer = lazy(() => import("@/components/listing/PDFViewer"));
@@ -41,6 +40,39 @@ export default function Listing() {
     return <Error />
   }
 
+  async function handleDownload() {
+  if (!id) {
+    return
+  }
+  try {
+    const data = await downloadNotes(id);
+    const res = await fetch(data.url);
+    if (!res.ok) {
+      toast.error("Error finding the file.", {
+      description: "Unable to get note source url",
+      dismissible: true,
+      richColors: true,
+    })
+    }
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = data.originalName || `${id}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    toast.error("Error downloading file.", {
+      description: String(err),
+      dismissible: true,
+      richColors: true,
+    });
+  }
+}
+
   return (
     data ? (
           <main className="text-sm h-full">
@@ -61,7 +93,7 @@ export default function Listing() {
                   {/* Movable Section */}
                   <div className="md:col-span-3 fixed bottom-0 md:static flex md:flex-row flex-col gap-3 w-full px-5 py-10 md:p-0 items-center bg-muted md:bg-transparent z-10">
                     {data?.purchased || data?.price === 0 ? (
-                      <Button className="flex-1 md:flex-initial w-full md:w-fit">
+                      <Button className="flex-1 md:flex-initial w-full md:w-fit" onClick={handleDownload}>
                         <Download />
                         Download
                       </Button>

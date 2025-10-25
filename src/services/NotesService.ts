@@ -1,4 +1,4 @@
-import { CreateNotesReq, CreateNotesRes, DownloadNotesRes, GetNotesRes, GetUploadStatusRes, SearchNotesReq, SearchNotesRes } from "@/types/requests/notes";
+import { CreateNotesReq, CreateNotesRes, GetNotesRes, GetUploadStatusRes,  SearchNotesRes } from "@/types/requests/notes";
 import axiosInstance from "./AxiosInstance";
 import { isAxiosError } from "axios";
 import { CreateComposeNotesReq, CreateComposeNotesRes, GetComposeNotesRes, UpdateComposeNotesReq } from "@/types/requests/compose";
@@ -16,6 +16,7 @@ import { CreateComposeNotesReq, CreateComposeNotesRes, GetComposeNotesRes, Updat
 
 export const searchNotes = async (queryParams: URLSearchParams): Promise<SearchNotesRes> => {
   const response = await axiosInstance.get('/notes/search', { params: queryParams });
+  console.log(response.data)
   const data = SearchNotesRes.parse(response.data)
   return data;
 }

@@ -85,6 +85,9 @@ export default function Compose() {
     };
 
     const payload = { ...values, content };
+    if (!payload.module || payload.module.trim() === "") {
+      delete payload.module;
+    }
     const resp = await updateComposeNote(id, payload);
     if (!resp.ok) {
       toast.error(resp.status);

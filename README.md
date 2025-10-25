@@ -118,7 +118,8 @@ Provide screenshots and captions showing how users interact with your app.
    - Users can communicate with sellers regarding their purchased notes.
 
 8. **Seller Dashboard**  
-   <img src="screenshots/dashboard.png" width="600">  
+   <img src="screenshots/dashboard1.png" width="600">  
+   <img src="screenshots/dashboard2.png" width="600">  
    - Users can view key metrics regarding the performance of their notes.
 
 9. **Compose Notes**  

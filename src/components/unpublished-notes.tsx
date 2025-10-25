@@ -112,8 +112,10 @@ export function UnpublishedNotes() {
             n.module.toLowerCase().includes(term)
           );
         });
+        console.log(filtered)
         setIsLoading(false);
         setRawData(filtered);
+        
       })
       .catch((err) => {
         console.error(err);

@@ -100,7 +100,7 @@ export const UserOwnNote = (currentUserInfo) => {
               <SelectItem value="All">All</SelectItem>
               <SelectItem value="notes">Notes</SelectItem>
               <SelectItem value="cheatsheet">Cheatsheets</SelectItem>
-              <SelectItem value="Answerkey">Answer Key</SelectItem>
+              <SelectItem value="answerkey">Answer Key</SelectItem>
               <SelectItem value="knowledge">Knowledge</SelectItem>
             </SelectContent>
           </Select>

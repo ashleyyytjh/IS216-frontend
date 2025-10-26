@@ -387,7 +387,12 @@ Each member should contribute 2–3 sentences on their learning and project expe
 > - *Dylan:* Gained hands-on experience creating responsive and user-friendly web interfaces, integrating various libraries to enhance functionality and design. The project helped me to understand the overall structure of a full working web application and how frontend components connect with backend logic.  
 > - *Joel:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
 
-As a team, reflect on:
-- Key takeaways from working with real-world frameworks  
-- Challenges faced and how they were resolved  
-- Insights on teamwork, project management, and problem-solving  
+
+### Key takeaways from working with real-world frameworks 
+After working on Onlynotes for the past semester, the main takeaway we have gained from working with real-world frameworks is that documentation and previous experience from people is a very important step in the development process. Since there are many people out there who are using such frameworks, documentation and forums like StackOverflow and Reddit proved to be very valuable sources for us while we are working on the project. When we face some bugs, they are usually the first few spots we seek answers from.
+
+### Challenges faced and how they were resolved  
+A key challenge we encountered was integrating multiple services and ensuring smooth communication between the frontend and backend. At first, while hooking up the data, some of our frontend developers had some issues, but as a group, we overcame them by breaking down the issue, communication with our backend team.
+
+### Insights on teamwork, project management, and problem-solving  
+On teamwork, project management and problem-solving, our team mainly operates in the way where every week, we try to accomplish as much as possible as we can for the project. Along the way, we will ask questions with each other in our group in the quickest time possible to get the work done fast. We use our time in class as a way to provide each other with updates about the project, and certain hiccups we will face, so that we know how to move forward with the project. As a group, we would try to solve problems on our own first, before approaching possible members about the issues we currently have on our plate.

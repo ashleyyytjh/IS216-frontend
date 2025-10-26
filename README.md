@@ -140,18 +140,20 @@ Provide screenshots and captions showing how users interact with your app.
 
 #### Purchase
 1. **Stripe payment**  
-   <img src="screenshots/stripePayment.png" width="600">  
+   <img src="screenshots/stripePayment.jpg" width="600">  
    - Users are able to purchase notes.
-1. **Confirmation Pages**  
+2. **Confirmation Pages**  
    <img src="screenshots/paymentSuccessful.jpg" width="600">  
    - Successul status.
    <img src="screenshots/paymentFailed.jpg" width="600">  
    - Unsuccessful status.
 
+
 #### Discuss
 1. **Forum**  
    <img src="screenshots/forum.png" width="600">  
    - Users can discuss in a forum regarding their purchased notes, specific text quotes can be highlighted for reference.
+
 
 #### Dashboard
 1. **Seller Dashboard**  

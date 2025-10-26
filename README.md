@@ -176,7 +176,8 @@ Comprehensive steps to help other developers or evaluators run and test your pro
 ### 0) Prerequisites
 - [Git](https://git-scm.com/) v2.4+  
 - [Node.js](https://nodejs.org/) v18+ and npm v9+  
-- Access to backend or cloud services used (Firebase, MongoDB Atlas, AWS S3, etc.)
+- [Docker] (https://www.docker.com/)
+- Access to backend or cloud services used (MongoDB Atlas, Supabase, AWS S3, AWS Cognito, AWS Amplify, Stripe)
 
 ---
 
@@ -192,45 +193,120 @@ npm install
 ### 2) Configure Environment Variables
 Create a `.env` file in the root directory with the following structure:
 
+## Frontend Environments
 ```bash
-VITE_API_URL=<your_backend_or_firebase_url>
-VITE_FIREBASE_API_KEY=<your_firebase_api_key>
-VITE_FIREBASE_AUTH_DOMAIN=<your_auth_domain>
-VITE_FIREBASE_PROJECT_ID=<your_project_id>
-VITE_FIREBASE_STORAGE_BUCKET=<your_storage_bucket>
-VITE_FIREBASE_MESSAGING_SENDER_ID=<your_sender_id>
-VITE_FIREBASE_APP_ID=<your_app_id>
+VITE_COGNITO_USER_POOL_ID=<cognito_userpool_id>
+VITE_COGNITO_USER_POOL_CLIENT_ID=<cognito_userpool_client_id>
+VITE_BASE_URL=<api_gateway_url>
+VITE_STRIPE_PROMISE=<your_stripe_publishable_key>
+```
+
+## Backend Environments (Notes Service)
+```bash
+# APP
+PORT=<your_port>
+NODE_ENV=dev
+CLIENT=<client_url>
+
+AWS_REGION=<aws_region>
+AWS_COGNITO_USERPOOL_ID=<cognito_userpool_id>
+AWS_COGNITO_CLIENT_ID=<cognito_userpool_client_id>
+AWS_COGNITO_M2M_CLIENT_SECRET=<cognito_m2m_client_secret>
+AWS_COGNITO_M2M_CLIENT_ID=<cognito_m2m_client_id>
+AWS_COGNITO_OAUTH_DOMAIN=<cognito_oauth_domain>
+AWS_ACCESS_KEY_ID=<your_aws_access_key>
+AWS_SECRET_ACCESS_KEY=<your_aws_secret_access_key>
+
+S3_BUCKET_NAME=<your_s3_bucket_name>
+S3_IMAGES_BUCKET=<your_s3_image_bucket_name>
+
+RABBITMQ_URL=<rabbitmq_url>
+
+DB_PROTOCOL=<mongo_db_protocol>
+DB_USERNAME=<mongo_db_user>
+DB_PASSWORD=<mongo_db_password>
+DB_HOST=<mongo_db_host>
+DB_NAME=<mongo_db_name>
+
+# OPENAI
+OPENAI_API_KEY=<your_openai_key>
+```
+
+## Backend Environments (OrdersV3 Service)
+```bash
+PORT=<your_port>
+USER_SERVICE_URL=<user_service_url>
+NOTES_SERVICE_URL=<notes_service_url>
+
+STRIPE_WEBHOOK_SECRET=<stripe_webhook_secret>
+STRIPE_SECRET_KEY=s<stripe_secret_key>
+
+SUPABASE_URL=<supa_base_url>
+SUPABASE_KEY=<supa_base_key>
+
+AWS_COGNITO_USERPOOL_ID=<cognito_userpool_id>
+AWS_COGNITO_CLIENT_ID=<cognito_userpool_client_id>
+AWS_COGNITO_M2M_CLIENT_SECRET=<cognito_m2m_client_secret>
+AWS_COGNITO_M2M_CLIENT_ID=<cognito_m2m_client_id>
+AWS_COGNITO_OAUTH_DOMAIN=<cognito_oauth_domain>
+```
+
+## Backend Environments (Annotations Service)
+```bash
+PORT=<your_port>
+
+SUPABASE_URL=<supa_base_url>
+SUPABASE_KEY=<supa_base_key>
+
+AWS_COGNITO_USERPOOL_ID=<cognito_userpool_id>
+AWS_COGNITO_CLIENT_ID=<cognito_userpool_client_id>
+AWS_COGNITO_M2M_CLIENT_SECRET=<cognito_m2m_client_secret>
+AWS_COGNITO_M2M_CLIENT_ID=<cognito_m2m_client_id>
+AWS_COGNITO_OAUTH_DOMAIN=<cognito_oauth_domain>
+```
+
+## Backend Environments (Proxy APIGateway Service Local testing)
+```bash
+orders_service_url_internal=http://orders:<orders_service_port>/v1
+notes_service_url_internal=http://notes:<notes_service_port>/v1
+annotations_service_url_internal=http://annotations:<annotations_service_port>/v1
 ```
 
 > Never commit the `.env` file to your repository.  
 > Instead, include a `.env.example` file with placeholder values.
-
 ---
 
 ### 3) Backend / Cloud Service Setup
 
-#### Firebase
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Create a new project.
-3. Enable the following:
-   - **Authentication** → Email/Password sign-in
-   - **Firestore Database** or **Realtime Database**
-   - **Hosting (optional)** if you plan to deploy your web app
-4. Copy the Firebase configuration into your `.env` file.
+#### MongoDB
+1.
 
-#### Optional: Express.js / MongoDB
-If your app includes a backend:
-1. Create a `/server` folder for backend code.
-2. Inside `/server`, create a `.env` file with:
-   ```bash
-   MONGO_URI=<your_mongodb_connection_string>
-   JWT_SECRET=<your_jwt_secret_key>
-   ```
+#### Supabase
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard/organizations)
+2. Create a new project.
+3. Head to dashboard, project settings
+4. Under API Keys, retrieve the supabase key
+5. Under Data API, retrieve supabase URL
+
+#### AWS
+
+#### Docker
+1. Go to [Docker](https://www.docker.com/)
+2. Install Docker
+
+#### Stripe
+1. Go to [Stripe](https://dashboard.stripe.com/)
+2. Create Stripe account
+3. Enter publishable key into frontend .env
+4. Enter secret key into backend orders .env
+
+#### Starting backend via Docker
+1. Ensure that ./app/compose.yaml, stripe cli container api key is entered and not a placeholder. This is for local testing. 
+2. Run docker compose up --build once, retrieve the webhook secret from the stripe container, insert into orders .env
 3. Start the backend:
    ```bash
-   cd server
-   npm install
-   npm start
+   cd ./apps
+   docker compose up --build
    ```
 
 ---

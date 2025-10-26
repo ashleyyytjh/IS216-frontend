@@ -128,7 +128,7 @@ export function DataTable(props: CurrentUserProp) {
         <Label htmlFor="view-selector" className="sr-only">
           View
         </Label>
-        <TabsList className="flex flex-col md:flex-row text-sm">
+        <TabsList className="flex flex-row md:flex-row text-sm">
           <TabsTrigger
             value="outline"
             className="w-full font-semibold px-3 transition-all duration-300"

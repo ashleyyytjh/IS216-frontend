@@ -12,11 +12,11 @@ G4 Group 16
 | Photo | Full Name | Role / Features Responsible For |
 |:--:|:--|:--|
 | <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEJARDDL-bd29e139dd9b-512" width="80"> | Soh De Lin Nicholas | Seller Dashboard, Profile Page |
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BCKGBM6E-0cfae05e7807-512" width="80"> | Darren Ng Yi Jie | Note Recommendation System and Upload Notes flow |
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BCL1LW4A-bbe1a50348d9-512" width="80"> | Joel Ow | Backend Management, Note listing and Detail listing |
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEJA350E-de5aa2257605-512" width="80"> | Ashley Toh | Backend Management, Payments and Forum |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BCKGBM6E-0cfae05e7807-512" width="80"> | Darren Ng Yi Jie | Notes Recommendations, Note Upload, Tutorial |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BCL1LW4A-bbe1a50348d9-512" width="80"> | Joel Ow | Backend Services (Users, Notes), Notes listing, Mindmap |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEJA350E-de5aa2257605-512" width="80"> | Ashley Toh | Backend Services (Orders, Annotations), Payment, Forum, Login |
 | <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEPZ817G-7c4181505ccd-512" width="80"> | Sim Jun Zhi Dylan | Order Details and Composing Notes UI |
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09B7FWLDM1-58f32e9f653a-512" width="80"> | Ashwin | Overall Styling of Web Application and Roadmap Module Page |
+| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09B7FWLDM1-58f32e9f653a-512" width="80"> | Ashwin | Overall Styling of Web Application and Roadmap Page |
 
 > Place all headshot thumbnails in the `/photos` folder (JPEG or PNG).
 
@@ -66,13 +66,17 @@ Further research on competitors shows that Studocu and CourseHero aims to solve 
 #### Backend
 | Logo | Technology | Purpose / Usage |
 |:--:|:--|:--|
-| <img src="https://avatars.githubusercontent.com/u/41077760?s=200&v=4" width="40"> | **AWS Amplify** | Hosting and CI/CD for the frontend React app |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/nodejs/nodejs.png" width="40"> | **Node.js** | JavaScript runtime for backend execution |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/typescript/typescript.png" width="40"> | **TypeScript** | Strongly-typed superset of JavaScript for maintainable backend code |
 | <img src="https://raw.githubusercontent.com/github/explore/main/topics/express/express.png" width="40"> | **Express.js** | Web framework for building RESTful APIs |
-| <img src="https://raw.githubusercontent.com/github/explore/main/topics/docker/docker.png" width="40"> | **Docker** | Containerization for backend services |
+| <img src="https://raw.githubusercontent.com/github/explore/main/topics/docker/docker.png" width="40"> | **Docker** | Containerization for development process |
+
+### Deployment
+| Logo | Technology | Purpose / Usage |
+|:--:|:--|:--|
 | <img src="https://repository-images.githubusercontent.com/100966547/fc3c3680-355c-11eb-9554-8df45a88295b" width="40"> | **AWS Cognito** | User authentication and authorization service |
 | <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUlDqQ4KhvbzAUcyYoAvroy03MDJontu8baA&s" width="40"> | **AWS ECS** | Container orchestration for backend microservices |
+| <img src="https://avatars.githubusercontent.com/u/41077760?s=200&v=4" width="40"> | **AWS Amplify** | Hosting and CI/CD for the frontend React app |
 
 #### Data
 | Logo | Technology | Purpose / Usage |
@@ -88,6 +92,7 @@ Further research on competitors shows that Studocu and CourseHero aims to solve 
 
 Provide screenshots and captions showing how users interact with your app.
 
+#### Introduction
 1. **Landing Page**  
    <img src="screenshots/landing.png" width="600">  
    - Displays the homepage introducing OnlyNotes with options to browse or sell notes, followed by sections highlighting platform benefits, step-by-step guides for buyers and sellers, curated study roadmaps for guidance, and recommended notes.
@@ -101,30 +106,59 @@ Provide screenshots and captions showing how users interact with your app.
    <img src="screenshots/noterecommendation.png" width="600">  
    - Users can find notes based on modules they have taken and time of the semester
 
-4. **Product Listing**  
+
+#### Search
+1. **Product Listing**  
    <img src="screenshots/productlisting.png" width="600">  
    - Users are able to view notes put up by other users.
 
-5. **Semantic Search**  
+2. **Roadmap**  
+   <img src="screenshots/compose.png" width="600">  
+   - Users can also reference a roadmap based on their degree to search for desired notes.
+
+3. **Semantic Search**  
    <img src="screenshots/semanticsearch.png" width="600">  
    - User can search based on note content and embeddings generated rather than normal text search.
 
-6. **Node based knowledge graph**  
+4. **Node based knowledge graph**  
    <img src="screenshots/nodeknowledgegraph.png" width="600">  
-   - Users can view their notes in a graph view showing connected concepts and relationships. 
+   - Users can summerise and view notes in a graph form showing connected concepts and relationships. 
 
-7. **Forum**  
+
+### Create
+1. **Compose Notes**  
+   <img src="screenshots/compose.png" width="600">  
+   - Users can choose to create their own notes on the platform.
+
+2. **Upload Notes**  
+   <img src="screenshots/uploadNotes_1.jpg" width="600">  
+   <img src="screenshots/uploadNotes_2.jpg" width="600">  
+   <img src="screenshots/uploadNotes_3.jpg" width="600">  
+   <img src="screenshots/uploadNotes_4.jpg" width="600">  
+   - Users can choose to upload via 4 step process.
+
+
+#### Purchase
+1. **Stripe payment**  
+   <img src="screenshots/stripePayment.png" width="600">  
+   - Users are able to purchase notes.
+1. **Confirmation Pages**  
+   <img src="screenshots/paymentSuccessful.jpg" width="600">  
+   - Successul status.
+   <img src="screenshots/paymentFailed.jpg" width="600">  
+   - Unsuccessful status.
+
+#### Discuss
+1. **Forum**  
    <img src="screenshots/forum.png" width="600">  
-   - Users can communicate with sellers regarding their purchased notes.
+   - Users can discuss in a forum regarding their purchased notes, specific text quotes can be highlighted for reference.
 
-8. **Seller Dashboard**  
+#### Dashboard
+1. **Seller Dashboard**  
    <img src="screenshots/dashboard1.png" width="600">  
    <img src="screenshots/dashboard2.png" width="600">  
    - Users can view key metrics regarding the performance of their notes.
 
-9. **Compose Notes**  
-   <img src="screenshots/compose.png" width="600">  
-   - Users can choose to create and upload their own notes.
 
 
 > Save screenshots inside `/screenshots` with clear filenames.

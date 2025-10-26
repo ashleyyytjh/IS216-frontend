@@ -338,7 +338,11 @@ Perform the following checks before submission:
 | Authentication | Register | User will be prompted to fill in more details on accountCreation page. Upon filling details, it will redirect user to home page |
 | Authentication | Login | User successfully logins and he will be redirected to homepage and be able to access /profile page. |
 | Authentication | Logout | User successfully signs out, and user state changes (navigation bar will not show the name.) |
-| CRUD Operations | Add, Edit, Delete data | Database updates correctly |
+| CRUD Operations | Editing or profile's (Major, etc) | Database updates correctly and upon refresh, fields should be changed in /profile|
+| Search/Filter | Search by keywords; apply filters/sort | Results update; empty state when no matches |
+| Listing View | Open listing; mindmap | Able to see node based knowledge graph of the note  |
+| Access Control | Download purchased note | Download succeeds; presigned/direct URL blocked for others/logged-out |
+| Access Control | Attempt to download unpurchased note | Server denies direct URL |
 | Responsiveness | Test on mobile & desktop | Layout adjusts without distortion |
 | Navigation | All menu links functional | Pages route correctly |
 | Error Handling | Invalid inputs or missing data | User-friendly error messages displayed |

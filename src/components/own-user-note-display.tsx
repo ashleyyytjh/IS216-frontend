@@ -8,7 +8,7 @@ import { courseGradient } from "@/utils/colors"
 import { Separator } from "./ui/separator"
 import { formatPriceSGD } from "@/utils/currency"
 import { Button } from "./ui/button"
-import { Search, ChevronDown } from "lucide-react"
+import { Search, ChevronDown, Eye, Trash2 } from "lucide-react"
 import { deleteUploadedNote, getNotesById, getUserOwned } from "@/services/NotesService"
 import { NoteListing } from "@/types/types"
 import { Spinner } from "./ui/shadcn-io/spinner"
@@ -113,7 +113,6 @@ export const UserOwnNote = (currentUserInfo) => {
             <TableHeader>
               <TableRow>
                 <TableHead className="pl-[2rem]">Name</TableHead>
-                <TableHead>Description</TableHead>
                 <TableHead>Module</TableHead>
                 <TableHead>Tags</TableHead>
                 <TableHead>Price</TableHead>
@@ -127,49 +126,46 @@ export const UserOwnNote = (currentUserInfo) => {
               {filteredNotes.map((listing) => (
                 <TableRow key={listing.id}>
                   <TableCell className="font-medium pl-[2rem]">{listing.originalName}</TableCell>
-                  <TableCell className="max-w-[250px] truncate">{listing.description}</TableCell>
-                  <TableCell>
-                    <Badge
-                      className="text-xs font-normal rounded-full border-none text-white uppercase px-2 py-1"
-                    >
-                      {listing.module}
-                    </Badge>
+                  <TableCell className="text-foreground">
+                    {listing.module}
                   </TableCell>
                   <TableCell>
+
                     {listing.tags.length == 0 ? (
                       <p className="text-muted-foreground">No tags</p>
-                    ) : (<></>)}
-                    {listing.tags?.map((tag, i) => (
-                      <div key={tag} className="flex items-center">
-                        <Badge
-                          variant="secondary"
-                          className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-700"
-                        >
-                          {tag}
-                        </Badge>
-                        {i < listing.tags.length - 1 && (
-                          <span className="mx-2 text-muted-foreground">•</span>
-                        )}
-                      </div>
-                    ))}
+                    ) : (<div className="flex flex-wrap items-center gap-1">
+                      {listing.tags.map((tag, i) => (
+                        <span key={tag} className="flex items-center">
+                          <Badge className="px-3 py-1 rounded-full">
+                            {tag}
+                          </Badge>
+                          {i < listing.tags.length - 1 && (
+                            <span className="mx-1 text-muted-foreground">•</span>
+                          )}
+                        </span>
+                      ))}
+                    </div>)}
+
                   </TableCell>
-                  <TableCell>{formatPriceSGD(listing.price)}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-foreground">{formatPriceSGD(listing.price)}</TableCell>
+                  <TableCell className="align-middle">
                     {listing['pending'] ? (
-                      <span className="text-amber-600 font-semibold">Processing</span>
+                      <Badge className="bg-amber-100 text-amber-600 font-semibold px-2 py-1 border-none">Processing</Badge>
                     ) : (
-                      <span className="text-green-600">Success</span>
+                      <Badge className="bg-green-100 text-green-600 font-semibold px-2 py-1 border-none">Success</Badge>
                     )}
                   </TableCell>
                   <TableCell>{formatRelativeMonthYear(listing.createdAt)}</TableCell>
-                  <TableCell className="flex gap-2 justify-start">
+                  <TableCell className="flex items-center gap-2 justify-start">
                     <Button
                       size="sm"
+                      variant='outline'
                       onClick={() =>
                         navigate(`/listings/${(listing as any).note_id || listing.id}`)
                       }
                     >
-                      Details
+                      <Eye />
+                     
                     </Button>
                     <Button
                       size="sm"
@@ -178,7 +174,7 @@ export const UserOwnNote = (currentUserInfo) => {
                         openDialog(`${(listing as any).note_id || listing.id}`)
                       }
                     >
-                      Delete
+                      <Trash2 />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -227,30 +223,24 @@ export const UserOwnNote = (currentUserInfo) => {
                   </CardContent>
 
                   <CardFooter className="flex items-center justify-between p-0">
-                    <div className="flex h-6 gap-2">
-                      <Badge
-                        className="text-sm font-normal rounded-full border-none text-white uppercase"
-                        style={{ background: courseGradient(listing.module ?? "") }}
-                      >
-                        {listing.module}
-                      </Badge>
-                      <Separator orientation="vertical" />
-                      <span className="font-mono flex items-center">
-                        {formatPriceSGD(listing.price)}
-                      </span>
-                      <Separator orientation="vertical" />
-                      {listing['pending'] ? (
-                        <span className="font-mono flex items-center text-amber-600">
-                          Processing
-                        </span>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          className="text-sm font-normal rounded-full border-none text-white uppercase"
+                          style={{ background: courseGradient(listing.module ?? "") }}
+                        >
+                          {listing.module}
+                        </Badge>
+                        <div className="w-px h-4 bg-gray-300 mx-1" />
+                        <span className="font-mono">{formatPriceSGD(listing.price)}</span>
+                      </div>
+
+                      {listing["pending"] ? (
+                        <Badge className=" bg-amber-100 text-amber-700 border-none px-2 py-1 mt-2"> Processing </Badge>
                       ) : (
-                        <span className="font-mono flex items-center text-green-600">
-                          Success
-                        </span>
+                        <Badge className=" bg-green-100 text-green-700 border-none px-2 py-1 mt-2"> Processing </Badge>
                       )}
-
                     </div>
-
                   </CardFooter>
                   {/* to={`/listings/${(listing as any).note_id || listing.id}`}*/}
                   {/* deleteNote(``) */}

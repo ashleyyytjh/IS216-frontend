@@ -157,7 +157,7 @@ export function UnpublishedNotes() {
         {rawData.length > 0 ? (
           <>
             <div className="rounded-md border overflow-visible hidden lg:block">
-              <Table className="border-collapse border w-full">
+              <Table className="border-collapse w-full">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="pl-[2rem]">Note Title</TableHead>

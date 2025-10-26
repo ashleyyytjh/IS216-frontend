@@ -107,7 +107,7 @@ export const UserOwnNote = (currentUserInfo) => {
         </div>
       </section>
 
-      <section className="w-full text-sm font-light">
+      <section className="w-full">
         <div className="rounded-md border overflow-visible hidden lg:block">
           <Table className="border-collapse w-full">
             <TableHeader>
@@ -155,7 +155,7 @@ export const UserOwnNote = (currentUserInfo) => {
                       <Badge className="bg-green-100 text-green-600 font-semibold px-2 py-1 border-none">Success</Badge>
                     )}
                   </TableCell>
-                  <TableCell>{formatRelativeMonthYear(listing.createdAt)}</TableCell>
+                  <TableCell>{formatRelativeMonthYear(listing.createdAt)} ago</TableCell>
                   <TableCell className="flex items-center gap-2 justify-start">
                     <Button
                       size="sm"

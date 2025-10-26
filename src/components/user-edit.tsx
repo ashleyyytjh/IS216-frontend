@@ -14,6 +14,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { callPresigned, confirmUserImage, updateUser, updateUserImage } from "@/services/UserService"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { useNavigate } from "react-router-dom"
 
 //Form to ensure validation.
 const formSchema = z.object({
@@ -90,7 +91,7 @@ function UserEdit(currentUser) {
     setPreviewImage(previewUrl);
     setSelectedFile(file);
   };
-
+  const nav = useNavigate();
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     values.newCourse = curModsState
 
@@ -111,10 +112,10 @@ function UserEdit(currentUser) {
               if (!uploadRes) { toast.error('Unable to upload your image.') }
               confirmUserImage().then((response) => {
                 toast.success('Successfully updated your account details!')
+                setTimeout(() => window.location.reload(), 500);
               }).catch((err) => {
                 toast.error('Something went wrong somewhere.')
               })
-
             })
 
 

@@ -33,7 +33,7 @@ export default function DegreePicker() {
   }
 
   return (
-    <section className="mx-auto mt-4 w-full max-w-xs">
+    <section className="mx-auto mt-4 w-full max-w-xs fade-in">
       <div
         tabIndex={0}
         onBlur={(e) => {

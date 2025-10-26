@@ -11,12 +11,12 @@ G4 Group 16
 
 | Photo | Full Name | Role / Features Responsible For |
 |:--:|:--|:--|
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEJARDDL-bd29e139dd9b-512" width="80"> | Soh De Lin Nicholas | Seller Dashboard, Profile Page |
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BCKGBM6E-0cfae05e7807-512" width="80"> | Darren Ng Yi Jie | Notes Recommendations, Note Upload, Tutorial |
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BCL1LW4A-bbe1a50348d9-512" width="80"> | Joel Ow | Backend Services (Users, Notes), Notes listing, Mindmap |
+| <img src="/photos/nic.jpg" width="80"> | Soh De Lin Nicholas | Seller Dashboard, Profile Page |
+| <img src="/photos/Darren.png" width="80"> | Darren Ng Yi Jie | Notes Recommendations, Note Upload, Tutorial |
+| <img src="/photos/joel.jpg" width="80"> | Joel Ow | Backend Services (Users, Notes), Notes listing, Mindmap |
 | <img src="/photos/ashley.jpg" width="80"> | Ashley Toh | Backend Services (Orders, Annotations), Payment, Forum, Login |
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09BEPZ817G-7c4181505ccd-512" width="80"> | Sim Jun Zhi Dylan | Order Details and Composing Notes UI |
-| <img src="https://ca.slack-edge.com/T09AVTB3U2Y-U09B7FWLDM1-58f32e9f653a-512" width="80"> | Ashwin | Overall Styling of Web Application and Roadmap Page |
+| <img src="/photos/dylan.jpg" width="80"> | Sim Jun Zhi Dylan | Order Details and Composing Notes UI |
+| <img src="/photos/ashwin.jpg" width="80"> | Ashwin | Overall Styling of Web Application and Roadmap Page |
 
 > Place all headshot thumbnails in the `/photos` folder (JPEG or PNG).
 

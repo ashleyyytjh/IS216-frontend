@@ -8,55 +8,29 @@ import type { SearchNotesItem } from "@/types/requests/notes";
 import {
   getPhaseIntent,
   type CalendarConfig,
-  type PhaseIntent,
   type TermPhase,
 } from "@/utils/calendar";
 import { type UserProfile } from "@/utils/userProfile";
-/* ===== Frontend-only shapes ===== */
+import { buildQuery } from "@/utils/buildQuery";
+import {
+  moduleMatches,
+  majorMatches,
+  phaseToLabel,
+  formatModulesLabel,
+  hybridScore,
+} from "@/utils/relevance";
 
 
-/* ===== Query + scoring ===== */
-const phaseKeywords: Record<TermPhase, string[]> = {
-  explore: ["overview", "lecture notes", "summary"],
-  midterm: ["midterm", "quiz", "cheatsheet", "practice"],
-  project: ["project", "report", "rubric", "guide"],
-  finals: ["finals", "past year paper", "cheatsheet", "practice"],
+type UseRecOptions = {
+  queryOverride?: string;
+  calendar: CalendarConfig;
+  now?: Date;
+  strictModules?: boolean;  
+  strictMajor?: boolean;   
+  mode?: "auto" | "recent"; 
 };
 
-function buildQuery(mods: string[], phase: TermPhase) {
-  const modStr = mods.join(" ");
-  const kw = phaseKeywords[phase].join(" ");
-  return `SMU ${modStr} ${kw}`.trim();
-}
-
-function hybridScore(
-  n: SearchNotesItem,
-  ctx: { phase: TermPhase; intent: PhaseIntent; mods: string[]; budgetCents?: number }
-) {
-  let s = (n as any).score ?? 0; // keep vector score if backend adds it
-  const tags = new Set((n.tags || []).map((t) => t.toLowerCase()));
-  if (ctx.mods.includes(n.module || "")) s += 0.6;
-
-  const nearMid = ctx.intent === "pre-midterm" || ctx.intent === "midterm";
-  const nearFin = ctx.intent === "pre-finals" || ctx.intent === "finals";
-  if (nearMid && (tags.has("midterm") || tags.has("quiz"))) s += 0.9;
-  if (nearFin && (tags.has("finals") || tags.has("pastpaper") || tags.has("past year"))) s += 1.0;
-  if (tags.has("cheatsheet")) s += 0.3;
-  if (tags.has("summary")) s += 0.2;
-
-  const days = (Date.now() - new Date(n.createdAt).getTime()) / 86400000;
-  s += Math.exp(-days / 30) * 0.4;
-
-  if (ctx.budgetCents && (n.price ?? 0) <= ctx.budgetCents) s += 0.2;
-  return s;
-}
-
-/* ===== Hook: fetch + re-rank and return full items ===== */
-function useRecommendations(
-  profile: UserProfile,
-  limit = 8,
-  options: { queryOverride?: string; calendar: CalendarConfig; now?: Date }
-) {
+function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOptions) {
   const now = options.now ?? new Date();
   const intent = useMemo(() => getPhaseIntent(now, options.calendar), [now, options.calendar]);
 
@@ -68,9 +42,9 @@ function useRecommendations(
   }, [intent]);
 
   const query = useMemo(() => {
-    if (options.queryOverride?.trim()) return options.queryOverride;
-    return buildQuery(profile.modules, basePhase);
-  }, [options.queryOverride, profile.modules, basePhase]);
+    if (options.queryOverride !== undefined) return options.queryOverride;
+    return buildQuery(profile.modules, basePhase, profile.major);
+  }, [options.queryOverride, profile.modules, profile.major, basePhase]);
 
   const [items, setItems] = useState<SearchNotesItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -85,19 +59,35 @@ function useRecommendations(
     searchNotes(params)
       .then((res) => {
         if (cancelled) return;
-
-
         const raw: SearchNotesItem[] = (res as any)?.items ?? [];
 
-        const ranked = raw
+        if (options.mode === "recent") {
+          const recent = [...raw]
+            .sort((a, b) => new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime())
+            .slice(0, limit);
+          setItems(recent);
+          setError(false);
+          return;
+        }
+
+        const byModules = raw.filter((n) => moduleMatches(n, profile.modules));
+        const byMajor   = raw.filter((n) => majorMatches(n, profile.major));
+
+        let pool: SearchNotesItem[] = raw;
+        if (options.strictModules) {
+          pool = byModules;
+        } else if (options.strictMajor) {
+          pool = byMajor;
+        } else if (byModules.length > 0) {
+          pool = byModules;
+        } else if (byMajor.length > 0) {
+          pool = byMajor;
+        } // else keep raw
+
+        const ranked = pool
           .map((n) => ({
             n,
-            s: hybridScore(n, {
-              phase: basePhase,
-              intent,
-              mods: profile.modules,
-              budgetCents: profile.budgetCents,
-            }),
+            s: hybridScore(n, { phase: basePhase, intent, mods: profile.modules }),
           }))
           .sort((a, b) => b.s - a.s)
           .map((x) => x.n)
@@ -106,44 +96,104 @@ function useRecommendations(
         setItems(ranked);
         setError(false);
       })
-      .catch(error=> {
+      .catch(() => {
         setError(true);
-      }) 
+        setItems([]);
+      })
       .finally(() => !cancelled && setLoading(false));
 
-    return () => {
-      cancelled = true;
-    };
-  }, [query, limit, profile.modules, profile.budgetCents, basePhase, intent]);
+  }, [query, limit, options.strictModules, options.strictMajor, options.mode]);
 
-  return { items, loading, error } as const;
+  return { items, loading, error, basePhase } as const;
 }
 
-/* ===== Public row component ===== */
+/* ===== component ===== */
 export function RecommendationRow({
   profile,
-  title,
+  title, 
   limit = 8,
   queryOverride,
   calendar,
-  subtitle,
+  subtitle, 
+  strictModules = false,
+  strictMajor = false,
+  mode = "auto", 
 }: {
   profile: UserProfile;
-  title: string;
+  title?: string;
   limit?: number;
   queryOverride?: string;
   calendar: CalendarConfig;
   subtitle?: string;
+  strictModules?: boolean;
+  strictMajor?: boolean;
+  mode?: "auto" | "recent";
 }) {
-  const { items, loading, error } = useRecommendations(profile, limit, {
+  const { items, loading, error, basePhase } = useRecommendations(profile, limit, {
     queryOverride,
     calendar,
+    strictModules,
+    strictMajor,
+    mode,
   });
+
+  if (mode === "recent") {
+    return (
+      <ListingCarousel
+        title={title ?? "Recently Listed Notes"}
+        subtitle={subtitle}
+        items={items}
+        loading={loading}
+        error={error}
+        skeletonCount={limit}
+      />
+    );
+  }
+  const matchedModules = useMemo(() => {
+    const out = new Set<string>();
+    for (const m of profile.modules || []) {
+      if (items.some((n) => moduleMatches(n, [m]))) out.add(m);
+    }
+    return Array.from(out);
+  }, [items, profile.modules]);
+
+  const tightenedToMajor = useMemo(() => {
+    if (!profile.major) return false;
+    const anyModuleMatch = items.some((n) => moduleMatches(n, profile.modules));
+    const anyMajorMatch  = items.some((n) => majorMatches(n, profile.major));
+    return !anyModuleMatch && anyMajorMatch;
+  }, [items, profile.modules, profile.major]);
+
+  const computedTitle = useMemo(() => {
+    if (title) return title;
+    const phase = phaseToLabel(basePhase);
+    if (matchedModules.length > 0) {
+      return `For Your ${formatModulesLabel(matchedModules)} — ${phase}`;
+    }
+    if (tightenedToMajor && profile.major) {
+      return `For Your ${profile.major} — ${phase}`;
+    }
+    return `For Your ${formatModulesLabel(profile.modules || [])} — ${phase}`;
+  }, [title, matchedModules, tightenedToMajor, profile.major, profile.modules, basePhase]);
+
+  const computedSubtitle = useMemo(() => {
+    if (subtitle) return subtitle;
+    if (!loading && !error) {
+      if (matchedModules.length > 0) {
+        return `Curated across ${matchedModules.join(", ")}`;
+      }
+      if (tightenedToMajor && profile.major) {
+        return `Curated from ${profile.major}`;
+      }
+      return "You may like";
+    }
+    return undefined;
+  }, [subtitle, loading, error, matchedModules, tightenedToMajor, profile.major]);
 
   return (
     <ListingCarousel
-      title={title}
-      subtitle={subtitle}
+      title={computedTitle}
+      subtitle={computedSubtitle}
       items={items}
       loading={loading}
       error={error}

@@ -360,7 +360,7 @@ export function UnpublishedNotes() {
             </div>
           </>
         ) : (
-          <div className="flex justify-center border-none mt-10">
+          <div className="flex justify-center border-none mt-5">
             <p className="text-muted-foreground text-sm">No notes found.</p>
           </div>
         )}

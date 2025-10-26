@@ -13,11 +13,11 @@ import { deleteUploadedNote, getNotesById, getUserOwned } from "@/services/Notes
 import { NoteListing } from "@/types/types"
 import { Spinner } from "./ui/shadcn-io/spinner"
 import { Input } from "./ui/input"
-import { Link } from "react-router-dom"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 
 export const UserOwnNote = (currentUserInfo) => {
@@ -108,7 +108,85 @@ export const UserOwnNote = (currentUserInfo) => {
       </section>
 
       <section className="w-full text-sm font-light">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr">
+        <div className="rounded-md border overflow-visible hidden lg:block">
+          <Table className="border-collapse w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="pl-[2rem]">Name</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Module</TableHead>
+                <TableHead>Tags</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Created</TableHead>
+                <TableHead className="pr-[2rem]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {filteredNotes.map((listing) => (
+                <TableRow key={listing.id}>
+                  <TableCell className="font-medium pl-[2rem]">{listing.originalName}</TableCell>
+                  <TableCell className="max-w-[250px] truncate">{listing.description}</TableCell>
+                  <TableCell>
+                    <Badge
+                      className="text-xs font-normal rounded-full border-none text-white uppercase px-2 py-1"
+                    >
+                      {listing.module}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {listing.tags.length == 0 ? (
+                      <p className="text-muted-foreground">No tags</p>
+                    ) : (<></>)}
+                    {listing.tags?.map((tag, i) => (
+                      <div key={tag} className="flex items-center">
+                        <Badge
+                          variant="secondary"
+                          className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-700"
+                        >
+                          {tag}
+                        </Badge>
+                        {i < listing.tags.length - 1 && (
+                          <span className="mx-2 text-muted-foreground">•</span>
+                        )}
+                      </div>
+                    ))}
+                  </TableCell>
+                  <TableCell>{formatPriceSGD(listing.price)}</TableCell>
+                  <TableCell>
+                    {listing['pending'] ? (
+                      <span className="text-amber-600 font-semibold">Processing</span>
+                    ) : (
+                      <span className="text-green-600">Success</span>
+                    )}
+                  </TableCell>
+                  <TableCell>{formatRelativeMonthYear(listing.createdAt)}</TableCell>
+                  <TableCell className="flex gap-2 justify-start">
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        navigate(`/listings/${(listing as any).note_id || listing.id}`)
+                      }
+                    >
+                      Details
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() =>
+                        openDialog(`${(listing as any).note_id || listing.id}`)
+                      }
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr lg:hidden">
           {filteredNotes.map((listing) => (
             <div key={listing.id} className="h-full">
 

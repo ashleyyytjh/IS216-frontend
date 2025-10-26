@@ -11,16 +11,16 @@ export default function Toolbar() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search module code or name…"
-            className="w-full sm:w-80 rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
         <div className="inline-flex rounded-lg border bg-background p-1 shadow-sm mx-auto sm:mx-0">
           <button
             aria-pressed={compact}
             onClick={() => setCompact(true)}
-            className={`px-3 py-1.5 text-sm rounded-md transition ${
+            className={`px-3 py-1.5 rounded-md transition ${
               compact
-                ? "bg-neutral-100 text-foreground border border-neutral-200 dark:bg-neutral-800/60 dark:border-neutral-700"
+                ? "bg-neutral-100 text-foreground border border-neutral-200 dark:bg-neutral-800/60 dark:border-neutral-700 "
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -29,7 +29,7 @@ export default function Toolbar() {
           <button
             aria-pressed={!compact}
             onClick={() => setCompact(false)}
-            className={`px-3 py-1.5 text-sm rounded-md transition ${
+            className={`px-3 py-1.5  rounded-md transition ${
               !compact
                 ? "bg-neutral-100 text-foreground border border-neutral-200 dark:bg-neutral-800/60 dark:border-neutral-700"
                 : "text-muted-foreground hover:text-foreground"

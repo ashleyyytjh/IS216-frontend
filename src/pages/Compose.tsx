@@ -78,7 +78,7 @@ export default function Compose() {
   };
 
   return (
-    <main className="flex flex-col gap-8 py-10">
+    <main className="flex flex-col gap-8 py-10 mx-3 md:mx-0">
       <div className="max-w-4xl mx-auto w-full">
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
           <FieldGroup>

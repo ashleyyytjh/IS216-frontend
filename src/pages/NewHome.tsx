@@ -106,12 +106,13 @@ export default function ImprovedHomepage() {
       <motion.div style={{ y: contentY }} className="">
         <div className="max-w-7xl  mx-auto px-6 md:px-8  md:py-32 space-y-28 md:space-y-40">
           <KeyPoints />
-          <div className='space-y-4'>
-            <UserTypeToggle changeSelection={onChangeSelection} selection={stepSelection} />
-            <StepsComponent option={stepSelection} />
-          </div>
-          
-          <Roadmap />        
+    
+           <section>
+            <h2 className="text-4xl font-bold text-center mb-16">Loved by all SMU Students </h2>
+            <AnimatedTestimonials testimonials={testimonials} />
+          </section>
+
+       
           <RecommendationsHub
             isLoggedIn={isLoggedIn}
             profile={
@@ -121,12 +122,16 @@ export default function ImprovedHomepage() {
             }
             calendar={calendar}
           />
+          
+          <Roadmap />        
 
           <ExploreSubject />
-          <section>
-            <h2 className="text-4xl font-bold text-center mb-16">Loved by all SMU Students </h2>
-            <AnimatedTestimonials testimonials={testimonials} />
-          </section>
+
+          <div className='space-y-4'>
+            <UserTypeToggle changeSelection={onChangeSelection} selection={stepSelection} />
+            <StepsComponent option={stepSelection} />
+          </div>
+         
         </div>
       </motion.div>
     </div>

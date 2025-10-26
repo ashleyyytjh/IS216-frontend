@@ -15,6 +15,8 @@ import {
 } from "@/utils/calendar";
 import { buildQuery } from "@/utils/buildQuery";
 
+const EMPTY_MODULES: string[] = [];
+
 export default function RecommendationsHub({
   isLoggedIn,
   profile,
@@ -24,7 +26,6 @@ export default function RecommendationsHub({
   profile?: UserProfile;
   calendar: CalendarConfig;
 }) {
- 
   const now = new Date();
   const intent = getPhaseIntent(now, calendar);
   const isMid = intent === "pre-midterm" || intent === "midterm";
@@ -49,24 +50,27 @@ export default function RecommendationsHub({
     [isMid, isFin, examPhase]
   );
 
- 
-  const safeProfile: UserProfile = {
-    modules: profile?.modules ?? [],
-    major: profile?.major, // optional
-  };
+  const stableModules = useMemo(
+    () => (profile?.modules ? profile.modules : EMPTY_MODULES),
+    [profile?.modules]
+  );
 
-  const modulesLabel = useMemo(() => {
-    const mods = safeProfile.modules.filter(Boolean);
-    if (!mods.length) return "Modules";
-    const maxShow = 2;
-    if (mods.length <= maxShow) return mods.join(" / ");
-    const shown = mods.slice(0, maxShow).join(" / ");
-    return `${shown} +${mods.length - maxShow}`;
-  }, [safeProfile.modules]);
+  const safeProfile: UserProfile = useMemo(
+    () => ({
+      modules: stableModules,
+      major: profile?.major,
+    }),
+    [stableModules, profile?.major]
+  );
 
-  const phaseQuery = buildQuery(
-    safeProfile.modules.length ? safeProfile.modules : ["IS", "CS"],
-    examPhase
+  const phaseQuery = useMemo(
+    () =>
+      buildQuery(
+        safeProfile.modules.length ? safeProfile.modules : ["IS", "CS"],
+        examPhase,
+        safeProfile.major
+      ),
+    [safeProfile.modules, examPhase, safeProfile.major]
   );
 
   const ref = useRef<HTMLDivElement>(null);
@@ -116,23 +120,13 @@ export default function RecommendationsHub({
           <motion.div variants={itemVariants}>
             {showSkeletons ? (
               <RowSkeleton
-                title={`For Your ${modulesLabel} — ${examLabel}`}
-                subtitle={
-                  safeProfile.modules.length
-                    ? `Curated across ${safeProfile.modules.join(", ")}`
-                    : "Personalized recommendations based on your profile"
-                }
+                title={`For Your Modules — ${examLabel}`}
+                subtitle="Personalized recommendations based on your profile"
                 skeletonCount={8}
               />
             ) : (
               <RecommendationRow
                 profile={safeProfile}
-                title={`For Your ${modulesLabel} — ${examLabel}`}
-                subtitle={
-                  safeProfile.modules.length
-                    ? `Curated across ${safeProfile.modules.join(", ")}`
-                    : "Personalized recommendations based on your profile"
-                }
                 limit={8}
                 queryOverride={phaseQuery}
                 calendar={calendar}
@@ -140,7 +134,6 @@ export default function RecommendationsHub({
             )}
           </motion.div>
 
-          {/* Row 2: Popular in user's major (only if provided) */}
           {safeProfile.major ? (
             <motion.div variants={itemVariants}>
               {showSkeletons ? (
@@ -151,11 +144,12 @@ export default function RecommendationsHub({
                 />
               ) : (
                 <RecommendationRow
-                  profile={{ ...safeProfile, modules: [safeProfile.major] }}
+                  profile={{ ...safeProfile, modules: safeProfile.major ? [safeProfile.major] : [] }}
                   title={`Popular in ${safeProfile.major}`}
                   subtitle="Top-rated notes from your major"
                   limit={6}
                   calendar={calendar}
+                  strictMajor
                 />
               )}
             </motion.div>
@@ -175,6 +169,7 @@ export default function RecommendationsHub({
                 subtitle="What students are viewing right now"
                 limit={6}
                 calendar={calendar}
+                strictModules
               />
             )}
           </motion.div>
@@ -190,7 +185,7 @@ export default function RecommendationsHub({
               />
             ) : (
               <RecommendationRow
-                profile={{ modules: ["IS", "CS"] }}
+                profile={{ modules: [], major: undefined }}
                 title={`${examLabel} Essentials`}
                 subtitle="Sign in to get personalized recommendations for your modules"
                 limit={8}
@@ -199,21 +194,22 @@ export default function RecommendationsHub({
               />
             )}
           </motion.div>
-
           <motion.div variants={itemVariants}>
             {showSkeletons ? (
               <RowSkeleton
-                title="Top Rated Notes"
-                subtitle="Highest-rated materials from our community"
-                skeletonCount={6}
+                title="Recently Listed Notes"
+                subtitle="Sign in to get personalized recommendations for your modules"
+                skeletonCount={8}
               />
             ) : (
               <RecommendationRow
-                profile={{ modules: ["Top Rated", "Best Sellers"] }}
-                title="Top Rated Notes"
-                subtitle="Highest-rated materials from our community"
-                limit={6}
+                profile={{ modules: [], major: undefined }}
+                title="Recently Listed Notes"
+                subtitle="Recent notes uploaded by the greatest"
+                limit={8}
+                queryOverride=""
                 calendar={calendar}
+                mode="recent"
               />
             )}
           </motion.div>

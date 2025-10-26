@@ -256,7 +256,7 @@ Perform the following checks before submission:
 | Area | Test Description | Expected Outcome |
 |:--|:--|:--|
 | Authentication | Register | User will be prompted to fill in more details on accountCreation page. Upon filling details, it will redirect user to home page |
-| Authentication | Login | User successfully logins and he will be redirected to homepage. |
+| Authentication | Login | User successfully logins and he will be redirected to homepage and be able to access /profile page. |
 | Authentication | Logout | User successfully signs out, and user state changes (navigation bar will not show the name.) |
 | CRUD Operations | Add, Edit, Delete data | Database updates correctly |
 | Responsiveness | Test on mobile & desktop | Layout adjusts without distortion |
@@ -289,7 +289,7 @@ Each member should contribute 2–3 sentences on their learning and project expe
 > - *Nicholas:* Learned to build user-friendly frontend based on components by UI libraries and customisation of these libraries. The experience has allowed me to become stronger in data manipulation to present my data in a logical manner.
 > - *Ashley:* Learned to build reusable Vue components and manage state effectively.  
 > - *Ashwin:* Gained experience connecting frontend and backend APIs.  
-> - *Darren:* Improved UI/UX design workflow and collaboration using Figma.  
+> - *Darren:* Learnt to hook up backend api endpoints to frontend and learnt more about UI librares like shadcn and how they work under the hood. This experience has gave move exposure on the structure of frontend like components, props and layout and how to break each design of frontends into reusuable and neat components.   
 > - *Dylan:* Gained hands-on experience creating responsive and user-friendly web interfaces, integrating various libraries to enhance functionality and design. The project helped me to understand the overall structure of a full working web application and how frontend components connect with backend logic.  
 > - *Joel:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
 

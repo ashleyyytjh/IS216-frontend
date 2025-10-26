@@ -14,8 +14,9 @@ export const NotesType = z.enum(["cheatsheet", "knowledge", "notes", "answerkey"
 
 export const CreateComposeNotesReq = z.object({
   title: z.string().min(1),
-  description: z.string().min(1),
+  description: z.string().min(1, "Description is used to let others find your notes."),
   module: z.string().optional(),
+  type: NotesType,
   tags: z.array(z.string()).min(1),
   publish: z.boolean().default(false),
   price: z.number().nonnegative(),

@@ -351,6 +351,9 @@ Perform the following checks before submission:
 | Seller Dashboard | Order Transactions | Clicking on the row will navigate user to the specific order details page. |
 | Seller Dashboard | Uploaded Notes  | When user views the uploaded notes table, they will be able to view details of it or delete them using buttons. The notes should be deleted when the deleted button is clicked and, when the details button is clicked, it navigates them to the specific listing page. |
 | Seller Dashboard | Written Notes | Users are able to conduct 3 operations, delete composed note, view composed note, and edit their composed note. Viewing the composed note and editing the composed note will navigate them to a new page while deleting composed note will just delete the note with a toast that says 'Successful deletion of note'. Additionally, users can use the toggle to hide/display their note to the public. Once clicked, it will show relevant toast messages too. |
+| Note Creation | Upload Notes | Clicking on Create, it will allow users to choose two types of upload methods. Upload or Compose. Clicking on Upload will bring them to a page which asks them to first upload their notes. Clicking on next will allow users to populate the relevant details. |
+| Note Creation | Upload Notes - Processing | At the last step, the screen will display processing, where backend and database insertion is occuring. Once done, the user will be directed to a success page. |
+| Note Creation | Upload Notes - Compose | Clicking on Compose in the Create page, It will bring the users to a screen in which they can fill in certain note details like price, note title, amongst others. Clicking on the Save button, it will navigate users to the article page, where their written notes will be displayed in the form of an article.  |
 
 
 
@@ -377,7 +380,7 @@ npm run test
 
 Each member should contribute 2–3 sentences on their learning and project experience.
 
-> - *Nicholas:* Learned to build user-friendly frontend based on components by UI libraries and customisation of these libraries. The experience has allowed me to become stronger in data manipulation to present my data in a logical manner.
+> - *Nicholas:* Learned to build user-friendly frontend based on components by UI libraries and customisation of these libraries. The experience has allowed me to become stronger in data manipulation to present my data in a logical manner. Gained experience in hooking up backend code with frontend libraries in a quick manner and effectivelu. 
 > - *Ashley:* Learned to build reusable Vue components and manage state effectively.  
 > - *Ashwin:* Gained experience connecting frontend and backend APIs.  
 > - *Darren:* Learnt to hook up backend api endpoints to frontend and learnt more about UI librares like shadcn and how they work under the hood. This experience has gave move exposure on the structure of frontend like components, props and layout and how to break each design of frontends into reusuable and neat components.   

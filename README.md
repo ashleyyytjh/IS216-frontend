@@ -331,6 +331,8 @@ npm run preview
 #### Manual Testing
 Perform the following checks before submission:
 
+
+##### Buyer Related Tests
 | Area | Test Description | Expected Outcome |
 |:--|:--|:--|
 | Authentication | Register | User will be prompted to fill in more details on accountCreation page. Upon filling details, it will redirect user to home page |
@@ -340,6 +342,17 @@ Perform the following checks before submission:
 | Responsiveness | Test on mobile & desktop | Layout adjusts without distortion |
 | Navigation | All menu links functional | Pages route correctly |
 | Error Handling | Invalid inputs or missing data | User-friendly error messages displayed |
+
+##### Seller Related Tests
+| Area | Test Description | Expected Outcome |
+|:--|:--|:--|
+| Seller Dashboard | View Dashboard | If user first entered the page without transaction, the charts and tables will look empty. Upon having transactions, the bar charts, scatter charts will start to populate. Tables will also populate when notes are uploaded or orders are made by buyers. |
+| Seller Dashboard | Dashboard Interaction | Points on the scatter chart will be interactive. Users can click on it and they will be navigated to the listing/ article page. The bar charts can also be filtered according to module and increasing/descending order. |
+| Seller Dashboard | Order Transactions | Clicking on the row will navigate user to the specific order details page. |
+| Seller Dashboard | Uploaded Notes  | When user views the uploaded notes table, they will be able to view details of it or delete them using buttons. The notes should be deleted when the deleted button is clicked and, when the details button is clicked, it navigates them to the specific listing page. |
+| Seller Dashboard | Written Notes | Users are able to conduct 3 operations, delete composed note, view composed note, and edit their composed note. Viewing the composed note and editing the composed note will navigate them to a new page while deleting composed note will just delete the note with a toast that says 'Successful deletion of note'. Additionally, users can use the toggle to hide/display their note to the public. Once clicked, it will show relevant toast messages too. |
+
+
 
 #### Automated Testing (Optional)
 If applicable:

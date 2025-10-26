@@ -68,14 +68,14 @@ export default function UserArticle() {
         </div>
 
         {/* Notes Info */}
-        <div className="text-sm grid grid-cols-2 gap-2 w-fit">
-          <p>Date:</p>
-          <p className="text-muted-foreground">
+        <div className="text-sm grid grid-cols-3 gap-2 w-fit">
+          <p className="col-span-1">Date:</p>
+          <p className="text-muted-foreground col-span-2">
             {formatDateString(data.createdAt ?? "")}
           </p>
-          <p>Module:</p>
+          <p className="col-span-1">Module:</p>
           <Badge
-            className="font-normal rounded-full border-none bg-linear-to-r text-white uppercase"
+            className="font-normal rounded-full border-none bg-linear-to-r text-white uppercase col-span-2"
             style={{
               background: data?.module ? courseGradient(data.module) : "black",
             }}
@@ -84,10 +84,10 @@ export default function UserArticle() {
               ? data.module
               : "General"}
           </Badge>
-          <p>Tags:</p>
-          {data.tags?.map((tag) => (<Badge>{tag}</Badge>))}
-          <p>Price:</p>
-          <span className="font-mono flex items-center">
+          <p className="col-span-1">Tags:</p>
+          <div className="space-x-2 col-span-2">{data.tags?.map((tag) => (<Badge>{tag}</Badge>))}</div>
+          <p className="col-span-1">Price:</p>
+          <span className="font-mono flex items-center col-span-2">
             {formatPriceSGD(data.price ?? 0)}
           </span>
         </div>

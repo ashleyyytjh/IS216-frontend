@@ -16,6 +16,16 @@ import { createComposeNotes } from "@/services/NotesService";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { PriceInput } from "@/components/compose/PriceInput";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 const Editor = lazy(() =>
   import("@/components/blocks/editor-00/editor").then((module) => ({
     default: module.Editor,
@@ -68,8 +78,8 @@ export default function Compose() {
   };
 
   return (
-    <main className="px-5 xl:px-0 flex flex-col gap-8 py-10">
-      <div className="max-w-6xl mx-auto">
+    <main className="flex flex-col gap-8 py-10">
+      <div className="max-w-4xl mx-auto w-full">
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
           <FieldGroup>
             {/* Title */}
@@ -79,9 +89,9 @@ export default function Compose() {
               render={({ field, fieldState }) => (
                 <FieldGroup>
                   <Field data-invalid={fieldState.invalid}>
-                    <Input
+                    <Textarea
                       {...field}
-                      className="!text-4xl !font-bold px-0 border-0 ring-0 shadow-none focus-visible:!border-0 focus-visible:!ring-0"
+                      className="!text-4xl !font-bold px-0 border-0 ring-0 shadow-none focus-visible:!border-0 focus-visible:!ring-0 !text-wrap"
                       id={field.name}
                       placeholder="New Note"
                       autoComplete="off"
@@ -101,7 +111,8 @@ export default function Compose() {
               render={({ field, fieldState }) => (
                 <FieldGroup>
                   <Field data-invalid={fieldState.invalid}>
-                    <Input
+                    <Textarea
+                      wrap="hard"
                       {...field}
                       className="border-0 ring-0 px-0 shadow-none focus-visible:!border-0 focus-visible:!ring-0"
                       id={field.name}
@@ -117,18 +128,28 @@ export default function Compose() {
             />
 
             <div className="w-full grid grid-cols-3 gap-3">
-              {/* Tags */}
+              {/* Type */}
               <Controller
-                name="tags"
+                name="type"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <FieldGroup className="col-span-3 sm:col-span-2 lg:col-span-1">
+                  <FieldGroup className="col-span-2 sm:col-span-1">
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>Tags</FieldLabel>
-                      <TagsCreator
-                        tags={field.value ?? []}
-                        setTags={field.onChange}
-                      />
+                      <FieldLabel>Type</FieldLabel>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select a type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Notes Type</SelectLabel>
+                            <SelectItem value="notes">Study Notes</SelectItem>
+                            <SelectItem value="cheatsheet">Cheat Sheet</SelectItem>
+                            <SelectItem value="answerkey">Answer Key</SelectItem>
+                            <SelectItem value="knowledge">Knowledge</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
@@ -163,6 +184,26 @@ export default function Compose() {
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel>Price</FieldLabel>
                       <PriceInput field={field} />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  </FieldGroup>
+                )}
+              />
+
+              {/* Tags */}
+              <Controller
+                name="tags"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <FieldGroup className="col-span-3 sm:col-span-2 lg:col-span-1">
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Tags</FieldLabel>
+                      <TagsCreator
+                        tags={field.value ?? []}
+                        setTags={field.onChange}
+                      />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}

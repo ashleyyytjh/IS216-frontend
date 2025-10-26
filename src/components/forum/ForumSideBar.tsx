@@ -245,13 +245,12 @@ const sidebarContent = (
     <>
       {/* Desktop Sidebar */}
       {isDesktopSidebarOpen && (
-        <aside className="hidden h-full w-1/5 border-r md:block">
+        <aside className="hidden h-screen w-1/5 border-r md:block">
           {sidebarContent}
         </aside>
       )}
-      {/* Mobile Sheet (Hamburger Menu) */}
-       <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-        {/* Desktop Open Button */}
+      {/* mobile version */}
+       <header className="fixed h-screen top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 bg-transparent sm:px-6">
         {!isDesktopSidebarOpen && (
           <Button
             size="icon"

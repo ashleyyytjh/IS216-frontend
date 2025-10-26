@@ -495,10 +495,10 @@ export default function AnnotationComponent() {
                     </p>
                 </div>
                 
-                {/* Comment text */}
+                {/* comment text */}
                 <p className="text-sm text-foreground mb-2 leading-relaxed">{annotation.comment}</p>
                 
-                {/* Quoted text */}
+                {/* quoted part  */}
                 {annotation.selected_text && (
                     <div 
                     className="text-xs text-muted-foreground bg-gray-50 p-2 rounded cursor-pointer hover:bg-yellow-50 transition-colors group mb-2 border-l-2 border-gray-300"
@@ -511,7 +511,7 @@ export default function AnnotationComponent() {
                     </div>
                 )}
 
-                {/* Action buttons */}
+                {/* buttons */}
                 <div className="flex items-center gap-4 text-xs">
                     <button
                     className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
@@ -533,7 +533,7 @@ export default function AnnotationComponent() {
                                 confirmOpen={!!deleteTarget}
                                 setConfirmOpen={open => { if (!open) setDeleteTarget(null); }}
                                 handleDialogConfirm={handleDialogConfirm}
-                        />
+                            />
                             <button
                                 className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors"
                                 onClick={() => setDeleteTarget(annotation)}
@@ -597,7 +597,7 @@ export default function AnnotationComponent() {
             </div>
             </div>
 
-            {/* Render replies recursively */}
+            {/* reply rendering */}
             {annotation.replies.map(reply => (
                 <CommentItem key={reply.id} annotation={reply} depth={depth + 1} note={note} handleDelete={handleDelete} />
             ))}

@@ -127,7 +127,7 @@ export default function ForumPdfViewer({
 
   
   return (
-    <Card className="flex flex-col items-center justify-center w-9/10 outline pt-0 gap-0">
+    <Card className="flex flex-col items-center justify-center w-full outline pt-0 gap-0">
       <div className="w-full flex items-center justify-between p-2">
         <div className="flex items-center w-fit">
           <Button

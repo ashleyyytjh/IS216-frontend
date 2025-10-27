@@ -384,8 +384,8 @@ npm run test
 
 Each member should contribute 2–3 sentences on their learning and project experience.
 
-> - *Nicholas:* Learned to build user-friendly frontend based on components by UI libraries and customisation of these libraries. The experience has allowed me to become stronger in data manipulation to present my data in a logical manner. Gained experience in hooking up backend code with frontend libraries in a quick manner and effectivelu. 
-> - *Ashley:* Learned to build reusable Vue components and manage state effectively.  
+> - *Nicholas:* Learned to build user-friendly frontend based on components by UI libraries and customisation of these libraries. The experience has allowed me to become stronger in data manipulation to present my data in a logical manner. Gained experience in hooking up backend code with frontend libraries in a quick manner and effectively. 
+> - *Ashley:* Had the experience to touch on different visual libraries such as framer motion and tailwind animations. Gained more experience in implementing new kinds of services, such as the forum for both front and backend. Great experience to learn and adapt together with teammates of varying experiences and eventually produce a great product together.
 > - *Ashwin:* Gained experience connecting frontend and backend APIs.  
 > - *Darren:* Learnt to hook up backend api endpoints to frontend and learnt more about UI librares like shadcn and how they work under the hood. This experience has gave move exposure on the structure of frontend like components, props and layout and how to break each design of frontends into reusuable and neat components.   
 > - *Dylan:* Gained hands-on experience creating responsive and user-friendly web interfaces, integrating various libraries to enhance functionality and design. The project helped me to understand the overall structure of a full working web application and how frontend components connect with backend logic.  

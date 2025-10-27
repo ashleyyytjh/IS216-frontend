@@ -207,8 +207,9 @@ export default function Compose() {
 
           {/* Editor */}
           {editorState ?
-            <Suspense>
+            <Suspense >
               <Editor
+              
                 editorSerializedState={editorState}
                 onSerializedChange={(value) => setEditorState(value)}
               />

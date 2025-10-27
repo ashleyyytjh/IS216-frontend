@@ -268,7 +268,7 @@ export const UserOwnNote = (currentUserInfo) => {
               Delete Note
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this note?
+              Are you sure you want to delete this note? Deleting this note will delete all transactions related to your note.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

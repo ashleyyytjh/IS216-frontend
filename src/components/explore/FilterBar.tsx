@@ -28,7 +28,7 @@ export default function FilterBar({ onSearch }: FilterBarProps) {
   }
 
   return (
-    <section className="mx-auto max-w-6xl flex gap-4 text-sm w-full md:flex-row flex-col">
+    <section className="mx-auto max-w-6xl flex gap-4 text-sm w-full flex-wrap md:flex-row flex-col">
       <div className="relative flex-1 basis-full md:basis-auto opacity-60 focus-within:opacity-100 transition-opacity">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input

@@ -1,7 +1,7 @@
 import type { SearchNotesItem } from "@/types/requests/notes";
 import type { PhaseIntent, TermPhase } from "@/utils/calendar";
 
-/* ===================== utils ===================== */
+/// ===================== utils =========
 
 // convert CS42O to cs420
 export function normMod(s: string) {
@@ -24,7 +24,7 @@ export function coerceNoteId(n: SearchNotesItem): string | undefined {
   return (n as any).id ?? (n as any)._id ?? (n as any).note_id;
 }
 
-/* ===================== matching ===================== */
+//==================== matching ========
 
 export function moduleMatches(note: SearchNotesItem, userMods: string[]) {
   if (!userMods?.length) return false;
@@ -81,7 +81,7 @@ export function formatModulesLabel(mods: string[]) {
   return `${shown} +${clean.length - maxShow}`;
 }
 
-/* ===================== popularity ===================== */
+ //===================== popularity ===================== 
 
 export type PopularityCounts = Map<string, number>;
 
@@ -91,7 +91,6 @@ export function popularityRawCount(n: SearchNotesItem, counts?: PopularityCounts
   return id ? counts.get(id) ?? 0 : 0;
 }
 
-/** Smooth popularity score (log1p) to dampen huge bestsellers */
 export function popularityScore(
   n: SearchNotesItem,
   counts?: PopularityCounts,
@@ -103,14 +102,14 @@ export function popularityScore(
   return Math.log1p(c) / Math.log(opts.base);
 }
 
-/* ===================== hybrid score ===================== */
+//================= hybrid score ================
 
 export function hybridScore(
   n: SearchNotesItem,
   ctx: { phase: TermPhase; intent: PhaseIntent; mods: string[] },
   extras?: {
-    popCounts?: PopularityCounts; // Map<note_id, successful_purchase_count>
-    popWeight?: number;           // default 0.8
+    popCounts?: PopularityCounts; 
+    popWeight?: number;         
   }
 ) {
   let s = (n as any).score ?? 0;
@@ -138,7 +137,7 @@ export function hybridScore(
   return s;
 }
 
-/* ===================== narrowing + ranking ===================== */
+//===================== ranking ===================== 
 
 export type RankMode = "auto" | "recent" | "popular" | "user-popular";
 export type NarrowFlags = { strictModules?: boolean; strictMajor?: boolean };
@@ -214,7 +213,7 @@ export function rankPool(
     .map((x) => x.n);
 }
 
-/* ===================== small view helpers ===================== */
+//===================== small view helpers ======
 
 export function computeMatchedModules(items: SearchNotesItem[], mods: string[]): string[] {
   const out = new Set<string>();

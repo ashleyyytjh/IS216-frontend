@@ -124,7 +124,7 @@ export default function RecommendationsHub({
     >
       {isLoggedIn ? (
         <>
-          {/* For Your Modules — phase-driven (adds type via queryOverride) */}
+        
           <motion.div variants={itemVariants}>
             {showSkeletons ? (
               <RowSkeleton
@@ -146,7 +146,7 @@ export default function RecommendationsHub({
             )}
           </motion.div>
 
-          {/* Popular in Major — NOT phase-driven (no type) */}
+         
           {safeProfile.major ? (
             <motion.div variants={itemVariants}>
               {showSkeletons ? (
@@ -171,7 +171,7 @@ export default function RecommendationsHub({
             </motion.div>
           ) : null}
 
-          {/* Trending in Your Modules — NOT phase-driven (no type) */}
+         
           <motion.div variants={itemVariants}>
             {showSkeletons ? (
               <RowSkeleton
@@ -219,7 +219,7 @@ export default function RecommendationsHub({
             )}
           </motion.div>
 
-          {/* Top-Rated Right Now — NO query (broad), NO type */}
+    
           <motion.div variants={itemVariants}>
             {showSkeletons ? (
               <RowSkeleton

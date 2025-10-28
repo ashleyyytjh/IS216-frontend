@@ -245,7 +245,7 @@ export function UnpublishedNotes() {
               </Table>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr mt-10 lg:hidden">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr lg:hidden">
               {rawData.map((note) => {
                 console.log(note);
                 return (

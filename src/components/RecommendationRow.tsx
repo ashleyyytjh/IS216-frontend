@@ -1,4 +1,3 @@
-// components/recommendations/RecommendationRow.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -12,22 +11,27 @@ import {
 } from "@/utils/calendar";
 import { type UserProfile } from "@/utils/userProfile";
 import { buildQuery } from "@/utils/buildQuery";
+
 import {
-  moduleMatches,
-  majorMatches,
   phaseToLabel,
   formatModulesLabel,
-  hybridScore,
+  narrowPool,
+  rankPool,
+  computeMatchedModules,
+  computeTightenedToMajor,
+  type PopularityCounts,
+  type RankMode,
 } from "@/utils/relevance";
-
 
 type UseRecOptions = {
   queryOverride?: string;
   calendar: CalendarConfig;
   now?: Date;
-  strictModules?: boolean;  
-  strictMajor?: boolean;   
-  mode?: "auto" | "recent"; 
+  strictModules?: boolean;
+  strictMajor?: boolean;
+  mode?: RankMode; // "auto" | "recent" | "popular" | "user-popular"
+  popularityCounts?: PopularityCounts; // injected from Hub
+  popularitySig?: string;              // stable string for deps
 };
 
 function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOptions) {
@@ -41,10 +45,15 @@ function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOpti
     return "explore";
   }, [intent]);
 
+  // phase-aware default queries
+  const generalPhaseQuery = useMemo(() => buildQuery([], basePhase, undefined), [basePhase]);
   const query = useMemo(() => {
+    if (options.mode === "popular") {
+      return options.queryOverride !== undefined ? options.queryOverride : generalPhaseQuery;
+    }
     if (options.queryOverride !== undefined) return options.queryOverride;
     return buildQuery(profile.modules, basePhase, profile.major);
-  }, [options.queryOverride, profile.modules, profile.major, basePhase]);
+  }, [options.mode, options.queryOverride, profile.modules, profile.major, basePhase, generalPhaseQuery]);
 
   const [items, setItems] = useState<SearchNotesItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,44 +63,44 @@ function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOpti
     let cancelled = false;
     setLoading(true);
 
-    const params = new URLSearchParams({ query, limit: String(limit * 2) });
+    // Phase → suggest a single type, but only apply for phase-driven rows (queryOverride provided)
+    const phaseType =
+      basePhase === "midterm" || basePhase === "finals"
+        ? "cheatsheet"
+        : basePhase === "project"
+        ? "knowledge"
+        : "";
+
+    const shouldApplyPhaseType =
+      typeof options.queryOverride === "string" &&
+      options.queryOverride.trim().length > 0;
+
+    const fetchLimit = Math.max(limit * 4, 48);
+    const params = new URLSearchParams({ query, limit: String(fetchLimit) });
+    if (shouldApplyPhaseType && phaseType) params.set("type", phaseType);
 
     searchNotes(params)
       .then((res) => {
         if (cancelled) return;
         const raw: SearchNotesItem[] = (res as any)?.items ?? [];
 
-        if (options.mode === "recent") {
-          const recent = [...raw]
-            .sort((a, b) => new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime())
-            .slice(0, limit);
-          setItems(recent);
-          setError(false);
-          return;
-        }
+        // 1) narrow once
+        const narrowed = narrowPool(
+          raw,
+          options.mode ?? "auto",
+          { mods: profile.modules, major: profile.major },
+          { strictModules: options.strictModules, strictMajor: options.strictMajor }
+        );
 
-        const byModules = raw.filter((n) => moduleMatches(n, profile.modules));
-        const byMajor   = raw.filter((n) => majorMatches(n, profile.major));
-
-        let pool: SearchNotesItem[] = raw;
-        if (options.strictModules) {
-          pool = byModules;
-        } else if (options.strictMajor) {
-          pool = byMajor;
-        } else if (byModules.length > 0) {
-          pool = byModules;
-        } else if (byMajor.length > 0) {
-          pool = byMajor;
-        } // else keep raw
-
-        const ranked = pool
-          .map((n) => ({
-            n,
-            s: hybridScore(n, { phase: basePhase, intent, mods: profile.modules }),
-          }))
-          .sort((a, b) => b.s - a.s)
-          .map((x) => x.n)
-          .slice(0, limit);
+        // 2) rank once
+        const ranked = rankPool(
+          narrowed,
+          options.mode ?? "auto",
+          options.popularityCounts,
+          { phase: basePhase, intent, mods: profile.modules, major: profile.major },
+          limit,
+          { popWeight: 0.8 }
+        );
 
         setItems(ranked);
         setError(false);
@@ -102,7 +111,21 @@ function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOpti
       })
       .finally(() => !cancelled && setLoading(false));
 
-  }, [query, limit, options.strictModules, options.strictMajor, options.mode]);
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    query,
+    limit,
+    options.strictModules,
+    options.strictMajor,
+    options.mode,
+    basePhase,
+    intent,
+    profile.modules,
+    profile.major,
+    options.popularitySig, // stable; don't depend on Map identity
+  ]);
 
   return { items, loading, error, basePhase } as const;
 }
@@ -110,14 +133,16 @@ function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOpti
 /* ===== component ===== */
 export function RecommendationRow({
   profile,
-  title, 
+  title,
   limit = 8,
   queryOverride,
   calendar,
-  subtitle, 
+  subtitle,
   strictModules = false,
   strictMajor = false,
-  mode = "auto", 
+  mode = "auto",
+  popularityCounts,
+  popularitySig,
 }: {
   profile: UserProfile;
   title?: string;
@@ -127,7 +152,9 @@ export function RecommendationRow({
   subtitle?: string;
   strictModules?: boolean;
   strictMajor?: boolean;
-  mode?: "auto" | "recent";
+  mode?: "auto" | "recent" | "popular" | "user-popular";
+  popularityCounts?: PopularityCounts;
+  popularitySig?: string;
 }) {
   const { items, loading, error, basePhase } = useRecommendations(profile, limit, {
     queryOverride,
@@ -135,56 +162,33 @@ export function RecommendationRow({
     strictModules,
     strictMajor,
     mode,
+    popularityCounts,
+    popularitySig,
   });
 
-  if (mode === "recent") {
-    return (
-      <ListingCarousel
-        title={title ?? "Recently Listed Notes"}
-        subtitle={subtitle}
-        items={items}
-        loading={loading}
-        error={error}
-        skeletonCount={limit}
-      />
-    );
-  }
-  const matchedModules = useMemo(() => {
-    const out = new Set<string>();
-    for (const m of profile.modules || []) {
-      if (items.some((n) => moduleMatches(n, [m]))) out.add(m);
-    }
-    return Array.from(out);
-  }, [items, profile.modules]);
+  const matchedModules = useMemo(
+    () => computeMatchedModules(items, profile.modules || []),
+    [items, profile.modules]
+  );
 
-  const tightenedToMajor = useMemo(() => {
-    if (!profile.major) return false;
-    const anyModuleMatch = items.some((n) => moduleMatches(n, profile.modules));
-    const anyMajorMatch  = items.some((n) => majorMatches(n, profile.major));
-    return !anyModuleMatch && anyMajorMatch;
-  }, [items, profile.modules, profile.major]);
+  const tightenedToMajor = useMemo(
+    () => computeTightenedToMajor(items, profile.modules || [], profile.major),
+    [items, profile.modules, profile.major]
+  );
 
   const computedTitle = useMemo(() => {
     if (title) return title;
     const phase = phaseToLabel(basePhase);
-    if (matchedModules.length > 0) {
-      return `For Your ${formatModulesLabel(matchedModules)} — ${phase}`;
-    }
-    if (tightenedToMajor && profile.major) {
-      return `For Your ${profile.major} — ${phase}`;
-    }
+    if (matchedModules.length > 0) return `For Your ${formatModulesLabel(matchedModules)} — ${phase}`;
+    if (tightenedToMajor && profile.major) return `For Your ${profile.major} — ${phase}`;
     return `For Your ${formatModulesLabel(profile.modules || [])} — ${phase}`;
   }, [title, matchedModules, tightenedToMajor, profile.major, profile.modules, basePhase]);
 
   const computedSubtitle = useMemo(() => {
     if (subtitle) return subtitle;
     if (!loading && !error) {
-      if (matchedModules.length > 0) {
-        return `Curated across ${matchedModules.join(", ")}`;
-      }
-      if (tightenedToMajor && profile.major) {
-        return `Curated from ${profile.major}`;
-      }
+      if (matchedModules.length > 0) return `Curated across ${matchedModules.join(", ")}`;
+      if (tightenedToMajor && profile.major) return `Curated from ${profile.major}`;
       return "You may like";
     }
     return undefined;

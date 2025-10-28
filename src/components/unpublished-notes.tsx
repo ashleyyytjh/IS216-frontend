@@ -115,12 +115,12 @@ export function UnpublishedNotes() {
         console.log(filtered)
         setIsLoading(false);
         setRawData(filtered);
-        
       })
       .catch((err) => {
         console.error(err);
       });
   }, [searchQuery, currentUpload, activeFilter]);
+
   const navigate = useNavigate();
 
   return isLoading ? (

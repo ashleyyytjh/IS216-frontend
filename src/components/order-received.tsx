@@ -36,7 +36,7 @@ export function OrderReceived({
   //pagination stuff
   const startIndex = (currentPage - 1) * itemsPerPage //next few pages the start.
   const endIndex = startIndex + itemsPerPage
-  const currentItems = filteredOrders.slice(startIndex, endIndex) //slice to get the actual item
+  let currentItems = filteredOrders.slice(startIndex, endIndex) //slice to get the actual item
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage))
 
   return (
@@ -71,83 +71,92 @@ export function OrderReceived({
         </div>
       </div>
 
-      <div className="overflow-auto rounded-md border hidden lg:block">
-        <Table className="w-full">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="pl-[2rem]">Transaction ID</TableHead>
-              <TableHead>Note Name</TableHead>
-              <TableHead>Module</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Type</TableHead>
-            </TableRow>
-          </TableHeader>
+      <>
+        {
+          currentItems.length == 0 ? (
+            <div className="flex justify-center border-none mt-5">
+              <p className="text-muted-foreground text-sm">No orders found.</p>
+            </div>
+          ) : (
+            <>
+                          <div className="overflow-auto rounded-md border hidden lg:block">
+              <Table className="w-full">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="pl-[2rem]">Transaction ID</TableHead>
+                    <TableHead>Note Name</TableHead>
+                    <TableHead>Module</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Type</TableHead>
+                  </TableRow>
+                </TableHeader>
 
-          <TableBody>
-            {currentItems.map((o) => (
-              <TableRow
-                key={o.id}
-                className="hover:bg-muted/40 cursor-pointer h-16 table-row w-full"
-                onClick={() => navigate(`/orderdetails/${o.id}`, { state: { order: o } })}
-              >
-                <TableCell className="font-medium pl-[2rem]">{o.id}</TableCell>
-                <TableCell>
-                  <div className="font-medium">{o.originalName}</div>
-                </TableCell>
-                <TableCell className="text-muted-foreground">
-                  {o.module.toUpperCase()}
-                </TableCell>
-                <TableCell className="font-medium">
-                  {formatCurrency(o.price / 100)}
-                </TableCell>
-                <TableCell>
-                  <Badge className="bg-green-50 hover:bg-green-100 text-green-700">
-                    {o?.status.charAt(0).toUpperCase() + o?.status.slice(1)}
-                  </Badge>
-                </TableCell>
-                <TableCell>{stringFormat(o["noteType"])}</TableCell>
-              </TableRow>
-            ))}
-            {filteredOrders.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={9} className="h-24 text-center">
-                  No orders match your filters.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex flex-col gap-4 auto-rows-fr lg:hidden">
-        <div className="flex flex-col h-full [&>a]:h-full [&>a>div]:h-full w-full gap-y-5">
-          {currentItems.map((note) => (
-            <UserActivityListing key={note.id} note={note} />
-          ))}
-        </div>
-      </div>
+                <TableBody>
+                  {currentItems.map((o) => (
+                    <TableRow
+                      key={o.id}
+                      className="hover:bg-muted/40 cursor-pointer h-4 table-row w-full"
+                      onClick={() => navigate(`/orderdetails/${o.id}`, { state: { order: o } })}
+                    >
+                      <TableCell className="font-medium pl-[2rem]">{o.id}</TableCell>
+                      <TableCell>
+                        <div className="font-medium">{o.originalName}</div>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {o.module.toUpperCase()}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {formatCurrency(o.price / 100)}
+                      </TableCell>
+                      <TableCell>
+                        <Badge className="bg-green-50 hover:bg-green-100 text-green-700">
+                          {o?.status.charAt(0).toUpperCase() + o?.status.slice(1)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{stringFormat(o["noteType"])}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div className="mt-5 flex items-center justify-center text-sm text-muted-foreground pb-1">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Prev
+                  </Button>
+                  <div>Page {currentPage} of {totalPages}</div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            </div>
 
-      <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
-        <div>Page {currentPage} of {totalPages}</div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            Prev
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+                          <div className="flex flex-col gap-4 auto-rows-fr lg:hidden">
+                <div className="flex flex-col h-full [&>a]:h-full [&>a>div]:h-full w-full gap-y-5">
+                  {currentItems.map((note) => (
+                    <UserActivityListing key={note.id} note={note} />
+                  ))}
+                </div>
+              </div>
+            </>
+
+
+          )
+        }
+
+      </>
+
     </div>
   )
 }

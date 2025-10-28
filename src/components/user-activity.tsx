@@ -87,20 +87,21 @@ function UserActivity(currentUser) {
     const [statusFilter, setStatusFilter] = useState("All");
     console.log(orders)
     const filteredNotes = orders.filter(note => {
-        console.log(note)
+        console.log(note, 'curnote')
         const query = searchQuery.toLowerCase()
         const matchesSearch =
             //missing some code.
-            note?.['note']?.['tags']?.[0]?.toLowerCase()?.includes(query)
+            note?.note?.originalName?.toLowerCase()?.includes(query)
         const matchedQuery = statusFilter == "All" || note.status.toLowerCase() === statusFilter.toLowerCase();
         return matchesSearch && matchedQuery;
     })
+    console.log(filteredNotes)
     const pagesNeeded = Math.ceil(filteredNotes.length / notesPerPage)
     const startIndex = (currentPage - 1) * notesPerPage
     const endIndex = startIndex + notesPerPage
     const currentNotes = filteredNotes.slice(startIndex, endIndex)
 
-    console.log(currentNotes)
+    console.log(currentNotes, 'current')
 
 
     useEffect(() => {

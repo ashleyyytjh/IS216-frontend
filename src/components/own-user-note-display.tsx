@@ -108,157 +108,162 @@ export const UserOwnNote = (currentUserInfo) => {
       </section>
 
       <section className="w-full">
-        <div className="rounded-md border overflow-visible hidden lg:block">
-          <Table className="border-collapse w-full">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="pl-[2rem]">Name</TableHead>
-                <TableHead>Module</TableHead>
-                <TableHead>Tags</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="pr-[2rem]">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {filteredNotes.map((listing) => (
-                <TableRow key={listing.id}>
-                  <TableCell className="font-medium pl-[2rem]">{listing.originalName}</TableCell>
-                  <TableCell className="text-foreground">
-                    {listing.module}
-                  </TableCell>
-                  <TableCell>
-
-                    {listing.tags.length == 0 ? (
-                      <p className="text-muted-foreground">No tags</p>
-                    ) : (<div className="flex flex-wrap items-center gap-1">
-                      {listing.tags.map((tag, i) => (
-                        <span key={tag} className="flex items-center">
-                          <Badge className="px-3 py-1 rounded-full">
-                            {tag}
-                          </Badge>
-                          {i < listing.tags.length - 1 && (
-                            <span className="mx-1 text-muted-foreground">•</span>
-                          )}
-                        </span>
-                      ))}
-                    </div>)}
-
-                  </TableCell>
-                  <TableCell className="text-foreground">{formatPriceSGD(listing.price)}</TableCell>
-                  <TableCell className="align-middle">
-                    {listing['pending'] ? (
-                      <Badge className="bg-amber-100 text-amber-600 font-semibold px-2 py-1 border-none">Processing</Badge>
-                    ) : (
-                      <Badge className="bg-green-100 text-green-600 font-semibold px-2 py-1 border-none">Success</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>{formatRelativeMonthYear(listing.createdAt)} ago</TableCell>
-                  <TableCell className="flex items-center gap-2 justify-start">
-                    <Button
-                      size="sm"
-                      variant='outline'
-                      onClick={() =>
-                        navigate(`/listings/${(listing as any).note_id || listing.id}`)
-                      }
-                    >
-                      <Eye />
-                     
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() =>
-                        openDialog(`${(listing as any).note_id || listing.id}`)
-                      }
-                    >
-                      <Trash2 />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr lg:hidden">
-          {filteredNotes.map((listing) => (
-            <div key={listing.id} className="h-full">
-
-              <div
-
-                className="block h-full"
-              >
-                <Card className="h-full flex flex-col p-5 rounded-md transition-shadow duration-300 hover:shadow-xl"
-                >
-                  <CardHeader className="flex items-stretch gap-4 p-0 font-semibold">
-                    {listing.originalName}
-                    <div className="flex-1 flex flex-col justify-center gap-1">
-                      <div className="flex justify-end">
-                        <p className="text-xs text-muted-foreground">
-                          {formatRelativeMonthYear(listing.createdAt)}
-                        </p>
-                      </div>
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="space-y-2 p-0 pb-3 flex-1">
-                    <p className="text-sm line-clamp-2">{listing.description}</p>
-                    <div className="flex flex-wrap text-xs text-muted-foreground gap-y-2">
-                      {listing.tags?.map((tag, i) => (
-                        <div key={tag} className="flex items-center">
-                          <Badge
-                            variant="secondary"
-                            className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-700"
-                          >
-                            {tag}
-                          </Badge>
-                          {i < listing.tags.length - 1 && (
-                            <span className="mx-2 text-muted-foreground">•</span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-
-                  <CardFooter className="flex items-center justify-between p-0">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          className="text-sm font-normal rounded-full border-none text-white uppercase"
-                          style={{ background: courseGradient(listing.module ?? "") }}
-                        >
-                          {listing.module}
-                        </Badge>
-                        <div className="w-px h-4 bg-gray-300 mx-1" />
-                        <span className="font-mono">{formatPriceSGD(listing.price)}</span>
-                      </div>
-
-                      {listing["pending"] ? (
-                        <Badge className=" bg-amber-100 text-amber-700 border-none px-2 py-1 mt-2"> Processing </Badge>
-                      ) : (
-                        <Badge className=" bg-green-100 text-green-700 border-none px-2 py-1 mt-2"> Processing </Badge>
-                      )}
-                    </div>
-                  </CardFooter>
-                  {/* to={`/listings/${(listing as any).note_id || listing.id}`}*/}
-                  {/* deleteNote(``) */}
-                  <CardFooter className="flex flex-row-reverse justify-between gap-x-2 pl-0 pr-0">
-                    <Button size="sm" className="w-[48%]" onClick={() => { navigate(`/listings/${(listing as any).note_id || listing.id}`) }}>Details</Button>
-                    <Button size="sm" className="bg-red-400 hover:bg-red-500 w-[48%] px-2 py-1 border-none gap-1 items-center" onClick={() => { openDialog(`${(listing as any).note_id || listing.id}`) }}>Delete</Button>
-                  </CardFooter>
-                </Card>
-
-              </div>
+        {
+          filteredNotes.length == 0 ? (
+            <div className="flex justify-center border-none mt-5">
+              <p className="text-muted-foreground text-sm">No notes found.</p>
             </div>
-          ))}
-          {filteredNotes.length === 0 && (
-            <p className="col-span-full text-center text-muted-foreground">
-              No notes found.
-            </p>
-          )}
-        </div>
+          ) : (
+            <>
+              <div className="rounded-md border overflow-visible hidden lg:block">
+                <Table className="border-collapse w-full">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="pl-[2rem]">Name</TableHead>
+                      <TableHead>Module</TableHead>
+                      <TableHead>Tags</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="pr-[2rem]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+
+                  <TableBody>
+                    {filteredNotes.map((listing) => (
+                      <TableRow key={listing.id}>
+                        <TableCell className="font-medium pl-[2rem]">{listing.originalName}</TableCell>
+                        <TableCell className="text-foreground">
+                          {listing.module}
+                        </TableCell>
+                        <TableCell>
+
+                          {listing.tags.length == 0 ? (
+                            <p className="text-muted-foreground">No tags</p>
+                          ) : (<div className="flex flex-wrap items-center gap-1">
+                            {listing.tags.map((tag, i) => (
+                              <span key={tag} className="flex items-center">
+                                <Badge className="px-3 py-1 rounded-full">
+                                  {tag}
+                                </Badge>
+                                {i < listing.tags.length - 1 && (
+                                  <span className="mx-1 text-muted-foreground">•</span>
+                                )}
+                              </span>
+                            ))}
+                          </div>)}
+
+                        </TableCell>
+                        <TableCell className="text-foreground">{formatPriceSGD(listing.price)}</TableCell>
+                        <TableCell className="align-middle">
+                          {listing['pending'] ? (
+                            <Badge className="bg-amber-100 text-amber-600 font-semibold px-2 py-1 border-none">Processing</Badge>
+                          ) : (
+                            <Badge className="bg-green-100 text-green-600 font-semibold px-2 py-1 border-none">Success</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>{formatRelativeMonthYear(listing.createdAt)} ago</TableCell>
+                        <TableCell className="flex items-center gap-2 justify-start">
+                          <Button
+                            size="sm"
+                            variant='outline'
+                            onClick={() =>
+                              navigate(`/listings/${(listing as any).note_id || listing.id}`)
+                            }
+                          >
+                            <Eye />
+
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() =>
+                              openDialog(`${(listing as any).note_id || listing.id}`)
+                            }
+                          >
+                            <Trash2 />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr lg:hidden">
+                {filteredNotes.map((listing) => (
+                  <div key={listing.id} className="h-full">
+
+                    <div
+
+                      className="block h-full"
+                    >
+                      <Card className="h-full flex flex-col p-5 rounded-md transition-shadow duration-300 hover:shadow-xl"
+                      >
+                        <CardHeader className="flex items-stretch gap-4 p-0 font-semibold">
+                          {listing.originalName}
+                          <div className="flex-1 flex flex-col justify-center gap-1">
+                            <div className="flex justify-end">
+                              <p className="text-xs text-muted-foreground">
+                                {formatRelativeMonthYear(listing.createdAt)}
+                              </p>
+                            </div>
+                          </div>
+                        </CardHeader>
+
+                        <CardContent className="space-y-2 p-0 pb-3 flex-1">
+                          <p className="text-sm line-clamp-2">{listing.description}</p>
+                          <div className="flex flex-wrap text-xs text-muted-foreground gap-y-2">
+                            {listing.tags?.map((tag, i) => (
+                              <div key={tag} className="flex items-center">
+                                <Badge
+                                  variant="secondary"
+                                  className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-700"
+                                >
+                                  {tag}
+                                </Badge>
+                                {i < listing.tags.length - 1 && (
+                                  <span className="mx-2 text-muted-foreground">•</span>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+
+                        <CardFooter className="flex items-center justify-between p-0">
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-2">
+                              <Badge
+                                className="text-sm font-normal rounded-full border-none text-white uppercase"
+                                style={{ background: courseGradient(listing.module ?? "") }}
+                              >
+                                {listing.module}
+                              </Badge>
+                              <div className="w-px h-4 bg-gray-300 mx-1" />
+                              <span className="font-mono">{formatPriceSGD(listing.price)}</span>
+                            </div>
+
+                            {listing["pending"] ? (
+                              <Badge className=" bg-amber-100 text-amber-700 border-none px-2 py-1 mt-2"> Processing </Badge>
+                            ) : (
+                              <Badge className=" bg-green-100 text-green-700 border-none px-2 py-1 mt-2"> Processing </Badge>
+                            )}
+                          </div>
+                        </CardFooter>
+                        {/* to={`/listings/${(listing as any).note_id || listing.id}`}*/}
+                        {/* deleteNote(``) */}
+                        <CardFooter className="flex flex-row-reverse justify-between gap-x-2 pl-0 pr-0">
+                          <Button size="sm" className="w-[48%]" onClick={() => { navigate(`/listings/${(listing as any).note_id || listing.id}`) }}>Details</Button>
+                          <Button size="sm" className="bg-red-400 hover:bg-red-500 w-[48%] px-2 py-1 border-none gap-1 items-center" onClick={() => { openDialog(`${(listing as any).note_id || listing.id}`) }}>Delete</Button>
+                        </CardFooter>
+                      </Card>
+
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )
+        }
       </section>
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

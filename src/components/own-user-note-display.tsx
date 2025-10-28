@@ -77,6 +77,7 @@ export const UserOwnNote = (currentUserInfo) => {
       toast.error('Note unable to delete')
     )
   }
+  console.log(filteredNotes)
 
   return (
     <main className="w-full space-y-3">
@@ -122,6 +123,7 @@ export const UserOwnNote = (currentUserInfo) => {
                       <TableHead className="pl-[2rem]">Name</TableHead>
                       <TableHead>Module</TableHead>
                       <TableHead>Tags</TableHead>
+                      <TableHead>Type</TableHead>
                       <TableHead>Price</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created</TableHead>
@@ -154,6 +156,21 @@ export const UserOwnNote = (currentUserInfo) => {
                           </div>)}
 
                         </TableCell>
+                        <TableCell>
+                          {
+                            listing.type == "answerkey" || listing.type == "AnswerKey" ? (
+                              <>
+                                Answer Key
+                              </>
+                            ) : (
+                              <>
+                                {listing.type.charAt(0).toUpperCase() + listing.type.slice(1)}
+                              </>
+                            )
+
+                          }
+
+                        </TableCell>
                         <TableCell className="text-foreground">{formatPriceSGD(listing.price)}</TableCell>
                         <TableCell className="align-middle">
                           {listing['pending'] ? (
@@ -169,12 +186,12 @@ export const UserOwnNote = (currentUserInfo) => {
                             variant='outline'
                             disabled={listing['pending']}
                             onClick={() => {
-                              if (listing['pending']) { 
+                              if (listing['pending']) {
                                 toast.warning('Your note is still going through processing. Please view again later.')
-                              }else{
+                              } else {
                                 navigate(`/listings/${(listing as any).note_id || listing.id}`)
                               }
-                              
+
                             }
 
                             }
@@ -220,6 +237,21 @@ export const UserOwnNote = (currentUserInfo) => {
 
                         <CardContent className="space-y-2 p-0 pb-3 flex-1">
                           <p className="text-sm line-clamp-2">{listing.description}</p>
+                          <p className="text-sm">
+                            Type:
+                            {
+                              listing.type == "answerkey" || listing.type == "AnswerKey" ? (
+                                <>
+                                  Answer Key
+                                </>
+                              ) : (
+                                <>
+                                  {listing.type.charAt(0).toUpperCase() + listing.type.slice(1)}
+                                </>
+                              )
+
+                            }
+                          </p>
                           <div className="flex flex-wrap text-xs text-muted-foreground gap-y-2">
                             {listing.tags?.map((tag, i) => (
                               <div key={tag} className="flex items-center">
@@ -260,7 +292,17 @@ export const UserOwnNote = (currentUserInfo) => {
                         {/* to={`/listings/${(listing as any).note_id || listing.id}`}*/}
                         {/* deleteNote(``) */}
                         <CardFooter className="flex flex-row-reverse justify-between gap-x-2 pl-0 pr-0">
-                          <Button size="sm" className="w-[48%] !text-xs" onClick={() => { navigate(`/listings/${(listing as any).note_id || listing.id}`) }}>Details</Button>
+                          <Button size="sm" className="w-[48%] !text-xs" disabled={listing['pending']}
+                            onClick={() => {
+                              if (listing['pending']) {
+                                toast.warning('Your note is still going through processing. Please view again later.')
+                              } else {
+                                navigate(`/listings/${(listing as any).note_id || listing.id}`)
+                              }
+
+                            }
+
+                            }>Details</Button>
                           <Button size="sm" className="bg-red-400 hover:bg-red-500 w-[48%] px-2 py-1 border-none gap-1 items-center !text-xs" onClick={() => { openDialog(`${(listing as any).note_id || listing.id}`) }}>Delete</Button>
                         </CardFooter>
                       </Card>

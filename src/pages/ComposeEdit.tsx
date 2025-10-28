@@ -10,9 +10,9 @@ import TagsCreator from "@/components/compose/TagsCreator";
 import { getComposeNoteById, updateComposeNote } from "@/services/NotesService";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router-dom";
-import Error from "./ErrorPage";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PriceInput } from "@/components/compose/PriceInput";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 const Editor = lazy(() =>
   import("@/components/blocks/editor-00/editor").then((module) => ({
     default: module.Editor,
@@ -50,7 +50,7 @@ export default function Compose() {
     async function load() {
       const resp = await getComposeNoteById(noteId);
       if (!resp.data) {
-        return <Error />;
+        return
       }
       if (resp.data.content) {
         setEditorState(resp.data.content as SerializedEditorState);
@@ -58,6 +58,7 @@ export default function Compose() {
       reset({
         title: resp.data.title ?? "",
         description: resp.data.description ?? "",
+        type: resp.data.type,
         tags: resp.data.tags ?? [],
         price: resp.data.price ?? 0,
         publish: resp.data.publish ?? false,
@@ -75,6 +76,7 @@ export default function Compose() {
   }
 
   const onSubmit = async (values: CreateComposeNotesReq) => {
+    console.log("hello")
     if (!editorState) {
       console.error("Editor content missing");
       return;
@@ -148,19 +150,29 @@ export default function Compose() {
               )}
             />
 
-            <div className="w-full grid grid-cols-3 gap-3">
-              {/* Tags */}
+                        <div className="w-full grid grid-cols-3 gap-3">
+              {/* Type */}
               <Controller
-                name="tags"
+                name="type"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <FieldGroup className="col-span-3 sm:col-span-2 lg:col-span-1">
+                  <FieldGroup className="col-span-2 sm:col-span-1">
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>Tags</FieldLabel>
-                      <TagsCreator
-                        tags={field.value ?? []}
-                        setTags={field.onChange}
-                      />
+                      <FieldLabel>Type</FieldLabel>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select a type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Notes Type</SelectLabel>
+                            <SelectItem value="notes">Study Notes</SelectItem>
+                            <SelectItem value="cheatsheet">Cheat Sheet</SelectItem>
+                            <SelectItem value="answerkey">Answer Key</SelectItem>
+                            <SelectItem value="knowledge">Knowledge</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
@@ -195,6 +207,26 @@ export default function Compose() {
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel>Price</FieldLabel>
                       <PriceInput field={field} />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  </FieldGroup>
+                )}
+              />
+
+              {/* Tags */}
+              <Controller
+                name="tags"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <FieldGroup className="col-span-3 sm:col-span-2 lg:col-span-1">
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Tags</FieldLabel>
+                      <TagsCreator
+                        tags={field.value ?? []}
+                        setTags={field.onChange}
+                      />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}

@@ -45,18 +45,13 @@ function DashboardBuyer(currentUser) {
             setLoading(false);
             return;
         }
-
-        let map: Record<string, number> = {};
-        let count = 0;
-        let spent = 0;
-        let missingNotes: string[] = [];
         //TODO
 
         //cont more debugging
         const userOrders = orders.filter(o => o.buyer_id == currentUser.current.current.sub)
         console.log(userOrders)
         let uniqueNoteIds = userOrders.map((o) => o.note_id);
-        console.log(uniqueNoteIds) // allnote id.
+        console.log(uniqueNoteIds, 'line59') // allnote id.
         setTotalNote(uniqueNoteIds.length)
         getUploadBatch(uniqueNoteIds).then((res) => {
             setTotalUploadedNotesByMod(res.data)
@@ -87,8 +82,9 @@ function DashboardBuyer(currentUser) {
 
         setHashMap(hash);
     }, [totalComposeNoteByMod, totalUploadedNotesByMod]);
-
+    //total price here.
     console.log(normalNoteTotal, composeNoteTotal)
+    
     console.log(hashMap)
 
     const topModule = React.useMemo(() => {
@@ -97,7 +93,7 @@ function DashboardBuyer(currentUser) {
         const entries = Object.entries(hashMap);
         entries.sort((a, b) => b[1] - a[1]);
         return { module: entries[0][0], count: entries[0][1] };
-    }, [hashMap]);
+    }, [hashMap]); 
 
 
     return (

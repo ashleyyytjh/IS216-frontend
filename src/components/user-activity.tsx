@@ -85,9 +85,7 @@ function UserActivity(currentUser) {
     //Get price - done
     //Get seller name?
     const [statusFilter, setStatusFilter] = useState("All");
-    console.log(orders)
     const filteredNotes = orders.filter(note => {
-        console.log(note, 'curnote')
         const query = searchQuery.toLowerCase()
         const matchesSearch =
             //missing some code.
@@ -95,14 +93,10 @@ function UserActivity(currentUser) {
         const matchedQuery = statusFilter == "All" || note.status.toLowerCase() === statusFilter.toLowerCase();
         return matchesSearch && matchedQuery;
     })
-    console.log(filteredNotes)
     const pagesNeeded = Math.ceil(filteredNotes.length / notesPerPage)
     const startIndex = (currentPage - 1) * notesPerPage
     const endIndex = startIndex + notesPerPage
     const currentNotes = filteredNotes.slice(startIndex, endIndex)
-
-    console.log(currentNotes, 'current')
-
 
     useEffect(() => {
         setCurrentPage(1)
@@ -118,7 +112,7 @@ function UserActivity(currentUser) {
             <CardHeader>
                 <CardTitle>Order History</CardTitle>
                 <CardDescription>
-                    Past Notes You Purchased.
+                    View your previously purchased notes that remain active.
 
                 </CardDescription>
                 <div className="flex justify-center align-middle gap-1.5">

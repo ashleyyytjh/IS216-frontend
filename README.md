@@ -113,7 +113,7 @@ Provide screenshots and captions showing how users interact with your app.
    - Users are able to view notes put up by other users.
 
 2. **Roadmap**  
-   <img src="screenshots/compose.png" width="600">  
+   <img src="screenshots/roadmap.png" width="600">  
    - Users can also reference a roadmap based on their degree to search for desired notes.
 
 3. **Semantic Search**  

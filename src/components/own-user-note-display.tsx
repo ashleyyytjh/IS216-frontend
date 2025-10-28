@@ -167,8 +167,16 @@ export const UserOwnNote = (currentUserInfo) => {
                           <Button
                             size="sm"
                             variant='outline'
-                            onClick={() =>
-                              navigate(`/listings/${(listing as any).note_id || listing.id}`)
+                            disabled={listing['pending']}
+                            onClick={() => {
+                              if (listing['pending']) { 
+                                toast.warning('Your note is still going through processing. Please view again later.')
+                              }else{
+                                navigate(`/listings/${(listing as any).note_id || listing.id}`)
+                              }
+                              
+                            }
+
                             }
                           >
                             <Eye />
@@ -245,7 +253,7 @@ export const UserOwnNote = (currentUserInfo) => {
                             {listing["pending"] ? (
                               <Badge className=" bg-amber-100 text-amber-700 border-none px-2 py-1 mt-2"> Processing </Badge>
                             ) : (
-                              <Badge className=" bg-green-100 text-green-700 border-none px-2 py-1 mt-2"> Processing </Badge>
+                              <Badge className=" bg-green-100 text-green-700 border-none px-2 py-1 mt-2"> Succcess </Badge>
                             )}
                           </div>
                         </CardFooter>

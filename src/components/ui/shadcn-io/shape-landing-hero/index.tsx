@@ -36,15 +36,15 @@ function ElegantShape({
 }: ElegantShapeProps) {
   
  React.useEffect(() => {
-    console.log(boundsRef + "Hau");
+    
   }, [boundsRef]);
-  console.log(boundsRef + "Hau");
+
  
   const controls = useDragControls()
 
   return (
     <motion.div
-      drag dragControls={controls} dragElastic={1} dragConstraints={boundsRef ?? undefined} dragMomentum={true} dragTransition={{ bounceStiffness: 600, bounceDamping: 10 }} onViewportLeave={(entry) => console.log(entry ? entry.intersectionRect : "")}
+      drag dragControls={controls} dragElastic={1} dragConstraints={boundsRef ?? undefined} dragMomentum={true} dragTransition={{ bounceStiffness: 600, bounceDamping: 10 }}
       initial={{ opacity: 0, y: -150, rotate: rotate - 15 }}
       animate={{ opacity: 1, y: 0, rotate }}
       transition={{

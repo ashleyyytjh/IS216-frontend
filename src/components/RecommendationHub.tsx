@@ -14,6 +14,7 @@ import {
   type TermPhase,
 } from "@/utils/calendar";
 import { buildQuery } from "@/utils/buildQuery";
+import { useOrderPopularity } from "@/hooks/useOrderPopularity";
 
 const EMPTY_MODULES: string[] = [];
 
@@ -73,6 +74,12 @@ export default function RecommendationsHub({
     [safeProfile.modules, examPhase, safeProfile.major]
   );
 
+  // Popularity (shared)
+  const { counts: popularityCounts, signature: popularitySig } = useOrderPopularity({
+    statuses: ["succeeded"],
+    days: 90,
+  });
+
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.25, margin: "0px 0px -10% 0px" });
   const prefersReducedMotion = useReducedMotion();
@@ -117,6 +124,7 @@ export default function RecommendationsHub({
     >
       {isLoggedIn ? (
         <>
+          {/* For Your Modules — phase-driven (adds type via queryOverride) */}
           <motion.div variants={itemVariants}>
             {showSkeletons ? (
               <RowSkeleton
@@ -130,10 +138,15 @@ export default function RecommendationsHub({
                 limit={8}
                 queryOverride={phaseQuery}
                 calendar={calendar}
+                mode="user-popular"
+                strictModules
+                popularityCounts={popularityCounts}
+                popularitySig={popularitySig}
               />
             )}
           </motion.div>
 
+          {/* Popular in Major — NOT phase-driven (no type) */}
           {safeProfile.major ? (
             <motion.div variants={itemVariants}>
               {showSkeletons ? (
@@ -149,33 +162,41 @@ export default function RecommendationsHub({
                   subtitle="Top-rated notes from your major"
                   limit={6}
                   calendar={calendar}
+                  mode="user-popular"
                   strictMajor
+                  popularityCounts={popularityCounts}
+                  popularitySig={popularitySig}
                 />
               )}
             </motion.div>
           ) : null}
 
+          {/* Trending in Your Modules — NOT phase-driven (no type) */}
           <motion.div variants={itemVariants}>
             {showSkeletons ? (
               <RowSkeleton
                 title="Trending in Your Modules"
-                subtitle="What students are viewing right now"
+                subtitle="What students are buying right now"
                 skeletonCount={6}
               />
             ) : (
               <RecommendationRow
                 profile={safeProfile}
                 title="Trending in Your Modules"
-                subtitle="What students are viewing right now"
+                subtitle="What students are buying right now"
                 limit={6}
                 calendar={calendar}
+                mode="user-popular"
                 strictModules
+                popularityCounts={popularityCounts}
+                popularitySig={popularitySig}
               />
             )}
           </motion.div>
         </>
       ) : (
         <>
+          {/* Essentials — phase-driven (adds type via queryOverride) */}
           <motion.div variants={itemVariants}>
             {showSkeletons ? (
               <RowSkeleton
@@ -187,29 +208,57 @@ export default function RecommendationsHub({
               <RecommendationRow
                 profile={{ modules: [], major: undefined }}
                 title={`${examLabel} Essentials`}
-                subtitle="Sign in to get personalized recommendations for your modules"
+                subtitle="Phase-aware picks across all modules"
                 limit={8}
-                queryOverride={phaseQuery}
                 calendar={calendar}
+                mode="popular"
+                queryOverride={phaseQuery}   
+                popularityCounts={popularityCounts}
+                popularitySig={popularitySig}
               />
             )}
           </motion.div>
+
+          {/* Top-Rated Right Now — NO query (broad), NO type */}
+          <motion.div variants={itemVariants}>
+            {showSkeletons ? (
+              <RowSkeleton
+                title="Top-Rated Right Now"
+                subtitle="Most purchased across the marketplace"
+                skeletonCount={8}
+              />
+            ) : (
+              <RecommendationRow
+                profile={{ modules: [], major: undefined }}
+                title="Top-Rated Right Now"
+                subtitle="Most purchased across the marketplace"
+                limit={8}
+                calendar={calendar}
+                mode="popular"
+                queryOverride=""          
+                popularityCounts={popularityCounts}
+                popularitySig={popularitySig}
+              />
+            )}
+          </motion.div>
+
+          {/* Recently Listed Notes — NO query (broad), NO type */}
           <motion.div variants={itemVariants}>
             {showSkeletons ? (
               <RowSkeleton
                 title="Recently Listed Notes"
-                subtitle="Sign in to get personalized recommendations for your modules"
+                subtitle="Newest uploads from the community"
                 skeletonCount={8}
               />
             ) : (
               <RecommendationRow
                 profile={{ modules: [], major: undefined }}
                 title="Recently Listed Notes"
-                subtitle="Recent notes uploaded by the greatest"
+                subtitle="Newest uploads from the community"
                 limit={8}
-                queryOverride=""
                 calendar={calendar}
                 mode="recent"
+                queryOverride=""          
               />
             )}
           </motion.div>

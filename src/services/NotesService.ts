@@ -16,7 +16,6 @@ import { CreateComposeNotesReq, CreateComposeNotesRes, GetComposeNotesRes, Updat
 
 export const searchNotes = async (queryParams: URLSearchParams): Promise<SearchNotesRes> => {
   const response = await axiosInstance.get('/notes/search', { params: queryParams });
-  console.log(response.data)
   const data = SearchNotesRes.parse(response.data)
   return data;
 }
@@ -31,7 +30,7 @@ export const getNotesById = async (id: string) => {
 }
 
 export const createNotes = async (noteData: CreateNotesReq) => {
-  console.log("creating note with data:", noteData)
+
   const response = await axiosInstance.post('/notes', noteData);
   return response.data as CreateNotesRes;
 }
@@ -44,7 +43,7 @@ export const confirmUpload = async (noteId: string) => {
 //notes that the user uploaded
 export const getUserOwned = async () => {
   const response = await axiosInstance.get(`/notes/owned`)
-  console.log(response.data)
+ 
   return response.data
 }
 

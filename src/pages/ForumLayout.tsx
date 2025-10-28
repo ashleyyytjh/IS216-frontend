@@ -7,7 +7,7 @@ const ForumPageLayout = () => {
   return (
     <div className="flex relative">
       <ForumSidebar selectedId={noteId} />
-      <main className="flex flex-col justify-center h-full items-center w-full ">
+      <main className="flex flex-col justify-center h-full items-center w-full">
         <Outlet />
       </main>
     </div>

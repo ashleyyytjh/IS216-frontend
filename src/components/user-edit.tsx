@@ -32,17 +32,21 @@ function UserEdit(currentUser) {
   const [userMod, setUserMod] = useState("")
   const [previewImage, setPreviewImage] = useState(currentUser["imageUrl"] || "")
 
-  const addNewMod = () => {
-    if (userMod.trim() === "") {
-      return;
-    } else {
-      setCurMods((prev) => [...prev, userMod])
-      setUserMod("")
-    }
+const addNewMod = () => {
+  console.log(curModsState)
+  const trimmed = userMod.trim().toLowerCase(); 
+  if (trimmed === "") return;
 
+  if (curModsState.includes(trimmed)) {
+    toast.error("Module already added!");
+    return;
   }
+  setCurMods((prev) => [...prev, trimmed]);
+  setUserMod("");
+};
 
   const removeModule = (moduleName: string) => {
+    console.log('hi')
     setCurMods((prev) => prev.filter((m) => m !== moduleName))
   }
 
@@ -138,7 +142,9 @@ function UserEdit(currentUser) {
         </CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form className="space-y-8" onSubmit={handleSubmit(onSubmit, onInvalid)}>
+        <form className="space-y-8" onSubmit={handleSubmit(onSubmit, onInvalid)}   onKeyDown={(e) => {
+    if (e.key === "Enter") e.preventDefault();
+  }}>
           <div className="flex justify-center ml-auto mr-auto">
             <div className="relative w-28 h-28">
               <Avatar className="w-28 h-28 border-2 border-gray-200">
@@ -247,9 +253,12 @@ function UserEdit(currentUser) {
                 <Input
                   value={userMod}
                   onChange={handleInputChange}
+                  formNoValidate
                   placeholder="Add your modules here"
+
                 />
-                <Button type="button" onClick={addNewMod}>
+                <Button type="button" onClick={addNewMod}
+                >
                   <Plus />
                 </Button>
               </div>

@@ -252,8 +252,8 @@ export const UserOwnNote = (currentUserInfo) => {
                         {/* to={`/listings/${(listing as any).note_id || listing.id}`}*/}
                         {/* deleteNote(``) */}
                         <CardFooter className="flex flex-row-reverse justify-between gap-x-2 pl-0 pr-0">
-                          <Button size="sm" className="w-[48%]" onClick={() => { navigate(`/listings/${(listing as any).note_id || listing.id}`) }}>Details</Button>
-                          <Button size="sm" className="bg-red-400 hover:bg-red-500 w-[48%] px-2 py-1 border-none gap-1 items-center" onClick={() => { openDialog(`${(listing as any).note_id || listing.id}`) }}>Delete</Button>
+                          <Button size="sm" className="w-[48%] !text-xs" onClick={() => { navigate(`/listings/${(listing as any).note_id || listing.id}`) }}>Details</Button>
+                          <Button size="sm" className="bg-red-400 hover:bg-red-500 w-[48%] px-2 py-1 border-none gap-1 items-center !text-xs" onClick={() => { openDialog(`${(listing as any).note_id || listing.id}`) }}>Delete</Button>
                         </CardFooter>
                       </Card>
 

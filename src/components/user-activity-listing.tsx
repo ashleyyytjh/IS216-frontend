@@ -45,7 +45,7 @@ const UserActivityListing = ({ note }) => {
             </CardDescription>
           )}
           <CardDescription className="text-sm">
-            Type : {n.noteType?.charAt(0).toUpperCase() + n.noteType?.slice(1)}
+            Type : {n.noteType?.charAt(0).toUpperCase() + n.noteType?.slice(1)} Note
           </CardDescription>
         </CardHeader>
 

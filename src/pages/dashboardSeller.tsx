@@ -60,6 +60,14 @@ export default function DashboardSeller() {
         const orders = Array.isArray(ordersRaw)
           ? ordersRaw
           : ordersRaw?.data ?? [];
+        //             orders.push({
+        //   "id": 100,
+        //   "note_id": "68fe069d4605bbd8372ce915",
+        //   "buyer_id": "199a059c-4021-7030-3aef-d2d26653bb5d",
+        //   "stripe_transaction_id": "pi_3SIPyk3X5OiOA0YE0aWfn9Oj",
+        //   "status": "succeeded",
+        //   "price": 1150
+        // })
         //"68f46033d4eca64133084d5d"
 
 
@@ -115,14 +123,7 @@ export default function DashboardSeller() {
 
 
   // to test, add this at line 53.
-  //   orders.push({
-  //   "id": 100,
-  //   "note_id": "68f46033d4eca64133084d5d",
-  //   "buyer_id": "199a059c-4021-7030-3aef-d2d26653bb5d",
-  //   "stripe_transaction_id": "pi_3SIPyk3X5OiOA0YE0aWfn9Oj",
-  //   "status": "succeeded",
-  //   "price": 11500
-  // })
+
 
   //Testing Data for us to mess with. Add at line 101 to test.
   //dummy additions (optional)

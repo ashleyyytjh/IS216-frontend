@@ -18,8 +18,6 @@ G4 Group 16
 | <img src="/photos/dylan.jpg" width="80"> | Sim Jun Zhi Dylan | Order Details and Composing Notes UI |
 | <img src="/photos/ashwin.jpg" width="80"> | Ashwin | Overall Styling of Web Application and Roadmap Page |
 
-> Place all headshot thumbnails in the `/photos` folder (JPEG or PNG).
-
 ---
 
 ## Business Problem
@@ -161,9 +159,6 @@ Provide screenshots and captions showing how users interact with your app.
    <img src="screenshots/dashboard2.png" width="600">  
    - Users can view key metrics regarding the performance of their notes.
 
-
-
-> Save screenshots inside `/screenshots` with clear filenames.
 
 ---
 
@@ -377,6 +372,7 @@ npm run test
 | `CORS policy error` | Backend not allowing requests | Enable your domain in CORS settings |
 | `.env` variables undefined | Missing `VITE_` prefix | Rename variables to start with `VITE_` |
 | `npm run dev` fails | Node version mismatch | Check Node version (`node -v` ≥ 18) |
+| Unable to highlight annotations in lower viewports | Difference between how Chrome and other browsers handles DOM. | Try testing the highlighting feature on Firefox with a smaller viewport. |
 
 ---
 
@@ -384,12 +380,12 @@ npm run test
 
 Each member should contribute 2–3 sentences on their learning and project experience.
 
-> - *Nicholas:* Learned to build user-friendly frontend based on components by UI libraries and customisation of these libraries. The experience has allowed me to become stronger in data manipulation to present my data in a logical manner. Gained experience in hooking up backend code with frontend libraries in a quick manner and effectively. 
-> - *Ashley:* Had the experience to touch on different visual libraries such as framer motion and tailwind animations. Gained more experience in implementing new kinds of services, such as the forum for both front and backend. Great experience to learn and adapt together with teammates of varying experiences and eventually produce a great product together.
-> - *Ashwin:* Gained experience connecting frontend and backend APIs.  
-> - *Darren:* Learnt to hook up backend api endpoints to frontend and learnt more about UI librares like shadcn and how they work under the hood. This experience has gave move exposure on the structure of frontend like components, props and layout and how to break each design of frontends into reusuable and neat components.   
-> - *Dylan:* Gained hands-on experience creating responsive and user-friendly web interfaces, integrating various libraries to enhance functionality and design. The project helped me to understand the overall structure of a full working web application and how frontend components connect with backend logic.  
-> - *Joel:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
+ - *Nicholas:* Learned to build user-friendly frontend based on components by UI libraries and customisation of these libraries. The experience has allowed me to become stronger in data manipulation to present my data in a logical manner. Gained experience in hooking up backend code with frontend libraries in a quick manner and effectively. 
+ - *Ashley:* Had the experience to touch on different visual libraries such as framer motion and tailwind animations. Gained more experience in implementing new kinds of services, such as the forum for both front and backend. Great experience to learn and adapt together with teammates of varying experiences and eventually produce a great product together.
+ - *Ashwin:* Gained experience connecting frontend and backend APIs.  
+ - *Darren:* Learnt to hook up backend api endpoints to frontend and learnt more about UI librares like shadcn and how they work under the hood. This experience has gave move exposure on the structure of frontend like components, props and layout and how to break each design of frontends into reusuable and neat components.   
+ - *Dylan:* Gained hands-on experience creating responsive and user-friendly web interfaces, integrating various libraries to enhance functionality and design. The project helped me to understand the overall structure of a full working web application and how frontend components connect with backend logic.  
+ - *Joel:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
 
 
 ### Key takeaways from working with real-world frameworks 

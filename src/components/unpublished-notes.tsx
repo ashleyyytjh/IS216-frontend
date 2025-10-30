@@ -178,7 +178,7 @@ export function UnpublishedNotes() {
                           {note.title}
                         </TableCell>
                         <TableCell>
-                          {note.module == "" ? <>GENERAL</> : note.module}
+                          {note.module == undefined ? <>-</> : note.module.toUpperCase()}
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-x-2 gap-y-2 flex-row flex-wrap">

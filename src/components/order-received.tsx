@@ -1,7 +1,7 @@
 "use client"
 
 import { useNavigate } from "react-router-dom"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -38,6 +38,10 @@ export function OrderReceived({
   const endIndex = startIndex + itemsPerPage
   let currentItems = filteredOrders.slice(startIndex, endIndex) //slice to get the actual item
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage))
+
+  useEffect(() => {
+  setCurrentPage(1)
+}, [searchQuery, itemsPerPage, orders])
 
   return (
     <div className="flex-1 space-y-3">

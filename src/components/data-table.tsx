@@ -40,7 +40,7 @@ export function DataTable(props: CurrentUserProp) {
 
   const [ownedID, setOwnedID] = useState<OwnedMap>({})
   const [orders, setAllOrders] = useState<any[]>([])
-  const [view, setView] = useState<"past-performance" | "outline" | "disputes">("past-performance")
+  const [view, setView] = useState<"past-performance" | "outline" | "disputes">("outline")
 
 
   useEffect(() => {

@@ -57,7 +57,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
     <div className="grid grid-cols-3 [@media(max-width:992px)]:grid-cols-1 gap-4 mb-5 *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
       <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
-          <CardDescription className="text-foreground text-lg font-bold">Total Revenue</CardDescription>
+          <CardDescription className="text-foreground text-sm font-semibold">Total Revenue</CardDescription>
           <div className="relative h-8 flex">
             <div className={`absolute transition-opacity duration-700 ${loadInfo ? "opacity-100" : "opacity-0"}`}>
               {
@@ -74,7 +74,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
             >
               {/* ReactTyped - react wrapper around typed.js lib. Provides with props, hooks, cleanups. Adding one more string make you type back and a new one.*/}
                 <ReactTyped
-                strings={[`$${String(Number(formatNumber(totalSales)).toFixed(2))}`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                strings={[`$${String(Number(formatNumber(totalSales)).toFixed(2))}`]} typeSpeed={50} backSpeed={100} showCursor={false} className="text-3xl font-normal"/>
             </CardTitle>
           </div>
           <CardAction/>
@@ -93,12 +93,12 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
           ) : totalSales <= 100 ? (
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500 transition-all duration-500 ease-in-out">
               <ReactTyped
-                strings={[`Earnings have not been great.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                strings={[`Earnings have not been great.`]} typeSpeed={50} backSpeed={100} showCursor={false} className="text-xs"/>
             </div>
           ) : (
             <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b] transition-all duration-500 ease-in-out">
               <ReactTyped
-                strings={[`Keep it going!`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                strings={[`Keep it going!`]} typeSpeed={50} backSpeed={100} showCursor={false} className="text-xs"/>
             </div>
           )}
         </CardFooter>
@@ -106,7 +106,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
 
       <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
-          <CardDescription className="text-foreground text-lg font-bold">Total Notes Sold</CardDescription>
+          <CardDescription className="text-foreground text-sm font-semibold">Total Notes Sold</CardDescription>
           <div className="relative h-8 flex">
             <div className={`absolute transition-opacity duration-700 ${loadInfo ? "opacity-100" : "opacity-0"}`}>
               {
@@ -121,7 +121,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               className={`absolute text-xl font-normal tabular-nums transition-all duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
                 }`}
             >
-              <ReactTyped strings={[`${totalNoteCount} sold.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+              <ReactTyped strings={[`${totalNoteCount}`]} typeSpeed={50} backSpeed={100} showCursor={false} className="text-3xl font-normal"/>
             </CardTitle>
           </div>
           <CardAction />
@@ -141,12 +141,12 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
           ) : totalNoteCount <= 5 ? (
             <div className="line-clamp-1 flex gap-2 font-medium text-red-500">
               <ReactTyped
-                strings={[`You can do better!`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                strings={[`You can do better!`]} typeSpeed={50} backSpeed={100} showCursor={false} className="text-xs"/>
             </div>
           ) : (
             <div className="line-clamp-1 flex gap-2 font-medium text-[#29be8b]">
               <ReactTyped
-                strings={[`More notes for the community!`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                strings={[`More notes for the community!`]} typeSpeed={50} backSpeed={100} showCursor={false} className="text-xs" />
             </div>
           )}
 
@@ -155,7 +155,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
 
       <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
-          <CardDescription className="text-foreground text-lg font-bold">Popular Module</CardDescription>
+          <CardDescription className="text-foreground text-sm font-semibold">Popular Module</CardDescription>
           <div className="relative h-8 flex">
             <div className={`absolute transition-opacity duration-700 ${loadInfo ? "opacity-100" : "opacity-0"}`}>
               {
@@ -172,7 +172,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
             >
               <ReactTyped strings={[`${topModule?.module
                 ? topModule.module
-                : "-"}`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                : "-"}`]} typeSpeed={50} backSpeed={100} showCursor={false} className="text-3xl font-normal"/>
               
             </CardTitle>
           </div>
@@ -195,11 +195,11 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               {
                 topModule.count > 1 ?(
                   <>
-                  <ReactTyped strings={[`${topModule.count} notes of ${topModule.module} sold.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                  <ReactTyped strings={[`${topModule.count} notes of ${topModule.module} sold.`]} typeSpeed={50} backSpeed={100} showCursor={false} className="text-xs"/>
                   </>
                 ):(
                   <>
-                  <ReactTyped strings={[`${topModule.count} note of ${topModule.module} sold.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+                  <ReactTyped strings={[`${topModule.count} note of ${topModule.module} sold.`]} typeSpeed={50} backSpeed={100} showCursor={false} className="text-xs"/>
                   </>
                 )
               }
@@ -212,6 +212,8 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
           )}
         </CardFooter>
       </Card>
+
+      
     </div>
   )
 }

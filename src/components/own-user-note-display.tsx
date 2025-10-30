@@ -136,25 +136,25 @@ export const UserOwnNote = (currentUserInfo) => {
                       <TableRow key={listing.id}>
                         <TableCell className="font-medium pl-[2rem]">{listing.originalName}</TableCell>
                         <TableCell className="text-foreground">
-                          {listing.module}
+                          {listing.module?.toUpperCase()}
                         </TableCell>
                         <TableCell>
-
-                          {listing.tags.length == 0 ? (
-                            <p className="text-muted-foreground">No tags</p>
-                          ) : (<div className="flex flex-wrap items-center gap-1">
-                            {listing.tags.map((tag, i) => (
-                              <span key={tag} className="flex items-center">
-                                <Badge className="px-3 py-1 rounded-full">
-                                  {tag}
-                                </Badge>
-                                {i < listing.tags.length - 1 && (
-                                  <span className="mx-1 text-muted-foreground">•</span>
-                                )}
-                              </span>
-                            ))}
-                          </div>)}
-
+                          {listing.tags.length === 0 ? (
+                            <p className="text-muted-foreground">-</p>
+                          ) : (
+                            <div className="flex flex-wrap items-center gap-1 overflow-x-auto scrollbar-thin text-ellipsis">
+                              {listing.tags
+                                .filter(tag => tag.length < 20)
+                                .map((tag, i, arr) => (
+                                  <span key={tag} className="flex items-center">
+                                    <Badge className="px-3 py-1 rounded-full">{tag}</Badge>
+                                    {i < arr.length - 1 && (
+                                      <span className="mx-1 text-muted-foreground">•</span>
+                                    )}
+                                  </span>
+                                ))}
+                            </div>
+                          )}
                         </TableCell>
                         <TableCell>
                           {

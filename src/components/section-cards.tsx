@@ -116,13 +116,12 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
                   <></>
                 )
               }
-
             </div>
             <CardTitle
               className={`absolute text-xl font-normal tabular-nums transition-all duration-700 ${loadInfo ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
                 }`}
             >
-              <ReactTyped strings={[`${totalNoteCount} note sold.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
+              <ReactTyped strings={[`${totalNoteCount} sold.`]} typeSpeed={50} backSpeed={100} showCursor={false}/>
             </CardTitle>
           </div>
           <CardAction />

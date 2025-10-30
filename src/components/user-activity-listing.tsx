@@ -17,7 +17,7 @@ const UserActivityListing = ({ note }) => {
   const n = note.note ? { ...note, ...note.note } : note
   const formatCurrency = (num: number) =>
     (num / 100).toLocaleString("en-SG", { style: "currency", currency: "SGD" })
-  console.log(n.noteType)
+  console.log(n, 'current Note.')
   return (
     <>
       <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer relative overflow-hidden">
@@ -113,7 +113,8 @@ const UserActivityListing = ({ note }) => {
                   <Button
                   size="sm"
                     className="flex items-center gap-1 border-none px-2 py-1 bg-slate-900 hover:bg-slate-800 text-white"
-                    onClick={() => navigate(`/orderdetails/${n.id}`)}
+                    onClick={() => navigate(`/orderdetails/${n.id}`, { state: { order: n } })}
+                    // onClick={() => navigate(`/orderdetails/${n.id}`)}
                   >
                     <span className="text-xs font-medium">Order Details</span>
                   </Button>

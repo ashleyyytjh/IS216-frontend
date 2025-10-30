@@ -7,7 +7,8 @@ import { ArrowLeft, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { getOrders } from "@/services/OrdersService";
-import { getNotesById } from "@/services/NotesService";
+import { getNotesById, getSingleCompose } from "@/services/NotesService";
+import { normalize } from "path";
 
 /* ---------------- Types ---------------- */
 type ApiOrder = {
@@ -15,6 +16,7 @@ type ApiOrder = {
   note_id?: string | number;
   price?: number;
   createdAt?: string;
+  noteType?: string;
 };
 
 type OrderItem = {
@@ -63,18 +65,23 @@ export default function OrderDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation() as { state?: { order?: ApiOrder } };
-
   const [vm, setVm] = React.useState<OrderVM | null>(null);
   const [loading, setLoading] = React.useState<boolean>(!location.state?.order);
   const [error, setError] = React.useState<string | null>(null);
   const ord = location.state?.order;
-
+  console.log(ord?.noteType);
   React.useEffect(() => {
     if (!ord) return;
     (async () => {
       try {
-        const note = ord.note_id ? await getNotesById(String(ord.note_id)).catch(() => null) : null;
-        setVm(toVM(ord, note || undefined));
+        if (ord?.noteType == "normal") {
+          const note = ord.note_id ? await getNotesById(String(ord.note_id)).catch(() => null) : null;
+          setVm(toVM(ord, note || undefined));
+        } else {
+          const note = ord.note_id ? await getSingleCompose(String(ord.note_id)).catch(() => null) : null;
+          setVm(toVM(ord, note || undefined));
+        }
+
       } catch (e: any) {
         setError(e?.message ?? "Failed to prepare order");
       } finally {
@@ -88,11 +95,23 @@ export default function OrderDetails() {
     (async () => {
       try {
         setLoading(true);
-        const all: ApiOrder[] = await getOrders();
+        let all: ApiOrder[] = await getOrders();
+                //                       all.push({
+                //     "id": 900,
+                //     "note_id": "68fdc48ada0006fb103e9153",
+                //     "price": 1150
+                // })
         const found = all.find((o) => String(o.id) === String(id));
         if (!found) throw new Error("Order not found");
-        const note = found.note_id ? await getNotesById(String(found.note_id)).catch(() => null) : null;
-        setVm(toVM(found, note || undefined));
+        if(ord?.noteType == "normal"){
+          const note = found.note_id ? await getNotesById(String(found.note_id)).catch(() => null) : null;
+          setVm(toVM(found, note || undefined));
+        }else{
+          const note = found.note_id ? await getSingleCompose(String(found.note_id)).catch(() => null) : null;
+          setVm(toVM(found, note || undefined));
+        }
+        
+        
       } catch (e: any) {
         setError(e?.message ?? "Failed to load order");
       } finally {
@@ -187,9 +206,8 @@ export default function OrderDetails() {
                   {t.label}
                 </div>
                 <div
-                  className={`mt-1 ${
-                    i === 2 ? "font-semibold" : "font-medium"
-                  } text-lg`}
+                  className={`mt-1 ${i === 2 ? "font-semibold" : "font-medium"
+                    } text-lg`}
                 >
                   {t.value}
                 </div>
@@ -201,7 +219,16 @@ export default function OrderDetails() {
 
           {/* Items */}
           {vm.items.map((it, idx) => {
-            const to = `/listings/${encodeURIComponent(it.sku)}`;
+            console.log(vm)
+            console.log(ord)
+            console.log(ord?.noteType, 'note type')
+            let to =""
+            if(ord?.noteType == "composed"){
+              to = `/article/${encodeURIComponent(it.sku)}`;
+            }else{
+              to = `/listings/${encodeURIComponent(it.sku)}`;
+            }
+            
             return (
               <motion.div
                 key={idx}

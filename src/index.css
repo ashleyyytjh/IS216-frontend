@@ -53,7 +53,13 @@
     backgroundPosition: 100% -100%;
     }
   }
-}
+  --animate-aurora: aurora 60s linear infinite
+;
+  @keyframes aurora {
+  from {
+    backgroundPosition: 50% 50%, 50% 50%;}
+  to {
+    backgroundPosition: 350% 50%, 350% 50%;}}}
 
 :root {
   font-family: "Geist Sans", system-ui, sans-serif;
@@ -193,7 +199,6 @@
   border-bottom-right-radius: 10px;
   box-shadow: 0.5px 0.5px 0px 0cqh rgb(219, 219, 219);
 
- 
   transition:
     transform 1s ease,
     width 0.2s ease,
@@ -215,9 +220,7 @@
   clip-path: polygon(17.8% 0.2%,100% 0%,100% 100%, 0% 100%, 0% 11.5%);
 }
 
-
 .__floater__arrow {
   border: none;
   opacity: 95%;
 }
-

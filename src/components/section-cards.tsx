@@ -12,6 +12,7 @@ import SpinItem from "./spinner"
 import { useEffect, useState } from "react"
 import {ReactTyped} from 'react-typed';
 
+
 type SectionCardsProps = {
   loadInfo: boolean
   totalSales: number
@@ -54,8 +55,8 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
 
   }, [loadInfo])
   return (
-    <div className="grid grid-cols-3 [@media(max-width:992px)]:grid-cols-1 gap-4 mb-5 *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
-      <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
+    <div className="grid grid-cols-3 [@media(max-width:992px)]:grid-cols-1 gap-4 mb-5 dark:*:data-[slot=card]:bg-card">
+      <Card className="bg-gray-100 border border-gray-200 shadow-lg transition-all duration-300 hover:!shadow-xl ">
         <CardHeader>
           <CardDescription className="text-foreground text-sm font-semibold">Total Revenue</CardDescription>
           <div className="relative h-8 flex">
@@ -104,7 +105,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
         </CardFooter>
       </Card>
 
-      <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
+      <Card className="bg-gray-100 border border-gray-200 shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
           <CardDescription className="text-foreground text-sm font-semibold">Total Notes Sold</CardDescription>
           <div className="relative h-8 flex">
@@ -153,7 +154,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
         </CardFooter>
       </Card>
 
-      <Card className="bg-[#f1f5f9] shadow-lg transition-all duration-300 hover:!shadow-xl">
+      <Card className="bg-gray-100 border border-gray-200 shadow-lg transition-all duration-300 hover:!shadow-xl">
         <CardHeader>
           <CardDescription className="text-foreground text-sm font-semibold">Popular Module</CardDescription>
           <div className="relative h-8 flex">
@@ -206,7 +207,7 @@ export function SectionCards({ loadInfo, totalSales, totalNoteCount, topModule }
               
             </div>
           ) : (
-            <div className="line-clamp-1 flex gap-2 font-medium text-[#FF0000]">
+            <div className="line-clamp-1 flex gap-2 font-medium text-[#FF0000] text-xs">
               No popular module data available.
             </div>
           )}

@@ -92,11 +92,22 @@ export function DataTable(props: CurrentUserProp) {
       //   status: "succeeded",
       //   stripe_transaction_id: "pi_test_12345"
       // });
+
+                //               resp.push({
+                //     "id": 900,
+                //     "note_id": "68fdc48ada0006fb103e9153",
+                //     "buyer_id": "594a352c-2081-706e-b679-00b936e6b8f9",
+                //     "stripe_transaction_id": "pi_3SIPyk3X5OiOA0YE0aWfn9Oj",
+                //     "status": "succeeded",
+                //     "price": 1150
+                // })
         let userOrder = resp.filter(
           (item: any) =>
             Object.keys(ownedID).includes(item.note_id) &&
             item.status === "succeeded"
         );
+        console.log(userOrder)
+        
         resp.push()
         console.log(userOrder)
         userOrder = userOrder.map((i: any) => ({
@@ -108,7 +119,7 @@ export function DataTable(props: CurrentUserProp) {
           originalName: ownedID[i.note_id]?.originalName,
           description: ownedID[i.note_id]?.description,
         }));
-
+        
         setAllOrders([...userOrder]);
       })
       .catch((e) => {

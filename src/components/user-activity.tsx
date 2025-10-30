@@ -40,21 +40,30 @@ function UserActivity(currentUser) {
                 //     status: "succeeded",
                 //     stripe_transaction_id: "pi_3SI0K93X5OiOA0YE1G7ztLfM",
                 // })
+                // rawOrders.push({
+                //     "id": 900,
+                //     "note_id": "68fe069d4605bbd8372ce915",
+                //     "buyer_id": `${usrID}`,
+                //     "stripe_transaction_id": "pi_3SIPyk3X5OiOA0YE0aWfn9Oj",
+                //     "status": "succeeded",
+                //     "price": 1150
+                // })
                 const succeededOrders = rawOrders
                 const enrichedOrders = await Promise.all(
                     succeededOrders.map(async (order) => {
                         let note: any = null;
                         try {
                             const normal = await getNotesById(order.note_id);
-                            if (normal !== undefined && normal !== null) {
+                            if (normal !== undefined && Object.keys(normal).length > 0) {
                                 note = normal
                                 note.noteType = "normal";
                                 ;
                             } else {
                                 console.warn(`Normal note not found (${order.note_id}), trying composed...`);
                                 const composedResp = await getSingleCompose(String(order.note_id));
-                                if (composedResp?.data) {
-                                    note = composedResp?.data;
+                                console.log(order, "is composed.", composedResp)
+                                if (composedResp) {
+                                    note = composedResp;
                                     note.noteType = "composed"
                                 } else {
                                     note = null
@@ -87,9 +96,11 @@ function UserActivity(currentUser) {
     const [statusFilter, setStatusFilter] = useState("All");
     const filteredNotes = orders.filter(note => {
         const query = searchQuery.toLowerCase()
-        const matchesSearch =
-            //missing some code.
-            note?.note?.originalName?.toLowerCase()?.includes(query)
+        const matchesSearch = (
+            note?.note?.originalName?.toLowerCase() ??
+            note?.note?.title?.toLowerCase() ??
+            ""
+        ).includes(query)
         const matchedQuery = statusFilter == "All" || note.status.toLowerCase() === statusFilter.toLowerCase();
         return matchesSearch && matchedQuery;
     })
@@ -112,7 +123,7 @@ function UserActivity(currentUser) {
             <CardHeader>
                 <CardTitle>Order History</CardTitle>
                 <CardDescription>
-                    View your previously purchased notes that remain active.
+                    View your previously purchased notes that is still active.
 
                 </CardDescription>
                 <div className="flex justify-center align-middle gap-1.5">
@@ -136,10 +147,13 @@ function UserActivity(currentUser) {
                 {
                     currentNotes.length > 0 ? (
                         currentNotes.map((note) => {
-                            console.log(note)
-                            return (
+                            console.log(note.note, 'line 150.')
+                            if(note.note != null){
+                                return (
                                 <UserActivityListing key={note.id} note={note} />
                             )
+                            }
+                            
                         })
 
                     ) : (
@@ -173,7 +187,7 @@ function UserActivity(currentUser) {
                         <PaginationItem>
                             <PaginationNext
                                 onClick={() =>
-                                    setCurrentPage((p) => Math.min(p + 1))
+                                    setCurrentPage((p) => Math.min(p + 1, pagesNeeded))
                                 }
                                 className={currentPage === pagesNeeded ? "pointer-events-none opacity-50" : ""}
                             />

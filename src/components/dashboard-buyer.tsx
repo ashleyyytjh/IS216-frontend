@@ -99,35 +99,33 @@ function DashboardBuyer(currentUser) {
     return (
         <>
             <div className="w-full flex flex-col gap-y-5 lg:flex-row gap-x-5 mt-4">
-                <Card className="w-[100%] md:w-[100%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
-                    <CardHeader className="justify-between flex flex-row">
-                        <h1 className="font-bold text-foreground">Total Purchased</h1>
-                        <BookOpen />
+                <Card className="w-[100%] md:w-[100%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300 gap-2">
+                    <CardHeader>
+                        <h1 className="font-bold text-foreground text-sm">Total Purchased</h1>
                     </CardHeader>
                     {
                         loading ? (
                             <CardContent>
-                                <Spinner variant="default" />
+                                <Spinner variant="default"/>
                             </CardContent>
                         ) : totalNote === 0 ? (
                             <CardContent className="flex flex-col">
-                                <p className="text-foreground text-xl font-medium">0</p>
-                                <p className="text-sm font-light text-foreground">No notes purchased yet.</p>
+                                <p className="text-foreground text-2xl font-medium">0</p>
+                                <p className="text-sm font-light text-foreground mt-1">No notes purchased yet.</p>
                             </CardContent>
                         ) : (
                             <CardContent className="flex flex-col">
-                                <p className="text-foreground text-xl font-medium">{totalNote}</p>
-                                <p className="text-sm font-light text-foreground">Notes purchased.</p>
+                                <p className="text-foreground text-2xl font-medium">{totalNote}</p>
+                                <p className="text-sm font-light text-foreground mt-1">Notes purchased.</p>
                             </CardContent>
                         )
                     }
 
                 </Card>
 
-                <Card className="w-[100%] md:w-[100%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
-                    <CardHeader className="flex flex-row justify-between">
-                        <h1 className="font-bold text-foreground">Total Spent</h1>
-                        <DollarSign />
+                <Card className="w-[100%] md:w-[100%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300 gap-2">
+                    <CardHeader>
+                        <h1 className="font-bold text-foreground text-sm">Total Spent</h1>
                     </CardHeader>
                     {
                         loading ? (
@@ -136,23 +134,22 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : (normalNoteTotal + composeNoteTotal) === 0 ? (
                             <CardContent className="flex flex-col">
-                                 <p className="text-foreground text-xl font-medium">$0</p>
-                                <p className="text-sm font-light text-foreground">No spending yet.</p>
+                                 <p className="text-foreground text-2xl font-medium">$0</p>
+                                <p className="text-sm font-light text-foreground mt-1">No spending yet.</p>
                             </CardContent>
                         ) : (
                             <CardContent className="flex flex-col">
-                                 <p className="text-foreground text-xl font-medium">${Number((normalNoteTotal + composeNoteTotal) / 100).toFixed(2)}</p>
-                                <p className="text-sm font-light text-foreground">Spent in Onlynotes.</p>
+                                 <p className="text-foreground text-2xl font-medium">${Number((normalNoteTotal + composeNoteTotal) / 100).toFixed(2)}</p>
+                                <p className="text-sm font-light text-foreground mt-1">Spent in Onlynotes.</p>
                             </CardContent>
                         )
                     }
 
                 </Card>
 
-                <Card className="w-[100%] md:w-[100%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300">
-                    <CardHeader className="flex flex-row justify-between">
-                        <h1 className="font-bold text-foreground">Favourite Modules</h1>
-                        <Heart />
+                <Card className="w-[100%] md:w-[100%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300 gap-2">
+                    <CardHeader>
+                        <h1 className="font-bold text-foreground text-sm">Favourite Modules</h1>
                     </CardHeader>
                     {
                         loading ? (
@@ -161,13 +158,13 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : !topModule || topModule.count === 0 ? (
                             <CardContent className="flex flex-col">
-                                <p className="text-foreground text-xl font-medium">None</p>
-                                <p className="text-sm font-light text-foreground">No purchases yet.</p>
+                                <p className="text-foreground text-2xl font-medium">None</p>
+                                <p className="text-sm font-light text-foreground mt-1">No purchases yet.</p>
                             </CardContent>
                         ) : (
                             <CardContent className="flex flex-col">
-                                <p className="text-foreground text-xl font-medium">{topModule.module.toUpperCase()}</p>
-                                <p className="text-sm font-light text-foreground">Purchased {topModule.count} times.</p>
+                                <p className="text-foreground text-2xl font-medium">{topModule.module.toUpperCase()}</p>
+                                <p className="text-sm font-light text-foreground mt-1">Purchased {topModule.count} times.</p>
                             </CardContent>
 
                         )

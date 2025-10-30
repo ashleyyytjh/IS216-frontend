@@ -238,7 +238,7 @@ export const UserOwnNote = (currentUserInfo) => {
                         <CardContent className="space-y-2 p-0 pb-3 flex-1">
                           <p className="text-sm line-clamp-2">{listing.description}</p>
                           <p className="text-sm">
-                            Type:
+                            Type :
                             {
                               listing.type == "answerkey" || listing.type == "AnswerKey" ? (
                                 <>
@@ -285,7 +285,7 @@ export const UserOwnNote = (currentUserInfo) => {
                             {listing["pending"] ? (
                               <Badge className=" bg-amber-100 text-amber-700 border-none px-2 py-1 mt-2"> Processing </Badge>
                             ) : (
-                              <Badge className=" bg-green-100 text-green-700 border-none px-2 py-1 mt-2"> Succcess </Badge>
+                              <Badge className=" bg-green-100 text-green-700 border-none px-2 py-1 mt-2"> Success </Badge>
                             )}
                           </div>
                         </CardFooter>

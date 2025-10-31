@@ -159,7 +159,7 @@ export default function RecommendationsHub({
                 <RecommendationRow
                   profile={{ ...safeProfile, modules: safeProfile.major ? [safeProfile.major] : [] }}
                   title={`Popular in ${safeProfile.major}`}
-                  subtitle="Top-rated notes from your major"
+                  subtitle="Top selling notes from your major"
                   limit={6}
                   calendar={calendar}
                   mode="user-popular"

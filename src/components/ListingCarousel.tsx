@@ -13,6 +13,9 @@ import ListingSkeletonCard from "@/components/recommendations/ListingSkeletonCar
 import type { SearchNotesItem } from "@/types/requests/notes";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
+import { SkeletonCircle } from "./recommendations/SkeletonCircle";
+
 
 export default function ListingCarousel({
   title,
@@ -21,6 +24,10 @@ export default function ListingCarousel({
   loading = false,
   error = false,
   skeletonCount = 6,
+
+  // Empty-state controls
+  showWhenEmpty = false,
+  emptyMessage = "No notes for now — check back soon.",
 }: {
   title: string;
   subtitle?: string;
@@ -28,6 +35,10 @@ export default function ListingCarousel({
   loading?: boolean;
   error?: boolean;
   skeletonCount?: number;
+
+  /** Render a placeholder carousel when not loading/error and items are empty */
+  showWhenEmpty?: boolean;
+  emptyMessage?: string;
 }) {
   if (error) {
     return (
@@ -81,9 +92,7 @@ export default function ListingCarousel({
     ? Array.from({ length: skeletonCount }, () => "skeleton")
     : (items ?? []);
 
-  if (!loading && slideData.length === 0) {
-    return null;
-  }
+  const isEmpty = !loading && slideData.length === 0;
 
   return (
     <section
@@ -98,53 +107,103 @@ export default function ListingCarousel({
       </div>
 
       <div className="relative md:px-12">
-        <Carousel
-          opts={{
-            align: slideData.length <= 3 ? "center" : "start",
-            slidesToScroll: 1,
-          }}
-          className={cn("w-full transition-opacity", loading && "opacity-90")}
-        >
-          <CarouselContent>
-            {slideData.map((item, idx) => (
-              <CarouselItem
-                key={item === "skeleton" ? `sk-${idx}` : (item as SearchNotesItem).id}
-                className="
-                  pl-4 pr-4
-                  basis-full
-                  sm:basis-[340px]
-                  md:basis-[380px]
-                  lg:basis-[420px]
-                  xl:basis-[460px]
-                  will-change-transform
-                "
-              >
-                {item === "skeleton" ? (
-                  <ListingSkeletonCard />
-                ) : (
-                  <ListingCard data={item as SearchNotesItem} />
-                )}
-              </CarouselItem>
-            ))}
-          </CarouselContent>
+        {isEmpty && showWhenEmpty ? (
+          
+          <Carousel
+            opts={{
+              align: "center",
+              slidesToScroll: 1,
+            }}
+            className={cn("w-full transition-opacity")}
+          >
+            <CarouselContent className="justify-center">
+              {Array.from({ length: 1 }).map((_, idx) => (
+                <CarouselItem
+                  key={`empty-${idx}`}
+                  className="
+                    pl-4 pr-4
+                    basis-full
+                    sm:basis-[340px]
+                    md:basis-[380px]
+                    lg:basis-[420px]
+                    xl:basis-[460px]
+                    will-change-transform
+                   
+                  "
+                >
+                 <SkeletonCircle />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
 
-          <>
-            <CarouselPrevious
-              className="absolute -left-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border-2 border-border bg-background hover:bg-foreground hover:text-background hover:border-foreground transition-all disabled:opacity-50"
-              disabled={loading}
-              aria-disabled={loading}
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </CarouselPrevious>
-            <CarouselNext
-              className="absolute -right-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border-2 border-border bg-background hover:bg-foreground hover:text-background hover:border-foreground transition-all disabled:opacity-50"
-              disabled={loading}
-              aria-disabled={loading}
-            >
-              <ChevronRight className="h-5 w-5" />
-            </CarouselNext>
-          </>
-        </Carousel>
+            <>
+              
+              <CarouselPrevious
+                className="absolute -left-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border-2 border-border bg-background hover:bg-foreground hover:text-background hover:border-foreground transition-all"
+                disabled={loading}
+                aria-disabled={loading}
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </CarouselPrevious>
+              <CarouselNext
+                className="absolute -right-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border-2 border-border bg-background hover:bg-foreground hover:text-background hover:border-foreground transition-all"
+                disabled={loading}
+                aria-disabled={loading}
+              >
+                <ChevronRight className="h-5 w-5" />
+              </CarouselNext>
+            </>
+          </Carousel>
+        ) : (
+          
+          <Carousel
+            opts={{
+              align: slideData.length <= 3 ? "center" : "start",
+              slidesToScroll: 1,
+            }}
+            className={cn("w-full transition-opacity", loading && "opacity-90")}
+          >
+            <CarouselContent>
+              {slideData.map((item, idx) => (
+                <CarouselItem
+                  key={item === "skeleton" ? `sk-${idx}` : (item as SearchNotesItem).id}
+                  className="
+                    pl-4 pr-4
+                    basis-full
+                    sm:basis-[340px]
+                    md:basis-[380px]
+                    lg:basis-[420px]
+                    xl:basis-[460px]
+                    will-change-transform
+                  "
+                >
+                  {item === "skeleton" ? (
+                    <ListingSkeletonCard />
+                  ) : (
+                    <ListingCard data={item as SearchNotesItem} />
+                  )}
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+
+            <>
+              <CarouselPrevious
+                className="absolute -left-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border-2 border-border bg-background hover:bg-foreground hover:text-background hover:border-foreground transition-all disabled:opacity-50"
+                disabled={loading}
+                aria-disabled={loading}
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </CarouselPrevious>
+              <CarouselNext
+                className="absolute -right-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border-2 border-border bg-background hover:bg-foreground hover:text-background hover:border-foreground transition-all disabled:opacity-50"
+                disabled={loading}
+                aria-disabled={loading}
+              >
+                <ChevronRight className="h-5 w-5" />
+              </CarouselNext>
+            </>
+          </Carousel>
+        )}
       </div>
     </section>
   );

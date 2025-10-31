@@ -1,3 +1,4 @@
+// components/recommendations/RecommendationRow.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -29,9 +30,9 @@ type UseRecOptions = {
   now?: Date;
   strictModules?: boolean;
   strictMajor?: boolean;
-  mode?: RankMode; // "auto" | "recent" | "popular" | "user-popular"
+  mode?: RankMode; // "auto" | "recent
   popularityCounts?: PopularityCounts; // injected from Hub
-  popularitySig?: string;              // stable string for deps
+  popularitySig?: string;              
 };
 
 function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOptions) {
@@ -127,7 +128,7 @@ function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOpti
     options.popularitySig, // stable; don't depend on Map identity
   ]);
 
-  return { items, loading, error, basePhase } as const;
+  return { items, loading, error, basePhase, query } as const; // expose query if you want a CTA later
 }
 
 /* ===== component ===== */
@@ -194,6 +195,17 @@ export function RecommendationRow({
     return undefined;
   }, [subtitle, loading, error, matchedModules, tightenedToMajor, profile.major]);
 
+  // NEW: friendly message when result set is empty
+  const emptyMessage = useMemo(() => {
+    if (matchedModules.length > 0) {
+      return `No notes found for ${formatModulesLabel(matchedModules)} yet — check back soon.`;
+    }
+    if (tightenedToMajor && profile.major) {
+      return `No notes found for ${profile.major} yet — check back soon.`;
+    }
+    return "No notes for now — check back soon.";
+  }, [matchedModules, tightenedToMajor, profile.major]);
+
   return (
     <ListingCarousel
       title={computedTitle}
@@ -202,6 +214,9 @@ export function RecommendationRow({
       loading={loading}
       error={error}
       skeletonCount={limit}
+      
+      showWhenEmpty
+      emptyMessage={emptyMessage}
     />
   );
 }

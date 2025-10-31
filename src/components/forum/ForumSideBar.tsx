@@ -59,9 +59,6 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
         const notes: GetNotesRes[] = await Promise.all(
           succeededOrders.map(async (order) => {
             const n = await getNotesById(order.note_id);
-            if (n) {
-              return n;
-            }
           })
         );
         const sortedNotes = (notes || []).sort((a: any, b: any) => {
@@ -73,7 +70,6 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
         const uploadedNotes = await getUserDoneNotes();
         console.log("Fetched user uploaded notes:", uploadedNotes);
         setListedNotes(uploadedNotes);
-        console.log('listed', listedNotes)
   
       } catch (e: any) {
         setError(e.message);
@@ -88,8 +84,8 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
 
   const noteGroups = useMemo(() => {
     return notes.reduce((acc, note) => {
+      if (!note) return acc;
       const moduleKey = note.module || 'general';
-
       if (!acc[moduleKey]) {
         acc[moduleKey] = [];
       }
@@ -102,8 +98,8 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
 
   const listedNoteGroups = useMemo(() => {
     return listedNotes.reduce((acc, note) => {
+      if (!note) return acc;
       const moduleKey = note.module || 'general';
-
       if (!acc[moduleKey]) {
         acc[moduleKey] = [];
       }

@@ -61,7 +61,6 @@ function App() {
           <Route path="/roadmap" element={<RoadmapPage />} />
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/test" element={<LoginPage />} />
             <Route path="/dashboardSeller" element={<DashboardSeller />} />
             <Route path="/refund/:id" element={<Refund />} />
             <Route path="/accountCreation" element={<AccountCreation />} />

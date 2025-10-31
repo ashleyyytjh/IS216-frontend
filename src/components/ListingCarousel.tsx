@@ -131,28 +131,12 @@ export default function ListingCarousel({
                    
                   "
                 >
-                 <SkeletonCircle />
+                 <SkeletonCircle message={emptyMessage}/>
                 </CarouselItem>
               ))}
             </CarouselContent>
 
-            <>
-              
-              <CarouselPrevious
-                className="absolute -left-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border-2 border-border bg-background hover:bg-foreground hover:text-background hover:border-foreground transition-all"
-                disabled={loading}
-                aria-disabled={loading}
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </CarouselPrevious>
-              <CarouselNext
-                className="absolute -right-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border-2 border-border bg-background hover:bg-foreground hover:text-background hover:border-foreground transition-all"
-                disabled={loading}
-                aria-disabled={loading}
-              >
-                <ChevronRight className="h-5 w-5" />
-              </CarouselNext>
-            </>
+          
           </Carousel>
         ) : (
           

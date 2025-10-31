@@ -32,12 +32,19 @@ type UseRecOptions = {
   strictMajor?: boolean;
   mode?: RankMode; // "auto" | "recent
   popularityCounts?: PopularityCounts; // injected from Hub
-  popularitySig?: string;              
+  popularitySig?: string;
 };
 
-function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOptions) {
+function useRecommendations(
+  profile: UserProfile,
+  limit = 8,
+  options: UseRecOptions
+) {
   const now = options.now ?? new Date();
-  const intent = useMemo(() => getPhaseIntent(now, options.calendar), [now, options.calendar]);
+  const intent = useMemo(
+    () => getPhaseIntent(now, options.calendar),
+    [now, options.calendar]
+  );
 
   const basePhase: TermPhase = useMemo(() => {
     if (intent === "midterm" || intent === "pre-midterm") return "midterm";
@@ -47,14 +54,26 @@ function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOpti
   }, [intent]);
 
   // phase-aware default queries
-  const generalPhaseQuery = useMemo(() => buildQuery([], basePhase, undefined), [basePhase]);
+  const generalPhaseQuery = useMemo(
+    () => buildQuery([], basePhase, undefined),
+    [basePhase]
+  );
   const query = useMemo(() => {
     if (options.mode === "popular") {
-      return options.queryOverride !== undefined ? options.queryOverride : generalPhaseQuery;
+      return options.queryOverride !== undefined
+        ? options.queryOverride
+        : generalPhaseQuery;
     }
     if (options.queryOverride !== undefined) return options.queryOverride;
     return buildQuery(profile.modules, basePhase, profile.major);
-  }, [options.mode, options.queryOverride, profile.modules, profile.major, basePhase, generalPhaseQuery]);
+  }, [
+    options.mode,
+    options.queryOverride,
+    profile.modules,
+    profile.major,
+    basePhase,
+    generalPhaseQuery,
+  ]);
 
   const [items, setItems] = useState<SearchNotesItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,8 +88,8 @@ function useRecommendations(profile: UserProfile, limit = 8, options: UseRecOpti
       basePhase === "midterm" || basePhase === "finals"
         ? "cheatsheet"
         : basePhase === "project"
-        ? "knowledge"
-        : "";
+          ? "knowledge"
+          : "";
 
     const shouldApplyPhaseType =
       typeof options.queryOverride === "string" &&
@@ -157,15 +176,19 @@ export function RecommendationRow({
   popularityCounts?: PopularityCounts;
   popularitySig?: string;
 }) {
-  const { items, loading, error, basePhase } = useRecommendations(profile, limit, {
-    queryOverride,
-    calendar,
-    strictModules,
-    strictMajor,
-    mode,
-    popularityCounts,
-    popularitySig,
-  });
+  const { items, loading, error, basePhase } = useRecommendations(
+    profile,
+    limit,
+    {
+      queryOverride,
+      calendar,
+      strictModules,
+      strictMajor,
+      mode,
+      popularityCounts,
+      popularitySig,
+    }
+  );
 
   const matchedModules = useMemo(
     () => computeMatchedModules(items, profile.modules || []),
@@ -180,31 +203,86 @@ export function RecommendationRow({
   const computedTitle = useMemo(() => {
     if (title) return title;
     const phase = phaseToLabel(basePhase);
-    if (matchedModules.length > 0) return `For Your ${formatModulesLabel(matchedModules)} — ${phase}`;
-    if (tightenedToMajor && profile.major) return `For Your ${profile.major} — ${phase}`;
-    return `For Your ${formatModulesLabel(profile.modules || [])} — ${phase}`;
-  }, [title, matchedModules, tightenedToMajor, profile.major, profile.modules, basePhase]);
+    if (matchedModules.length > 0)
+      return `For Your ${formatModulesLabel(matchedModules).toUpperCase()} — ${phase}`;
+    if (tightenedToMajor && profile.major)
+      return `For Your ${profile.major} — ${phase}`;
+    return `For Your ${formatModulesLabel(profile.modules || []).toUpperCase()} — ${phase}`;
+  }, [
+    title,
+    matchedModules,
+    tightenedToMajor,
+    profile.major,
+    profile.modules,
+    basePhase,
+  ]);
 
   const computedSubtitle = useMemo(() => {
     if (subtitle) return subtitle;
     if (!loading && !error) {
-      if (matchedModules.length > 0) return `Curated across ${matchedModules.join(", ")}`;
-      if (tightenedToMajor && profile.major) return `Curated from ${profile.major}`;
+      if (matchedModules.length > 0)
+        return `Curated across ${matchedModules.join(", ")}`;
+      if (tightenedToMajor && profile.major)
+        return `Curated from ${profile.major}`;
       return "You may like";
     }
     return undefined;
   }, [subtitle, loading, error, matchedModules, tightenedToMajor, profile.major]);
 
-  // NEW: friendly message when result set is empty
+
+  const displayPhaseLabel = useMemo(
+    () => (basePhase === "project" ? "Project & Catch-up" : phaseToLabel(basePhase)),
+    [basePhase]
+  );
+
+  const isPhaseRow = useMemo(
+    () => typeof queryOverride === "string" && queryOverride.trim().length > 0,
+    [queryOverride]
+  );
+  const isMajorRow = useMemo(() => strictMajor && !isPhaseRow, [strictMajor, isPhaseRow]);
+  const isModulesRow = useMemo(() => strictModules && !isPhaseRow, [strictModules, isPhaseRow]);
+
   const emptyMessage = useMemo(() => {
-    if (matchedModules.length > 0) {
-      return `No notes found for ${formatModulesLabel(matchedModules)} yet — check back soon.`;
+    const prefix = `When a note related to your`;
+    if (isPhaseRow) {
+      return `${prefix} ${displayPhaseLabel.toUpperCase()} shows up, they'll appear here!`;
     }
+ 
+    if (isMajorRow && profile.major) {
+      return `${prefix} ${profile.major} shows up, they'll appear here!`;
+    }
+
+    if (isModulesRow && (profile.modules?.length ?? 0) > 0) {
+      const modLabel = formatModulesLabel((profile.modules || []).map(m => m.toUpperCase()));
+      return `${prefix} modules shows up, they'll appear here!`;
+    }
+  
     if (tightenedToMajor && profile.major) {
-      return `No notes found for ${profile.major} yet — check back soon.`;
+      return `${prefix} ${profile.major} shows up, they'll appear here!`;
     }
-    return "No notes for now — check back soon.";
-  }, [matchedModules, tightenedToMajor, profile.major]);
+
+    if (matchedModules.length > 0) {
+      const modLabel = formatModulesLabel(matchedModules);
+      return `${prefix} ${modLabel} shows up, they'll appear here!`;
+    }
+
+    if ((profile.modules?.length ?? 0) > 0) {
+      const modLabel = formatModulesLabel((profile.modules || []).map(m => m.toUpperCase()));
+      return `${prefix} ${modLabel} shows up, they'll appear here!`;
+    }
+
+    return `${prefix} shows up, they'll appear here!`;
+  }, [
+    isPhaseRow,
+    isMajorRow,
+    isModulesRow,
+    displayPhaseLabel,
+    tightenedToMajor,
+    matchedModules,
+    profile.major,
+    profile.modules,
+  ]);
+
 
   return (
     <ListingCarousel
@@ -214,7 +292,6 @@ export function RecommendationRow({
       loading={loading}
       error={error}
       skeletonCount={limit}
-      
       showWhenEmpty
       emptyMessage={emptyMessage}
     />

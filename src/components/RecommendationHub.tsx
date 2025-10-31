@@ -208,7 +208,7 @@ export default function RecommendationsHub({
               <RecommendationRow
                 profile={{ modules: [], major: undefined }}
                 title={`${examLabel} Essentials`}
-                subtitle="Phase-aware picks across all modules"
+                subtitle=""
                 limit={8}
                 calendar={calendar}
                 mode="popular"
@@ -223,14 +223,14 @@ export default function RecommendationsHub({
           <motion.div variants={itemVariants}>
             {showSkeletons ? (
               <RowSkeleton
-                title="Top-Rated Right Now"
+                title="Top-Selling Right Now"
                 subtitle="Most purchased across the marketplace"
                 skeletonCount={8}
               />
             ) : (
               <RecommendationRow
                 profile={{ modules: [], major: undefined }}
-                title="Top-Rated Right Now"
+                title="Top-Selling Right Now"
                 subtitle="Most purchased across the marketplace"
                 limit={8}
                 calendar={calendar}

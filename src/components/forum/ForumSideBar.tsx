@@ -23,7 +23,7 @@ import {
 import { getUser, getUserPurchases } from "@/services/UserService";
 import { useNavigate } from "react-router-dom";
 import { getUserOrderByUserId } from "@/services/OrdersService";
-import { getNotesById, getUserDoneNotes, getUserOwned } from "@/services/NotesService";
+import { getNotesById, getUserDoneNotes, getUserOwned, getUserPurchasedNotes } from "@/services/NotesService";
 import { GetNotesRes } from "@/types/requests/notes";
 import { Order } from "@/types/types";
 
@@ -51,12 +51,17 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
 
         //get notes that the user owns. - notes they bought
         const orders = await getUserOrderByUserId(user.sub)
+        // const testOrders = await getUserPurchasedNotes();
+        // console.log("Fetched user purchases:", testOrders);
         const succeededOrders = orders.filter(order => order.status === 'succeeded');
         console.log("Fetched user owned notes:", orders);
 
         const notes: GetNotesRes[] = await Promise.all(
-          succeededOrders.map((order) => {
-            return getNotesById(order.note_id); 
+          succeededOrders.map(async (order) => {
+            const n = await getNotesById(order.note_id);
+            if (n) {
+              return n;
+            }
           })
         );
         const sortedNotes = (notes || []).sort((a: any, b: any) => {
@@ -64,9 +69,7 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
             if (a.course > b.course) return 1;
             return a.title.localeCompare(b.title);
         });
-
         setNotes(sortedNotes);
-
         const uploadedNotes = await getUserDoneNotes();
         console.log("Fetched user uploaded notes:", uploadedNotes);
         setListedNotes(uploadedNotes);

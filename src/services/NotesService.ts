@@ -149,3 +149,8 @@ export const getSingleCompose = async (id:any)=>{
    const res = await axiosInstance.get(`/notes/compose/${id}`)
    return res.data;
 }
+
+export const getUserPurchasedNotes = async ()=>{
+  const response = await axiosInstance.get(`/notes/purchased`)
+  return response.data;
+}

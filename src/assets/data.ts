@@ -18,42 +18,42 @@ export const testimonials = [
         "The attention to detail and innovative features have completely transformed our workflow. This is exactly what we've been looking for.",
       name: "Nicholas Soh",
       designation: "Year 2 SE Student",
-      src: "/public/photos/nic.jpg",
+      src: "/photos/nic.jpg",
     },
     {
       quote:
         "Implementation was seamless and the results exceeded our expectations. The platform's flexibility is remarkable.",
       name: "Darren Ng",
       designation: "Year 2 SE Student",
-      src: "/public/photos/Darren.png",
+      src: "/photos/Darren.png",
     },
     {
       quote:
         "This solution has significantly improved our team's productivity. The intuitive interface makes complex tasks simple.",
       name: "Joel Ow",
       designation: "Year 4 CS Student",
-      src: "/public/photos/joel.jpg",
+      src: "/photos/joel.jpg",
     },
     {
       quote:
         "Outstanding support and robust features. It's rare to find a product that delivers on all its promises.",
       name: "Ashwin",
       designation: "Year 2 SE Student",
-      src: "/public/photos/ashwin.jpg",
+      src: "/photos/ashwin.jpg",
     },
     {
       quote:
         "The scalability and performance have been game-changing for our organization. Highly recommend to any growing business.",
       name: "Ashley Toh",
       designation: "Year 1 CS Student",
-      src: "/public/photos/ashley.jpg",
+      src: "/photos/ashley.jpg",
     },
     {
       quote:
         "The scalability and performance have been game-changing for our organization. Highly recommend to any growing business.",
       name: "Dylan Sim",
       designation: "Year 2 IS Student",
-      src: "/public/photos/dylan.jpg",
+      src: "/photos/dylan.jpg",
     },
 
   ];

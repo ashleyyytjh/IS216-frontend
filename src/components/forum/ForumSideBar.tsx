@@ -55,10 +55,11 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
         // console.log("Fetched user purchases:", testOrders);
         const succeededOrders = orders.filter(order => order.status === 'succeeded');
         console.log("Fetched user owned notes:", orders);
-
+ 
         const notes: GetNotesRes[] = await Promise.all(
           succeededOrders.map(async (order) => {
             const n = await getNotesById(order.note_id);
+            return n;
           })
         );
         const sortedNotes = (notes || []).sort((a: any, b: any) => {
@@ -95,7 +96,6 @@ const ForumSidebar = ({ selectedId, token }: ForumSidebarProps) => {
       return acc;
     }, {} as Record<string, GetNotesRes[]>);
   }, [notes]);
-
   const listedNoteGroups = useMemo(() => {
     return listedNotes.reduce((acc, note) => {
       if (!note) return acc;

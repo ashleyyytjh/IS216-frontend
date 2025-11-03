@@ -192,6 +192,12 @@ export default function OrderDetails() {
       try {
         setLoading(true);
         const all: ApiOrder[] = await getOrders();
+                //                               all.push({
+                //     "id": 900,
+                //     "status": 'succeeded',
+                //     "note_id": "68fdc48ada0006fb103e9153",
+                //     "price": 1150
+                // })
         const found = all.find((o) => String(o.id) === String(id));
         if (!found) throw new Error("Order not found");
 

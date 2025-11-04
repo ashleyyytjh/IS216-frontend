@@ -102,7 +102,7 @@ function DashboardBuyer(currentUser) {
             <div className="w-full flex flex-col gap-y-5 lg:flex-row gap-x-5 mt-4">
                 <Card className="w-[100%] md:w-[100%] bg-[#f1f5f9] hover:shadow-lg transition-all duration-300 gap-2">
                     <CardHeader>
-                        <h1 className="font-bold text-foreground text-sm">Total Purchased</h1>
+                        <h1 className="font-bold text-foreground text-sm">Lifetime Purchases</h1>
                     </CardHeader>
                     {
                         loading ? (

@@ -1,6 +1,6 @@
-import { getComposeNoteById } from "@/services/NotesService";
+import { downloadNotes, getComposeNoteById } from "@/services/NotesService";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { createNoteHTML } from "@/utils/editor";
 import { GetComposeNotesRes } from "@/types/requests/compose";
 import Error from "./ErrorPage";
@@ -10,9 +10,13 @@ import { Badge } from "@/components/ui/badge";
 import { formatPriceSGD } from "@/utils/currency";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarFallback } from "@/utils/util";
+import { DollarSign, Download, Info } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export default function UserArticle() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [data, setData] = useState<GetComposeNotesRes>(
     {} as GetComposeNotesRes
   );
@@ -39,6 +43,41 @@ export default function UserArticle() {
   if (!id) {
     return null
   }
+
+  
+  async function handleDownload() {
+    if (!id) {
+      return
+    }
+    try {
+      const data = await downloadNotes(id);
+      const res = await fetch(data.url);
+      if (!res.ok) {
+        toast.error("Error finding the file.", {
+        description: "Unable to get note source url",
+        dismissible: true,
+        richColors: true,
+      })
+      }
+  
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = data.originalName || `${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      toast.error("Error downloading file.", {
+        description: String(err),
+        dismissible: true,
+        richColors: true,
+      });
+    }
+  }
+  
 
   return (
     <div>
@@ -90,6 +129,30 @@ export default function UserArticle() {
           <span className="font-mono flex items-center col-span-2">
             {formatPriceSGD(data.price ?? 0)}
           </span>
+
+
+          <div className="md:col-span-3 fixed bottom-0 md:static flex md:flex-row flex-col gap-3 w-full px-5 py-10 md:p-0 items-center z-10">
+            {data?.authorised || data?.price === 0 ? (
+              <Button className="flex-1 md:flex-initial w-full md:w-fit" onClick={handleDownload}>
+                <Download />
+                Download
+              </Button>
+            ) : (
+              <Button  onClick={() => navigate(`/payment?id=${id}`)} className="flex-1 md:flex-initial w-full md:w-fit">
+                <DollarSign />
+                Purchase
+              </Button>
+            )}
+            {/* {!data?.authorised ? (
+              <span className="text-sm text-muted-foreground text-center">
+                <Info className="h-4 w-4 inline align-sub" />
+                This is a preview. Purchase the full notes to view all
+                content.
+              </span>
+            ) : (
+              <></>
+            )} */}
+          </div>
         </div>
 
         {/* The Content :) */}

@@ -91,7 +91,12 @@ export const UserOwnNote = (currentUserInfo) => {
       if (getUserOwnedLength - notes.length == 1) {
         toast.success('Note deleted successfully')
       } else {
-        toast.error('Unable to delete note')
+        if(err?.response?.status == "500"){
+          toast.success('Note deleted successfully');
+        }else{
+          toast.error('An error has occured.')
+        }
+        
       }
     })
   }

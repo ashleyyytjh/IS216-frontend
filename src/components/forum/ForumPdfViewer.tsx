@@ -181,7 +181,7 @@ export default function ForumPdfViewer({
           className="m-0 overflow-clip flex items-center justify-center min-h-80 w-full"
         >
           {width > 0 && (
-          <div className="relative"  onMouseUp={() => handleTextSelection?.(scale)}
+          <div className="relative"  onMouseUp={() => handleTextSelection?.(scale)} onTouchEnd={() => handleTextSelection?.(scale)}
 >
             <Page
               pageNumber={pageNumber}

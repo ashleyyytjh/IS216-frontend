@@ -249,7 +249,7 @@ const sidebarContent = (
         </aside>
       )}
       {/* mobile version */}
-       <header className="fixed h-screen top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 bg-transparent sm:px-6 pointer-events-none">
+       <header className="fixed h-screen top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 md:static md:h-auto md:border-0 bg-transparent md:px-6 pointer-events-none">
         <div className="pointer-events-auto">
                   {!isDesktopSidebarOpen && (
           <Button

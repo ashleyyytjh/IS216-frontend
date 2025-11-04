@@ -176,7 +176,7 @@ export default function UserArticle() {
               </div>
 
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span className="text-foreground text-3xl font-semibold mb-4">
+                <span className="text-foreground text-4xl font-semibold mt-10 mb-4">
                   Hidden Content
                 </span>
                 <span className="text-foreground text-sm font-normal">

@@ -33,6 +33,7 @@ function DashboardBuyer(currentUser) {
     const [normalNoteTotal, setNormalNoteStat] = useState(0);
     const [composeNoteTotal, setComposeNoteStat] = useState(0);
     const [totalNote, setTotalNote] = useState(0);
+    const [validNote, setValidLength] = useState(0);
 
     useEffect(() => {
         if (!orders) {
@@ -50,9 +51,36 @@ function DashboardBuyer(currentUser) {
         //cont more debugging
         const userOrders = orders.filter(o => o.buyer_id == currentUser.current.current.sub)
         console.log(userOrders)
-        let uniqueNoteIds = userOrders  .filter((o) => o.status === "succeeded")
-  .map((o) => o.note_id);
+        let uniqueNoteIds = userOrders.filter((o) => o.status === "succeeded")
+            .map((o) => o.note_id);
         console.log(uniqueNoteIds, 'line59') // allnote id.
+        Promise.all(
+            uniqueNoteIds.map(async (id) => {
+                try {
+                    const note = await getNotesById(id);
+                    if(note != undefined){
+                        if(note!= null){
+                            return note;
+                        }
+                    }
+                } catch (e) {
+                }
+                try {
+                    const composed = await getComposeNoteById(id);
+                    if(composed != undefined){
+                        if(composed['data'] != null){
+                            return composed;
+                        }
+                    }
+                } catch (e) {
+                }
+                return null;
+            })
+        ).then((results) => {
+            const validNotes = results.filter((n) => n !== null);
+            setValidLength(validNotes.length)
+            console.log(validNotes, "valid notes found");
+        });
         setTotalNote(uniqueNoteIds.length)
         getUploadBatch(uniqueNoteIds).then((res) => {
             setTotalUploadedNotesByMod(res.data)
@@ -85,7 +113,7 @@ function DashboardBuyer(currentUser) {
     }, [totalComposeNoteByMod, totalUploadedNotesByMod]);
     //total price here.
     console.log(normalNoteTotal, composeNoteTotal)
-    
+
     console.log(hashMap)
 
     const topModule = React.useMemo(() => {
@@ -94,7 +122,7 @@ function DashboardBuyer(currentUser) {
         const entries = Object.entries(hashMap);
         entries.sort((a, b) => b[1] - a[1]);
         return { module: entries[0][0], count: entries[0][1] };
-    }, [hashMap]); 
+    }, [hashMap]);
 
 
     return (
@@ -107,7 +135,7 @@ function DashboardBuyer(currentUser) {
                     {
                         loading ? (
                             <CardContent>
-                                <Spinner variant="default"/>
+                                <Spinner variant="default" />
                             </CardContent>
                         ) : totalNote === 0 ? (
                             <CardContent className="flex flex-col">
@@ -116,7 +144,7 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : (
                             <CardContent className="flex flex-col">
-                                <p className="text-foreground text-2xl font-medium">{totalNote}</p>
+                                <p className="text-foreground text-2xl font-medium">{validNote}</p>
                                 <p className="text-sm font-light text-foreground mt-1">Notes purchased.</p>
                             </CardContent>
                         )
@@ -135,12 +163,12 @@ function DashboardBuyer(currentUser) {
                             </CardContent>
                         ) : (normalNoteTotal + composeNoteTotal) === 0 ? (
                             <CardContent className="flex flex-col">
-                                 <p className="text-foreground text-2xl font-medium">$0</p>
+                                <p className="text-foreground text-2xl font-medium">$0</p>
                                 <p className="text-sm font-light text-foreground mt-1">No spending yet.</p>
                             </CardContent>
                         ) : (
                             <CardContent className="flex flex-col">
-                                 <p className="text-foreground text-2xl font-medium">${Number((normalNoteTotal + composeNoteTotal) / 100).toFixed(2)}</p>
+                                <p className="text-foreground text-2xl font-medium">${Number((normalNoteTotal + composeNoteTotal) / 100).toFixed(2)}</p>
                                 <p className="text-sm font-light text-foreground mt-1">Spent in Onlynotes.</p>
                             </CardContent>
                         )

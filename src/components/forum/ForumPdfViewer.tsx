@@ -135,7 +135,6 @@ export default function ForumPdfViewer({
             size="sm"
             onClick={() => {
               pageHandler(Math.max(pageNumber - 1, 1));
-
               setPageNumber((prev) => Math.max(prev - 1, 1))
             }}
             disabled={pageNumber <= 1}

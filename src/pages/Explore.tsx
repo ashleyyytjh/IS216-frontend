@@ -64,6 +64,8 @@ export function ExploreContent() {
      }
     }, [location.search]);
 
+    console.log(listings)
+
   return (
     <main className="px-5 xl:px-0 flex flex-col gap-8 py-10">
       <Hero />

@@ -28,6 +28,7 @@ export const UserOwnNote = (currentUserInfo) => {
   const [activeFilter, setActiveFilter] = useState("All")
   const [currentNoteId, setCurrentNoteId] = useState();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [getUserOwnedLength, setUserOwnedLength] = useState(0)
   const navigate = useNavigate();
   //get owned notes. if the graph edges length is 0, it is processing.
   useEffect(() => {
@@ -46,6 +47,7 @@ export const UserOwnNote = (currentUserInfo) => {
           })
         );
         setNotes(allUserOwned);
+        setUserOwnedLength(allUserOwned.length);
       })
       .catch((err) => console.error("Error fetching owned notes:", err))
       .finally(() => { isLoading(false) })
@@ -73,11 +75,14 @@ export const UserOwnNote = (currentUserInfo) => {
     setNotes(prev => prev.filter(n => n.id !== id));
     deleteUploadedNote(id).then((res) => {
       toast.success('Note deleted successfully')
-    }).catch(err =>
-      toast.error('Note unable to delete')
-    )
+    }).catch((err)=>{
+      if(getUserOwnedLength - notes.length == 1){
+        toast.success('Note deleted successfully')
+      }else{
+        toast.error('Unable to delete note')
+      }      
+    })
   }
-  console.log(filteredNotes)
 
   return (
     <main className="w-full space-y-3">

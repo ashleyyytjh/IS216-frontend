@@ -31,6 +31,7 @@ export function ExploreContent() {
       since.setFullYear(now.getFullYear() - 1);
     }
     const params = new URLSearchParams({ limit: `${DEFAULT_PAGE_SIZE}` });
+    params.set("page", `${page}`)
     
     const q = (overrideQuery ?? query).trim();
     if (q !== "") params.set("query", q);

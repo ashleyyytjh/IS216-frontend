@@ -7,6 +7,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { useListing } from "./ListingContext"
+import { cn } from "@/lib/utils"
 
 export default function ListingPagination() {
   const { page, setPage, limit, total } = useListing()
@@ -22,6 +23,9 @@ export default function ListingPagination() {
               e.preventDefault()
               if (page > 1) setPage(page - 1)
             }}
+                          className={cn(
+              page <= 1 && "pointer-events-none opacity-50 cursor-not-allowed"
+            )}
           />
         </PaginationItem>
 
@@ -48,6 +52,9 @@ export default function ListingPagination() {
           <PaginationNext
             href="#"
             aria-disabled={page === totalPages}
+            className={cn(
+              page >= totalPages && "pointer-events-none opacity-50 cursor-not-allowed"
+            )}
             onClick={(e) => {
               e.preventDefault()
               if (page < totalPages) setPage(page + 1)

@@ -13,6 +13,7 @@ import { getAvatarFallback } from "@/utils/util";
 import { DollarSign, Download, Info } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import AestheticFooter from "@/components/Footer";
 
 export default function UserArticle() {
   const { id } = useParams<{ id: string }>();
@@ -130,20 +131,24 @@ export default function UserArticle() {
             {formatPriceSGD(data.price ?? 0)}
           </span>
 
-
-          <div className="md:col-span-3 fixed bottom-0 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-auto md:static flex md:flex-row md:ml-auto mr-auto flex-col gap-3 w-full px-5 py-10 md:p-0 items-center z-10">
-            {data?.authorised || data?.price === 0 ? (
-              <Button className="flex-1 md:flex-initial w-full md:w-fit" onClick={handleDownload}>
-                <Download />
-                Download
-              </Button>
+          {
+            data?.authorised || data.price === 0 ? (
+              <></>
             ) : (
-              <Button onClick={() => navigate(`/payment?id=${id}`)} className="flex-1 md:flex-initial w-full md:w-fit">
-                <DollarSign />
-                Purchase
-              </Button>
-            )}
-            {/* {!data?.authorised ? (
+              <div className="md:col-span-3 fixed bottom-0 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-auto md:static flex md:flex-row md:ml-auto mr-auto flex-col gap-3 w-full px-5 py-10 md:p-0 items-center z-10 bg-muted md:bg-transparent">
+                {data?.authorised || data?.price === 0 ? (
+                  <Button className="flex-1 md:flex-initial w-full md:w-fit" onClick={handleDownload}>
+                    <Download />
+                    Download
+                  </Button>
+                ) : (
+                  <Button onClick={() => navigate(`/payment?id=${id}`)} className="flex-1 md:flex-initial w-full md:w-fit">
+                    <DollarSign />
+                    Purchase
+                  </Button>
+
+                )}
+                {/* {!data?.authorised ? (
               <span className="text-sm text-muted-foreground text-center">
                 <Info className="h-4 w-4 inline align-sub" />
                 This is a preview. Purchase the full notes to view all
@@ -152,7 +157,10 @@ export default function UserArticle() {
             ) : (
               <></>
             )} */}
-          </div>
+              </div>
+            )
+          }
+
         </div>
 
         {/* The Content :) */}
@@ -165,11 +173,10 @@ export default function UserArticle() {
             <div className="text-center flex justify-center">
               <p className="text-foreground text-sm">Purchase to view contents of the notes.</p>
             </div>
-            
+
 
           )
         }
-
       </section>
     </div>
   );

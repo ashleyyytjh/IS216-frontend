@@ -142,7 +142,7 @@ Provide screenshots and captions showing how users interact with your app.
    - Users are able to purchase notes.
 2. **Confirmation Pages**  
    <img src="screenshots/paymentSuccessful.jpg" width="600">  
-   - Successul status.
+   - Successful status.
    <img src="screenshots/paymentFailed.jpg" width="600">  
    - Unsuccessful status.
 

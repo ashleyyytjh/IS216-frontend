@@ -23,6 +23,7 @@ const UserSchema = z.object({
   yearOfStudy: z.number().min(1).max(6),
   major: z.string().min(1, "Please select a major"),
   modules: z.array(z.string()).min(1, "Please add at least one module"),
+  imageUrl: z.string().url().optional().or(z.literal("")),
 })
 
 
@@ -62,6 +63,7 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
     yearOfStudy: 1,
     major: "",
     modules: [],
+    imageUrl: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [newModule, setNewModule] = useState("")
@@ -120,14 +122,14 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
     setIsSubmitting(true)
 
     try {
-      console.log("User created:", formData)
-      toast.success("Success!", {
-        description: "User account created successfully",
-      })  
+      console.log("User formdata:", formData)
       await createUser(formData);
 
       console.log(formData)
       await changeSuccessfulState!()
+      toast.success("Success!", {
+        description: "User account created successfully",
+      }) 
 
     } catch (error) {
       toast.error("Error", {

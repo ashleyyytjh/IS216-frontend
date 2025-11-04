@@ -59,11 +59,12 @@ function App() {
           {/* <Route path="/writeNotes" element={<EditPage />} />
           <Route path="/editNote/:id" element={<EditPage />} /> */}
           <Route path="/roadmap" element={<RoadmapPage />} />
+          <Route path="/accountCreation" element={<AccountCreation />} />
+
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboardSeller" element={<DashboardSeller />} />
             <Route path="/refund/:id" element={<Refund />} />
-            <Route path="/accountCreation" element={<AccountCreation />} />
             <Route path="/upload" element={<Upload />} />
             <Route path="/upload/:id" element={<UploadStatus />} />
             <Route path="/article/:id" element={<UserArticle />} />

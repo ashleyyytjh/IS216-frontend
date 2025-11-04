@@ -69,8 +69,8 @@ export default function ForumPdfViewer({
     useEffect(() => {
       (async () => {
         try {
-          // const data = await downloadNotes(id);
-          const res = await fetch(samplePdf);
+          const data = await downloadNotes(id);
+          const res = await fetch(data.url);
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const blob = await res.blob();
           const arrayBuffer = await blob.arrayBuffer();

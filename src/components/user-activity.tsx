@@ -94,7 +94,11 @@ function UserActivity(currentUser) {
     //Get price - done
     //Get seller name?
     const [statusFilter, setStatusFilter] = useState("All");
-    const filteredNotes = orders.filter(note => {
+    const sortedOrders = [...orders].sort((a, b) =>
+  ["succeeded", "processing", "failure", "created"].indexOf(a.status) -
+  ["succeeded", "processing", "failure", "created"].indexOf(b.status)
+);
+    const filteredNotes = sortedOrders.filter(note => {
         const query = searchQuery.toLowerCase()
         const matchesSearch = (
             note?.note?.originalName?.toLowerCase() ??

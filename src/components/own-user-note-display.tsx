@@ -52,6 +52,7 @@ export const UserOwnNote = (currentUserInfo) => {
       .catch((err) => console.error("Error fetching owned notes:", err))
       .finally(() => { isLoading(false) })
   }, []);
+
   const filteredNotes = notes.filter((note) => {
     const matchesSearch =
       note.originalName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -60,6 +61,17 @@ export const UserOwnNote = (currentUserInfo) => {
     const matchesFilter = activeFilter === "All" || note.type === activeFilter
     return matchesSearch && matchesFilter
   })
+  const [page, setPage] = useState(1);
+  const pageSize = 6;
+
+  const totalPages = Math.max(1, Math.ceil(filteredNotes.length / pageSize));
+  const paginatedNotes = filteredNotes.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, activeFilter, notes]);
   if (loading) {
     return (<div className="flex justify-center"><Spinner variant={'default'} /></div>)
   }
@@ -75,12 +87,12 @@ export const UserOwnNote = (currentUserInfo) => {
     setNotes(prev => prev.filter(n => n.id !== id));
     deleteUploadedNote(id).then((res) => {
       toast.success('Note deleted successfully')
-    }).catch((err)=>{
-      if(getUserOwnedLength - notes.length == 1){
+    }).catch((err) => {
+      if (getUserOwnedLength - notes.length == 1) {
         toast.success('Note deleted successfully')
-      }else{
+      } else {
         toast.error('Unable to delete note')
-      }      
+      }
     })
   }
 
@@ -115,7 +127,7 @@ export const UserOwnNote = (currentUserInfo) => {
 
       <section className="w-full">
         {
-          filteredNotes.length == 0 ? (
+          paginatedNotes.length == 0 ? (
             <div className="flex justify-center border-none mt-5">
               <p className="text-muted-foreground text-sm">No notes found.</p>
             </div>
@@ -137,7 +149,7 @@ export const UserOwnNote = (currentUserInfo) => {
                   </TableHeader>
 
                   <TableBody>
-                    {filteredNotes.map((listing) => (
+                    {paginatedNotes.map((listing) => (
                       <TableRow key={listing.id}>
                         <TableCell className="font-medium pl-[2rem]">{listing.originalName}</TableCell>
                         <TableCell className="text-foreground">
@@ -220,7 +232,7 @@ export const UserOwnNote = (currentUserInfo) => {
                 </Table>
               </div>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr lg:hidden">
-                {filteredNotes.map((listing) => (
+                {paginatedNotes.map((listing) => (
                   <div key={listing.id} className="h-full">
 
                     <div
@@ -319,6 +331,31 @@ export const UserOwnNote = (currentUserInfo) => {
             </>
           )
         }
+        {filteredNotes.length > 0 && (
+          <div className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+            >
+              Prev
+            </Button>
+
+            <span>
+              Page {page} of {totalPages}
+            </span>
+
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page === totalPages}
+              onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </section>
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

@@ -54,6 +54,14 @@ export function UnpublishedNotes() {
   const [activeFilter, setActiveFilter] = useState<any>("all");
   const [currentNoteId, setCurrentNoteId] = useState();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(6);
+
+  const totalPages = Math.max(1, Math.ceil(rawData.length / pageSize));
+  const paginatedNotes = rawData.slice((page - 1) * pageSize, page * pageSize);
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, activeFilter, rawData]);
 
   function updateNote(id, newValue) {
     //UI trigger
@@ -74,7 +82,6 @@ export function UnpublishedNotes() {
   }
   console.log(localStorage);
 
-  //deleting method.for now would not work as think DB is blocking it.
 
   const openDialog = (id: any) => {
     setCurrentNoteId(id);
@@ -120,6 +127,8 @@ export function UnpublishedNotes() {
         console.error(err);
       });
   }, [searchQuery, currentUpload, activeFilter]);
+
+
 
   const navigate = useNavigate();
 
@@ -170,7 +179,7 @@ export function UnpublishedNotes() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {rawData.map((note) => {
+                  {paginatedNotes.map((note) => {
                     console.log(note.module);
                     return (
                       <TableRow>
@@ -246,7 +255,7 @@ export function UnpublishedNotes() {
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full auto-rows-fr lg:hidden">
-              {rawData.map((note) => {
+              {paginatedNotes.map((note) => {
                 console.log(note);
                 return (
                   <Card className="h-full flex flex-col p-5 transition-shadow duration-300 hover:shadow-xl border rounded-lg">
@@ -357,6 +366,28 @@ export function UnpublishedNotes() {
                   </Card>
                 );
               })}
+            </div>
+
+            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page === 1}
+                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              >
+                Prev
+              </Button>
+              <span>
+                Page {page} of {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+              >
+                Next
+              </Button>
             </div>
           </>
         ) : (

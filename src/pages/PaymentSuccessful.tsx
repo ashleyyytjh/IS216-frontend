@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useLocation } from "react-router-dom";
 import { format } from "path";
+import { useEffect, useState } from "react";
 
 // Dummy data to illustrate the new information displayed.
 // In a real application, you would pass this data as props.
@@ -29,6 +30,11 @@ const orderDetails = {
 export function PaymentSuccess() {
 
   const location = useLocation();
+    const [noteInfo, setNoteInfo] = useState({
+    note_id: "",
+    note_name: "",
+    price: 0,
+  });
 
   const params = new URLSearchParams(location.search);
   const noteName = params.get("note_name");
@@ -45,6 +51,19 @@ export function PaymentSuccess() {
   const formattedDate = `${day}/${month}/${year}`;
 
   console.log(formattedDate);
+  
+  useEffect(() => {
+  const info = sessionStorage.getItem("payment_info");
+  if (info) {
+         const parsed = JSON.parse(info);
+      setNoteInfo({
+        note_id: parsed.note_id,
+        note_name: parsed.note_name,
+        price: parsed.price
+      });
+    sessionStorage.removeItem("payment_info"); 
+  }
+}, []);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <Card className="w-full max-w-lg rounded-xl shadow-2xl">
@@ -73,14 +92,14 @@ export function PaymentSuccess() {
           <Separator className="my-6" />
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="font-medium">{noteName}</span>
-              <span className="text-muted-foreground">${formattedPrice}</span>
+              <span className="font-medium">{noteInfo.note_name}</span>
+              <span className="text-muted-foreground">${(Number(noteInfo.price)/100).toFixed(2)}</span>
             </div>
 
             <Separator className="my-4" />
             <div className="flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span>${formattedPrice}</span>
+              <span>${(Number(noteInfo.price)/100).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-xs text-muted-foreground pt-2">
               <span>Paid with Stripe.</span>

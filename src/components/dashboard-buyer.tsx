@@ -50,7 +50,8 @@ function DashboardBuyer(currentUser) {
         //cont more debugging
         const userOrders = orders.filter(o => o.buyer_id == currentUser.current.current.sub)
         console.log(userOrders)
-        let uniqueNoteIds = userOrders.map((o) => o.note_id);
+        let uniqueNoteIds = userOrders  .filter((o) => o.status === "succeeded")
+  .map((o) => o.note_id);
         console.log(uniqueNoteIds, 'line59') // allnote id.
         setTotalNote(uniqueNoteIds.length)
         getUploadBatch(uniqueNoteIds).then((res) => {

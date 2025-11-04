@@ -40,10 +40,15 @@ const CheckoutForm = ({ notes: note }) => {
 
     setIsLoading(true);
     console.log(note)
+    sessionStorage.setItem("payment_info", JSON.stringify({
+      note_id: note.id,
+      note_name: note.originalName ?? note.title,
+      price: note.price
+    }));
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/paymentSuccess?note_id=${note.id}&note_name=${encodeURIComponent(note.originalName)}&price=${note.price}`,
+        return_url: `${window.location.origin}/paymentSuccess?note_id=${note.id}&note_name=${encodeURIComponent(note.originalName ?? note.title)}&price=${note.price}`,
       },
     });
 
@@ -62,8 +67,8 @@ const CheckoutForm = ({ notes: note }) => {
 
   return (
 
-<div
-  className="
+    <div
+      className="
     w-full 
     flex flex-col md:flex-row
     justify-center items-center
@@ -72,96 +77,95 @@ const CheckoutForm = ({ notes: note }) => {
     max-w-6xl mx-auto
     mt-8 mb-12
   "
->
-  {/* --- Note Card --- */}
-  <div className="w-full flex justify-center px-4 md:w-1/2">
-    <Card className="w-full flex flex-col border h-full overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1">
-      <CardHeader className="pb-4">
-        <div className="flex justify-between items-center mb-2">
-          <Badge variant="secondary">{note.module}</Badge>
-          <span className="text-xs text-muted-foreground">
-            PDF • {(note.size / 1024 / 1024).toFixed(2)} MB
-          </span>
-        </div>
-        <CardTitle className="text-lg font-bold">{note.originalName ?? note.title}</CardTitle>
-        <img
-          src={sampleImage}
-          alt="Preview Of Notes"
-          className="w-3/4 md:w-1/2 rounded-lg shadow-lg mx-auto md:mx-0 ml-auto mr-auto"
-        />
-      </CardHeader>
-
-      <CardContent>
-        <p className="text-sm text-muted-foreground line-clamp-3">
-          {note.description}
-        </p>
-      </CardContent>
-
-      <CardFooter className="flex flex-col items-start gap-4 pt-4">
-        <div className="flex flex-wrap gap-2">
-          {note.tags.map((tag: any, index: any) => (
-            <Badge key={index} variant="outline">
-              {tag}
-            </Badge>
-          ))}
-        </div>
-        <Separator />
-        <div className="w-full flex justify-between items-center">
-          <span className="text-xl font-bold">
-            Price {formatPrice(note.price)}
-          </span>
-        </div>
-      </CardFooter>
-    </Card>
-  </div>
-
-  {/* --- Payment Form --- */}
-  <div className="w-full flex justify-center px-4 md:w-1/2">
-    <form
-      id="payment-form"
-      onSubmit={handleSubmit}
-      className="w-full flex flex-col h-full overflow-hidden transition-all"
     >
-      <div className="w-full">
-        <div className="pb-2">
-          <LinkAuthenticationElement id="link-authentication-element" />
-        </div>
+      {/* --- Note Card --- */}
+      <div className="w-full flex justify-center px-4 md:w-1/2">
+        <Card className="w-full flex flex-col border h-full overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1">
+          <CardHeader className="pb-4">
+            <div className="flex justify-between items-center mb-2">
+              <Badge variant="secondary">{note.module}</Badge>
+              <span className="text-xs text-muted-foreground">
+                PDF • {isNaN(note.size / 1024 / 1024) ? 0 : (note.size / 1024 / 1024).toFixed(2)} MB
+              </span>
+            </div>
+            <CardTitle className="text-lg font-bold">{note.originalName ?? note.title}</CardTitle>
+            <img
+              src={sampleImage}
+              alt="Preview Of Notes"
+              className="w-3/4 md:w-1/2 rounded-lg shadow-lg mx-auto md:mx-0 ml-auto mr-auto"
+            />
+          </CardHeader>
 
-        <PaymentElement id="payment-element" options={paymentElementOptions} />
+          <CardContent>
+            <p className="text-sm text-muted-foreground line-clamp-3">
+              {note.description}
+            </p>
+          </CardContent>
 
-        <div className="mt-5 flex justify-between">
-          <Button
-            disabled={isLoading || !stripe || !elements}
-            id="submit"
-            type="submit"
-            className="px-4 py-2 text-white font-bold rounded !text-sm"
-          >
-            Pay
-          </Button>
-
-          <Button
-            disabled={isLoading || !stripe || !elements}
-            variant="destructive"
-            className={`px-4 py-2 text-white font-bold !text-sm rounded hover:bg-red-600 ${
-              isLoading || !stripe || !elements
-                ? "cursor-not-allowed opacity-50"
-                : ""
-            }`}
-            onClick={() => {}}
-          >
-            Cancel
-          </Button>
-        </div>
-
-        {message && (
-          <div id="payment-message" className="mt-2 text-red-500">
-            {message}
-          </div>
-        )}
+          <CardFooter className="flex flex-col items-start gap-4 pt-4">
+            <div className="flex flex-wrap gap-2">
+              {note.tags.map((tag: any, index: any) => (
+                <Badge key={index} variant="outline">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+            <Separator />
+            <div className="w-full flex justify-between items-center">
+              <span className="text-xl font-bold">
+                Price {formatPrice(note.price)}
+              </span>
+            </div>
+          </CardFooter>
+        </Card>
       </div>
-    </form>
-  </div>
-</div>
+
+      {/* --- Payment Form --- */}
+      <div className="w-full flex justify-center px-4 md:w-1/2">
+        <form
+          id="payment-form"
+          onSubmit={handleSubmit}
+          className="w-full flex flex-col h-full overflow-hidden transition-all"
+        >
+          <div className="w-full">
+            <div className="pb-2">
+              <LinkAuthenticationElement id="link-authentication-element" />
+            </div>
+
+            <PaymentElement id="payment-element" options={paymentElementOptions} />
+
+            <div className="mt-5 flex justify-between">
+              <Button
+                disabled={isLoading || !stripe || !elements}
+                id="submit"
+                type="submit"
+                className="px-4 py-2 text-white font-bold rounded !text-sm"
+              >
+                Pay
+              </Button>
+
+              <Button
+                disabled={isLoading || !stripe || !elements}
+                variant="destructive"
+                className={`px-4 py-2 text-white font-bold !text-sm rounded hover:bg-red-600 ${isLoading || !stripe || !elements
+                    ? "cursor-not-allowed opacity-50"
+                    : ""
+                  }`}
+                onClick={() => { }}
+              >
+                Cancel
+              </Button>
+            </div>
+
+            {message && (
+              <div id="payment-message" className="mt-2 text-red-500">
+                {message}
+              </div>
+            )}
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 

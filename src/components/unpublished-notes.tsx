@@ -50,7 +50,6 @@ export function UnpublishedNotes() {
   const [searchQuery, setSearchQuery] = useState("");
   const [rawData, setRawData] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentUpload, setCurrentUploadId] = useState<any>("");
   const [activeFilter, setActiveFilter] = useState<any>("all");
   const [currentNoteId, setCurrentNoteId] = useState();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -98,37 +97,41 @@ export function UnpublishedNotes() {
     }
   }
 
+  
+  const [allNotes, setAllNotes] = useState<any>([]);
   useEffect(() => {
-    //filtering.
-    getOwnedComposeNotes()
-      .then((res) => {
-        let da = res.data;
-        console.log(da);
-        if (activeFilter == "true") {
-          da = da.filter((d) => d.publish === true);
-        } else {
-          if (activeFilter == "false") {
-            da = da.filter((d) => d.publish === false);
-          }
-        }
-        const filtered = da.filter((n) => {
-          const term = searchQuery.toLowerCase();
-          return (
-            n.title.toLowerCase().includes(term) ||
-            n.tags.some((tag) => tag.toLowerCase().includes(term)) ||
-            n.module.toLowerCase().includes(term)
-          );
-        });
-        console.log(filtered)
-        setIsLoading(false);
-        setRawData(filtered);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [searchQuery, currentUpload, activeFilter]);
+  getOwnedComposeNotes()
+    .then((res) => {
+      setAllNotes(res.data);
+      setIsLoading(false);
+    })
+    .catch((err) => {
+      console.error(err);
+      setIsLoading(false);
+    });
+}, []);
 
+useEffect(() => {
+  let filtered = [...allNotes];
 
+  if (activeFilter === "true") {
+    filtered = filtered.filter((n) => n.publish === true);
+  } else if (activeFilter === "false") {
+    filtered = filtered.filter((n) => n.publish === false);
+  }
+
+  if (searchQuery.trim()) {
+    const term = searchQuery.toLowerCase();
+    filtered = filtered.filter(
+      (n) =>
+        n.title.toLowerCase().includes(term) ||
+        n.tags.some((tag) => tag.toLowerCase().includes(term))
+    );
+  }
+
+  setRawData(filtered);
+  setPage(1);
+}, [allNotes, searchQuery, activeFilter]);
 
   const navigate = useNavigate();
 

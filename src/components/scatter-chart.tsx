@@ -232,7 +232,10 @@ export function ScatterVisual() {
       </CardHeader>
       <CardContent className="relative flex-1 flex items-center justify-start sm:justify-center h-[380px] sm:h-[380px] max-[640px]:h-[280px] max-[400px]:h-[250px] px-2 pt-4 sm:px-6 sm:pt-6">
         {isLoading ? (
-          <SpinItem />
+          <div className="flex items-center ml-auto mr-auto">
+            <SpinItem />
+          </div>
+          
         ) : isEmpty ? (
           <div className="align-center text-center ml-auto mr-auto">
             <p className="text-gray-500 text-sm">No data found.</p>

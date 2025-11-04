@@ -44,7 +44,7 @@ export default function UserArticle() {
     return null
   }
 
-  
+
   async function handleDownload() {
     if (!id) {
       return
@@ -54,12 +54,12 @@ export default function UserArticle() {
       const res = await fetch(data.url);
       if (!res.ok) {
         toast.error("Error finding the file.", {
-        description: "Unable to get note source url",
-        dismissible: true,
-        richColors: true,
-      })
+          description: "Unable to get note source url",
+          dismissible: true,
+          richColors: true,
+        })
       }
-  
+
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -77,7 +77,7 @@ export default function UserArticle() {
       });
     }
   }
-  
+
 
   return (
     <div>
@@ -131,14 +131,14 @@ export default function UserArticle() {
           </span>
 
 
-          <div className="md:col-span-3 fixed bottom-0 md:static flex md:flex-row flex-col gap-3 w-full px-5 py-10 md:p-0 items-center z-10">
+          <div className="md:col-span-3 fixed bottom-0 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-auto md:static flex md:flex-row md:ml-auto mr-auto flex-col gap-3 w-full px-5 py-10 md:p-0 items-center z-10">
             {data?.authorised || data?.price === 0 ? (
               <Button className="flex-1 md:flex-initial w-full md:w-fit" onClick={handleDownload}>
                 <Download />
                 Download
               </Button>
             ) : (
-              <Button  onClick={() => navigate(`/payment?id=${id}`)} className="flex-1 md:flex-initial w-full md:w-fit">
+              <Button onClick={() => navigate(`/payment?id=${id}`)} className="flex-1 md:flex-initial w-full md:w-fit">
                 <DollarSign />
                 Purchase
               </Button>
@@ -156,9 +156,17 @@ export default function UserArticle() {
         </div>
 
         {/* The Content :) */}
-        <article
-          dangerouslySetInnerHTML={{ __html: html }} // we alr sanitise this in the createNoteHTML helper above.
-        />
+        {
+          data?.authorised || data.price === 0 ? (
+            <article
+              dangerouslySetInnerHTML={{ __html: html }} // we alr sanitise this in the createNoteHTML helper above.
+            />
+          ) : (
+            <p>Purchase to view contents of the notes.</p>
+
+          )
+        }
+
       </section>
     </div>
   );

@@ -9,7 +9,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { createOrder } from "@/services/OrdersService";
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getNotesById } from "@/services/NotesService";
+import { getComposeNoteById, getNotesById, getSingleCompose } from "@/services/NotesService";
 import { toast } from "sonner";
 import CheckoutForm from "@/components/Checkout";
 import getStripe from "@/utils/stripe";
@@ -18,12 +18,13 @@ import { Progress } from "@/components/ui/progress";
 import { CardDescription } from "@/components/ui/card";
 import { GetNotesRes } from "@/types/requests/notes";
 import { useLocation } from "react-router-dom";
+import { GetComposeNotesRes } from "@/types/requests/compose";
 
 
 const Payment = () => {
     const stripePromise = getStripe()
     const [clientSecret, setClientSecret] = useState<string>("");
-    const [note, setNote] = useState<GetNotesRes | null>(null);
+    const [note, setNote] = useState<any>();
     const [searchParams] = useSearchParams();
     const noteId = searchParams.get('id'); // "68b98faba389fd1819c78c17"
     const navigate = useNavigate();
@@ -34,8 +35,11 @@ const Payment = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const note = await getNotesById(noteId || "");
+                let note = await getNotesById(noteId || "");
                 console.log('note collected', note);
+                if(note == null){
+                    note = await getSingleCompose(noteId || "");
+                }
                 const timer = setTimeout(() => {
                     setProgress(40);
                 }, 500)

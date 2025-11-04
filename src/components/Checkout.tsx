@@ -83,7 +83,7 @@ const CheckoutForm = ({ notes: note }) => {
             PDF • {(note.size / 1024 / 1024).toFixed(2)} MB
           </span>
         </div>
-        <CardTitle className="text-lg font-bold">{note.originalName}</CardTitle>
+        <CardTitle className="text-lg font-bold">{note.originalName ?? note.title}</CardTitle>
         <img
           src={sampleImage}
           alt="Preview Of Notes"

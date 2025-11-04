@@ -170,8 +170,19 @@ export default function UserArticle() {
               dangerouslySetInnerHTML={{ __html: html }} // we alr sanitise this in the createNoteHTML helper above.
             />
           ) : (
-            <div className="text-center flex justify-center">
-              <p className="text-foreground text-sm">Purchase to view contents of the notes.</p>
+            <div className="relative">
+              <div className="blur-md">
+                <article dangerouslySetInnerHTML={{ __html: html }} />
+              </div>
+
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span className="text-foreground text-3xl font-semibold mb-4">
+                  Hidden Content
+                </span>
+                <span className="text-foreground text-sm font-normal">
+                  Purchase to see more.
+                </span>
+              </div>
             </div>
 
 

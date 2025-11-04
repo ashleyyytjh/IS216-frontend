@@ -98,7 +98,9 @@ function UserActivity(currentUser) {
   ["succeeded", "processing", "failure", "created"].indexOf(a.status) -
   ["succeeded", "processing", "failure", "created"].indexOf(b.status)
 );
-    const filteredNotes = sortedOrders.filter(note => {
+const validOrders = sortedOrders.filter(o => o.note != null);
+
+    const filteredNotes = validOrders.filter(note => {
         const query = searchQuery.toLowerCase()
         const matchesSearch = (
             note?.note?.originalName?.toLowerCase() ??
@@ -127,7 +129,7 @@ function UserActivity(currentUser) {
             <CardHeader>
                 <CardTitle>Order History</CardTitle>
                 <CardDescription>
-                    View your previously purchased notes that is still active.
+                    View your previously attempted purchased notes that is still active.
 
                 </CardDescription>
                 <div className="flex justify-center align-middle gap-1.5">

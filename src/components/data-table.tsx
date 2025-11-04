@@ -101,6 +101,7 @@ export function DataTable(props: CurrentUserProp) {
                 //     "status": "succeeded",
                 //     "price": 1150
                 // })
+        //only including, so shouldnt have the null issues.
         let userOrder = resp.filter(
           (item: any) =>
             Object.keys(ownedID).includes(item.note_id) &&

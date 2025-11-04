@@ -38,7 +38,7 @@ export const UserOwnNote = (currentUserInfo) => {
         const allUserOwned = await Promise.all(
           resp.map(async (r) => {
             const a = await getNotesById(r.id);
-            console.log(a)
+            console.log(a, 'line 41')
             return {
               ...r,
               pending: a?.graph.edges.length === 0,

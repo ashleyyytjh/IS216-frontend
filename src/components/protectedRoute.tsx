@@ -16,7 +16,7 @@ const ProtectedRoute = () => {
       let isAmplifyUser : any;
       try {
         isAmplifyUser = await getCurrentUser();
-        // const user = await getUser();
+        const user = await getUser();
         console.log(user)
         setUser(user);
         setIsAuthenticated(true);

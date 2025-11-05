@@ -102,6 +102,7 @@ export function UnpublishedNotes() {
   useEffect(() => {
   getOwnedComposeNotes()
     .then((res) => {
+      console.log(res.data)
       setAllNotes(res.data);
       setIsLoading(false);
     })

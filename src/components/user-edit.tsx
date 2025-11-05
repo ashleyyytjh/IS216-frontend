@@ -126,6 +126,7 @@ function UserEdit(currentUser) {
       console.error(err);
       toast.error("Unable to update now. Please try again and fill in the values properly.");
     }
+    
   };
 
 

@@ -114,6 +114,7 @@ const validOrders = sortedOrders.filter(o => o.note != null);
     const startIndex = (currentPage - 1) * notesPerPage
     const endIndex = startIndex + notesPerPage
     const currentNotes = filteredNotes.slice(startIndex, endIndex)
+    
 
     useEffect(() => {
         setCurrentPage(1)
@@ -129,7 +130,7 @@ const validOrders = sortedOrders.filter(o => o.note != null);
             <CardHeader>
                 <CardTitle>Order History</CardTitle>
                 <CardDescription>
-                    View your previously attempted purchased notes that is still active.
+                    View your previously attempted transactions for active notes.
 
                 </CardDescription>
                 <div className="flex justify-center align-middle gap-1.5">

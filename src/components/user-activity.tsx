@@ -95,8 +95,8 @@ function UserActivity(currentUser) {
     //Get seller name?
     const [statusFilter, setStatusFilter] = useState("All");
     const sortedOrders = [...orders].sort((a, b) =>
-  ["succeeded", "processing", "failure", "created"].indexOf(a.status) -
-  ["succeeded", "processing", "failure", "created"].indexOf(b.status)
+  ["succeeded", "processing", "failed", "created"].indexOf(a.status) -
+  ["succeeded", "processing", "failed", "created"].indexOf(b.status)
 );
 const validOrders = sortedOrders.filter(o => o.note != null);
 

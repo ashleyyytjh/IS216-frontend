@@ -22,9 +22,9 @@ G4 Group 16
 
 ## Business Problem
 
-The community problem our project aims to address is that we realise the process of purchasing notes in SMU to be a cumbersome process. Currently, a solution that exists is the AskSMU channel in Telegram, in which students can liase with sellers through the Education Resources topic in the channel. However, this would mean offline communication, handling of payments, and sending of files. Such way of notes distribution and purchase is cumbersome. 
+The community problem our project aims to address is that we realise the process of purchasing notes in SMU to be a cumbersome process. Currently, a solution that exists is the AskSMU channel in Telegram, in which students can liaise with sellers through the Education Resources topic in the channel. However, this would mean offline communication, handling of payments, and sending of files. Such way of notes distribution and purchase is cumbersome. 
 
-Further research on competitors shows that Studocu and CourseHero aims to solve similar issues. However, these notes on AskSMU do not have these notes being listed on the platforms. Upon further research, we realise the lack of incentivisation on the current platforms being a missing gap as to why the notes are not being published. Thus, we aim to build a marketplace that allows SMU students to purchase and sell notes for the community;.
+Further research on competitors shows that Studocu and CourseHero aims to solve similar issues. However, these notes on AskSMU do not have these notes being listed on the platforms. Upon further research, we realise the lack of incentivisation on the current platforms being a missing gap as to why the notes are not being published. Thus, we aim to build a marketplace that allows SMU students to purchase and sell notes for the community.
 
 ---
 
@@ -42,7 +42,7 @@ Further research on competitors shows that Studocu and CourseHero aims to solve 
 | Product Listing | View all notes within the web application | Users can view these notes and make a selection based on their wants. |
 | Note Recommendation System | Find notes based on modules you have taken and time of the semester | Allows students to have quick access of the modules they are taking without having to search |
 | Semantic Search | Allows for search based on note content and embeddings generated rather than normal text search | Quick search for notes users would need. |
-| Node based knoweldge graph  | Users can view informaton about their notes in the form of a graph, connecting different concepts and the relation between them as edges | Users can understand the meaning of the notes in a visual manner without much viewing before purchasing |
+| Node based knowledge graph  | Users can view information about their notes in the form of a graph, connecting different concepts and the relation between them as edges | Users can understand the meaning of the notes in a visual manner without much viewing before purchasing |
 | Forum | Buyers can leave comments and question on certain parts of the notes they own for sellers. Sellers can answer these questions. | Creates a form of communication between buyers and sellers after purchasing a certain note for clarification. |
 | Seller Dashboard | Sellers can view key metrics on the notes they sold and their performance.  | Sellers can analyse and know how to improve on their sales. They would know which notes to sell, and at certain price points. |
 | Compose Notes | Rather than uploading notes, sellers can write their own notes within the application and post them as articles for students to view.  | Sellers can create notes on the go, rather than uploading a certain note in their computer. |
@@ -120,7 +120,7 @@ Provide screenshots and captions showing how users interact with your app.
 
 4. **Node based knowledge graph**  
    <img src="screenshots/nodeknowledgegraph.png" width="600">  
-   - Users can summerise and view notes in a graph form showing connected concepts and relationships. 
+   - Users can summarize and view notes in a graph form showing connected concepts and relationships. 
 
 
 ### Create
@@ -171,7 +171,7 @@ Comprehensive steps to help other developers or evaluators run and test your pro
 ### 0) Prerequisites
 - [Git](https://git-scm.com/) v2.4+  
 - [Node.js](https://nodejs.org/) v18+ and npm v9+  
-- [Docker] (https://www.docker.com/)
+- [Docker](https://www.docker.com/)
 - Access to backend or cloud services used (MongoDB Atlas, Supabase, AWS S3, AWS Cognito, AWS Amplify, Stripe)
 
 ---
@@ -234,7 +234,7 @@ USER_SERVICE_URL=<user_service_url>
 NOTES_SERVICE_URL=<notes_service_url>
 
 STRIPE_WEBHOOK_SECRET=<stripe_webhook_secret>
-STRIPE_SECRET_KEY=s<stripe_secret_key>
+STRIPE_SECRET_KEY=<stripe_secret_key>
 
 SUPABASE_URL=<supa_base_url>
 SUPABASE_KEY=<supa_base_key>
@@ -374,17 +374,17 @@ Each member should contribute 2–3 sentences on their learning and project expe
 
  - *Nicholas:* Learned to build user-friendly frontend based on components by UI libraries and customisation of these libraries. The experience has allowed me to become stronger in data manipulation to present my data in a logical manner. Gained experience in hooking up backend code with frontend libraries in a quick manner and effectively. 
  - *Ashley:* Had the experience to touch on different visual libraries such as framer motion and tailwind animations. Gained more experience in implementing new kinds of services, such as the forum for both front and backend. Great experience to learn and adapt together with teammates of varying experiences and eventually produce a great product together.
- - *Ashwin:* Gained experience connecting frontend and backend APIs.  
- - *Darren:* Learnt to hook up backend api endpoints to frontend and learnt more about UI librares like shadcn and how they work under the hood. This experience has gave move exposure on the structure of frontend like components, props and layout and how to break each design of frontends into reusuable and neat components.   
+ - *Ashwin:* Learned to design and structure an interactive page that connects data with dynamic UI components, and also gained experience with integrating reusable components to improve usability and modularity. This helped me understand how to organize large-scale frontend logic cleanly while maintaining a responsive and user-friendly interface.  
+ - *Darren:* Learnt to hook up backend api endpoints to frontend and learnt more about UI librares like shadcn and how they work under the hood. This experience has gave more exposure on the structure of frontend like components, props and layout and how to break each design of frontends into reusable and neat components.   
  - *Dylan:* Gained hands-on experience creating responsive and user-friendly web interfaces, integrating various libraries to enhance functionality and design. The project helped me to understand the overall structure of a full working web application and how frontend components connect with backend logic.  
  - *Joel:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
 
 
 ### Key takeaways from working with real-world frameworks 
-After working on Onlynotes for the past semester, the main takeaway we have gained from working with real-world frameworks is that documentation and previous experience from people is a very important step in the development process. Since there are many people out there who are using such frameworks, documentation and forums like StackOverflow and Reddit proved to be very valuable sources for us while we are working on the project. When we face some bugs, they are usually the first few spots we seek answers from.
+After working on OnlyNotes for the past semester, the main takeaway we have gained from working with real-world frameworks is that documentation and previous experience from people is a very important step in the development process. Since there are many people out there who are using such frameworks, documentation and forums like StackOverflow and Reddit proved to be very valuable sources for us while we were working on the project. When we face some bugs, they are usually the first few spots we seek answers from.
 
 ### Challenges faced and how they were resolved  
-A key challenge we encountered was integrating multiple services and ensuring smooth communication between the frontend and backend. At first, while hooking up the data, some of our frontend developers had some issues, but as a group, we overcame them by breaking down the issue, communication with our backend team.
+A key challenge we encountered was integrating multiple services and ensuring smooth communication between the frontend and backend. At first, while hooking up the data, some of our frontend developers had some issues, but as a group, we overcame them by breaking down the issue, and communicating with our backend team.
 
 ### Insights on teamwork, project management, and problem-solving  
-On teamwork, project management and problem-solving, our team mainly operates in the way where every week, we try to accomplish as much as possible as we can for the project. Along the way, we will ask questions with each other in our group in the quickest time possible to get the work done fast. We use our time in class as a way to provide each other with updates about the project, and certain hiccups we will face, so that we know how to move forward with the project. As a group, we would try to solve problems on our own first, before approaching possible members about the issues we currently have on our plate.
+On teamwork, project management and problem-solving, our team mainly operates in the way where every week, we try to accomplish as much as possible as we can for the project. Along the way, we will ask each other questions in the quickest time possible to get the work done fast. We use our time in class as a way to provide each other with updates about the project, and also about any hiccups we face, so that we know how to move forward with the project. As a group, we would try to solve problems on our own first, before approaching other members about the issues we currently have on our plate.

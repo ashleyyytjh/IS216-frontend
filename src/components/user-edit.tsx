@@ -32,18 +32,18 @@ function UserEdit(currentUser) {
   const [userMod, setUserMod] = useState("")
   const [previewImage, setPreviewImage] = useState(currentUser["imageUrl"] || "")
 
-const addNewMod = () => {
-  console.log(curModsState)
-  const trimmed = userMod.trim().toLowerCase(); 
-  if (trimmed === "") return;
+  const addNewMod = () => {
+    console.log(curModsState)
+    const trimmed = userMod.trim().toLowerCase();
+    if (trimmed === "") return;
 
-  if (curModsState.includes(trimmed)) {
-    toast.error("Module already added!");
-    return;
-  }
-  setCurMods((prev) => [...prev, trimmed]);
-  setUserMod("");
-};
+    if (curModsState.includes(trimmed)) {
+      toast.error("Module already added!");
+      return;
+    }
+    setCurMods((prev) => [...prev, trimmed]);
+    setUserMod("");
+  };
 
   const removeModule = (moduleName: string) => {
     console.log('hi')
@@ -96,41 +96,38 @@ const addNewMod = () => {
     setSelectedFile(file);
   };
   const nav = useNavigate();
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    values.newCourse = curModsState
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    values.newCourse = curModsState;
 
-    let newValues = {}
-    newValues['fullName'] = values['username']
-    newValues['major'] = values['major']
-    newValues['modules'] = values['newCourse']
+    const newValues = {
+      fullName: values.username,
+      major: values.major,
+      modules: values.newCourse,
+    };
 
-    updateUser(newValues)
-      .then((response) => {
-        if (!selectedFile) {
-          toast.success("Successfully updated your account details!")
-          setTimeout(() => window.location.reload(), 1000);
-        } else {
-          updateUserImage(selectedFile.type).then(async (url) => {
-            let presigned = url.uploadUrl;
-            callPresigned(String(presigned), selectedFile).then((r) => {
-              let uploadRes = r;
-              if (!uploadRes) { toast.error('Unable to upload your image.') }
-              confirmUserImage().then((response) => {
-                toast.success('Successfully updated your account details!')
-              }).catch((err) => {
-                toast.error('Something went wrong somewhere.')
-              })
-            })
-            setTimeout(() => window.location.reload(), 1000);
+    try {
+      await updateUser(newValues);
+      if (!selectedFile) {
+        toast.success("Successfully updated your account details!");
+        setTimeout(() => window.location.reload(), 1000);
+        return;
+      }
+      const url = await updateUserImage(selectedFile.type);
+      const presigned = url.uploadUrl;
+      const uploadRes = await callPresigned(String(presigned), selectedFile);
+      if (!uploadRes) {
+        toast.error("Unable to upload your image.");
+        return;
+      }
+      await confirmUserImage();
+      toast.success("Successfully updated your account details!");
+      setTimeout(() => window.location.reload(), 1000);
+    } catch (err) {
+      console.error(err);
+      toast.error("Unable to update now. Please try again and fill in the values properly.");
+    }
+  };
 
-          })
-        }
-      })
-      .catch((err) => {
-        toast.error("Unable to do so now. Please try again and fill in the values properly.")
-        console.error(err)
-      })
-  }
 
 
   return (
@@ -142,9 +139,9 @@ const addNewMod = () => {
         </CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form className="space-y-8" onSubmit={handleSubmit(onSubmit, onInvalid)}   onKeyDown={(e) => {
-    if (e.key === "Enter") e.preventDefault();
-  }}>
+        <form className="space-y-8" onSubmit={handleSubmit(onSubmit, onInvalid)} onKeyDown={(e) => {
+          if (e.key === "Enter") e.preventDefault();
+        }}>
           <div className="flex justify-center ml-auto mr-auto">
             <div className="relative w-28 h-28">
               <Avatar className="w-28 h-28 border-2 border-gray-200">

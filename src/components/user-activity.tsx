@@ -143,7 +143,7 @@ const validOrders = sortedOrders.filter(o => o.note != null);
                             <SelectItem value="created">Created</SelectItem>
                             <SelectItem value="processing">Processing</SelectItem>
                             <SelectItem value="succeeded">Success</SelectItem>
-                            <SelectItem value="failure">Failure</SelectItem>
+                            <SelectItem value="failed">Failure</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

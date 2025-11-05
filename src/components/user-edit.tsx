@@ -108,6 +108,7 @@ const addNewMod = () => {
       .then((response) => {
         if (!selectedFile) {
           toast.success("Successfully updated your account details!")
+          setTimeout(() => window.location.reload(), 1000);
         } else {
           updateUserImage(selectedFile.type).then(async (url) => {
             let presigned = url.uploadUrl;
@@ -116,12 +117,11 @@ const addNewMod = () => {
               if (!uploadRes) { toast.error('Unable to upload your image.') }
               confirmUserImage().then((response) => {
                 toast.success('Successfully updated your account details!')
-                setTimeout(() => window.location.reload(), 500);
               }).catch((err) => {
                 toast.error('Something went wrong somewhere.')
               })
             })
-
+            setTimeout(() => window.location.reload(), 1000);
 
           })
         }

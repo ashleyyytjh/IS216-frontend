@@ -77,7 +77,7 @@ export default function ListingCard({ data }: { data: SearchNotesItem }) {
               className="text-sm font-normal rounded-full border-none bg-linear-to-r text-white uppercase"
               style={{ background: data.module ? courseGradient(data.module): "black" }}
             >
-              {data.module ?? "General"} 
+              {data.module || "General"} 
             </Badge>
             <Separator orientation="vertical" color="blue" />
             <span className="font-mono flex items-center">

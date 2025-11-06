@@ -266,7 +266,8 @@ notes_service_url_internal=http://notes:8000/v1
 ### 3) Backend / Cloud Service Setup
 
 #### MongoDB
-1.
+1. We have a running mongo instance we use for production. Feel free to connect to that. The DSN is in the .env provided.
+2. On the off chance you want to use your own mongodb, please create one on Mongo Atlas Cloud, which connects to a ElasticSearch instance behind the scenes for vector search capabilities. Self-hosting solutions are unlikely to support this.
 
 #### Supabase
 1. Go to [Supabase Dashboard](https://supabase.com/dashboard/organizations)
@@ -276,6 +277,7 @@ notes_service_url_internal=http://notes:8000/v1
 5. Under Data API, retrieve supabase URL
 
 #### AWS
+1. As the setup on AWS can be extensive, please feel free to use the AWS credentials provided in the .env for the purpose of running this project.
 
 #### Docker
 1. Go to [Docker](https://www.docker.com/)

@@ -178,8 +178,8 @@ Comprehensive steps to help other developers or evaluators run and test your pro
 
 ### 1) Download the Project
 ```bash
-git clone https://github.com/<org-or-user>/<repo-name>.git
-cd <repo-name>
+git clone https://github.com/ashleyyytjh/IS216-frontend.git
+cd <IS216-frontend>
 npm install
 ```
 

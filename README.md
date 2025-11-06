@@ -371,7 +371,7 @@ Each member should contribute 2–3 sentences on their learning and project expe
  - *Ashwin:* Learned to design and structure an interactive page that connects data with dynamic UI components, and also gained experience with integrating reusable components to improve usability and modularity. This helped me understand how to organize large-scale frontend logic cleanly while maintaining a responsive and user-friendly interface.  
  - *Darren:* Learnt to hook up backend api endpoints to frontend and learnt more about UI librares like shadcn and how they work under the hood. This experience has gave more exposure on the structure of frontend like components, props and layout and how to break each design of frontends into reusable and neat components.   
  - *Dylan:* Gained hands-on experience creating responsive and user-friendly web interfaces, integrating various libraries to enhance functionality and design. The project helped me to understand the overall structure of a full working web application and how frontend components connect with backend logic.  
- - *Joel:* Understood how Firebase Authentication and Firestore integrate with modern SPAs.  
+ - *Joel:* Learned how to use common graph layout libraries like Dagr, react-flow to show workflow/mindmap flows. Experienced using proper form validation using react-form-hook and zod, I previously always handled validation manually using regex. Learnt more about how React hydrates pages, and the proper use of certain hooks like useEffect and useMemo.  
 
 
 ### Key takeaways from working with real-world frameworks 

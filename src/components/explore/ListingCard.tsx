@@ -84,9 +84,7 @@ export default function ListingCard({ data }: { data: SearchNotesItem }) {
               {formatPriceSGD(data.price)}
             </span>
           </div>
-          <Button className="h-8 w-8 px-2 py-2" variant="outline">
-            <Heart className="text-muted-foreground" />
-          </Button>
+         
         </CardFooter>
       </Card>
     </Link>

@@ -204,7 +204,7 @@ export function UserCreationForm( {user, changeSuccessfulState } : UserCreationF
                 <SelectValue placeholder="Select year of study" />
               </SelectTrigger>
               <SelectContent>
-                {[1, 2, 3, 4, 5, 6].map((year) => (
+                {[1, 2, 3, 4, 5].map((year) => (
                   <SelectItem key={year} value={year.toString()}>
                     Year {year}
                   </SelectItem>

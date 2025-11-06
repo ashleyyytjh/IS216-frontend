@@ -89,6 +89,7 @@ Further research on competitors shows that Studocu and CourseHero aims to solve 
 ## Use Case & User Journey
 
 Provide screenshots and captions showing how users interact with your app.
+For the testing of the web application, we have tested from viewport of 375 px (Iphone 6/7/8) to Bootstrap XL, based on the projet requirements.
 
 #### Introduction
 1. **Landing Page**  

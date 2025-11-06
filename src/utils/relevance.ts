@@ -1,20 +1,24 @@
+// relevance.ts
 import type { SearchNotesItem } from "@/types/requests/notes";
 import type { PhaseIntent, TermPhase } from "@/utils/calendar";
 
-/// ===================== utils =========
+/* ===================== utils ===================== */
 
-// convert CS42O to cs420
+// Normalize module codes for equality checks, e.g. "SE-101" -> "se101"
 export function normMod(s: string) {
-  return (s || "").toLowerCase().replace(/\s+/g, "");
+  return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+// Build regex tokens that match a module code while ignoring any non-alphanumerics between characters.
+// Example: "se101" -> /s[^a-z0-9]*e[^a-z0-9]*1[^a-z0-9]*0[^a-z0-9]*1/i
 function buildModRegexTokens(mods: string[]) {
   return Array.from(
     new Set(
       (mods || [])
         .filter(Boolean)
         .map(normMod)
-        .map((m) => new RegExp(m.split("").join("[\\s-]*"), "i"))
+        .filter(Boolean)
+        .map((m) => new RegExp(m.split("").join("[^a-z0-9]*"), "i"))
     )
   );
 }
@@ -24,7 +28,7 @@ export function coerceNoteId(n: SearchNotesItem): string | undefined {
   return (n as any).id ?? (n as any)._id ?? (n as any).note_id;
 }
 
-//==================== matching ========
+/* ===================== matching ===================== */
 
 export function moduleMatches(note: SearchNotesItem, userMods: string[]) {
   if (!userMods?.length) return false;
@@ -40,20 +44,30 @@ export function majorMatches(note: SearchNotesItem, major?: string) {
 }
 
 export function isModuleRelevant(n: SearchNotesItem, userMods: string[]): boolean {
-  if (!userMods?.length) return true; // if no modules, don't block results
+  // If no modules provided, don't block results
+  if (!userMods?.length) return true;
+
+  // Fast path: exact module equality (post-normalization)
   if (moduleMatches(n, userMods)) return true;
 
-  const hay = [n.title || "", n.description || "", ...(n.tags || []), n.module || ""].join(" ");
+  // Fuzzy relevance: match module codes across title/description/tags/module,
+  // ignoring any non-alphanumeric separators.
+  const hay =
+    [n.title || "", n.description || "", ...(n.tags || []), n.module || ""].join(" ");
   const regexes = buildModRegexTokens(userMods);
   return regexes.some((rx) => rx.test(hay));
 }
 
 export function isMajorRelevant(n: SearchNotesItem, major?: string): boolean {
-  if (!major) return true; // if no major, don't block results
+  // If no major provided, don't block results
+  if (!major) return true;
   return majorMatches(n, major);
 }
 
-export function isRelevant(n: SearchNotesItem, opts: { mods: string[]; major?: string }) {
+export function isRelevant(
+  n: SearchNotesItem,
+  opts: { mods: string[]; major?: string }
+) {
   return isModuleRelevant(n, opts.mods) || isMajorRelevant(n, opts.major);
 }
 
@@ -81,11 +95,14 @@ export function formatModulesLabel(mods: string[]) {
   return `${shown} +${clean.length - maxShow}`;
 }
 
- //===================== popularity ===================== 
+/* ===================== popularity ===================== */
 
 export type PopularityCounts = Map<string, number>;
 
-export function popularityRawCount(n: SearchNotesItem, counts?: PopularityCounts): number {
+export function popularityRawCount(
+  n: SearchNotesItem,
+  counts?: PopularityCounts
+): number {
   if (!counts) return 0;
   const id = coerceNoteId(n);
   return id ? counts.get(id) ?? 0 : 0;
@@ -102,14 +119,14 @@ export function popularityScore(
   return Math.log1p(c) / Math.log(opts.base);
 }
 
-//================= hybrid score ================
+/* ===================== hybrid score ===================== */
 
 export function hybridScore(
   n: SearchNotesItem,
   ctx: { phase: TermPhase; intent: PhaseIntent; mods: string[] },
   extras?: {
-    popCounts?: PopularityCounts; 
-    popWeight?: number;         
+    popCounts?: PopularityCounts;
+    popWeight?: number;
   }
 ) {
   let s = (n as any).score ?? 0;
@@ -125,7 +142,8 @@ export function hybridScore(
   if (tags.has("cheatsheet")) s += 0.3;
   if (tags.has("summary")) s += 0.2;
 
-  const days = (Date.now() - new Date(n.createdAt as string).getTime()) / 86400000;
+  const days =
+    (Date.now() - new Date(n.createdAt as string).getTime()) / 86400000;
   s += Math.exp(-days / 30) * 0.4;
 
   // popularity boost (if provided)
@@ -137,7 +155,7 @@ export function hybridScore(
   return s;
 }
 
-//===================== ranking ===================== 
+/* ===================== ranking / narrowing ===================== */
 
 export type RankMode = "auto" | "recent" | "popular" | "user-popular";
 export type NarrowFlags = { strictModules?: boolean; strictMajor?: boolean };
@@ -156,20 +174,30 @@ export function narrowPool(
 ): SearchNotesItem[] {
   if (mode === "user-popular") {
     if (flags.strictModules) return pool.filter((n) => moduleMatches(n, profile.mods));
-    if (flags.strictMajor)   return pool.filter((n) => majorMatches(n, profile.major));
+    if (flags.strictMajor) return pool.filter((n) => majorMatches(n, profile.major));
     return pool.filter((n) => isRelevant(n, { mods: profile.mods, major: profile.major }));
   }
+
   if (mode === "popular") {
+   
     if (flags.strictModules) return pool.filter((n) => moduleMatches(n, profile.mods));
-    if (flags.strictMajor)   return pool.filter((n) => majorMatches(n, profile.major));
+    if (flags.strictMajor) return pool.filter((n) => majorMatches(n, profile.major));
+   
+
     return pool; // global
   }
-  // "auto": legacy strict precedence
-  const byModules = pool.filter((n) => moduleMatches(n, profile.mods));
-  const byMajor   = pool.filter((n) => majorMatches(n, profile.major));
+
+  // "auto": prefer user's modules/major, but don't throw away fuzzy-relevant items
+  const byModules  = pool.filter((n) => moduleMatches(n, profile.mods));
+  const byMajor    = pool.filter((n) => majorMatches(n, profile.major));
+  const byRelevant = pool.filter((n) => isRelevant(n, { mods: profile.mods, major: profile.major }));
+
   if (flags.strictModules) return byModules;
   if (flags.strictMajor)   return byMajor;
-  if (byModules.length)    return byModules;
+
+  // If we have any exact module matches, keep the whole relevant set (exact + fuzzy)
+  if (byModules.length)    return byRelevant;
+
   if (byMajor.length)      return byMajor;
   return pool;
 }
@@ -184,7 +212,11 @@ export function rankPool(
 ): SearchNotesItem[] {
   if (mode === "recent") {
     return [...pool]
-      .sort((a, b) => new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt as string).getTime() -
+          new Date(a.createdAt as string).getTime()
+      )
       .slice(0, limit);
   }
 
@@ -194,28 +226,39 @@ export function rankPool(
       .map((n) => ({
         n,
         p: popularityRawCount(n, popularityCounts),
-        t: hybridScore(n, { phase: ctx.phase, intent: ctx.intent, mods: mode === "user-popular" ? ctx.mods : [] }),
+        t: hybridScore(n, {
+          phase: ctx.phase,
+          intent: ctx.intent,
+          mods: mode === "user-popular" ? ctx.mods : [],
+        }),
       }))
       .sort((a, b) => (b.p - a.p) || (b.t - a.t))
       .slice(0, limit)
       .map((x) => x.n);
   }
 
-  // "auto": hybrid + (optional) popularity boost
+  // "auto": hybrid score + optional popularity boost
   const popW = opts?.popWeight ?? 0.8;
   return [...pool]
     .map((n) => ({
       n,
-      s: hybridScore(n, { phase: ctx.phase, intent: ctx.intent, mods: ctx.mods }, { popCounts: popularityCounts, popWeight: popW }),
+      s: hybridScore(
+        n,
+        { phase: ctx.phase, intent: ctx.intent, mods: ctx.mods },
+        { popCounts: popularityCounts, popWeight: popW }
+      ),
     }))
     .sort((a, b) => b.s - a.s)
     .slice(0, limit)
     .map((x) => x.n);
 }
 
-//===================== small view helpers ======
+/* ===================== small view helpers ===================== */
 
-export function computeMatchedModules(items: SearchNotesItem[], mods: string[]): string[] {
+export function computeMatchedModules(
+  items: SearchNotesItem[],
+  mods: string[]
+): string[] {
   const out = new Set<string>();
   for (const m of mods || []) {
     if (items.some((n) => moduleMatches(n, [m]))) out.add(m);
@@ -230,6 +273,6 @@ export function computeTightenedToMajor(
 ): boolean {
   if (!major) return false;
   const anyModuleMatch = items.some((n) => moduleMatches(n, mods));
-  const anyMajorMatch  = items.some((n) => majorMatches(n, major));
+  const anyMajorMatch = items.some((n) => majorMatches(n, major));
   return !anyModuleMatch && anyMajorMatch;
 }

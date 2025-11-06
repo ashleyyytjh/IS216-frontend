@@ -58,6 +58,8 @@ function useRecommendations(
     () => buildQuery([], basePhase, undefined),
     [basePhase]
   );
+
+  
   const query = useMemo(() => {
     if (options.mode === "popular") {
       return options.queryOverride !== undefined
@@ -98,20 +100,19 @@ function useRecommendations(
     const fetchLimit = Math.max(limit * 4, 48);
     const params = new URLSearchParams({ query, limit: String(fetchLimit) });
     if (shouldApplyPhaseType && phaseType) params.set("type", phaseType);
-
+    if (basePhase === "finals" || basePhase === "midterm") params.set("type", "");
     searchNotes(params)
       .then((res) => {
         if (cancelled) return;
         const raw: SearchNotesItem[] = (res as any)?.items ?? [];
-
-        // 1) narrow once
+  
         const narrowed = narrowPool(
           raw,
           options.mode ?? "auto",
           { mods: profile.modules, major: profile.major },
           { strictModules: options.strictModules, strictMajor: options.strictMajor }
         );
-
+       
         // 2) rank once
         const ranked = rankPool(
           narrowed,

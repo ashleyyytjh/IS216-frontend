@@ -206,10 +206,10 @@ export const UserOwnNote = (currentUserInfo) => {
                           <Button
                             size="sm"
                             variant='outline'
-                            disabled={listing['pending']}
+                            // disabled={listing['pending']}
                             onClick={() => {
                               if (listing['pending']) {
-                                toast.warning('Your note is still going through processing. Please view again later.')
+                                navigate(`/upload/${(listing as any).note_id || listing.id}`)
                               } else {
                                 navigate(`/listings/${(listing as any).note_id || listing.id}`)
                               }
@@ -314,10 +314,10 @@ export const UserOwnNote = (currentUserInfo) => {
                         {/* to={`/listings/${(listing as any).note_id || listing.id}`}*/}
                         {/* deleteNote(``) */}
                         <CardFooter className="flex flex-row-reverse justify-between gap-x-2 pl-0 pr-0">
-                          <Button size="sm" className="w-[48%] !text-xs" disabled={listing['pending']}
+                          <Button size="sm" className="w-[48%] !text-xs"
                             onClick={() => {
                               if (listing['pending']) {
-                                toast.warning('Your note is still going through processing. Please view again later.')
+                                navigate(`/upload/${(listing as any).note_id || listing.id}`)
                               } else {
                                 navigate(`/listings/${(listing as any).note_id || listing.id}`)
                               }

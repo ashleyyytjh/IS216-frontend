@@ -99,7 +99,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
 
 
   return (
-    <Card className="min-h-[400px] flex flex-col transition-all duration-300">
+    <Card className="min-h-[404px] flex flex-col transition-all duration-300">
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 mb-2">
           <CardTitle className="text-base font-semibold text-gray-800">
@@ -241,7 +241,7 @@ export function ChartBarLabel({ moduleRevenueArray }: ChartBarLabelProps) {
                       </text>
                     )
                   }}
-                  fontSize={overlapBP ? 8 : 12}
+                  fontSize={overlapBP ? 8 : 11}
                   formatter={(val: number) => formatCurrency(val)}
                 />
               </Bar>

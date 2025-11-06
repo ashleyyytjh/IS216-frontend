@@ -85,7 +85,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
 
   const onSmallScreen = useMediaQuery("(max-width: 400px)"); //smallscreen using mediaquery hooks.
   return (
-    <Card className="min-h-[400px] flex flex-col transition-all duration-300">
+    <Card className="min-h-[404px] flex flex-col transition-all duration-300">
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
           <CardTitle className="text-base font-semibold text-gray-800">
@@ -200,7 +200,7 @@ export function ChartPieInteractive({ moduleCountsArray }: ChartBarNotesProps) {
                   dataKey="count"
                   position="right"
                   className="fill-gray-700"
-                  fontSize={12}
+                  fontSize={11}
                   formatter={(val: number) => formatCount(val)}
                 />
               </Bar>

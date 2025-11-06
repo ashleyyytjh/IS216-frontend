@@ -23,6 +23,7 @@ import {
   type PopularityCounts,
   type RankMode,
 } from "@/utils/relevance";
+import { SourceTextModule } from "vm";
 
 type UseRecOptions = {
   queryOverride?: string;
@@ -113,7 +114,7 @@ function useRecommendations(
           { strictModules: options.strictModules, strictMajor: options.strictMajor }
         );
        
-        // 2) rank once
+        
         const ranked = rankPool(
           narrowed,
           options.mode ?? "auto",
@@ -123,6 +124,7 @@ function useRecommendations(
           { popWeight: 0.8 }
         );
 
+        
         setItems(ranked);
         setError(false);
       })
@@ -191,11 +193,13 @@ export function RecommendationRow({
     }
   );
 
+  
   const matchedModules = useMemo(
     () => computeMatchedModules(items, profile.modules || []),
     [items, profile.modules]
   );
 
+  
   const tightenedToMajor = useMemo(
     () => computeTightenedToMajor(items, profile.modules || [], profile.major),
     [items, profile.modules, profile.major]
@@ -264,12 +268,15 @@ export function RecommendationRow({
 
     if (matchedModules.length > 0) {
       const modLabel = formatModulesLabel(matchedModules);
+      
       return `${prefix} ${modLabel} shows up, they'll appear here!`;
     }
 
     if ((profile.modules?.length ?? 0) > 0) {
       const modLabel = formatModulesLabel((profile.modules || []).map(m => m.toUpperCase()));
       return `${prefix} ${modLabel} shows up, they'll appear here!`;
+    } else {
+       return `${prefix} related your modules shows up, they'll appear here!`;
     }
 
     return `${prefix} shows up, they'll appear here!`;

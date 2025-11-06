@@ -268,28 +268,33 @@ notes_service_url_internal=http://notes:8000/v1
 ### 3) Backend / Cloud Service Setup
 
 #### MongoDB
-1. We have a running mongo instance we use for production. Feel free to connect to that. The DSN is in the .env provided.
-2. On the off chance you want to use your own mongodb, please create one on Mongo Atlas Cloud, which connects to a ElasticSearch instance behind the scenes for vector search capabilities. Self-hosting solutions are unlikely to support this.
+1. Used by the Notes and Users resources. a NoSQL database that allows for vector searching and implement aggregation pipelines across different kinds of notes.
+2. We have a running mongo instance we use for production. Feel free to connect to that. The DSN is in the .env provided.
+3. On the off chance you want to use your own mongodb, please create one on Mongo Atlas Cloud, which connects to a ElasticSearch instance behind the scenes for vector search capabilities. Self-hosting solutions are unlikely to support this. Copy the required username, password, host details into the .env fields .
 
 #### Supabase
-1. Go to [Supabase Dashboard](https://supabase.com/dashboard/organizations)
-2. Create a new project.
-3. Head to dashboard, project settings
-4. Under API Keys, retrieve the supabase key
-5. Under Data API, retrieve supabase URL
+1. Postgres development platform used by Orders and Annotations resources.
+2. Go to [Supabase Dashboard](https://supabase.com/dashboard/organizations)
+3. Create a new project.
+4. Head to dashboard, project settings
+5. Under API Keys, retrieve the supabase key
+6. Under Data API, retrieve supabase URL
 
 #### AWS
-1. As the setup on AWS can be extensive, please feel free to use the AWS credentials provided in the .env for the purpose of running this project.
+1. AWS as main cloud services provider. Provides compute, load balancing/routing, and auth functionalities.
+2. As the setup on AWS is non-trivial, please use the AWS credentials provided in the .env for the purpose of running this project.
 
 #### Docker
-1. Go to [Docker](https://www.docker.com/)
-2. Install Docker
+1. Container runtime for local setup.
+2. Go to [Docker](https://www.docker.com/)
+3. Install Docker
 
 #### Stripe
-1. Go to [Stripe](https://dashboard.stripe.com/)
-2. Create Stripe account
-3. Enter publishable key into frontend .env
-4. Enter secret key into backend orders .env
+1. Payments tenant.
+2. Go to [Stripe](https://dashboard.stripe.com/)
+3. Create Stripe account
+4. Enter publishable key into frontend .env
+5. Enter secret key into backend orders .env
 
 
 ---

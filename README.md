@@ -187,6 +187,9 @@ npm install
 
 ### 2) Configure Environment Variables
 Create a `.env` file in the root directory with the following structure:
+note that for backend services. 
+under notes folder we have notes and users services
+under orders folder, we have orders and annotation services
 
 ## Frontend Environments
 ```bash
@@ -202,6 +205,7 @@ VITE_STRIPE_PROMISE=<your_stripe_publishable_key>
 PORT=<your_port>
 NODE_ENV=dev
 CLIENT=<client_url>
+USERS_HOST=<users_service_url>
 
 AWS_REGION=<aws_region>
 AWS_COGNITO_USERPOOL_ID=<cognito_userpool_id>
@@ -227,7 +231,7 @@ DB_NAME=<mongo_db_name>
 OPENAI_API_KEY=<your_openai_key>
 ```
 
-## Backend Environments (OrdersV3 Service)
+## Backend Environments (Orders Service)
 ```bash
 PORT=<your_port>
 USER_SERVICE_URL=<user_service_url>
@@ -246,25 +250,13 @@ AWS_COGNITO_M2M_CLIENT_ID=<cognito_m2m_client_id>
 AWS_COGNITO_OAUTH_DOMAIN=<cognito_oauth_domain>
 ```
 
-## Backend Environments (Annotations Service)
-```bash
-PORT=<your_port>
-
-SUPABASE_URL=<supa_base_url>
-SUPABASE_KEY=<supa_base_key>
-
-AWS_COGNITO_USERPOOL_ID=<cognito_userpool_id>
-AWS_COGNITO_CLIENT_ID=<cognito_userpool_client_id>
-AWS_COGNITO_M2M_CLIENT_SECRET=<cognito_m2m_client_secret>
-AWS_COGNITO_M2M_CLIENT_ID=<cognito_m2m_client_id>
-AWS_COGNITO_OAUTH_DOMAIN=<cognito_oauth_domain>
-```
 
 ## Backend Environments (Proxy APIGateway Service Local testing)
 ```bash
-orders_service_url_internal=http://orders:<orders_service_port>/v1
-notes_service_url_internal=http://notes:<notes_service_port>/v1
-annotations_service_url_internal=http://annotations:<annotations_service_port>/v1
+# users_service_url_internal=http://users:8001/v1
+# annotations_service_url_internal=http://annotations:8003/v1
+orders_service_url_internal=http://orders:8002/v1
+notes_service_url_internal=http://notes:8000/v1
 ```
 
 > Never commit the `.env` file to your repository.  
@@ -295,18 +287,20 @@ annotations_service_url_internal=http://annotations:<annotations_service_port>/v
 3. Enter publishable key into frontend .env
 4. Enter secret key into backend orders .env
 
+
+---
+### 4) Runing the Backend
 #### Starting backend via Docker
-1. Ensure that ./app/compose.yaml, stripe cli container api key is entered and not a placeholder. This is for local testing. 
-2. Run docker compose up --build once, retrieve the webhook secret from the stripe container, insert into orders .env
+1. Ensure that ./app/compose.yaml, stripe cli container,stripe secret key is entered and not a placeholder. This is for local testing. (--api-key STRIPE_SECRET_KEY)
+2. Run docker compose up --build once, retrieve the webhook secret from the stripe container, insert into orders .env under STRIPE_WEBHOOK_SECRET
 3. Start the backend:
    ```bash
    cd ./apps
    docker compose up --build
    ```
-
 ---
 
-### 4) Run the Frontend
+### 5) Run the Frontend
 To start the development server:
 ```bash
 npm run dev

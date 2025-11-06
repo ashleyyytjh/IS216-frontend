@@ -133,6 +133,7 @@ Provide screenshots and captions showing how users interact with your app.
    <img src="screenshots/uploadNotes_2.jpg" width="600">  
    <img src="screenshots/uploadNotes_3.jpg" width="600">  
    <img src="screenshots/uploadNotes_4.jpg" width="600">  
+   <img src="screenshots/successUpload.png" width="600">  
    - Users can choose to upload via 4 step process.
 
 

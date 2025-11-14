@@ -391,3 +391,17 @@ A key challenge we encountered was integrating multiple services and ensuring sm
 
 ### Insights on teamwork, project management, and problem-solving  
 On teamwork, project management and problem-solving, our team mainly operates in the way where every week, we try to accomplish as much as possible as we can for the project. Along the way, we will ask each other questions in the quickest time possible to get the work done fast. We use our time in class as a way to provide each other with updates about the project, and also about any hiccups we face, so that we know how to move forward with the project. As a group, we would try to solve problems on our own first, before approaching other members about the issues we currently have on our plate.
+
+## Usage of AI/LLMs
+| Area of Usage | Yes/No | Description |
+|:--|:--|:--|
+| Information Search | Yes | - |
+| Generating website concepts, layouts, or themes | Yes | - |
+| Exploring UI/UX design inspirations | Yes | - |
+| Boilerplate code generation (starter code, small code snippets) | Yes  | - |
+| Generating unit tests, sample inputs, or mock data | No | - |
+| Core implementation tasks | No | - |
+| Major business logic, backend endpoints, or critical frontend interactivity | No | - |
+| Solving significant implementation issues | No | - |
+
+
